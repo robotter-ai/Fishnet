@@ -1,0 +1,27 @@
+@import "../assets/styles/variables";
+
+#layout-wrapper {
+  display: grid;
+  height: 100vh;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: max-content 1fr;
+  grid-template-areas:
+    "sidenav topnav"
+    "sidenav main";
+}
+
+#side-navigation {
+  background-color: $light_grey;
+  grid-area: sidenav;
+}
+
+#top-navigation {
+  grid-area: topnav;
+  padding: 25px 30px;
+}
+
+main {
+  grid-area: main;
+  padding: 25px 30px;
+  overflow: auto;
+}

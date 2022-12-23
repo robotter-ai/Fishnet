@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap");
+@import "./variables";
+
+body {
+  margin: 0;
+  background-color: $white;
+  font-family: "Source Sans Pro", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+h1,
+p {
+  color: #172025;
+}
+
+h1 {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.app-btn {
+  background: linear-gradient(83.49deg, #71c9fa -108.79%, #0054ff 76.92%);
+  &.btn-outline-blue {
+    background: $white;
+    color: $blue;
+    border: 1px solid $blue;
+  }
+  &.btn-outline-red {
+    background: $white;
+    color: $red;
+    border: 1px solid $red;
+  }
+}
+
+// Material UI Modal Overwrite
+.css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
+  background-color: rgb(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+}
