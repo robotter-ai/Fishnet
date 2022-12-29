@@ -1,11 +1,11 @@
 import { ReactComponent as Logo } from "../assets/images/logo.svg";
 import Robotter from "../assets/images/robotter.png";
 import Button from "../components/ui/Button";
-import ConnectWalletForm  from "../features/authentication/components/ConnectWalletForm";
+import { LoginForm } from "../features/authentication";
 import AppModal from "../components/ui/AppModal";
 import useModal from "../hooks/useModal";
 
-const ConnectWallet = () => {
+const Login = () => {
   const { open, handleOpen, handleClose } = useModal();
 
   return (
@@ -23,10 +23,10 @@ const ConnectWallet = () => {
         handleClose={handleClose}
         withInfo
       >
-        <ConnectWalletForm />
+        <LoginForm />
       </AppModal>
     </div>
   );
 };
 
-export default ConnectWallet;
+export default Login;

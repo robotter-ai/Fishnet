@@ -22,6 +22,7 @@ const MyData = () => {
         <div className="flex gap-4">
           {tabs.map((item, i) => (
             <div
+              key={i}
               className={classNames(
                 "text-dark-20 border-b-2 border-transparent cursor-pointer",
                 {

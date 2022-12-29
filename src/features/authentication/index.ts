@@ -1,3 +1,3 @@
-import ConnectWalletForm from "./components/ConnectWalletForm";
+import LoginForm from "./components/LoginForm";
 
-export { ConnectWalletForm };
+export { LoginForm };

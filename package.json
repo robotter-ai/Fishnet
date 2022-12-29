@@ -13,10 +13,12 @@
     "@emotion/styled": "^11.10.5",
     "@mui/material": "^5.11.1",
     "classnames": "^2.3.2",
+    "ethers": "^5.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-router-dom": "^6.6.0",
+    "react-toastify": "^9.1.1",
     "sass": "^1.57.1",
     "vite-plugin-svgr": "^2.4.0"
   },

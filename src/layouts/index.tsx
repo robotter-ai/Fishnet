@@ -1,4 +1,5 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { ethers } from "ethers";
 import TopNavigation from "./top-navigation";
 import SideNavigation from "./side-navigation";
 import "./layout.scss";
