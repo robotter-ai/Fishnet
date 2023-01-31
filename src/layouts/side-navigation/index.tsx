@@ -1,29 +1,29 @@
-import { LinearProgress } from "@mui/material";
-import classNames from "classnames";
-import { Link, NavLink } from "react-router-dom";
-import { ReactComponent as Logo } from "../../assets/images/logo.svg";
+import { LinearProgress } from '@mui/material';
+import classNames from 'classnames';
+import { Link, NavLink } from 'react-router-dom';
+import { ReactComponent as Logo } from '@assets/images/logo.svg';
 
-const NavList = () => {
+function NavList() {
   const links = [
     {
-      to: "/my-data",
-      name: "My Data",
+      to: '/my-data',
+      name: 'My Data',
     },
     {
-      to: "/browse-data",
-      name: "Browse data",
+      to: '/browse-data',
+      name: 'Browse data',
     },
     {
-      to: "/my-programms",
-      name: "My programms",
+      to: '/my-programms',
+      name: 'My programms',
     },
     {
-      to: "/browse-programms",
-      name: "Browse programms",
+      to: '/browse-programms',
+      name: 'Browse programms',
     },
     {
-      to: "/account",
-      name: "Account",
+      to: '/account',
+      name: 'Account',
     },
   ];
 
@@ -35,9 +35,9 @@ const NavList = () => {
             {({ isActive }) => (
               <div
                 className={classNames(
-                  "text-[#7B8290] text-[16px] hover:text-blue",
+                  'text-[#7B8290] text-[16px] hover:text-blue',
                   {
-                    "!text-blue": isActive,
+                    '!text-blue': isActive,
                   }
                 )}
               >
@@ -49,9 +49,9 @@ const NavList = () => {
       ))}
     </ul>
   );
-};
+}
 
-const SideNavigation = () => {
+function SideNavigation() {
   return (
     <div
       id="side-navigation"
@@ -75,6 +75,6 @@ const SideNavigation = () => {
       </div>
     </div>
   );
-};
+}
 
 export default SideNavigation;

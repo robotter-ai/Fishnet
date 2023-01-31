@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { ethers } from "ethers";
-import { TbBellRinging2 } from "react-icons/tb";
-import { BsThreeDots } from "react-icons/bs";
-import WallteIcon from "../../assets/images/wallet-icon.png";
+import { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
+import { TbBellRinging2 } from 'react-icons/tb';
+import { BsThreeDots } from 'react-icons/bs';
+import WallteIcon from '@assets/images/wallet-icon.png';
 
-const TopNavigation = () => {
-  const [address, setAddress] = useState("");
+function TopNavigation() {
+  const [address, setAddress] = useState('');
 
   useEffect(() => {
     handleGetAddress();
@@ -28,13 +28,13 @@ const TopNavigation = () => {
           </div>
           <div
             className="bg-white rounded-[10px] p-[8.5px] cursor-pointer"
-            style={{ boxShadow: "0px 12px 26px rgba(16, 30, 115, 0.06)" }}
+            style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
           >
             <TbBellRinging2 color="#1C1C1C" size={24} />
           </div>
           <div
             className="bg-white rounded-[10px] p-[8.5px] cursor-pointer"
-            style={{ boxShadow: "0px 12px 26px rgba(16, 30, 115, 0.06)" }}
+            style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
           >
             <BsThreeDots color="#1C1C1C" size={24} />
           </div>
@@ -42,6 +42,6 @@ const TopNavigation = () => {
       </div>
     </div>
   );
-};
+}
 
 export default TopNavigation;

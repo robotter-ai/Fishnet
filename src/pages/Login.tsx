@@ -1,12 +1,12 @@
-import { ReactComponent as Logo } from "../assets/images/logo.svg";
-import Robotter from "../assets/images/robotter.png";
-import Button from "../components/ui/Button";
-import { LoginForm } from "../features/authentication";
-import AppModal from "../components/ui/AppModal";
-import useModal from "../hooks/useModal";
+import { ReactComponent as Logo } from '@assets/images/logo.svg';
+import Robotter from '@assets/images/robotter.png';
+import Button from '@components/ui/Button';
+import { LoginForm } from '@features/auth';
+import AppModal from '@components/ui/AppModal';
+import useModal from '@hooks/useModal';
 
 const Login = () => {
-  const { open, handleOpen, handleClose } = useModal();
+  const { isOpen, handleOpen, handleClose } = useModal();
 
   return (
     <div className="flex flex-col h-screen">
@@ -19,7 +19,7 @@ const Login = () => {
       </div>
       <AppModal
         title="Connect to a wallet"
-        open={open}
+        isOpen={isOpen}
         handleClose={handleClose}
         withInfo
       >

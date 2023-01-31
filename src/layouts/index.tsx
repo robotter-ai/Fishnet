@@ -1,10 +1,9 @@
-import { Outlet, useNavigate } from "react-router-dom";
-import { ethers } from "ethers";
-import TopNavigation from "./top-navigation";
-import SideNavigation from "./side-navigation";
-import "./layout.scss";
+import { Outlet } from 'react-router-dom';
+import TopNavigation from './top-navigation';
+import SideNavigation from './side-navigation';
+import './layout.scss';
 
-const Layout = () => {
+function Layout() {
   return (
     <div id="layout-wrapper">
       <SideNavigation />
@@ -14,6 +13,6 @@ const Layout = () => {
       </main>
     </div>
   );
-};
+}
 
 export default Layout;
