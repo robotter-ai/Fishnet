@@ -8,58 +8,65 @@ import {
 } from '@mui/material';
 import { RiFilter2Line } from 'react-icons/ri';
 import { TiArrowUnsorted } from 'react-icons/ti';
-import { FaRegStar } from 'react-icons/fa';
-import { MdDeleteOutline } from 'react-icons/md';
 import { IoCopyOutline } from 'react-icons/io5';
 import Button from '@components/ui/Button';
-import { ToggleButton } from '@components/form';
+import { BsDot } from 'react-icons/bs';
+import { STATUS_COLOR } from '@shared/constant';
+import { Starred } from '@components/form';
 
 const rows = [
   {
     name: 'Data <Name>',
     hash: '8743b52063cd8409g885774...',
-    dataRequest: <ToggleButton />,
+    status: 'Allowed',
+    starred: false,
     date: '2020-11-05 7:45:32',
   },
   {
     name: 'Data <Name>',
     hash: '8743b52063cd8409g885774...',
-    dataRequest: <ToggleButton />,
+    status: 'Refused',
+    starred: true,
     date: '2020-11-05 7:45:32',
   },
   {
     name: 'Data <Name>',
     hash: '8743b52063cd8409g885774...',
-    dataRequest: <ToggleButton />,
+    status: 'Waiting',
+    starred: true,
     date: '2020-11-05 7:45:32',
   },
   {
     name: 'Data <Name>',
     hash: '8743b52063cd8409g885774...',
-    dataRequest: <ToggleButton />,
+    status: 'Waiting',
+    starred: false,
     date: '2020-11-05 7:45:32',
   },
   {
     name: 'Data <Name>',
     hash: '8743b52063cd8409g885774...',
-    dataRequest: <ToggleButton />,
+    status: 'Allowed',
+    starred: false,
     date: '2020-11-05 7:45:32',
   },
   {
     name: 'Data <Name>',
     hash: '8743b52063cd8409g885774...',
-    dataRequest: <ToggleButton />,
+    status: 'Allowed',
+    starred: true,
     date: '2020-11-05 7:45:32',
   },
   {
     name: 'Data <Name>',
     hash: '8743b52063cd8409g885774...',
-    dataRequest: <ToggleButton />,
+    status: 'Refused',
+    starred: true,
     date: '2020-11-05 7:45:32',
   },
 ];
 
-const MyDataTable = ({ handleOpen }: { handleOpen: () => void }) => {
+const OutgoingTable = () => {
   return (
     <TableContainer>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -77,7 +84,7 @@ const MyDataTable = ({ handleOpen }: { handleOpen: () => void }) => {
             </TableCell>
             <TableCell>
               <div className="flex gap-2 items-center whitespace-nowrap">
-                Public access <TiArrowUnsorted color="rgba(28, 28, 28, 0.6)" />
+                Status <TiArrowUnsorted color="rgba(28, 28, 28, 0.6)" />
               </div>
             </TableCell>
             <TableCell>
@@ -101,6 +108,9 @@ const MyDataTable = ({ handleOpen }: { handleOpen: () => void }) => {
             >
               <TableCell>
                 <p className="text-blue whitespace-nowrap">{row.name}</p>
+                {i % 3 === 0 ? (
+                  <p className="whitespace-nowrap">Usages left: 10</p>
+                ) : null}
               </TableCell>
               <TableCell>
                 <div className="flex gap-3">
@@ -108,7 +118,10 @@ const MyDataTable = ({ handleOpen }: { handleOpen: () => void }) => {
                 </div>
               </TableCell>
               <TableCell>
-                <div className="text-center">{row.dataRequest}</div>
+                <div className="flex items-center whitespace-nowrap text-center">
+                  <p>{row.status}</p>
+                  <BsDot size={45} color={STATUS_COLOR?.[row.status]} />
+                </div>
               </TableCell>
               <TableCell>
                 <p>
@@ -117,15 +130,14 @@ const MyDataTable = ({ handleOpen }: { handleOpen: () => void }) => {
                 </p>
               </TableCell>
               <TableCell>
-                <div className="flex gap-3">
-                  <FaRegStar size={24} color="#172025" />
-                  <div className="cursor-pointer" onClick={handleOpen}>
-                    <MdDeleteOutline size={24} color="#172025" />
-                  </div>
-                </div>
+                <Starred starred={row.starred} />
               </TableCell>
               <TableCell>
-                <Button text="Use" btnStyle="outline-blue" />
+                <Button
+                  text="Use"
+                  btnStyle="outline-blue"
+                  disabled={i % 3 === 0}
+                />
               </TableCell>
             </TableRow>
           ))}
@@ -135,4 +147,4 @@ const MyDataTable = ({ handleOpen }: { handleOpen: () => void }) => {
   );
 };
 
-export default MyDataTable;
+export default OutgoingTable;

@@ -6,24 +6,20 @@ import { ReactComponent as Logo } from '@assets/images/logo.svg';
 function NavList() {
   const links = [
     {
-      to: '/my-data',
-      name: 'My Data',
+      to: '/data',
+      name: 'Data',
     },
     {
-      to: '/browse-data',
-      name: 'Browse data',
+      to: '/programs',
+      name: 'Programs',
     },
     {
-      to: '/my-programms',
-      name: 'My programms',
+      to: '/monitor-access',
+      name: 'Monitor access',
     },
     {
-      to: '/browse-programms',
-      name: 'Browse programms',
-    },
-    {
-      to: '/account',
-      name: 'Account',
+      to: '/my-profile',
+      name: 'My profile',
     },
   ];
 
@@ -58,7 +54,7 @@ function SideNavigation() {
       className="flex flex-col justify-between p-[30px]"
     >
       <div>
-        <Link to="/my-data">
+        <Link to="/data">
           <Logo />
         </Link>
         <nav className="mt-[47px]">

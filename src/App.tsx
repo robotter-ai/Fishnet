@@ -1,41 +1,50 @@
 import { useEffect } from 'react';
-import { ethers } from 'ethers';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-// import { ToastContainer } from 'react-toastify';
-import ConnectWallet from '@pages/Login';
-import MyData from '@pages/my-data';
-import DataDetails from '@pages/my-data/DataDetails';
+import { useAccount } from 'wagmi';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { ToastContainer } from 'react-toastify';
+import { useAppDispatch } from '@shared/hooks/useStore';
+import { setUser } from '@features/auth/slices/userSlice';
+
+import Login from '@pages/Login';
+import DataDetails from '@pages/data/DataDetails';
+import MyData from '@pages/data';
+import MonitorAccess from '@pages/monitor-access';
 import Layout from './layouts';
 
 export default function App() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { isConnected, address } = useAccount();
+  const { connected, publicKey } = useWallet();
 
   useEffect(() => {
-    getAddress();
-  }, []);
-
-  const getAddress = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const address = await signer.getAddress();
-    if (address) {
-      navigate('/my-data');
+    if (isConnected || connected) {
+      navigate('/data');
     } else {
       navigate('/');
     }
-  };
+
+    dispatch(
+      setUser({
+        address: address || publicKey?.toBase58(),
+        isConnected: isConnected || connected,
+      })
+    );
+  }, [isConnected, connected, dispatch]);
 
   return (
-    <div>
+    <>
       <Routes>
-        <Route path="/" element={<ConnectWallet />} />
+        <Route path="/" element={<Login />} />
         <Route element={<Layout />}>
-          <Route path="/my-data" element={<MyData />} />
-          <Route path="/my-data/:id" element={<DataDetails />} />
+          <Route path="/data" element={<MyData />} />
+          <Route path="/data/:dataId" element={<DataDetails />} />
+          <Route path="/monitor-access" element={<MonitorAccess />} />
         </Route>
         <Route path="*" element={<h1>Not Found!</h1>} />
       </Routes>
-      {/* <ToastContainer /> */}
-    </div>
+      <ToastContainer />
+    </>
   );
 }

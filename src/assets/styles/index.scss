@@ -42,6 +42,11 @@ h1 {
     color: $red;
     border: 1px solid $red;
   }
+  &:disabled {
+    color: $disabled;
+    border: 1px solid $disabled;
+    cursor: not-allowed;
+  }
 }
 
 // Material UI Modal Overwrite

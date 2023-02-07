@@ -22,3 +22,9 @@ export const VALUES_AND_INTERVAL = [
   'volaBNB',
   'cashvolBNB',
 ];
+
+export const STATUS_COLOR: { [key: string]: string } = {
+  Allowed: '#1CC272',
+  Waiting: '#FABE23',
+  Refused: '#FD686A',
+};

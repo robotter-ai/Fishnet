@@ -17,14 +17,13 @@
     "jsx": "react-jsx",
     "types": ["node"],
     "baseUrl": "./",
-    "paths": { 
+    "paths": {
       "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
-      "@constants/*": ["src/constants/*"],
       "@features/*": ["src/features/*"],
-      "@hooks/*": ["src/hooks/*"],
       "@layouts/*": ["src/layouts/*"],
       "@pages/*": ["src/pages/*"],
+      "@shared/*": ["src/shared/*"]
     }
   },
   "include": [".eslintrc.json", "src"],

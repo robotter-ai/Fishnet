@@ -3,7 +3,7 @@ import Robotter from '@assets/images/robotter.png';
 import Button from '@components/ui/Button';
 import { LoginForm } from '@features/auth';
 import AppModal from '@components/ui/AppModal';
-import useModal from '@hooks/useModal';
+import useModal from '@shared/hooks/useModal';
 
 const Login = () => {
   const { isOpen, handleOpen, handleClose } = useModal();

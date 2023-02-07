@@ -5,10 +5,10 @@ import { IoIosAddCircleOutline } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 import Button from '@components/ui/Button';
 import AppModal from '@components/ui/AppModal';
-import useModal from '@hooks/useModal';
-import { DataChart, DataSummary, EditDataTable } from '@features/my-data';
-import { VALUES_AND_INTERVAL } from '@constants/options';
+import useModal from '@shared/hooks/useModal';
+import { DataChart, DataSummary, EditDataTable } from '@features/data';
 import { CheckBox } from '@components/form';
+import { VALUES_AND_INTERVAL } from '@shared/constant';
 
 const DataDetails = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
@@ -23,9 +23,9 @@ const DataDetails = () => {
     <div>
       <div className="flex justify-between items-center mb-5">
         <div>
-          <Link to="/my-data" className="flex items-center text-blue">
+          <Link to="/data" className="flex items-center text-blue">
             <RxCaretLeft size={30} />
-            My data
+            Published
           </Link>
         </div>
         <div>

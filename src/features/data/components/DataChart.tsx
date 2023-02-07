@@ -14,7 +14,7 @@ import { useState } from 'react';
 import classNames from 'classnames';
 import Button from '@components/ui/Button';
 import AppModal from '@components/ui/AppModal';
-import useModal from '@hooks/useModal';
+import useModal from '@shared/hooks/useModal';
 
 const data: { date: string; volaBTC: number; returnsBTC: number }[] = [];
 

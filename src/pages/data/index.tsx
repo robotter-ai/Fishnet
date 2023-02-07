@@ -1,24 +1,35 @@
-import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { ReactNode } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { MdAdd } from 'react-icons/md';
 import classNames from 'classnames';
 import Button from '@components/ui/Button';
 import AppModal from '@components/ui/AppModal';
-import useModal from '@hooks/useModal';
-import { MyDataTable } from '@features/my-data';
+import useModal from '@shared/hooks/useModal';
+import { BrowseDataTable, PublishedTable, useDataTable } from '@features/data';
+import { SearchInput } from '@components/form';
 
 const MyData = () => {
+  const { data } = useDataTable();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
+  const [searchParam, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
   const {
     isOpen: openUploadData,
     handleOpen: handleOpenUploadData,
     handleClose: handleCloseAppData,
   } = useModal();
-  const [activeTab, setActiveTab] = useState(1);
-  const tabs = ['Published', 'Deleted'];
+
+  const tabs = [
+    { key: 'published', name: 'Published' },
+    { key: 'browse-data', name: 'Browse data' },
+  ];
+  const TableMapper: { [key: string]: ReactNode } = {
+    published: <PublishedTable handleOpen={handleOpen} />,
+    'browse-data': <BrowseDataTable />,
+  };
+  const query: null | string = searchParam.get('tab') || 'published';
+  const TableComponent = TableMapper?.[query];
 
   return (
     <div>
@@ -30,23 +41,19 @@ const MyData = () => {
               className={classNames(
                 'text-dark-20 border-b-2 border-transparent cursor-pointer',
                 {
-                  '!text-dark-50 !border-blue': i + 1 === activeTab,
+                  '!text-dark-50 !border-blue': item.key === query,
                 }
               )}
-              onClick={() => setActiveTab(i + 1)}
+              onClick={() => {
+                setSearchParams({ tab: item.key });
+              }}
             >
-              {item}
+              {item.name}
             </div>
           ))}
         </div>
         <div className="flex gap-4 items-center">
-          <div>
-            <input
-              className="bg-light-20 outline-light-20 h-[44px] p-[16px] py-[10px] rounded-[10px]"
-              type="text"
-              placeholder="Search"
-            />
-          </div>
+          <SearchInput />
           <Button size="md" onClick={handleOpenUploadData}>
             <div className="flex gap-3 items-center">
               <MdAdd size={20} />
@@ -55,7 +62,7 @@ const MyData = () => {
           </Button>
         </div>
       </div>
-      <MyDataTable handleOpen={handleOpen} />
+      {TableComponent}
       <AppModal
         title="Select file (.csv)"
         isOpen={openUploadData}
@@ -74,7 +81,7 @@ const MyData = () => {
             text="No, back"
             size="lg"
             fullWidth
-            onClick={() => navigate(`${pathname}/56`)}
+            onClick={() => navigate(`${pathname}/${54}`)}
           >
             <div className="flex justify-center gap-3 items-center">
               <MdAdd size={20} />
