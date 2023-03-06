@@ -1,23 +1,55 @@
-import { useState } from 'react';
 import { RxCaretLeft, RxCopy } from 'react-icons/rx';
 import { IoCheckbox } from 'react-icons/io5';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 import Button from '@components/ui/Button';
 import AppModal from '@components/ui/AppModal';
-import useModal from '@shared/hooks/useModal';
-import { DataChart, DataSummary, EditDataTable } from '@features/data';
+import { DataChart, EditDataTable } from '@features/data';
 import { CheckBox } from '@components/form';
 import { VALUES_AND_INTERVAL } from '@shared/constant';
+import TextInput from '@components/form/TextInput';
+import useDataDetails from '@features/data/hooks/useDataDetails';
+import ClickToCopy from '@components/ui/ClickToCopy';
+import dayjs from 'dayjs';
+import DataSummary from '@shared/components/Summary';
 
 const DataDetails = () => {
-  const { isOpen, handleOpen, handleClose } = useModal();
   const {
-    isOpen: isOpenNewChart,
-    handleOpen: handleOpenNewChart,
-    handleClose: handleCloseNewChart,
-  } = useModal();
-  const [isPublished, setIsPublished] = useState(false);
+    inputs,
+    handleOnChange,
+    isPublished,
+    handleUploadDataset,
+    isLoading,
+    publishedModalProps,
+    newChartModalProps,
+  } = useDataDetails();
+  const { isOpen, handleClose } = publishedModalProps;
+  const { isOpenNewChart, handleOpenNewChart, handleCloseNewChart } =
+    newChartModalProps;
+
+  const summary = [
+    {
+      name: 'Hash',
+      value: (
+        <div className="flex items-center gap-[11px]">
+          <p className="w-[200px] truncate">{inputs.id_hash}</p>
+          <ClickToCopy text={inputs.id_hash} />
+        </div>
+      ),
+    },
+    {
+      name: 'Owner',
+      value: <p className="text-blue">{inputs.owner}</p>,
+    },
+    {
+      name: 'Creation date',
+      value: <p>{dayjs(new Date()).format('DD/MM/YYYY')}</p>,
+    },
+    {
+      name: 'Usages',
+      value: 0,
+    },
+  ];
 
   return (
     <div>
@@ -38,21 +70,33 @@ const DataDetails = () => {
             <Button
               text="Publish"
               size="md"
-              onClick={() => {
-                handleOpen();
-                setIsPublished(true);
-              }}
+              isLoading={isLoading}
+              onClick={handleUploadDataset}
             />
           )}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-5">
-        <DataSummary />
+        <div className="bg-[#FAFAFA] flex flex-col gap-4 p-6 rounded-[10px]">
+          <TextInput
+            label="Data name"
+            placeholder="Name the data"
+            onChange={(e) => handleOnChange('dataName', e.target.value)}
+            fullWidth
+          />
+          <TextInput
+            label="Description"
+            placeholder="What is the data about?"
+            onChange={(e) => handleOnChange('desc', e.target.value)}
+            fullWidth
+          />
+        </div>
+        <DataSummary summary={summary} />
         {[1, 2].map((item, i) => (
           <DataChart key={i} />
         ))}
         <div
-          className="flex items-center justify-center h-full bg-[#FAFAFA] rounded-[10px] cursor-pointer"
+          className="flex items-center justify-center min-h-[391px] bg-[#FAFAFA] rounded-[10px] cursor-pointer"
           onClick={handleOpenNewChart}
         >
           <IoIosAddCircleOutline className="text-blue" size={150} />

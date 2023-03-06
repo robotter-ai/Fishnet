@@ -8,9 +8,10 @@ import {
 } from '@mui/material';
 import { RiFilter2Line } from 'react-icons/ri';
 import { TiArrowUnsorted } from 'react-icons/ti';
-import { IoCopyOutline } from 'react-icons/io5';
 import Button from '@components/ui/Button';
 import { ToggleButton, Starred } from '@components/form';
+import ClickToCopy from '@components/ui/ClickToCopy';
+import { Link } from 'react-router-dom';
 
 const rows = [
   {
@@ -105,11 +106,16 @@ const MyDataTable = ({ handleOpen }: { handleOpen: () => void }) => {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell>
-                <p className="text-blue whitespace-nowrap">{row.name}</p>
+                <Link
+                  to={`/data/${'dataset-id'}/details`}
+                  className="text-blue whitespace-nowrap"
+                >
+                  {row.name}
+                </Link>
               </TableCell>
               <TableCell>
                 <div className="flex gap-3">
-                  {row.hash} <IoCopyOutline size={20} />
+                  {row.hash} <ClickToCopy text={row.hash} />
                 </div>
               </TableCell>
               <TableCell>
@@ -125,7 +131,11 @@ const MyDataTable = ({ handleOpen }: { handleOpen: () => void }) => {
                 <Starred starred={row.starred} />
               </TableCell>
               <TableCell>
-                <Button text="Settings" btnStyle="outline-blue" />
+                <Button
+                  linkTo={`/monitor-access/${'hyd-eytht1192H'}/settings`}
+                  text="Settings"
+                  btnStyle="outline-blue"
+                />
               </TableCell>
             </TableRow>
           ))}

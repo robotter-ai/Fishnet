@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { ReactNode, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { MdAdd } from 'react-icons/md';
 import classNames from 'classnames';
 import Button from '@components/ui/Button';
@@ -7,25 +7,20 @@ import AppModal from '@components/ui/AppModal';
 import useModal from '@shared/hooks/useModal';
 import { BrowseDataTable, PublishedTable, useDataTable } from '@features/data';
 import { SearchInput } from '@components/form';
+import { FileUploader } from 'react-drag-drop-files';
 
 const MyData = () => {
-  const { data } = useDataTable();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const { data, handleCsvToJson, isLoading } = useDataTable();
   const [searchParam, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
-  const {
-    isOpen: openUploadData,
-    handleOpen: handleOpenUploadData,
-    handleClose: handleCloseAppData,
-  } = useModal();
 
   const tabs = [
     { key: 'published', name: 'Published' },
     { key: 'browse-data', name: 'Browse data' },
   ];
   const TableMapper: { [key: string]: ReactNode } = {
-    published: <PublishedTable handleOpen={handleOpen} />,
+    published: <PublishedTable data={data} isLoading={isLoading} />,
     'browse-data': <BrowseDataTable />,
   };
   const query: null | string = searchParam.get('tab') || 'published';
@@ -54,7 +49,7 @@ const MyData = () => {
         </div>
         <div className="flex gap-4 items-center">
           <SearchInput />
-          <Button size="md" onClick={handleOpenUploadData}>
+          <Button size="md" onClick={handleOpen}>
             <div className="flex gap-3 items-center">
               <MdAdd size={20} />
               <span>Upload data</span>
@@ -65,47 +60,42 @@ const MyData = () => {
       {TableComponent}
       <AppModal
         title="Select file (.csv)"
-        isOpen={openUploadData}
-        handleClose={handleCloseAppData}
+        isOpen={isOpen}
+        handleClose={handleClose}
         withInfo
       >
         <p className="my-[20px]">
           The data remains on your computer until you publish it. At this stage,
           the data is not published
         </p>
-        <div className="flex justify-center items-center h-[207px] bg-light-20 rounded-[10px] mb-[20px]">
-          <p className="text-blue text-2xl">Drag and Drop</p>
-        </div>
-        <div className="flex flex-col gap-4">
+        <input
+          type="file"
+          accept=".csv"
+          ref={inputFileRef}
+          style={{ display: 'none' }}
+          onChange={(e) => handleCsvToJson(e.target.files![0])}
+        />
+        <FileUploader
+          name="file"
+          types={['CSV']}
+          handleChange={(file: any) => handleCsvToJson(file)}
+        >
+          <div className="flex justify-center items-center h-[207px] bg-light-20 rounded-[10px]">
+            <p className="text-blue text-2xl">Drag and Drop</p>
+          </div>
+        </FileUploader>
+        <div className="flex flex-col mt-[20px] gap-4">
           <Button
             text="No, back"
             size="lg"
             fullWidth
-            onClick={() => navigate(`${pathname}/${54}`)}
+            onClick={() => inputFileRef.current?.click()}
           >
             <div className="flex justify-center gap-3 items-center">
               <MdAdd size={20} />
               <span>Choose data</span>
             </div>
           </Button>
-        </div>
-      </AppModal>
-      <AppModal
-        title="Deleted file cannot be restored"
-        isOpen={isOpen}
-        handleClose={handleClose}
-      >
-        <div className="my-[20px]">
-          <p>Are you sure?</p>
-        </div>
-        <div className="flex flex-col gap-4">
-          <Button
-            text="Yes, delete"
-            btnStyle="outline-red"
-            size="lg"
-            fullWidth
-          />
-          <Button text="No, back" size="lg" fullWidth />
         </div>
       </AppModal>
     </div>

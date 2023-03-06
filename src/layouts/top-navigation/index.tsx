@@ -1,11 +1,11 @@
 import { TbBellRinging2 } from 'react-icons/tb';
 import { BsThreeDots } from 'react-icons/bs';
 import WallteIcon from '@assets/images/wallet-icon.png';
-import useTitle from '@shared/hooks/useTitle';
+import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppSelector } from '@shared/hooks/useStore';
 
 function TopNavigation() {
-  const { title } = useTitle();
+  const { title } = usePageTitle();
   const { address } = useAppSelector((state) => state.user);
 
   return (

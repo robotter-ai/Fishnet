@@ -5,7 +5,7 @@ import {
   OutgoingTable,
   useMonitorAccessTable,
 } from '@features/monitor-access';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { SearchInput } from '@components/form';
 import classNames from 'classnames';
 import useModal from '@shared/hooks/useModal';
@@ -14,8 +14,6 @@ import Button from '@components/ui/Button';
 
 const MonitorAccess = () => {
   useMonitorAccessTable();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
   const [searchParam, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
 

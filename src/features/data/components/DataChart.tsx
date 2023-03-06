@@ -12,9 +12,8 @@ import { AiOutlineLine, AiOutlineDelete } from 'react-icons/ai';
 import { RxDotsHorizontal } from 'react-icons/rx';
 import { useState } from 'react';
 import classNames from 'classnames';
-import Button from '@components/ui/Button';
-import AppModal from '@components/ui/AppModal';
 import useModal from '@shared/hooks/useModal';
+import { DeletePrompt } from '@shared/components/Prompts';
 
 const data: { date: string; volaBTC: number; returnsBTC: number }[] = [];
 
@@ -109,24 +108,7 @@ const DataChart = () => {
           <p>returnsBTC</p>
         </div>
       </div>
-      <AppModal
-        title="The changes will not not be saved"
-        isOpen={isOpen}
-        handleClose={handleClose}
-      >
-        <div className="my-[20px]">
-          <p>Are you sure?</p>
-        </div>
-        <div className="flex flex-col gap-4">
-          <Button
-            text="Yes, delete"
-            btnStyle="outline-red"
-            size="lg"
-            fullWidth
-          />
-          <Button text="No, back" size="lg" fullWidth />
-        </div>
-      </AppModal>
+      <DeletePrompt isOpen={isOpen} handleClose={handleClose} />
     </div>
   );
 };

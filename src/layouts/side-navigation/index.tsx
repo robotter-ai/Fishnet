@@ -1,7 +1,6 @@
 import { LinearProgress } from '@mui/material';
 import classNames from 'classnames';
 import { Link, NavLink } from 'react-router-dom';
-import { ReactComponent as Logo } from '@assets/images/logo.svg';
 
 function NavList() {
   const links = [
@@ -10,15 +9,15 @@ function NavList() {
       name: 'Data',
     },
     {
-      to: '/programs',
-      name: 'Programs',
+      to: '/algorithms',
+      name: 'Algorithms',
     },
     {
       to: '/monitor-access',
       name: 'Monitor access',
     },
     {
-      to: '/my-profile',
+      to: '/profile',
       name: 'My profile',
     },
   ];
@@ -55,7 +54,7 @@ function SideNavigation() {
     >
       <div>
         <Link to="/data">
-          <Logo />
+          <img src="./fishnet.png" alt="Robotter PNG" width={50} />
         </Link>
         <nav className="mt-[47px]">
           <NavList />

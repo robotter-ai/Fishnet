@@ -8,11 +8,12 @@ import {
 } from '@mui/material';
 import { RiFilter2Line } from 'react-icons/ri';
 import { TiArrowUnsorted } from 'react-icons/ti';
-import { IoCopyOutline } from 'react-icons/io5';
 import Button from '@components/ui/Button';
 import { BsDot } from 'react-icons/bs';
 import { STATUS_COLOR } from '@shared/constant';
 import { Starred } from '@components/form';
+import ClickToCopy from '@components/ui/ClickToCopy';
+import { Link } from 'react-router-dom';
 
 const rows = [
   {
@@ -86,11 +87,16 @@ const IncomingTable = () => {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell>
-                <p className="text-blue whitespace-nowrap">{row.name}</p>
+                <Link
+                  to={`/data/${'dataset-id'}/details`}
+                  className="text-blue whitespace-nowrap"
+                >
+                  {row.name}
+                </Link>
               </TableCell>
               <TableCell>
                 <div className="flex gap-3">
-                  {row.hash} <IoCopyOutline size={20} />
+                  {row.hash} <ClickToCopy text={row.hash} />
                 </div>
               </TableCell>
               <TableCell>

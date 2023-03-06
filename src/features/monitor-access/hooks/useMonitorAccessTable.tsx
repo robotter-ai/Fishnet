@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import useTitle from '@shared/hooks/useTitle';
+import usePageTitle from '@shared/hooks/usePageTitle';
 
 export default () => {
-  const { setTitle } = useTitle();
+  const { setTitle } = usePageTitle();
 
   useEffect(() => {
     setTitle('Monitor Access');
