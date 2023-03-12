@@ -5,14 +5,16 @@ import classNames from 'classnames';
 import Button from '@components/ui/Button';
 import AppModal from '@components/ui/AppModal';
 import useModal from '@shared/hooks/useModal';
-import { BrowseDataTable, PublishedTable, useDataTable } from '@features/data';
 import { SearchInput } from '@components/form';
 import { FileUploader } from 'react-drag-drop-files';
+import BrowseDataTable from './components/BrowseDataTable';
+import PublishedTable from './components/PublishedTable';
+import useDataTable from './hooks/useDataTable';
 
 const MyData = () => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const { data, handleCsvToJson, isLoading } = useDataTable();
-  const [searchParam, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
 
   const tabs = [
@@ -21,9 +23,9 @@ const MyData = () => {
   ];
   const TableMapper: { [key: string]: ReactNode } = {
     published: <PublishedTable data={data} isLoading={isLoading} />,
-    'browse-data': <BrowseDataTable />,
+    'browse-data': <BrowseDataTable data={data} isLoading={isLoading} />,
   };
-  const query: null | string = searchParam.get('tab') || 'published';
+  const query: null | string = searchParams.get('tab') || 'published';
   const TableComponent = TableMapper?.[query];
 
   return (
@@ -40,7 +42,8 @@ const MyData = () => {
                 }
               )}
               onClick={() => {
-                setSearchParams({ tab: item.key });
+                searchParams.set('tab', item.key);
+                setSearchParams(searchParams);
               }}
             >
               {item.name}

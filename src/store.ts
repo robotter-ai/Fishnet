@@ -1,13 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import appSlice from '@shared/slices/appSlice';
-import dataSlice from '@features/data/slices/dataSlice';
-import userSlice from '@features/auth/slices/userSlice';
+import algorithmSlice from '@slices/algorithmSlice';
+import appSlice from '@slices/appSlice';
+import dataSlice from '@slices/dataSlice';
+import profileSlice from '@slices/profileSlice';
 
 export const store = configureStore({
   reducer: {
     app: appSlice.reducer,
-    user: userSlice.reducer,
     datasets: dataSlice.reducer,
+    algorithm: algorithmSlice.reducer,
+    profile: profileSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

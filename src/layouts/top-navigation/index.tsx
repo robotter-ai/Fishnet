@@ -6,7 +6,7 @@ import { useAppSelector } from '@shared/hooks/useStore';
 
 function TopNavigation() {
   const { title } = usePageTitle();
-  const { address } = useAppSelector((state) => state.user);
+  const { auth } = useAppSelector((state) => state.profile);
 
   return (
     <div id="top-navigation">
@@ -14,7 +14,9 @@ function TopNavigation() {
         <h1>{title}</h1>
         <div className="flex items-center gap-[15px]">
           <div className="flex items-center gap-3 rounded-[10px] p-[5px] px-[15px] border border-[#C4C4C4]">
-            <span className="truncate w-[10rem] text-[#1C1C1C]">{address}</span>
+            <span className="truncate w-[10rem] text-[#1C1C1C]">
+              {auth.address}
+            </span>
             <img src={WallteIcon} alt="" />
           </div>
           <div

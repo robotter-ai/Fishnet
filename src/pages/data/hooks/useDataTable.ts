@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
-import { getDatasets } from '../slices/dataSlice';
+import { getDatasets } from '@slices/dataSlice';
 
 export default () => {
   const navigate = useNavigate();

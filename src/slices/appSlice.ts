@@ -2,12 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AppState {
   pageTitle: string;
-  isConnected: boolean;
 }
 
 const initialState: AppState = {
   pageTitle: '',
-  isConnected: false,
 };
 
 export const appSlice = createSlice({

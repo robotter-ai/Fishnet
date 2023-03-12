@@ -6,14 +6,27 @@ import BrowseUsers from './components/BrowseUsers';
 import useProfile from './hooks/useProfile';
 
 const MyProfile = () => {
-  const { isSelectUser } = useProfile();
+  const {
+    isSelectUser,
+    inputs,
+    handleOnChange,
+    handleUpdateProfile,
+    isLoading,
+  } = useProfile();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabs = [
     { key: 'account', name: 'Account' },
     { key: 'browse-users', name: 'Browse users' },
   ];
   const TableMapper: { [key: string]: React.ReactNode } = {
-    account: <Account />,
+    account: (
+      <Account
+        inputs={inputs}
+        handleOnChange={handleOnChange}
+        isLoading={isLoading}
+        handleUpdateProfile={handleUpdateProfile}
+      />
+    ),
     'browse-users': <BrowseUsers isSelectUser={isSelectUser} />,
   };
   const query: null | string = searchParams.get('tab') || 'account';

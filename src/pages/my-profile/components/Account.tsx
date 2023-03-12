@@ -2,10 +2,23 @@ import TextInput from '@components/form/TextInput';
 import CustomButton from '@components/ui/Button';
 import ClickToCopy from '@components/ui/ClickToCopy';
 import { useAppSelector } from '@shared/hooks/useStore';
+import { UserProps } from '@slices/profileSlice/profileService';
 import { VscAdd, VscArrowRight, VscChromeMinimize } from 'react-icons/vsc';
 
-const Account = () => {
-  const { address } = useAppSelector((state) => state.user);
+interface IAccountProps {
+  inputs: UserProps;
+  isLoading: boolean;
+  handleOnChange: (input: string, value: any) => void;
+  handleUpdateProfile: () => void;
+}
+
+const Account: React.FC<IAccountProps> = ({
+  inputs,
+  isLoading,
+  handleOnChange,
+  handleUpdateProfile,
+}) => {
+  const { auth } = useAppSelector((state) => state.profile);
   const actions = [
     { icon: <VscAdd /> },
     { icon: <VscChromeMinimize /> },
@@ -18,24 +31,39 @@ const Account = () => {
         <TextInput
           label="Public account name"
           placeholder="Your name for other users?"
+          value={inputs.username}
+          onChange={(e) => handleOnChange('username', e.target.value)}
           fullWidth
         />
         <TextInput
           label="Email"
+          type="email"
           placeholder="Email address (optional)"
+          value={inputs.email}
+          onChange={(e) => handleOnChange('email', e.target.value)}
           fullWidth
         />
         <TextInput
           label="Link"
           placeholder="Social media (optional)"
+          value={inputs.link}
+          onChange={(e) => handleOnChange('link', e.target.value)}
           fullWidth
         />
         <TextInput
           label="Description"
           placeholder="Description (optional)"
+          value={inputs.bio}
+          onChange={(e) => handleOnChange('bio', e.target.value)}
           fullWidth
         />
-        <CustomButton text="Save" size="lg" fullWidth />
+        <CustomButton
+          text="Save"
+          size="lg"
+          onClick={handleUpdateProfile}
+          isLoading={isLoading}
+          fullWidth
+        />
       </div>
       <div className="w-full flex flex-col justify-center items-center gap-6">
         <div className="text-center">
@@ -50,8 +78,8 @@ const Account = () => {
           ))}
         </div>
         <div className="flex flex-col items-center gap-2">
-          <p>{address}</p>
-          <ClickToCopy text={address} color="#0458FF" />
+          <p>{auth.address}</p>
+          <ClickToCopy text={auth.address} color="#0458FF" />
         </div>
         <button type="button" className="mt-4 text-[#FD686A] text-lg">
           Log out

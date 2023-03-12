@@ -3,8 +3,8 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { ToastContainer } from 'react-toastify';
-import { useAppDispatch } from '@shared/hooks/useStore';
-import { setUser } from '@features/auth/slices/userSlice';
+import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
+import { getUserInfo, setAuth } from '@slices/profileSlice';
 
 import Login from '@pages/Login';
 import MyData from '@pages/data';
@@ -20,21 +20,25 @@ export default function App() {
   const dispatch = useAppDispatch();
   const { isConnected, address } = useAccount();
   const { connected, publicKey } = useWallet();
+  const { auth } = useAppSelector((state) => state.profile);
 
   useEffect(() => {
-    if (isConnected || connected) {
-      navigate('/data');
-    } else {
-      navigate('/');
-    }
-
     dispatch(
-      setUser({
+      setAuth({
         address: address || publicKey?.toBase58(),
         isConnected: isConnected || connected,
       })
     );
   }, [isConnected, connected, dispatch]);
+
+  useEffect(() => {
+    if (auth.isConnected) {
+      navigate('/data', { replace: true });
+      dispatch(getUserInfo());
+    } else {
+      navigate('/', { replace: true });
+    }
+  }, [auth.isConnected]);
 
   return (
     <>

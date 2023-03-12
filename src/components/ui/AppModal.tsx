@@ -63,7 +63,7 @@ const AppModal: React.FC<ModalProps> = ({
               </div>
             </div>
           ) : null}
-          <div className={classNames({ 'mt-[30px]': withHeader })}>
+          <div className={classNames('relative', { 'mt-[30px]': withHeader })}>
             {children}
           </div>
         </div>

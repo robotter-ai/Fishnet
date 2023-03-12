@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 export type UploadDatasetProps = {
-  id_hash: string;
-  dataName: string;
+  id_hash?: string;
+  name: string;
   desc: string;
   owner: string;
   ownsAllTimeseries: boolean;
@@ -22,7 +22,8 @@ const updateDatasetAvailability = async (
 };
 
 const uploadDatasets = async (dataset: UploadDatasetProps) => {
-  await axios.put('/datasets/upload', dataset);
+  const { data } = await axios.put('/datasets/upload', dataset);
+  return data;
 };
 
 const dataService = {

@@ -1,19 +1,21 @@
-import { RxCaretLeft, RxCopy } from 'react-icons/rx';
+import { RxCaretLeft } from 'react-icons/rx';
 import { IoCheckbox } from 'react-icons/io5';
 import { IoIosAddCircleOutline } from 'react-icons/io';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '@components/ui/Button';
 import AppModal from '@components/ui/AppModal';
-import { DataChart, EditDataTable } from '@features/data';
 import { CheckBox } from '@components/form';
 import { VALUES_AND_INTERVAL } from '@shared/constant';
 import TextInput from '@components/form/TextInput';
-import useDataDetails from '@features/data/hooks/useDataDetails';
 import ClickToCopy from '@components/ui/ClickToCopy';
 import dayjs from 'dayjs';
 import DataSummary from '@shared/components/Summary';
+import useDataDetails from './hooks/useDataDetails';
+import DataChart from './components/DataChart';
+import EditDataTable from './components/EditDataTable';
 
 const DataDetails = () => {
+  const navigate = useNavigate();
   const {
     inputs,
     handleOnChange,
@@ -22,24 +24,44 @@ const DataDetails = () => {
     isLoading,
     publishedModalProps,
     newChartModalProps,
+    dataDetails,
   } = useDataDetails();
   const { isOpen, handleClose } = publishedModalProps;
   const { isOpenNewChart, handleOpenNewChart, handleCloseNewChart } =
     newChartModalProps;
+
+  // DATA_DETAILS SAMPLE  {
+  //     "forgotten": false,
+  //     "id_hash": "a3d1d4636ac5f4fecc0d589603ef8be1778830360999e398de7115cae793b8a6",
+  //     "current_revision": 0,
+  //     "revision_hashes": [
+  //         "a3d1d4636ac5f4fecc0d589603ef8be1778830360999e398de7115cae793b8a6"
+  //     ],
+  //     "timestamp": 1678604397.0340307,
+  //     "name": "Here it is",
+  //     "owner": "Testing name",
+  //     "desc": "Testing again",
+  //     "available": true,
+  //     "ownsAllTimeseries": true,
+  //     "timeseriesIDs": [
+  //         "anything6457for878now22bbf"
+  //     ],
+  //     "views": null
+  // }
 
   const summary = [
     {
       name: 'Hash',
       value: (
         <div className="flex items-center gap-[11px]">
-          <p className="w-[200px] truncate">{inputs.id_hash}</p>
-          <ClickToCopy text={inputs.id_hash} />
+          <p className="w-[200px] truncate">{dataDetails?.id_hash || ''}</p>
+          <ClickToCopy text={dataDetails?.id_hash} />
         </div>
       ),
     },
     {
       name: 'Owner',
-      value: <p className="text-blue">{inputs.owner}</p>,
+      value: <p className="text-blue">{dataDetails?.owner || inputs.owner}</p>,
     },
     {
       name: 'Creation date',
@@ -47,7 +69,7 @@ const DataDetails = () => {
     },
     {
       name: 'Usages',
-      value: 0,
+      value: dataDetails?.current_revision || 0,
     },
   ];
 
@@ -81,12 +103,14 @@ const DataDetails = () => {
           <TextInput
             label="Data name"
             placeholder="Name the data"
-            onChange={(e) => handleOnChange('dataName', e.target.value)}
+            value={inputs.name}
+            onChange={(e) => handleOnChange('name', e.target.value)}
             fullWidth
           />
           <TextInput
             label="Description"
             placeholder="What is the data about?"
+            value={inputs.desc}
             onChange={(e) => handleOnChange('desc', e.target.value)}
             fullWidth
           />
@@ -137,12 +161,12 @@ const DataDetails = () => {
         <div className="flex flex-col items-center gap-4">
           <h1>Data published!</h1>
           <IoCheckbox className="text-blue" size={70} />
-          <p>Data &lt;name&gt; published</p>
+          <p>{dataDetails?.name || ''} published</p>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-blue">
-              0x0e500536374891a286e0aad2fc6adf64b083fcdb
+            <p className="text-blue w-[400px] truncate select-none">
+              {dataDetails?.id_hash || ''}
             </p>
-            <RxCopy />
+            <ClickToCopy text={dataDetails?.id_hash || ''} color="#0458FF" />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">
@@ -153,7 +177,12 @@ const DataDetails = () => {
             fullWidth
             onClick={handleClose}
           />
-          <Button text="My Data" size="lg" fullWidth onClick={handleClose} />
+          <Button
+            text="My Data"
+            size="lg"
+            fullWidth
+            onClick={() => navigate('/data')}
+          />
         </div>
       </AppModal>
     </div>

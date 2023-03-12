@@ -6,10 +6,8 @@ export const getDatasets = createAsyncThunk(
   'datasets/getDatasets',
   async (_, thunkAPI) => {
     try {
-      const {
-        user: { address },
-      } = thunkAPI.getState() as RootState;
-      return await dataService.getDatasets(address);
+      const { profile } = thunkAPI.getState() as RootState;
+      return await dataService.getDatasets(profile.auth.address);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -42,7 +40,6 @@ export const uploadDatasets = createAsyncThunk(
   'datasets/uploadDatasets',
   async (dataset: UploadDatasetProps, thunkAPI) => {
     try {
-      console.log(dataset);
       return await dataService.uploadDatasets(dataset);
     } catch (err: any) {
       const errMsg =
@@ -59,6 +56,7 @@ interface DataProps {
   success: boolean | null;
   error: any;
   datasets: Record<string, any>[] | any;
+  dataDetails: any;
   updatePublicAccess: {
     isLoading: boolean;
     success: boolean | null;
@@ -76,6 +74,7 @@ const initialState: DataProps = {
   success: null,
   error: null,
   datasets: null,
+  dataDetails: null,
   updatePublicAccess: {
     isLoading: false,
     success: null,
@@ -93,6 +92,14 @@ const dataSlice = createSlice({
   initialState,
   reducers: {
     resetDataSlice: (state) => {
+      state.success = null;
+      state.error = null;
+      state.updatePublicAccess.success = null;
+      state.updatePublicAccess.error = null;
+      state.uploadDatasets.success = null;
+      state.uploadDatasets.error = null;
+    },
+    resetDataDetails: (state) => {
       state.success = null;
       state.error = null;
       state.updatePublicAccess.success = null;
@@ -129,9 +136,10 @@ const dataSlice = createSlice({
       .addCase(uploadDatasets.pending, (state) => {
         state.uploadDatasets.isLoading = true;
       })
-      .addCase(uploadDatasets.fulfilled, (state) => {
+      .addCase(uploadDatasets.fulfilled, (state, action) => {
         state.uploadDatasets.isLoading = false;
         state.uploadDatasets.success = true;
+        state.dataDetails = action.payload;
       })
       .addCase(uploadDatasets.rejected, (state, action) => {
         state.uploadDatasets.isLoading = false;

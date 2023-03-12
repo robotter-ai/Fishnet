@@ -13,7 +13,8 @@ import {
   getDatasets,
   resetDataSlice,
   updateDatasetAvailability,
-} from '../slices/dataSlice';
+} from '@slices/dataSlice';
+import { ExecutePrompt } from '@shared/components/Prompts';
 
 const COLUMNS = (
   handleOpenDeleteModal: () => void,
@@ -23,12 +24,12 @@ const COLUMNS = (
     {
       header: 'Name',
       accessor: 'name',
-      cell: ({ name }) => (
+      cell: (item) => (
         <Link
           to={`/data/${'dataset-id'}/details`}
           className="text-blue whitespace-nowrap"
         >
-          {name}
+          {item[0].name}
         </Link>
       ),
       isSortable: true,
@@ -36,10 +37,10 @@ const COLUMNS = (
     {
       header: 'Hash',
       accessor: 'id_hash',
-      cell: ({ id_hash }) => (
+      cell: (item) => (
         <div className="flex gap-3">
-          <p className="w-[200px] truncate">{id_hash}</p>
-          <ClickToCopy text={id_hash} />
+          <p className="w-[200px] truncate">{item[0].id_hash}</p>
+          <ClickToCopy text={item[0].id_hash} />
         </div>
       ),
       isSortable: true,
@@ -47,11 +48,13 @@ const COLUMNS = (
     {
       header: 'Public access',
       accessor: 'available',
-      cell: ({ id_hash, available }) => (
+      cell: (item) => (
         <div className="flex justify-center text-center">
           <ToggleButton
-            checked={available}
-            onChange={() => handleSetPublicAccess(id_hash, available)}
+            checked={item[0].available}
+            onChange={() =>
+              handleSetPublicAccess(item[0].id_hash, item[0].available)
+            }
           />
         </div>
       ),
@@ -60,14 +63,14 @@ const COLUMNS = (
     {
       header: 'Description',
       accessor: 'desc',
-      cell: ({ desc }) => <p>{desc}</p>,
+      cell: (item) => <p>{item[0].desc}</p>,
     },
     {
       header: '',
       accessor: 'forgotten',
-      cell: ({ forgotten }) => (
+      cell: (item) => (
         <div className="flex gap-3">
-          <Starred starred={forgotten} />
+          <Starred starred={item[0].forgotten} />
           <div
             role="button"
             className="cursor-pointer"
@@ -81,7 +84,7 @@ const COLUMNS = (
     {
       header: 'Filter',
       accessor: 'id_hash',
-      cell: ({ id_hash }) => <Button text="Use" btnStyle="outline-blue" />,
+      cell: ({ id_hash }) => <ExecutePrompt isSelect={false} />,
     },
   ];
 };

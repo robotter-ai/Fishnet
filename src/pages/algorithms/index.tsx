@@ -1,25 +1,33 @@
 import { useSearchParams } from 'react-router-dom';
-import {
-  BrowseAlgorithmsTable,
-  ExecutionHistoryTable,
-  PublishedTable,
-  useAlgorithmsTable,
-} from '@features/algorithms';
 import classNames from 'classnames';
 import { SearchInput } from '@components/form';
 import { MdAdd } from 'react-icons/md';
 import Button from '@components/ui/Button';
 import AppModal from '@components/ui/AppModal';
-import useModal from '@shared/hooks/useModal';
-import TextInput from '@components/form/TextInput';
-import DataSummary from '@shared/components/Summary';
-import ClickToCopy from '@components/ui/ClickToCopy';
-import dayjs from 'dayjs';
+import { PublishedModal } from '@shared/components/Prompts';
+import ViewLoader from '@shared/components/ViewLoader';
+import useAlgorithmsTable from './hooks/useAlgorithmsTable';
+import PublishedTable from './components/PublishedTable';
+import BrowseAlgorithmsTable from './components/BrowseAlgorithmsTable';
+import ExecutionHistoryTable from './components/ExecutionHistoryTable';
+import AlgorithmDetails from './components/AlgorithmDetails';
 
 const Algorithms = () => {
-  const { isSelectAlgorithm } = useAlgorithmsTable();
+  const {
+    isSelectAlgorithm,
+    algorithms,
+    executions,
+    isLoading,
+    algorithmDetails,
+    handleCloseAlgoDetails,
+    handleClosePublished,
+    handleOpenAlgoDetails,
+    isOpenPublished,
+    isLoadingUpload,
+    isLoadingExecution,
+    isLoadingGetAlgoByID,
+  } = useAlgorithmsTable();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { isOpen, handleOpen, handleClose } = useModal();
 
   const tabs = () => {
     if (isSelectAlgorithm) {
@@ -35,41 +43,31 @@ const Algorithms = () => {
     ];
   };
   const TableMapper: { [key: string]: React.ReactNode } = {
-    published: <PublishedTable isSelectAlgorithm={isSelectAlgorithm} />,
-    'browse-algorithms': (
-      <BrowseAlgorithmsTable isSelectAlgorithm={isSelectAlgorithm} />
+    published: (
+      <PublishedTable
+        data={algorithms}
+        isLoading={isLoading}
+        isSelectAlgorithm={isSelectAlgorithm}
+        handleOpenAlgoDetails={handleOpenAlgoDetails}
+      />
     ),
-    'execution-history': <ExecutionHistoryTable />,
+    'browse-algorithms': (
+      <BrowseAlgorithmsTable
+        data={algorithms}
+        isLoading={isLoading}
+        isSelectAlgorithm={isSelectAlgorithm}
+        handleOpenAlgoDetails={handleOpenAlgoDetails}
+      />
+    ),
+    'execution-history': (
+      <ExecutionHistoryTable data={executions} isLoading={isLoadingExecution} />
+    ),
   };
   const query: null | string = searchParams.get('tab') || 'published';
   const TableComponent = TableMapper?.[query];
 
-  const summary = [
-    {
-      name: 'Hash',
-      value: (
-        <div className="flex items-center gap-[11px]">
-          <p className="w-[200px] truncate">Hash</p>
-          <ClickToCopy text="hash" />
-        </div>
-      ),
-    },
-    {
-      name: 'Owner',
-      value: <p className="text-blue">Owner</p>,
-    },
-    {
-      name: 'Creation date',
-      value: <p>{dayjs(new Date()).format('DD/MM/YYYY')}</p>,
-    },
-    {
-      name: 'Usages',
-      value: 0,
-    },
-  ];
-
   return (
-    <div>
+    <>
       <div className="flex justify-between items-center mb-5">
         <div className="flex gap-4">
           {tabs().map((item, i) => (
@@ -94,7 +92,7 @@ const Algorithms = () => {
           <SearchInput />
           {!isSelectAlgorithm &&
           searchParams.get('tab') !== 'execution-history' ? (
-            <Button size="md" onClick={handleOpen}>
+            <Button size="md" onClick={() => handleOpenAlgoDetails('upload')}>
               <div className="flex gap-3 items-center">
                 <MdAdd size={20} />
                 <span>Upload algorithm</span>
@@ -106,35 +104,22 @@ const Algorithms = () => {
       {TableComponent}
       <AppModal
         title="Online Editer"
-        isOpen={isOpen}
-        handleClose={handleClose}
+        isOpen={!!searchParams.get('details')}
+        handleClose={handleCloseAlgoDetails}
         fullWidth
       >
-        <div>
-          <div className="grid grid-cols-2 gap-5">
-            <div className="bg-[#FAFAFA] flex flex-col gap-4 p-6 rounded-[10px]">
-              <TextInput
-                label="Algorithm name"
-                placeholder="Name the algorithm"
-                // onChange={(e) => handleOnChange('algorithmName', e.target.value)}
-                fullWidth
-              />
-              <TextInput
-                label="Description"
-                placeholder="What is the algorithm about?"
-                // onChange={(e) => handleOnChange('desc', e.target.value)}
-                fullWidth
-              />
-            </div>
-            <DataSummary summary={summary} />
-          </div>
-          <div className="bg-[#f3f3f3] w-full h-40 rounded mt-4" />
-        </div>
-        <div className="flex justify-center mt-5">
-          <Button text="Publish" size="lg" onClick={() => {}} />
-        </div>
+        <ViewLoader isLoading={isLoadingGetAlgoByID} />
+        <AlgorithmDetails isLoadingUpload={isLoadingUpload} />
       </AppModal>
-    </div>
+      <PublishedModal
+        title="Algorithm"
+        isOpen={isOpenPublished}
+        handleClose={handleClosePublished}
+        hash={algorithmDetails?.id_hash}
+        publishedName={algorithmDetails?.name}
+        backTo="/algorithms"
+      />
+    </>
   );
 };
 

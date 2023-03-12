@@ -1,4 +1,4 @@
-import { setPageTitle } from '@shared/slices/appSlice';
+import { setPageTitle } from '@slices/appSlice';
 import { useAppDispatch, useAppSelector } from './useStore';
 
 export default () => {

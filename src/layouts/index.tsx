@@ -3,7 +3,7 @@ import TopNavigation from './top-navigation';
 import SideNavigation from './side-navigation';
 import './layout.scss';
 
-function Layout() {
+const Layout = () => {
   return (
     <div id="layout-wrapper">
       <SideNavigation />
@@ -13,6 +13,6 @@ function Layout() {
       </main>
     </div>
   );
-}
+};
 
 export default Layout;

@@ -8,12 +8,13 @@ export default defineConfig({
   plugins: [react(), svgr()],
   resolve: {
     alias: {
-      "@assets": path.resolve(__dirname, "./src/assets"),
-      "@components": path.resolve(__dirname, "./src/components"),
-      "@features": path.resolve(__dirname, "./src/features"),
-      "@layouts": path.resolve(__dirname, "./src/layouts"),
-      "@pages": path.resolve(__dirname, "./src/pages"),
-      "@shared": path.resolve(__dirname, "./src/shared"),
+      '@assets': path.resolve(__dirname, './src/assets'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@features': path.resolve(__dirname, './src/features'),
+      '@layouts': path.resolve(__dirname, './src/layouts'),
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@shared': path.resolve(__dirname, './src/shared'),
+      '@slices': path.resolve(__dirname, './src/slices'),
     },
   },
 });
