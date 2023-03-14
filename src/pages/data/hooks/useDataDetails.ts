@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
-import { toast } from 'react-toastify';
 import {
+  changeDataDetails,
   getDatasetByID,
+  resetDataDetails,
   resetDataSlice,
   uploadDatasets,
 } from '@slices/dataSlice';
@@ -26,51 +27,38 @@ export default () => {
     handleOpen: handleOpenNewChart,
     handleClose: handleCloseNewChart,
   } = useModal();
-
-  const [inputs, setInputs] = useState({
-    name: dataDetails?.name || '',
-    owner: userInfo?.username || '',
-    desc: dataDetails?.desc || '',
-  });
-  const [isPublished, setIsPublished] = useState(false);
+  const isPublished = id && id !== 'upload';
 
   useEffect(() => {
-    setTitle('Datasets.csv');
-    if (id && id !== 'upload') {
+    if (isPublished) {
       dispatch(getDatasetByID(id));
+    } else {
+      dispatch(resetDataDetails());
     }
+    dispatch(changeDataDetails({ name: 'owner', value: userInfo?.username }));
+    dispatch(changeDataDetails({ name: 'ownsAllTimeseries', value: true }));
   }, []);
+
+  useEffect(() => {
+    setTitle(dataDetails?.name || 'Datasets.csv');
+  }, [dataDetails?.name]);
 
   useEffect(() => {
     if (uploadActions.success) {
       handleOpen();
-      setIsPublished(true);
       dispatch(resetDataSlice());
     }
-    if (uploadActions.error) {
-      toast.error(uploadActions.error);
-    }
-  }, [uploadActions.success, uploadActions.error]);
+  }, [uploadActions.success]);
 
   const handleUploadDataset = () => {
-    dispatch(
-      uploadDatasets({
-        ...inputs,
-        ownsAllTimeseries: true,
-        timeseriesIDs: ['anything6457for878now22bbf'],
-      })
-    );
+    dispatch(uploadDatasets());
   };
 
   const handleOnChange = (name: string, value: any) => {
-    setInputs((prevState) => ({ ...prevState, [name]: value }));
-    if (name === 'name') {
-      setTitle(value);
-    }
+    dispatch(changeDataDetails({ name, value }));
   };
 
   return {
-    inputs,
     handleOnChange,
     handleUploadDataset,
     datasetByIDActions,

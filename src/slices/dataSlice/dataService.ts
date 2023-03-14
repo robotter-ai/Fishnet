@@ -16,7 +16,7 @@ const getDatasets = async (address: string) => {
 
 const getDatasetByID = async (id: string) => {
   const { data } = await axios.get(`/datasets?id=${id}`);
-  return data;
+  return data[0];
 };
 
 const updateDatasetAvailability = async (

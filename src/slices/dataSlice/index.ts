@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import type { RootState } from 'src/store';
 import dataService, { UploadDatasetProps } from './dataService';
@@ -54,9 +54,10 @@ export const updateDatasetAvailability = createAsyncThunk(
 
 export const uploadDatasets = createAsyncThunk(
   'datasets/uploadDatasets',
-  async (dataset: UploadDatasetProps, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
-      return await dataService.uploadDatasets(dataset);
+      const { datasets } = thunkAPI.getState() as RootState;
+      return await dataService.uploadDatasets(datasets.dataDetails);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -123,13 +124,17 @@ const dataSlice = createSlice({
       state.uploadDatasets.success = null;
       state.uploadDatasets.error = null;
     },
+    changeDataDetails: (
+      state,
+      action: PayloadAction<{ name: string; value: any }>
+    ) => {
+      state.dataDetails = {
+        ...state.dataDetails,
+        [action.payload.name]: action.payload.value,
+      };
+    },
     resetDataDetails: (state) => {
-      state.success = null;
-      state.error = null;
-      state.updatePublicAccess.success = null;
-      state.updatePublicAccess.error = null;
-      state.uploadDatasets.success = null;
-      state.uploadDatasets.error = null;
+      state.dataDetails = null;
     },
   },
   extraReducers(builder) {
@@ -186,6 +191,7 @@ const dataSlice = createSlice({
   },
 });
 
-export const { resetDataSlice } = dataSlice.actions;
+export const { resetDataSlice, resetDataDetails, changeDataDetails } =
+  dataSlice.actions;
 
 export default dataSlice;

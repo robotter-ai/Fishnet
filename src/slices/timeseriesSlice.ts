@@ -25,18 +25,23 @@ interface StateProps {
   isLoading: boolean;
   success: boolean | null;
   timeseries: any;
+  csvJson: any[];
 }
 
 const initialState: StateProps = {
   isLoading: false,
   success: null,
   timeseries: [],
+  csvJson: [],
 };
 
 export const timeseriesSlice = createSlice({
   name: 'timeseries',
   initialState,
   reducers: {
+    setCsvJson: (state, action) => {
+      state.csvJson = action.payload;
+    },
     resetTimeseriesActions: (state) => {
       state.success = null;
     },
@@ -49,7 +54,11 @@ export const timeseriesSlice = createSlice({
       .addCase(uploadTimeseries.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = true;
-        state.timeseries = action.payload;
+        state.timeseries = action.payload.map((item: any) => ({
+          name: item.name,
+          owner: item.owner,
+          data: item.data,
+        }));
       })
       .addCase(uploadTimeseries.rejected, (state, action) => {
         state.isLoading = false;
@@ -58,6 +67,6 @@ export const timeseriesSlice = createSlice({
   },
 });
 
-export const { resetTimeseriesActions } = timeseriesSlice.actions;
+export const { resetTimeseriesActions, setCsvJson } = timeseriesSlice.actions;
 
 export default timeseriesSlice;

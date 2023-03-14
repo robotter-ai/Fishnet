@@ -64,7 +64,9 @@ const MyData = () => {
       </div>
       {TableComponent}
       <AppModal
-        title="Select file (.csv)"
+        title={
+          isLoadingUploadTimeseries ? 'Uploading...' : 'Select file (.csv)'
+        }
         isOpen={isOpen}
         handleClose={handleClose}
         withInfo
@@ -89,15 +91,7 @@ const MyData = () => {
         >
           <div className="flex justify-center items-center h-[207px] bg-light-20 rounded-[10px]">
             {isLoadingUploadTimeseries ? (
-              <div className="p-4 flex flex-col justify-center gap-4">
-                <p>Uploading...</p>
-                <FadeLoader
-                  color="#0054ff"
-                  height={6}
-                  margin={-10}
-                  width={1.25}
-                />
-              </div>
+              <FadeLoader color="#0054ff" height={10} margin={-5} width={3} />
             ) : (
               <p className="text-blue text-2xl">Drag and Drop</p>
             )}
@@ -108,11 +102,16 @@ const MyData = () => {
             size="lg"
             fullWidth
             onClick={() => inputFileRef.current?.click()}
+            disabled={isLoadingUploadTimeseries}
           >
-            <div className="flex justify-center gap-3 items-center">
-              <MdAdd size={20} />
-              <span>Choose data</span>
-            </div>
+            {isLoadingUploadTimeseries ? (
+              'Please wait...'
+            ) : (
+              <div className="flex justify-center gap-3 items-center">
+                <MdAdd size={20} />
+                <span>Choose data</span>
+              </div>
+            )}
           </Button>
         </div>
       </AppModal>

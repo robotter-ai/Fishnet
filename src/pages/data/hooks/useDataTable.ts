@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { getDatasets } from '@slices/dataSlice';
 import {
   resetTimeseriesActions,
+  setCsvJson,
   uploadTimeseries,
 } from '@slices/timeseriesSlice';
 
@@ -35,12 +36,13 @@ export default () => {
   }, [successUploadTimeseries]);
 
   const handleCsvToJson = (file: any) => {
-    // Papa.parse(file, {
-    //   header: true,
-    //   skipEmptyLines: true,
-    //   complete: (results) => {
-    //   },
-    // });
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        dispatch(setCsvJson(results.data));
+      },
+    });
     const formData = new FormData();
     formData.append('owner', userInfo?.username);
     formData.append('data_file', file);

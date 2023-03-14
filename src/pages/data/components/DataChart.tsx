@@ -12,25 +12,32 @@ import { AiOutlineLine, AiOutlineDelete } from 'react-icons/ai';
 import { RxDotsHorizontal } from 'react-icons/rx';
 import { useState } from 'react';
 import classNames from 'classnames';
-import useModal from '@shared/hooks/useModal';
-import { DeletePrompt } from '@shared/components/Prompts';
+// import useModal from '@shared/hooks/useModal';
+// import { DeletePrompt } from '@shared/components/Prompts';
+import { useAppSelector } from '@shared/hooks/useStore';
 
-const data: { date: string; volaBTC: number; returnsBTC: number }[] = [];
+// const data: { date: string; volaBTC: number; returnsBTC: number }[] = [];
 
-for (let i = 0; i <= 6; i++) {
-  data.push({
-    date: dayjs(new Date())
-      .add(i * 6, 'day')
-      .format('MMM DD'),
-    volaBTC: Math.floor(Math.random() * (1 + 2000 - 50)) + 50,
-    returnsBTC: Math.floor(Math.random() * (1 + 2000 - 50)) + 50,
-  });
-}
+// for (let i = 0; i <= 6; i++) {
+//   data.push({
+//     date: dayjs(new Date())
+//       .add(i * 6, 'day')
+//       .format('MMM DD'),
+//     volaBTC: Math.floor(Math.random() * (1 + 2000 - 50)) + 50,
+//     returnsBTC: Math.floor(Math.random() * (1 + 2000 - 50)) + 50,
+//   });
+// }
 
 const DataChart = () => {
-  const { isOpen, handleOpen, handleClose } = useModal();
+  const { csvJson } = useAppSelector((state) => state.timeseries);
+  // const { isOpen, handleOpen, handleClose } = useModal();
   const duration = ['D', 'W', '1M', '3M', 'Y', 'All'];
   const [activeDuration, setActiveDuration] = useState(2);
+  const data = csvJson.slice(0, 10).map((item) => ({
+    date: dayjs(item.date).format('MMM DD'),
+    volaBTC: item.volaBTC,
+    returnsBTC: item.returnsBTC,
+  }));
 
   return (
     <div className="bg-[#FAFAFA] rounded-[10px] p-4">
@@ -51,7 +58,7 @@ const DataChart = () => {
         <div className="flex gap-2">
           <div
             className="bg-white p-3 flex items-center rounded-md cursor-pointer"
-            onClick={handleOpen}
+            // onClick={handleOpen}
           >
             <AiOutlineDelete size={20} />
           </div>
@@ -108,7 +115,7 @@ const DataChart = () => {
           <p>returnsBTC</p>
         </div>
       </div>
-      <DeletePrompt isOpen={isOpen} handleClose={handleClose} />
+      {/* <DeletePrompt isOpen={isOpen} handleClose={handleClose} /> */}
     </div>
   );
 };
