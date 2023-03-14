@@ -50,7 +50,13 @@ const COLUMNS = (
   },
   {
     header: 'Filter',
-    cell: ({ id_hash }) => <ExecutePrompt isSelect={isSelectAlgorithm} />,
+    cell: ({ id_hash }) => (
+      <ExecutePrompt
+        against="data"
+        selectedHash={id_hash}
+        isSelect={isSelectAlgorithm}
+      />
+    ),
   },
 ];
 

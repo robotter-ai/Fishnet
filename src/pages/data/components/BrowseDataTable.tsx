@@ -53,7 +53,13 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'Filter',
-    cell: ({ id_hash }) => <ExecutePrompt isSelect={false} />,
+    cell: (item) => (
+      <ExecutePrompt
+        against="algorithm"
+        selectedHash={item[0].id_hash}
+        isSelect={false}
+      />
+    ),
   },
 ];
 

@@ -83,8 +83,13 @@ const COLUMNS = (
     },
     {
       header: 'Filter',
-      accessor: 'id_hash',
-      cell: ({ id_hash }) => <ExecutePrompt isSelect={false} />,
+      cell: (item) => (
+        <ExecutePrompt
+          against="algorithm"
+          selectedHash={item[0].id_hash}
+          isSelect={false}
+        />
+      ),
     },
   ];
 };

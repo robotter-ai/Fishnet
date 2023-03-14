@@ -14,6 +14,7 @@ interface ButtonProps {
   className?: string;
   linkTo?: string;
   fullWidth?: boolean;
+  withoutBorder?: boolean;
 }
 
 const CustomButton: React.FC<ButtonProps> = ({
@@ -27,6 +28,7 @@ const CustomButton: React.FC<ButtonProps> = ({
   disabled,
   children,
   linkTo,
+  withoutBorder,
 }) => {
   const btnClassnames = classNames(
     'app-btn block px-7 text-white text-[14px] rounded-[10px]',
@@ -37,6 +39,7 @@ const CustomButton: React.FC<ButtonProps> = ({
       'btn-outline-blue': btnStyle === 'outline-blue',
       'btn-outline-red': btnStyle === 'outline-red',
       'w-full': fullWidth,
+      '!border-none': withoutBorder,
     }
   );
 
@@ -44,7 +47,7 @@ const CustomButton: React.FC<ButtonProps> = ({
     return (
       <Link
         to={linkTo}
-        className={`${btnClassnames} flex justify-center items-center `}
+        className={`${btnClassnames} flex justify-center items-center`}
       >
         {text}
       </Link>

@@ -1,12 +1,20 @@
+import TextInput from '@components/form/TextInput';
 import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
 import ClickToCopy from '@components/ui/ClickToCopy';
 import useModal from '@shared/hooks/useModal';
 import useSelectData from '@shared/hooks/useSelectData';
+import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
+import {
+  changeExecutionDetails,
+  postExecutionRequest,
+  resetExecutionDetails,
+} from '@slices/executionSlice';
+import { useEffect } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { IoCheckbox } from 'react-icons/io5';
-import { VscCheck } from 'react-icons/vsc';
 import { useNavigate } from 'react-router-dom';
+import { FadeLoader } from 'react-spinners';
 
 interface PromptInterface {
   title?: string;
@@ -45,14 +53,32 @@ export const DeletePrompt: React.FC<PromptInterface> = ({ title, message }) => {
 
 export const ExecutePrompt: React.FC<{
   isSelect: boolean;
+  selectedHash: string;
+  against: 'data' | 'algorithm';
   disabled?: boolean;
-}> = ({ isSelect, disabled }) => {
+}> = ({ isSelect, disabled, against, selectedHash }) => {
+  const dispatch = useAppDispatch();
+  const { userInfo } = useAppSelector((state) => state.profile);
+  const { details, success, isLoading } = useAppSelector(
+    (state) => state.execution
+  );
   const { isOpen, handleOpen, handleClose } = useModal();
   const { handleNavigateWithSelect } = useSelectData();
 
-  const handleSelectAlgorithm = () => {
-    handleNavigateWithSelect('/algorithms');
-    handleClose();
+  useEffect(() => {
+    dispatch(
+      changeExecutionDetails({
+        input: 'owner',
+        value: userInfo?.username || '',
+      })
+    );
+    if (success) {
+      dispatch(resetExecutionDetails());
+    }
+  }, [success]);
+
+  const handleSelect = () => {
+    handleNavigateWithSelect(against === 'data' ? '/data' : '/algorithms');
   };
 
   return (
@@ -60,29 +86,74 @@ export const ExecutePrompt: React.FC<{
       <Button
         text={isSelect ? 'Select' : 'Use'}
         btnStyle="outline-blue"
-        onClick={handleOpen}
+        onClick={() => {
+          dispatch(
+            changeExecutionDetails({
+              input: against === 'data' ? 'algorithmID' : 'datasetID',
+              value: selectedHash,
+            })
+          );
+          handleOpen();
+        }}
         disabled={disabled}
       />
-      <AppModal title="Execute" isOpen={isOpen} handleClose={handleClose}>
-        <div className="mb-[25px] flex flex-col gap-5">
-          <p>Paste a hash of the Algorithm, that will be applied to the data</p>
-          <div className="bg-[#F6F8FB] flex gap-2 justify-between rounded-lg px-5 py-3">
-            <p className="text-lg truncate">
-              8743b52063cd84097a65d1633f5c74f552063ccd97a65
-            </p>
-            <VscCheck size={25} color="#0458FF" />
+      <AppModal
+        title="Execute"
+        isOpen={isOpen}
+        handleClose={handleClose}
+        withHeader={!isLoading}
+      >
+        {isLoading ? (
+          <div className="flex flex-col items-center gap-4">
+            <h1>Pending execution</h1>
+            <div className="p-4">
+              <FadeLoader color="#0054ff" height={15} margin={-2.5} width={3} />
+            </div>
+            <p>Please wait ~ 10 sec</p>
           </div>
-        </div>
-        <div className="flex flex-col gap-4">
-          <Button
-            text="Select algorithm"
-            btnStyle="outline-blue"
-            size="lg"
-            fullWidth
-            onClick={handleSelectAlgorithm}
-          />
-          <Button text="Apply" size="lg" fullWidth />
-        </div>
+        ) : null}
+        {!isLoading && !success ? (
+          <>
+            <div className="mb-[25px] flex flex-col gap-5">
+              <TextInput
+                label={`Paste a hash of the ${against}, that will be applied to the ${
+                  against === 'data' ? 'algorithm' : 'data'
+                }`}
+                placeholder={`Hash of ${against}`}
+                bgColor="#F6F8FB"
+                value={
+                  against === 'data' ? details.datasetID : details.algorithmID
+                }
+                onChange={(e) =>
+                  dispatch(
+                    changeExecutionDetails({
+                      input: against === 'data' ? 'datasetID' : 'algorithmID',
+                      value: e.target.value,
+                    })
+                  )
+                }
+                fullWidth
+              />
+            </div>
+            <div className="flex flex-col gap-4">
+              <Button
+                text={`Select ${against}`}
+                btnStyle="outline-blue"
+                size="lg"
+                fullWidth
+                onClick={handleSelect}
+                withoutBorder
+              />
+              <Button
+                text="Apply"
+                size="lg"
+                isLoading={isLoading}
+                onClick={() => dispatch(postExecutionRequest(details))}
+                fullWidth
+              />
+            </div>
+          </>
+        ) : null}
       </AppModal>
     </>
   );
