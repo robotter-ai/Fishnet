@@ -65,9 +65,9 @@ const AlgorithmDetails = ({
       name: 'Creation date',
       value: (
         <p>
-          {searchParams.get('details') === 'upload'
-            ? dayjs().format('DD/MM/YYYY')
-            : dayjs.unix(algorithmDetails?.timestamp).format('DD/MM/YYYY')}
+          {dayjs
+            .unix(algorithmDetails?.timestamp || Date.now() / 1000)
+            .format('DD/MM/YYYY')}
         </p>
       ),
     },

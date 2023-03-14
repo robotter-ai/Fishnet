@@ -10,6 +10,7 @@ import TextInput from '@components/form/TextInput';
 import ClickToCopy from '@components/ui/ClickToCopy';
 import dayjs from 'dayjs';
 import DataSummary from '@shared/components/Summary';
+import ViewLoader from '@shared/components/ViewLoader';
 import useDataDetails from './hooks/useDataDetails';
 import DataChart from './components/DataChart';
 import EditDataTable from './components/EditDataTable';
@@ -25,6 +26,7 @@ const DataDetails = () => {
     publishedModalProps,
     newChartModalProps,
     dataDetails,
+    datasetByIDActions,
   } = useDataDetails();
   const { isOpen, handleClose } = publishedModalProps;
   const { isOpenNewChart, handleOpenNewChart, handleCloseNewChart } =
@@ -65,7 +67,13 @@ const DataDetails = () => {
     },
     {
       name: 'Creation date',
-      value: <p>{dayjs(new Date()).format('DD/MM/YYYY')}</p>,
+      value: (
+        <p>
+          {dayjs
+            .unix(dataDetails?.timestamp || Date.now() / 1000)
+            .format('DD/MM/YYYY')}
+        </p>
+      ),
     },
     {
       name: 'Usages',
@@ -98,41 +106,42 @@ const DataDetails = () => {
           )}
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-5">
-        <div className="bg-[#FAFAFA] flex flex-col gap-4 p-6 rounded-[10px]">
-          <TextInput
-            label="Data name"
-            placeholder="Name the data"
-            value={inputs.name}
-            onChange={(e) => handleOnChange('name', e.target.value)}
-            fullWidth
-          />
-          <TextInput
-            label="Description"
-            placeholder="What is the data about?"
-            value={inputs.desc}
-            onChange={(e) => handleOnChange('desc', e.target.value)}
-            fullWidth
-          />
+      <div className="relative">
+        <ViewLoader isLoading={datasetByIDActions.isLoading} />
+        <div className="grid grid-cols-2 gap-5">
+          <div className="bg-[#FAFAFA] flex flex-col gap-4 p-6 rounded-[10px]">
+            <TextInput
+              label="Data name"
+              placeholder="Name the data"
+              value={inputs.name}
+              onChange={(e) => handleOnChange('name', e.target.value)}
+              fullWidth
+            />
+            <TextInput
+              label="Description"
+              placeholder="What is the data about?"
+              value={inputs.desc}
+              onChange={(e) => handleOnChange('desc', e.target.value)}
+              fullWidth
+            />
+          </div>
+          <DataSummary summary={summary} />
+          <DataChart />
+          <div
+            className="flex items-center justify-center min-h-[391px] bg-[#FAFAFA] rounded-[10px] cursor-pointer"
+            onClick={handleOpenNewChart}
+          >
+            <IoIosAddCircleOutline className="text-blue" size={150} />
+          </div>
         </div>
-        <DataSummary summary={summary} />
-        {[1, 2].map((item, i) => (
-          <DataChart key={i} />
-        ))}
-        <div
-          className="flex items-center justify-center min-h-[391px] bg-[#FAFAFA] rounded-[10px] cursor-pointer"
-          onClick={handleOpenNewChart}
-        >
-          <IoIosAddCircleOutline className="text-blue" size={150} />
+        <div className="mt-8 flex flex-col gap-3">
+          <h1>Dataset</h1>
+          <p>
+            Check the data you want to upload. Select a time interval. You can
+            also rename the indicator.
+          </p>
+          <EditDataTable isPublished={isPublished} />
         </div>
-      </div>
-      <div className="mt-8 flex flex-col gap-3">
-        <h1>Dataset</h1>
-        <p>
-          Check the data you want to upload. Select a time interval. You can
-          also rename the indicator.
-        </p>
-        <EditDataTable isPublished={isPublished} />
       </div>
       <AppModal
         title="Values and Interval"

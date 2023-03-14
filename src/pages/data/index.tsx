@@ -7,13 +7,15 @@ import AppModal from '@components/ui/AppModal';
 import useModal from '@shared/hooks/useModal';
 import { SearchInput } from '@components/form';
 import { FileUploader } from 'react-drag-drop-files';
+import { FadeLoader } from 'react-spinners';
 import BrowseDataTable from './components/BrowseDataTable';
 import PublishedTable from './components/PublishedTable';
 import useDataTable from './hooks/useDataTable';
 
 const MyData = () => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);
-  const { data, handleCsvToJson, isLoading } = useDataTable();
+  const { data, handleCsvToJson, isLoading, isLoadingUploadTimeseries } =
+    useDataTable();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
 
@@ -71,12 +73,14 @@ const MyData = () => {
           The data remains on your computer until you publish it. At this stage,
           the data is not published
         </p>
+
         <input
           type="file"
           accept=".csv"
           ref={inputFileRef}
           style={{ display: 'none' }}
           onChange={(e) => handleCsvToJson(e.target.files![0])}
+          disabled={isLoadingUploadTimeseries}
         />
         <FileUploader
           name="file"
@@ -84,12 +88,23 @@ const MyData = () => {
           handleChange={(file: any) => handleCsvToJson(file)}
         >
           <div className="flex justify-center items-center h-[207px] bg-light-20 rounded-[10px]">
-            <p className="text-blue text-2xl">Drag and Drop</p>
+            {isLoadingUploadTimeseries ? (
+              <div className="p-4 flex flex-col justify-center gap-4">
+                <p>Uploading...</p>
+                <FadeLoader
+                  color="#0054ff"
+                  height={6}
+                  margin={-10}
+                  width={1.25}
+                />
+              </div>
+            ) : (
+              <p className="text-blue text-2xl">Drag and Drop</p>
+            )}
           </div>
         </FileUploader>
         <div className="flex flex-col mt-[20px] gap-4">
           <Button
-            text="No, back"
             size="lg"
             fullWidth
             onClick={() => inputFileRef.current?.click()}

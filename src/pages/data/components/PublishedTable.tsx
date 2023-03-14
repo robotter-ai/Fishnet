@@ -26,10 +26,10 @@ const COLUMNS = (
       accessor: 'name',
       cell: (item) => (
         <Link
-          to={`/data/${'dataset-id'}/details`}
+          to={`/data/${item.id_hash}/details`}
           className="text-blue whitespace-nowrap"
         >
-          {item[0].name}
+          {item.name}
         </Link>
       ),
       isSortable: true,
@@ -39,8 +39,8 @@ const COLUMNS = (
       accessor: 'id_hash',
       cell: (item) => (
         <div className="flex gap-3">
-          <p className="w-[200px] truncate">{item[0].id_hash}</p>
-          <ClickToCopy text={item[0].id_hash} />
+          <p className="w-[200px] truncate">{item.id_hash}</p>
+          <ClickToCopy text={item.id_hash} />
         </div>
       ),
       isSortable: true,
@@ -51,10 +51,8 @@ const COLUMNS = (
       cell: (item) => (
         <div className="flex justify-center text-center">
           <ToggleButton
-            checked={item[0].available}
-            onChange={() =>
-              handleSetPublicAccess(item[0].id_hash, item[0].available)
-            }
+            checked={item.available}
+            onChange={() => handleSetPublicAccess(item.id_hash, item.available)}
           />
         </div>
       ),
@@ -63,14 +61,14 @@ const COLUMNS = (
     {
       header: 'Description',
       accessor: 'desc',
-      cell: (item) => <p>{item[0].desc}</p>,
+      cell: (item) => <p>{item.desc}</p>,
     },
     {
       header: '',
       accessor: 'forgotten',
       cell: (item) => (
         <div className="flex gap-3">
-          <Starred starred={item[0].forgotten} />
+          <Starred starred={item.forgotten} />
           <div
             role="button"
             className="cursor-pointer"
@@ -86,7 +84,7 @@ const COLUMNS = (
       cell: (item) => (
         <ExecutePrompt
           against="algorithm"
-          selectedHash={item[0].id_hash}
+          selectedHash={item.id_hash}
           isSelect={false}
         />
       ),

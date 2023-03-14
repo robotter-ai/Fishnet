@@ -14,6 +14,11 @@ const getDatasets = async (address: string) => {
   return data;
 };
 
+const getDatasetByID = async (id: string) => {
+  const { data } = await axios.get(`/datasets?id=${id}`);
+  return data;
+};
+
 const updateDatasetAvailability = async (
   dataset_id: string,
   available: boolean
@@ -28,6 +33,7 @@ const uploadDatasets = async (dataset: UploadDatasetProps) => {
 
 const dataService = {
   getDatasets,
+  getDatasetByID,
   updateDatasetAvailability,
   uploadDatasets,
 };

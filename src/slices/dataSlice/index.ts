@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 import type { RootState } from 'src/store';
 import dataService, { UploadDatasetProps } from './dataService';
 
@@ -8,6 +9,21 @@ export const getDatasets = createAsyncThunk(
     try {
       const { profile } = thunkAPI.getState() as RootState;
       return await dataService.getDatasets(profile.auth.address);
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
+
+export const getDatasetByID = createAsyncThunk(
+  'datasets/getDatasetByID',
+  async (id: string, thunkAPI) => {
+    try {
+      return await dataService.getDatasetByID(id);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -67,6 +83,10 @@ interface DataProps {
     success: boolean | null;
     error: any;
   };
+  datasetByIDActions: {
+    isLoading: boolean;
+    success: boolean | null;
+  };
 }
 
 const initialState: DataProps = {
@@ -84,6 +104,10 @@ const initialState: DataProps = {
     isLoading: false,
     success: null,
     error: null,
+  },
+  datasetByIDActions: {
+    isLoading: false,
+    success: null,
   },
 };
 
@@ -122,6 +146,20 @@ const dataSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
+
+      .addCase(getDatasetByID.pending, (state) => {
+        state.datasetByIDActions.isLoading = true;
+      })
+      .addCase(getDatasetByID.fulfilled, (state, action) => {
+        state.datasetByIDActions.isLoading = false;
+        state.datasetByIDActions.success = true;
+        state.dataDetails = action.payload;
+      })
+      .addCase(getDatasetByID.rejected, (state, action) => {
+        state.datasetByIDActions.isLoading = false;
+        toast.error(action.payload as string);
+      })
+
       .addCase(updateDatasetAvailability.pending, (state) => {
         state.updatePublicAccess.isLoading = true;
       })

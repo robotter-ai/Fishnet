@@ -3,21 +3,30 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import { toast } from 'react-toastify';
-import { resetDataSlice, uploadDatasets } from '@slices/dataSlice';
+import {
+  getDatasetByID,
+  resetDataSlice,
+  uploadDatasets,
+} from '@slices/dataSlice';
+import { useParams } from 'react-router-dom';
 
 export default () => {
+  const { id } = useParams();
   const { setTitle } = usePageTitle();
   const { userInfo } = useAppSelector((app) => app.profile);
   const dispatch = useAppDispatch();
-  const { dataDetails, uploadDatasets: uploadActions } = useAppSelector(
-    (app) => app.datasets
-  );
+  const {
+    dataDetails,
+    uploadDatasets: uploadActions,
+    datasetByIDActions,
+  } = useAppSelector((app) => app.datasets);
   const { isOpen, handleOpen, handleClose } = useModal();
   const {
     isOpen: isOpenNewChart,
     handleOpen: handleOpenNewChart,
     handleClose: handleCloseNewChart,
   } = useModal();
+
   const [inputs, setInputs] = useState({
     name: dataDetails?.name || '',
     owner: userInfo?.username || '',
@@ -27,6 +36,9 @@ export default () => {
 
   useEffect(() => {
     setTitle('Datasets.csv');
+    if (id && id !== 'upload') {
+      dispatch(getDatasetByID(id));
+    }
   }, []);
 
   useEffect(() => {
@@ -61,6 +73,7 @@ export default () => {
     inputs,
     handleOnChange,
     handleUploadDataset,
+    datasetByIDActions,
     isLoading: uploadActions.isLoading,
     isPublished,
     dataDetails,

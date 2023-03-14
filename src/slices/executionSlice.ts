@@ -60,6 +60,7 @@ export const executionSlice = createSlice({
       state.details.algorithmID = '';
       state.details.datasetID = '';
       state.details.status = '';
+      state.success = null;
     },
   },
   extraReducers(builder) {

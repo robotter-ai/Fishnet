@@ -4,6 +4,7 @@ import appSlice from '@slices/appSlice';
 import dataSlice from '@slices/dataSlice';
 import executionSlice from '@slices/executionSlice';
 import profileSlice from '@slices/profileSlice';
+import timeseriesSlice from '@slices/timeseriesSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     datasets: dataSlice.reducer,
     algorithm: algorithmSlice.reducer,
     execution: executionSlice.reducer,
+    timeseries: timeseriesSlice.reducer,
     profile: profileSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
