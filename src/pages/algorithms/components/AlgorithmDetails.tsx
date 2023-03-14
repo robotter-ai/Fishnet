@@ -12,6 +12,7 @@ import {
   uploadgetAlgorithm,
 } from '@slices/algorithmSlice';
 import { useSearchParams } from 'react-router-dom';
+import {TextareaAutosize} from "@mui/material";
 
 const AlgorithmDetails = ({
   isLoadingUpload,
@@ -36,7 +37,7 @@ const AlgorithmDetails = ({
             value: userInfo?.username || '',
           })
         );
-        dispatch(changeAlgorithmDetails({ name: 'code', value: '{data: {}}' }));
+        dispatch(changeAlgorithmDetails({ name: 'code', value: 'def run(df: pd.DataFrame, config: Optional[dict]) -> \n    return df' }));
       }
     }
 
@@ -113,7 +114,7 @@ const AlgorithmDetails = ({
           </div>
           <DataSummary summary={summary} />
         </div>
-        <div className="bg-[#f3f3f3] w-full h-40 rounded mt-4" />
+        <TextareaAutosize className="bg-[#f3f3f3] w-full h-full rounded mt-4 font-mono" name={'code'} value={`${algorithmDetails?.code}`} onChange={(e) => dispatch(changeAlgorithmDetails({name: 'code', value: e.target.value}))} />
       </div>
       <div className="flex justify-center mt-5">
         <CustomButton

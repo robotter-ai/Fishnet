@@ -103,7 +103,7 @@ const Algorithms = () => {
       </div>
       {TableComponent}
       <AppModal
-        title="Online Editer"
+        title="Online Editor"
         isOpen={!!searchParams.get('details')}
         handleClose={handleCloseAlgoDetails}
         fullWidth
