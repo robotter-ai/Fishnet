@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import type { RootState } from 'src/store';
-import dataService, { UploadDatasetProps } from './dataService';
+import dataService from './dataService';
 
 export const getDatasets = createAsyncThunk(
   'datasets/getDatasets',
@@ -56,8 +56,17 @@ export const uploadDatasets = createAsyncThunk(
   'datasets/uploadDatasets',
   async (_, thunkAPI) => {
     try {
-      const { datasets } = thunkAPI.getState() as RootState;
-      return await dataService.uploadDatasets(datasets.dataDetails);
+      const { datasets, timeseries } = thunkAPI.getState() as RootState;
+      // get all id_hash from timeseries
+      const timeseriesIDs = timeseries.timeseries.map(
+        (timeseries: any) => timeseries.id_hash
+      );
+      // add timeseriesIDs to dataset
+      const datasetRequest = {
+        ...datasets.dataDetails,
+        timeseriesIDs,
+      }
+      return await dataService.uploadDatasets(datasetRequest);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message

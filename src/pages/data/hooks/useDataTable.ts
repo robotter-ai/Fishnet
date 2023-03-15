@@ -7,7 +7,7 @@ import { getDatasets } from '@slices/dataSlice';
 import {
   resetTimeseriesActions,
   setCsvJson,
-  uploadTimeseries,
+  preprocessTimeseries,
 } from '@slices/timeseriesSlice';
 
 export default () => {
@@ -46,7 +46,7 @@ export default () => {
     const formData = new FormData();
     formData.append('owner', userInfo?.username);
     formData.append('data_file', file);
-    dispatch(uploadTimeseries(formData));
+    dispatch(preprocessTimeseries(formData));
   };
 
   return {

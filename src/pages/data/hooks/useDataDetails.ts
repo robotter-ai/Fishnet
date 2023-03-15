@@ -10,6 +10,7 @@ import {
   uploadDatasets,
 } from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
+import {uploadTimeseries} from "@slices/timeseriesSlice";
 
 export default () => {
   const { id } = useParams();
@@ -51,7 +52,9 @@ export default () => {
   }, [uploadActions.success]);
 
   const handleUploadDataset = () => {
-    dispatch(uploadDatasets());
+    dispatch(uploadTimeseries()).then(() => {
+      dispatch(uploadDatasets());
+    });
   };
 
   const handleOnChange = (name: string, value: any) => {
