@@ -38,23 +38,24 @@ export const STATUS_COLOR: { [key: string]: string } = {
   Requested: COLORS.yellow,
   Pending: COLORS.yellow,
   Refused: COLORS.red,
-  Faild: COLORS.red,
+  Failed: COLORS.red,
 };
 
 const NEW_STATUS_COLOR: { [key: string]: string } = {
   allowed: COLORS.green,
   successful: COLORS.green,
+  success: COLORS.green,
   waiting: COLORS.yellow,
   requested: COLORS.yellow,
   pending: COLORS.yellow,
   running: COLORS.yellow,
   refused: COLORS.red,
-  faild: COLORS.red,
+  failed: COLORS.red,
 };
 
 export const StatusIdentifier = ({ status }: { status: string }) => (
   <div className="flex items-center whitespace-nowrap text-center">
-    <p className="capitalize">{status}</p>
+    <p>{status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}</p>
     <BsDot size={45} color={NEW_STATUS_COLOR[status.toLowerCase()]} />
   </div>
 );

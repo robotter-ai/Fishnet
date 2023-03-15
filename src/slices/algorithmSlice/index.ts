@@ -47,6 +47,21 @@ export const getExecutions = createAsyncThunk(
   }
 );
 
+export const getExecutionResultByID = createAsyncThunk(
+  'algorithm/getExecutionResultByID',
+  async (id: string, thunkAPI) => {
+    try {
+      return await algorithmService.getExecutionResultByID(id);
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
+
 export const uploadgetAlgorithm = createAsyncThunk(
   'algorithm/uploadgetAlgorithm',
   async (inputs: UploadAlgorithmProps, thunkAPI) => {
@@ -68,6 +83,7 @@ interface StateProps {
   algorithms: any;
   executions: any;
   algorithmDetails: any;
+  executionResult: any;
   algorithmByIDActions: { isLoading: boolean; success: boolean | null };
   uploadActions: { isLoading: boolean; success: boolean | null };
   executionActions: { isLoading: boolean; success: boolean | null };
@@ -79,6 +95,7 @@ const initialState: StateProps = {
   algorithms: null,
   executions: null,
   algorithmDetails: null,
+  executionResult: null,
   algorithmByIDActions: { isLoading: false, success: null },
   uploadActions: { isLoading: false, success: null },
   executionActions: { isLoading: false, success: null },
@@ -141,6 +158,19 @@ const algorithmSlice = createSlice({
       })
       .addCase(getExecutions.rejected, (state) => {
         state.executionActions.isLoading = false;
+      })
+
+      .addCase(getExecutionResultByID.pending, (state) => {
+        state.executionActions.isLoading = true;
+      })
+      .addCase(getExecutionResultByID.fulfilled, (state, action) => {
+        state.executionActions.isLoading = false;
+        state.executionActions.success = true;
+        state.executionResult = action.payload;
+      })
+      .addCase(getExecutionResultByID.rejected, (state, action) => {
+        state.executionActions.isLoading = false;
+        toast.error(action.payload as string);
       })
 
       .addCase(uploadgetAlgorithm.pending, (state) => {
