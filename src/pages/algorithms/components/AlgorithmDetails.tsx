@@ -37,7 +37,7 @@ const AlgorithmDetails = ({
             value: userInfo?.username || '',
           })
         );
-        dispatch(changeAlgorithmDetails({ name: 'code', value: 'def run(df: pd.DataFrame, config: Optional[dict]) -> \n    return df' }));
+        dispatch(changeAlgorithmDetails({ name: 'code', value: 'def run(df: pd.DataFrame, params: Optional[dict]):\n    return df' }));
       }
     }
 
