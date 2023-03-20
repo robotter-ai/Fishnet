@@ -1,16 +1,14 @@
 import { ReactNode } from 'react';
-import {
-  IncomingTable,
-  MyDataTable,
-  OutgoingTable,
-  useMonitorAccessTable,
-} from '@features/monitor-access';
 import { useSearchParams } from 'react-router-dom';
 import { SearchInput } from '@components/form';
 import classNames from 'classnames';
 import useModal from '@shared/hooks/useModal';
 import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
+import useMonitorAccessTable from './hooks/useMonitorAccessTable';
+import MyDataTable from './components/MyDataTable';
+import OutgoingTable from './components/OutgoingTable';
+import IncomingTable from './components/IncomingTable';
 
 const MonitorAccess = () => {
   useMonitorAccessTable();
@@ -24,7 +22,7 @@ const MonitorAccess = () => {
   ];
 
   const TableMapper: { [key: string]: ReactNode } = {
-    'my-data': <MyDataTable handleOpen={handleOpen} />,
+    'my-data': <MyDataTable />,
     outgoing: <OutgoingTable />,
     incoming: <IncomingTable />,
   };

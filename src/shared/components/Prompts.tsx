@@ -112,6 +112,11 @@ export const ExecutePrompt: React.FC<{
             <p>Please wait ~ 10 sec</p>
           </div>
         ) : null}
+        {success ? (
+          <div className="flex flex-col items-center gap-4">
+            <h1>Executed</h1>
+          </div>
+        ) : null}
         {!isLoading && !success ? (
           <>
             <div className="mb-[25px] flex flex-col gap-5">

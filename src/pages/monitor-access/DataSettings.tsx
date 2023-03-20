@@ -39,12 +39,12 @@ const DataSettings = () => {
         </div>
       </div>
       <TableMapper handleOpenRefuseAccess={handleOpen} />
-      <DeletePrompt
+      {/* <DeletePrompt
         isOpen={isOpen}
         handleClose={handleClose}
         title="Warning!"
         message="You want to refuse access. Are you sure?"
-      />
+      /> */}
       <AppModal
         title="Access Settings"
         withInfo

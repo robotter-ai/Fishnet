@@ -169,7 +169,10 @@ const DataDetails = () => {
             size="lg"
             btnStyle="outline-blue"
             fullWidth
-            onClick={handleClose}
+            onClick={() => {
+              navigate(`/data/${dataDetails?.id_hash}/details`);
+              handleClose();
+            }}
           />
           <Button
             text="My Data"

@@ -36,7 +36,7 @@ const AppModal: React.FC<ModalProps> = ({
   fullWidth = false,
 }) => {
   return (
-    <Modal open={isOpen} onClose={handleClose}>
+    <Modal open={isOpen}>
       <Box sx={style(fullWidth)}>
         <div className="p-6">
           {withHeader ? (

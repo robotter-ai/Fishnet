@@ -2,13 +2,9 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import Papa from 'papaparse';
-import { useNavigate } from 'react-router-dom';
 import { getDatasets } from '@slices/dataSlice';
-import {
-  resetTimeseriesActions,
-  setCsvJson,
-  preprocessTimeseries,
-} from '@slices/timeseriesSlice';
+import { setCsvJson, preprocessTimeseries } from '@slices/timeseriesSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default () => {
   const navigate = useNavigate();
@@ -18,22 +14,14 @@ export default () => {
     (state) => state.datasets
   );
   const { userInfo } = useAppSelector((state) => state.profile);
-  const {
-    isLoading: isLoadingUploadTimeseries,
-    success: successUploadTimeseries,
-  } = useAppSelector((state) => state.timeseries);
+  const { isLoading: isLoadingUploadTimeseries } = useAppSelector(
+    (state) => state.timeseries
+  );
 
   useEffect(() => {
     setTitle('Data');
     dispatch(getDatasets());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (successUploadTimeseries) {
-      navigate(`/data/${'upload'}/details`);
-      dispatch(resetTimeseriesActions());
-    }
-  }, [successUploadTimeseries]);
 
   const handleCsvToJson = (file: any) => {
     Papa.parse(file, {
@@ -46,7 +34,9 @@ export default () => {
     const formData = new FormData();
     formData.append('owner', userInfo?.username);
     formData.append('data_file', file);
-    dispatch(preprocessTimeseries(formData));
+    dispatch(preprocessTimeseries(formData)).then(() => {
+      navigate(`/data/${'upload'}/details`);
+    });
   };
 
   return {

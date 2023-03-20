@@ -1,7 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import getErrMsg from '@shared/utils/getErrMsg';
 import axios from 'axios';
-
 
 export type TimeseriesProps = {
   id_hash?: string;
@@ -13,7 +12,7 @@ export type TimeseriesProps = {
 
 export type UploadTimeseriesProps = {
   timeseries: TimeseriesProps[];
-}
+};
 
 export const preprocessTimeseries = createAsyncThunk(
   'timeseries/preprocessTimeseries',
@@ -38,7 +37,7 @@ const uploadTimeseries = async (timeseries: UploadTimeseriesProps) => {
   return data;
 };
 
-export const timeseriesService = {
+const timeseriesService = {
   preprocessTimeseries,
   uploadTimeseries,
 };

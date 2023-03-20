@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import getErrMsg from '@shared/utils/getErrMsg';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import {RootState} from "../../store";
-import timeseriesService from "@slices/timeseriesSlice/timeseriesService";
+import { RootState } from '../../store';
+import timeseriesService from './timeseriesService';
 
 export const preprocessTimeseries = createAsyncThunk(
   'timeseries/preprocessTimeseries',
@@ -28,7 +28,9 @@ export const uploadTimeseries = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const { timeseries } = thunkAPI.getState() as RootState;
-      return await timeseriesService.uploadTimeseries({timeseries: timeseries.timeseries});
+      return await timeseriesService.uploadTimeseries({
+        timeseries: timeseries.timeseries,
+      });
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message

@@ -10,7 +10,7 @@ import {
   uploadDatasets,
 } from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
-import {uploadTimeseries} from "@slices/timeseriesSlice";
+import { uploadTimeseries } from '@slices/timeseriesSlice';
 
 export default () => {
   const { id } = useParams();
@@ -18,10 +18,13 @@ export default () => {
   const { userInfo } = useAppSelector((app) => app.profile);
   const dispatch = useAppDispatch();
   const {
-    dataDetails,
-    uploadDatasets: uploadActions,
-    datasetByIDActions,
-  } = useAppSelector((app) => app.datasets);
+    datasets: {
+      dataDetails,
+      uploadDatasets: uploadActions,
+      datasetByIDActions,
+    },
+    timeseries: { isLoading: isLoadingTimeseries },
+  } = useAppSelector((app) => app);
   const { isOpen, handleOpen, handleClose } = useModal();
   const {
     isOpen: isOpenNewChart,
@@ -65,7 +68,7 @@ export default () => {
     handleOnChange,
     handleUploadDataset,
     datasetByIDActions,
-    isLoading: uploadActions.isLoading,
+    isLoading: isLoadingTimeseries || uploadActions.isLoading,
     isPublished,
     dataDetails,
     publishedModalProps: { handleClose, isOpen },
