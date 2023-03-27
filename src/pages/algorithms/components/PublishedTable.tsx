@@ -4,7 +4,6 @@ import { DeletePrompt, ExecutePrompt } from '@shared/components/Prompts';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 
 const COLUMNS = (
-  isSelectAlgorithm: boolean,
   handleOpenAlgoDetails: (id: string) => void
 ): ITableColumns[] => [
   {
@@ -51,22 +50,16 @@ const COLUMNS = (
   {
     header: 'Filter',
     cell: ({ id_hash }) => (
-      <ExecutePrompt
-        against="data"
-        selectedHash={id_hash}
-        isSelect={isSelectAlgorithm}
-      />
+      <ExecutePrompt against="data" selectedHash={id_hash} />
     ),
   },
 ];
 
 const PublishedTable = ({
-  isSelectAlgorithm,
   data,
   isLoading,
   handleOpenAlgoDetails,
 }: {
-  isSelectAlgorithm: any;
   data: Record<string, any>[];
   isLoading: boolean;
   handleOpenAlgoDetails: (id: string) => void;
@@ -74,7 +67,7 @@ const PublishedTable = ({
   return (
     <CustomTable
       data={data}
-      columns={COLUMNS(isSelectAlgorithm, handleOpenAlgoDetails)}
+      columns={COLUMNS(handleOpenAlgoDetails)}
       isLoading={isLoading}
     />
   );

@@ -30,6 +30,7 @@ interface StateProps {
   isLoading: boolean;
   success: boolean | null;
   details: ExecutionProps;
+  result: any;
 }
 
 const initialState: StateProps = {
@@ -41,6 +42,7 @@ const initialState: StateProps = {
     owner: '',
     status: 'REQUESTED',
   },
+  result: null,
 };
 
 export const executionSlice = createSlice({
@@ -68,9 +70,10 @@ export const executionSlice = createSlice({
       .addCase(postExecutionRequest.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(postExecutionRequest.fulfilled, (state) => {
+      .addCase(postExecutionRequest.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = true;
+        state.result = action.payload;
       })
       .addCase(postExecutionRequest.rejected, (state, action) => {
         state.isLoading = false;

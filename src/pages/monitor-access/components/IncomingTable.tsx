@@ -64,10 +64,9 @@ const IncomingTable = () => {
   const { incomingActions, incomingPermissions } = useAppSelector(
     (state) => state.monitorAccess
   );
-  const { userInfo } = useAppSelector((state) => state.profile);
 
   useEffect(() => {
-    dispatch(getIncomingPermissions(userInfo?.id_hash));
+    dispatch(getIncomingPermissions());
   }, []);
 
   return (

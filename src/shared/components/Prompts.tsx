@@ -10,7 +10,7 @@ import {
   postExecutionRequest,
   resetExecutionDetails,
 } from '@slices/executionSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { IoCheckbox } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
@@ -52,24 +52,25 @@ export const DeletePrompt: React.FC<PromptInterface> = ({ title, message }) => {
 };
 
 export const ExecutePrompt: React.FC<{
-  isSelect: boolean;
   selectedHash: string;
   against: 'data' | 'algorithm';
   disabled?: boolean;
-}> = ({ isSelect, disabled, against, selectedHash }) => {
+  btnStyle?: 'solid' | 'thin';
+}> = ({ disabled, against, selectedHash, btnStyle }) => {
   const dispatch = useAppDispatch();
-  const { userInfo } = useAppSelector((state) => state.profile);
-  const { details, success, isLoading } = useAppSelector(
+  const { auth } = useAppSelector((state) => state.profile);
+  const { details, success, isLoading, result } = useAppSelector(
     (state) => state.execution
   );
   const { isOpen, handleOpen, handleClose } = useModal();
-  const { handleNavigateWithSelect } = useSelectData();
+  const { isSelect, handleNavigateWithSelect } = useSelectData();
+  const [isExecuted, setIsExecuted] = useState(false);
 
   useEffect(() => {
     dispatch(
       changeExecutionDetails({
         input: 'owner',
-        value: userInfo?.username || '',
+        value: auth.address,
       })
     );
     if (success) {
@@ -83,25 +84,43 @@ export const ExecutePrompt: React.FC<{
 
   return (
     <>
-      <Button
-        text={isSelect ? 'Select' : 'Use'}
-        btnStyle="outline-blue"
-        onClick={() => {
-          dispatch(
-            changeExecutionDetails({
-              input: against === 'data' ? 'algorithmID' : 'datasetID',
-              value: selectedHash,
-            })
-          );
-          handleOpen();
-        }}
-        disabled={disabled}
-      />
+      {btnStyle === 'solid' ? (
+        <Button
+          text={isSelect ? 'Select' : 'Use'}
+          size="lg"
+          onClick={() => {
+            dispatch(
+              changeExecutionDetails({
+                input: against === 'data' ? 'algorithmID' : 'datasetID',
+                value: selectedHash,
+              })
+            );
+            handleOpen();
+          }}
+          disabled={disabled}
+        />
+      ) : (
+        <Button
+          text={isSelect ? 'Select' : 'Use'}
+          btnStyle="outline-blue"
+          onClick={() => {
+            dispatch(
+              changeExecutionDetails({
+                input: against === 'data' ? 'algorithmID' : 'datasetID',
+                value: selectedHash,
+              })
+            );
+            handleOpen();
+          }}
+          disabled={disabled}
+        />
+      )}
       <AppModal
-        title="Execute"
+        title={isExecuted ? 'Result' : 'Execute'}
         isOpen={isOpen}
         handleClose={handleClose}
         withHeader={!isLoading}
+        fullWidth={isExecuted}
       >
         {isLoading ? (
           <div className="flex flex-col items-center gap-4">
@@ -109,15 +128,20 @@ export const ExecutePrompt: React.FC<{
             <div className="p-4">
               <FadeLoader color="#0054ff" height={15} margin={-2.5} width={3} />
             </div>
-            <p>Please wait ~ 10 sec</p>
+            <p>Please wait</p>
           </div>
         ) : null}
-        {success ? (
-          <div className="flex flex-col items-center gap-4">
-            <h1>Executed</h1>
+        {isExecuted ? (
+          <div>
+            <div className="bg-[#f3f3f3] w-full min-h-[40px] rounded mt-4 relative p-4 overflow-auto">
+              <pre>{JSON.stringify({ ...result }, null, 2)}</pre>
+            </div>
+            <div className="flex justify-center mt-5">
+              <Button text="Okay" size="lg" onClick={handleClose} />
+            </div>
           </div>
         ) : null}
-        {!isLoading && !success ? (
+        {!isLoading && !isExecuted ? (
           <>
             <div className="mb-[25px] flex flex-col gap-5">
               <TextInput
@@ -153,7 +177,11 @@ export const ExecutePrompt: React.FC<{
                 text="Apply"
                 size="lg"
                 isLoading={isLoading}
-                onClick={() => dispatch(postExecutionRequest(details))}
+                onClick={() =>
+                  dispatch(postExecutionRequest(details)).then(() =>
+                    setIsExecuted(true)
+                  )
+                }
                 fullWidth
               />
             </div>

@@ -12,7 +12,8 @@ import {
   uploadgetAlgorithm,
 } from '@slices/algorithmSlice';
 import { useSearchParams } from 'react-router-dom';
-import {TextareaAutosize} from "@mui/material";
+import { TextareaAutosize } from '@mui/material';
+import { ExecutePrompt } from '@shared/components/Prompts';
 
 const AlgorithmDetails = ({
   isLoadingUpload,
@@ -22,7 +23,7 @@ const AlgorithmDetails = ({
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
   const { algorithmDetails } = useAppSelector((state) => state.algorithm);
-  const { userInfo } = useAppSelector((state) => state.profile);
+  const { auth } = useAppSelector((state) => state.profile);
   const isViewById = !!searchParams.get('details');
 
   useEffect(() => {
@@ -34,10 +35,16 @@ const AlgorithmDetails = ({
         dispatch(
           changeAlgorithmDetails({
             name: 'owner',
-            value: userInfo?.username || '',
+            value: auth.address,
           })
         );
-        dispatch(changeAlgorithmDetails({ name: 'code', value: 'def run(df: pd.DataFrame, params: Optional[dict]):\n    return df' }));
+        dispatch(
+          changeAlgorithmDetails({
+            name: 'code',
+            value:
+              'def run(df: pd.DataFrame, params: Optional[dict]):\n    return df',
+          })
+        );
       }
     }
 
@@ -114,15 +121,32 @@ const AlgorithmDetails = ({
           </div>
           <DataSummary summary={summary} />
         </div>
-        <TextareaAutosize className="bg-[#f3f3f3] w-full h-full rounded mt-4 font-mono" name={'code'} value={`${algorithmDetails?.code}`} onChange={(e) => dispatch(changeAlgorithmDetails({name: 'code', value: e.target.value}))} />
+        <TextareaAutosize
+          className="bg-[#f3f3f3] w-full h-full rounded mt-4 font-mono"
+          name="code"
+          value={`${algorithmDetails?.code}`}
+          onChange={(e) =>
+            dispatch(
+              changeAlgorithmDetails({ name: 'code', value: e.target.value })
+            )
+          }
+        />
       </div>
       <div className="flex justify-center mt-5">
-        <CustomButton
-          text="Publish"
-          size="lg"
-          isLoading={isLoadingUpload}
-          onClick={() => dispatch(uploadgetAlgorithm(algorithmDetails))}
-        />
+        {searchParams.get('details') !== 'upload' ? (
+          <ExecutePrompt
+            against="data"
+            btnStyle="solid"
+            selectedHash={algorithmDetails?.id_hash}
+          />
+        ) : (
+          <CustomButton
+            text="Publish"
+            size="lg"
+            isLoading={isLoadingUpload}
+            onClick={() => dispatch(uploadgetAlgorithm(algorithmDetails))}
+          />
+        )}
       </div>
     </>
   );

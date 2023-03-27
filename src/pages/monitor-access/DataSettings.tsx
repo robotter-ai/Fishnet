@@ -7,6 +7,7 @@ import { MdAdd } from 'react-icons/md';
 import { RxCaretLeft } from 'react-icons/rx';
 import { createSearchParams, Link } from 'react-router-dom';
 import TableMapper from './components/TableMapper';
+import useDataSettings from './hooks/useDataSettings';
 
 const DataSettings = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
@@ -15,6 +16,7 @@ const DataSettings = () => {
     handleOpen: handleOpenAccessSettings,
     handleClose: handleCloseAccessSettings,
   } = useModal();
+  const { data, isLoading } = useDataSettings();
 
   return (
     <div id="data-settings">

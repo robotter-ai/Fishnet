@@ -45,6 +45,7 @@ export default () => {
       handleOpenPublished();
       handleCloseAlgorithmDetails();
       dispatch(resetUploadActions());
+      dispatch(getAlgorithms());
     }
   }, [uploadActions.success]);
 

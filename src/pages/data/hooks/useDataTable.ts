@@ -5,15 +5,17 @@ import Papa from 'papaparse';
 import { getDatasets } from '@slices/dataSlice';
 import { setCsvJson, preprocessTimeseries } from '@slices/timeseriesSlice';
 import { useNavigate } from 'react-router-dom';
+import useSelectData from '@shared/hooks/useSelectData';
 
 export default () => {
   const navigate = useNavigate();
   const { setTitle } = usePageTitle();
   const dispatch = useAppDispatch();
+  const { isSelect } = useSelectData();
   const { isLoading, datasets, error } = useAppSelector(
     (state) => state.datasets
   );
-  const { userInfo } = useAppSelector((state) => state.profile);
+  const { auth } = useAppSelector((state) => state.profile);
   const { isLoading: isLoadingUploadTimeseries } = useAppSelector(
     (state) => state.timeseries
   );
@@ -32,7 +34,7 @@ export default () => {
       },
     });
     const formData = new FormData();
-    formData.append('owner', userInfo?.username);
+    formData.append('owner', auth.address);
     formData.append('data_file', file);
     dispatch(preprocessTimeseries(formData)).then(() => {
       navigate(`/data/${'upload'}/details`);
@@ -41,6 +43,7 @@ export default () => {
 
   return {
     data: datasets,
+    isSelectData: isSelect,
     isLoading,
     error,
     handleCsvToJson,

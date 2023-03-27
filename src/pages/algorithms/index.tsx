@@ -47,7 +47,6 @@ const Algorithms = () => {
       <PublishedTable
         data={algorithms}
         isLoading={isLoading}
-        isSelectAlgorithm={isSelectAlgorithm}
         handleOpenAlgoDetails={handleOpenAlgoDetails}
       />
     ),
@@ -55,7 +54,6 @@ const Algorithms = () => {
       <BrowseAlgorithmsTable
         data={algorithms}
         isLoading={isLoading}
-        isSelectAlgorithm={isSelectAlgorithm}
         handleOpenAlgoDetails={handleOpenAlgoDetails}
       />
     ),

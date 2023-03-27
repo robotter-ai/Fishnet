@@ -1,12 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import { RootState } from 'src/store';
 import monitorAccessService from './service';
 
 export const getIncomingPermissions = createAsyncThunk(
   'monitorAccess/getIncomingPermissions',
-  async (user_id: string, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
-      return await monitorAccessService.getIncomingPermissions(user_id);
+      const { profile } = thunkAPI.getState() as RootState;
+      return await monitorAccessService.getIncomingPermissions(
+        profile.auth.address
+      );
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -19,9 +23,27 @@ export const getIncomingPermissions = createAsyncThunk(
 
 export const getOutgoingPermissions = createAsyncThunk(
   'monitorAccess/getOutgoingPermissions',
-  async (user_id: string, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
-      return await monitorAccessService.getOutgoingPermissions(user_id);
+      const { profile } = thunkAPI.getState() as RootState;
+      return await monitorAccessService.getOutgoingPermissions(
+        profile.auth.address
+      );
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
+
+export const getDatasetPermissions = createAsyncThunk(
+  'monitorAccess/getDatasetPermissions',
+  async (dataset_id: string, thunkAPI) => {
+    try {
+      return await monitorAccessService.getDatasetPermissions(dataset_id);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -37,6 +59,7 @@ interface StateProps {
   outgoingPermissions: any;
   incomingActions: { isLoading: boolean; success: any };
   outgoingActions: { isLoading: boolean; success: any };
+  datasetPermission: { data: any; isLoading: boolean; success: any };
 }
 
 const initialState: StateProps = {
@@ -44,6 +67,7 @@ const initialState: StateProps = {
   outgoingPermissions: null,
   incomingActions: { isLoading: false, success: null },
   outgoingActions: { isLoading: false, success: null },
+  datasetPermission: { data: null, isLoading: false, success: null },
 };
 
 const monitorAccessSlice = createSlice({
@@ -75,6 +99,19 @@ const monitorAccessSlice = createSlice({
       })
       .addCase(getOutgoingPermissions.rejected, (state, action) => {
         state.outgoingActions.isLoading = false;
+        toast.error(action.payload as string);
+      })
+
+      .addCase(getDatasetPermissions.pending, (state) => {
+        state.datasetPermission.isLoading = true;
+      })
+      .addCase(getDatasetPermissions.fulfilled, (state, action) => {
+        state.datasetPermission.isLoading = false;
+        state.datasetPermission.success = true;
+        state.datasetPermission.data = action.payload;
+      })
+      .addCase(getDatasetPermissions.rejected, (state, action) => {
+        state.datasetPermission.isLoading = false;
         toast.error(action.payload as string);
       });
   },

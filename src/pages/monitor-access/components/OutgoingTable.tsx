@@ -51,10 +51,9 @@ const OutgoingTable = () => {
   const { outgoingActions, outgoingPermissions } = useAppSelector(
     (state) => state.monitorAccess
   );
-  const { userInfo } = useAppSelector((state) => state.profile);
 
   useEffect(() => {
-    dispatch(getOutgoingPermissions(userInfo?.id_hash));
+    dispatch(getOutgoingPermissions());
   }, []);
 
   return (

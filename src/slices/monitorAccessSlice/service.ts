@@ -10,9 +10,15 @@ const getOutgoingPermissions = async (user_id: string) => {
   return data;
 };
 
+const getDatasetPermissions = async (dataset_id: string) => {
+  const { data } = await axios.get(`/datasets/${dataset_id}/permissions`);
+  return data;
+};
+
 const monitorAccessService = {
   getIncomingPermissions,
   getOutgoingPermissions,
+  getDatasetPermissions,
 };
 
 export default monitorAccessService;

@@ -15,7 +15,7 @@ import { uploadTimeseries } from '@slices/timeseriesSlice';
 export default () => {
   const { id } = useParams();
   const { setTitle } = usePageTitle();
-  const { userInfo } = useAppSelector((app) => app.profile);
+  const { auth } = useAppSelector((app) => app.profile);
   const dispatch = useAppDispatch();
   const {
     datasets: {
@@ -39,7 +39,7 @@ export default () => {
     } else {
       dispatch(resetDataDetails());
     }
-    dispatch(changeDataDetails({ name: 'owner', value: userInfo?.username }));
+    dispatch(changeDataDetails({ name: 'owner', value: auth.address }));
     dispatch(changeDataDetails({ name: 'ownsAllTimeseries', value: true }));
   }, []);
 
