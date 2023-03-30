@@ -3,13 +3,13 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import useSelectData from '@shared/hooks/useSelectData';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useOnChange from '@shared/hooks/useOnChange';
-import { getUserInfo, updateUserInfo } from '@slices/profileSlice';
+import { getAllUsers, getUserInfo, updateUserInfo } from '@slices/profileSlice';
 
 export default () => {
   const dispatch = useAppDispatch();
   const { setTitle } = usePageTitle();
   const { isSelect } = useSelectData();
-  const { auth, userInfo, updateActions } = useAppSelector(
+  const { auth, userInfo, updateActions, allUsers } = useAppSelector(
     (app) => app.profile
   );
   const { inputs, handleOnChange } = useOnChange({
@@ -32,6 +32,7 @@ export default () => {
     if (updateActions.success) {
       dispatch(getUserInfo());
     }
+    dispatch(getAllUsers());
   }, [updateActions.success]);
 
   const handleUpdateProfile = () => {
@@ -44,5 +45,6 @@ export default () => {
     handleOnChange,
     handleUpdateProfile,
     isLoading: updateActions.isLoading,
+    allUsers,
   };
 };

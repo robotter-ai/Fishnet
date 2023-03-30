@@ -9,15 +9,15 @@ const columns = ({
 }): ITableColumns[] => [
   {
     header: 'Name',
-    cell: ({ name }) => <p className="whitespace-nowrap">{name}</p>,
+    cell: ({ username }) => <p className="whitespace-nowrap">{username}</p>,
     isSortable: true,
   },
   {
     header: 'Hash',
-    cell: ({ hash }) => (
+    cell: ({ id_hash }) => (
       <div className="flex gap-3">
-        <p className="w-[200px] truncate">{hash}</p>
-        <ClickToCopy text={hash} />
+        <p className="w-[200px] truncate">{id_hash}</p>
+        <ClickToCopy text={id_hash} />
       </div>
     ),
     isSortable: true,
@@ -38,58 +38,32 @@ const columns = ({
   },
   {
     header: 'Descrition',
-    cell: ({ desc }) =>
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
+    cell: ({ bio }) => bio,
     isSortable: true,
   },
   {
     header: '',
-    cell: ({ desc }) =>
+    cell: () =>
       isSelectUser ? (
         <CustomButton text="Select" btnStyle="outline-blue" />
       ) : null,
   },
 ];
 
-const BrowseUsers = ({ isSelectUser }: { isSelectUser: boolean }) => {
-  const data = [
-    {
-      name: 'Profile <Name>',
-      hash: '8743b52063cd8409g885774...',
-      link: 'https://www.twitter.com/reddotsover',
-    },
-    {
-      name: 'Profile <Name>',
-      hash: '8743b52063cd8409g885774...',
-      link: 'https://www.twitter.com/reddotsover',
-    },
-    {
-      name: 'Profile <Name>',
-      hash: '8743b52063cd8409g885774...',
-      link: 'https://www.twitter.com/reddotsover',
-    },
-    {
-      name: 'Profile <Name>',
-      hash: '8743b52063cd8409g885774...',
-      link: 'https://www.twitter.com/reddotsover',
-    },
-    {
-      name: 'Profile <Name>',
-      hash: '8743b52063cd8409g885774...',
-      link: 'https://www.twitter.com/reddotsover',
-    },
-    {
-      name: 'Profile <Name>',
-      hash: '8743b52063cd8409g885774...',
-      link: 'https://www.twitter.com/reddotsover',
-    },
-    {
-      name: 'Profile <Name>',
-      hash: '8743b52063cd8409g885774...',
-      link: 'https://www.twitter.com/reddotsover',
-    },
-  ];
-  return <CustomTable data={data} columns={columns({ isSelectUser })} />;
+const BrowseUsers = ({
+  isSelectUser,
+  allUsers,
+}: {
+  isSelectUser: boolean;
+  allUsers: any;
+}) => {
+  return (
+    <CustomTable
+      data={allUsers.data}
+      columns={columns({ isSelectUser })}
+      isLoading={allUsers.isLoading}
+    />
+  );
 };
 
 export default BrowseUsers;

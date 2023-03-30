@@ -19,6 +19,21 @@ export const getUserInfo = createAsyncThunk(
   }
 );
 
+export const getAllUsers = createAsyncThunk(
+  'profile/getAllUsers',
+  async (_, thunkAPI) => {
+    try {
+      return await profileService.getAllUsers();
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
+
 export const updateUserInfo = createAsyncThunk(
   'profile/updateUserInfo',
   async (data: UserProps, thunkAPI) => {
@@ -41,6 +56,7 @@ interface ProfileSliceProps {
   userInfo: UserProps | any;
   auth: { address: any; isConnected: boolean };
   updateActions: { isLoading: boolean; success: boolean | null; error: any };
+  allUsers: { data: null; isLoading: boolean; success: boolean | null };
 }
 
 const initialState: ProfileSliceProps = {
@@ -50,6 +66,7 @@ const initialState: ProfileSliceProps = {
   userInfo: null,
   auth: { address: null, isConnected: false },
   updateActions: { isLoading: false, success: null, error: null },
+  allUsers: { data: null, isLoading: false, success: null },
 };
 
 const profileSlice = createSlice({
@@ -89,6 +106,20 @@ const profileSlice = createSlice({
         state.error = action.payload;
         toast.error(action.payload as string);
       })
+
+      .addCase(getAllUsers.pending, (state) => {
+        state.allUsers.isLoading = true;
+      })
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        state.allUsers.isLoading = false;
+        state.allUsers.success = true;
+        state.allUsers.data = action.payload;
+      })
+      .addCase(getAllUsers.rejected, (state, action) => {
+        state.allUsers.isLoading = false;
+        toast.error(action.payload as string);
+      })
+
       .addCase(updateUserInfo.pending, (state) => {
         state.updateActions.isLoading = true;
       })

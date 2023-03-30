@@ -12,6 +12,7 @@ const MyProfile = () => {
     handleOnChange,
     handleUpdateProfile,
     isLoading,
+    allUsers,
   } = useProfile();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabs = [
@@ -27,7 +28,9 @@ const MyProfile = () => {
         handleUpdateProfile={handleUpdateProfile}
       />
     ),
-    'browse-users': <BrowseUsers isSelectUser={isSelectUser} />,
+    'browse-users': (
+      <BrowseUsers allUsers={allUsers} isSelectUser={isSelectUser} />
+    ),
   };
   const query: null | string = searchParams.get('tab') || 'account';
   const TableComponent = TableMapper?.[query];

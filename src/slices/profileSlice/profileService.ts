@@ -13,6 +13,11 @@ const getUserInfo = async (address: string) => {
   return data;
 };
 
+const getAllUsers = async () => {
+  const { data } = await axios.get('/allusers');
+  return data;
+};
+
 const updateUserInfo = async (userDetails: UserProps) => {
   const { data } = await axios.put('/user', userDetails);
   return data;
@@ -20,6 +25,7 @@ const updateUserInfo = async (userDetails: UserProps) => {
 
 const profileService = {
   getUserInfo,
+  getAllUsers,
   updateUserInfo,
 };
 
