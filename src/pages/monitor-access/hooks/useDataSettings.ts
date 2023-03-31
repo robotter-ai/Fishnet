@@ -6,13 +6,11 @@ import { getDatasetPermissions } from '@slices/monitorAccessSlice';
 export default () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const {
-    datasetPermission: { data, isLoading },
-  } = useAppSelector((state) => state.monitorAccess);
+  const { datasetPermission } = useAppSelector((state) => state.monitorAccess);
 
   useEffect(() => {
     dispatch(getDatasetPermissions(id as string));
   }, []);
 
-  return { data, isLoading };
+  return { datasetPermission };
 };

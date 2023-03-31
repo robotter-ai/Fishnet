@@ -16,7 +16,7 @@ const DataSettings = () => {
     handleOpen: handleOpenAccessSettings,
     handleClose: handleCloseAccessSettings,
   } = useModal();
-  const { data, isLoading } = useDataSettings();
+  const { datasetPermission } = useDataSettings();
 
   return (
     <div id="data-settings">
@@ -40,7 +40,10 @@ const DataSettings = () => {
           </CustomButton>
         </div>
       </div>
-      <TableMapper handleOpenRefuseAccess={handleOpen} />
+      <TableMapper
+        datasetPermission={datasetPermission}
+        handleOpenRefuseAccess={handleOpen}
+      />
       {/* <DeletePrompt
         isOpen={isOpen}
         handleClose={handleClose}
