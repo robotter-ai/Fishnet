@@ -9,8 +9,21 @@ export type UploadDatasetProps = {
   timeseriesIDs: string[];
 };
 
-const getDatasets = async (address: string) => {
-  const { data } = await axios.get(`/datasets`);
+export type GetDatasetProps = {
+  id?: string;
+  view_as?: string;
+  by?: string;
+  page?: number;
+  page_size?: number;
+};
+
+const getDatasets = async (view_as: string) => {
+  const { data } = await axios.get(`/datasets?view_as=${view_as}`);
+  return data;
+};
+
+const getPublishedDatasets = async (by: string) => {
+  const { data } = await axios.get(`/datasets?by=${by}`);
   return data;
 };
 
@@ -33,6 +46,7 @@ const uploadDatasets = async (dataset: UploadDatasetProps) => {
 
 const dataService = {
   getDatasets,
+  getPublishedDatasets,
   getDatasetByID,
   updateDatasetAvailability,
   uploadDatasets,

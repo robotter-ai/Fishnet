@@ -26,6 +26,7 @@ const Algorithms = () => {
     isLoadingUpload,
     isLoadingExecution,
     isLoadingGetAlgoByID,
+    publishedAlgorithms,
   } = useAlgorithmsTable();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -45,8 +46,8 @@ const Algorithms = () => {
   const TableMapper: { [key: string]: React.ReactNode } = {
     published: (
       <PublishedTable
-        data={algorithms}
-        isLoading={isLoading}
+        data={publishedAlgorithms.data}
+        isLoading={publishedAlgorithms.isLoading}
         handleOpenAlgoDetails={handleOpenAlgoDetails}
       />
     ),

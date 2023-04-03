@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import { RootState } from 'src/store';
 import algorithmService, { UploadAlgorithmProps } from './service';
 
 export const getAlgorithms = createAsyncThunk(
@@ -7,6 +8,24 @@ export const getAlgorithms = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       return await algorithmService.getAlgorithms();
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
+
+export const getPublishedAlgorithms = createAsyncThunk(
+  'algorithm/getPublishedAlgorithms',
+  async (_, thunkAPI) => {
+    try {
+      const { profile } = thunkAPI.getState() as RootState;
+      return await algorithmService.getPublishedAlgorithms(
+        profile.auth.address
+      );
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -87,6 +106,7 @@ interface StateProps {
   algorithmByIDActions: { isLoading: boolean; success: boolean | null };
   uploadActions: { isLoading: boolean; success: boolean | null };
   executionActions: { isLoading: boolean; success: boolean | null };
+  publishedAlgorithms: { data: any[]; isLoading: boolean };
 }
 
 const initialState: StateProps = {
@@ -99,6 +119,7 @@ const initialState: StateProps = {
   algorithmByIDActions: { isLoading: false, success: null },
   uploadActions: { isLoading: false, success: null },
   executionActions: { isLoading: false, success: null },
+  publishedAlgorithms: { data: [], isLoading: false },
 };
 
 const algorithmSlice = createSlice({
@@ -134,6 +155,17 @@ const algorithmSlice = createSlice({
       })
       .addCase(getAlgorithms.rejected, (state) => {
         state.isLoading = false;
+      })
+
+      .addCase(getPublishedAlgorithms.pending, (state) => {
+        state.publishedAlgorithms.isLoading = true;
+      })
+      .addCase(getPublishedAlgorithms.fulfilled, (state, action) => {
+        state.publishedAlgorithms.isLoading = false;
+        state.publishedAlgorithms.data = action.payload;
+      })
+      .addCase(getPublishedAlgorithms.rejected, (state) => {
+        state.publishedAlgorithms.isLoading = false;
       })
 
       .addCase(getAlgorithmByID.pending, (state) => {

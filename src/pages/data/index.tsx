@@ -14,8 +14,15 @@ import useDataTable from './hooks/useDataTable';
 
 const MyData = () => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);
-  const { data, handleCsvToJson, isLoading, isLoadingUploadTimeseries } =
-    useDataTable();
+  const {
+    data,
+    handleCsvToJson,
+    isLoading,
+    isLoadingUploadTimeseries,
+    filterParams,
+    handleFilterTable,
+    publishedDatasets,
+  } = useDataTable();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
 
@@ -24,7 +31,12 @@ const MyData = () => {
     { key: 'browse-data', name: 'Browse data' },
   ];
   const TableMapper: { [key: string]: ReactNode } = {
-    published: <PublishedTable data={data} isLoading={isLoading} />,
+    published: (
+      <PublishedTable
+        data={publishedDatasets.data}
+        isLoading={publishedDatasets.isLoading}
+      />
+    ),
     'browse-data': <BrowseDataTable data={data} isLoading={isLoading} />,
   };
   const query: null | string = searchParams.get('tab') || 'published';
@@ -53,7 +65,10 @@ const MyData = () => {
           ))}
         </div>
         <div className="flex gap-4 items-center">
-          <SearchInput />
+          <SearchInput
+            value={filterParams.value}
+            onChange={(value) => handleFilterTable(value)}
+          />
           <Button size="md" onClick={handleOpen}>
             <div className="flex gap-3 items-center">
               <MdAdd size={20} />

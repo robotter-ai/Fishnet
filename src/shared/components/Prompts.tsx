@@ -100,20 +100,22 @@ export const ExecutePrompt: React.FC<{
           disabled={disabled}
         />
       ) : (
-        <Button
-          text={isSelect ? 'Select' : 'Use'}
-          btnStyle="outline-blue"
-          onClick={() => {
-            dispatch(
-              changeExecutionDetails({
-                input: against === 'data' ? 'algorithmID' : 'datasetID',
-                value: selectedHash,
-              })
-            );
-            handleOpen();
-          }}
-          disabled={disabled}
-        />
+        <div className="w-full flex justify-end">
+          <Button
+            text={isSelect ? 'Select' : 'Use'}
+            btnStyle="outline-blue"
+            onClick={() => {
+              dispatch(
+                changeExecutionDetails({
+                  input: against === 'data' ? 'algorithmID' : 'datasetID',
+                  value: selectedHash,
+                })
+              );
+              handleOpen();
+            }}
+            disabled={disabled}
+          />
+        </div>
       )}
       <AppModal
         title={isExecuted ? 'Result' : 'Execute'}

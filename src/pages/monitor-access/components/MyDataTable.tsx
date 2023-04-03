@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import Button from '@components/ui/Button';
-import { ToggleButton, Starred } from '@components/form';
+import { Starred } from '@components/form';
 import ClickToCopy from '@components/ui/ClickToCopy';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { getDatasets } from '@slices/dataSlice';
+import { getDatasets, getPublishedDatasets } from '@slices/dataSlice';
+import ToggleAvailability from '@shared/components/ToggleAvailability';
 
-const COLUMNS: ITableColumns[] = [
+const COLUMNS = (dispatch: any): ITableColumns[] => [
   {
     header: 'Name',
     accessor: 'name',
@@ -36,9 +37,11 @@ const COLUMNS: ITableColumns[] = [
     header: 'Public access',
     accessor: 'available',
     cell: (item) => (
-      <div className="flex justify-center text-center">
-        <ToggleButton checked={item.available} onChange={() => {}} />
-      </div>
+      <ToggleAvailability
+        available={item.available}
+        datasetId={item.id_hash}
+        refetchFunc={() => dispatch(getDatasets())}
+      />
     ),
     isSortable: true,
   },
@@ -66,14 +69,18 @@ const COLUMNS: ITableColumns[] = [
 
 const MyDataTable = () => {
   const dispatch = useAppDispatch();
-  const { isLoading, datasets } = useAppSelector((state) => state.datasets);
+  const { publishedDatasets } = useAppSelector((state) => state.datasets);
 
   useEffect(() => {
-    dispatch(getDatasets());
+    dispatch(getPublishedDatasets());
   }, []);
 
   return (
-    <CustomTable data={datasets} columns={COLUMNS} isLoading={isLoading} />
+    <CustomTable
+      data={publishedDatasets.data}
+      columns={COLUMNS(dispatch)}
+      isLoading={publishedDatasets.isLoading}
+    />
   );
 };
 

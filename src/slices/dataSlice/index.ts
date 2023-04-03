@@ -19,6 +19,22 @@ export const getDatasets = createAsyncThunk(
   }
 );
 
+export const getPublishedDatasets = createAsyncThunk(
+  'datasets/getPublishedDatasets',
+  async (_, thunkAPI) => {
+    try {
+      const { profile } = thunkAPI.getState() as RootState;
+      return await dataService.getPublishedDatasets(profile.auth.address);
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
+
 export const getDatasetByID = createAsyncThunk(
   'datasets/getDatasetByID',
   async (id: string, thunkAPI) => {
@@ -86,7 +102,6 @@ interface DataProps {
   updatePublicAccess: {
     isLoading: boolean;
     success: boolean | null;
-    error: any;
   };
   uploadDatasets: {
     isLoading: boolean;
@@ -94,6 +109,11 @@ interface DataProps {
     error: any;
   };
   datasetByIDActions: {
+    isLoading: boolean;
+    success: boolean | null;
+  };
+  publishedDatasets: {
+    data: any;
     isLoading: boolean;
     success: boolean | null;
   };
@@ -108,7 +128,6 @@ const initialState: DataProps = {
   updatePublicAccess: {
     isLoading: false,
     success: null,
-    error: null,
   },
   uploadDatasets: {
     isLoading: false,
@@ -116,6 +135,11 @@ const initialState: DataProps = {
     error: null,
   },
   datasetByIDActions: {
+    isLoading: false,
+    success: null,
+  },
+  publishedDatasets: {
+    data: null,
     isLoading: false,
     success: null,
   },
@@ -129,7 +153,6 @@ const dataSlice = createSlice({
       state.success = null;
       state.error = null;
       state.updatePublicAccess.success = null;
-      state.updatePublicAccess.error = null;
       state.uploadDatasets.success = null;
       state.uploadDatasets.error = null;
     },
@@ -161,6 +184,18 @@ const dataSlice = createSlice({
         state.error = action.payload;
       })
 
+      .addCase(getPublishedDatasets.pending, (state) => {
+        state.publishedDatasets.isLoading = true;
+      })
+      .addCase(getPublishedDatasets.fulfilled, (state, action) => {
+        state.publishedDatasets.isLoading = false;
+        state.publishedDatasets.success = true;
+        state.publishedDatasets.data = action.payload;
+      })
+      .addCase(getPublishedDatasets.rejected, (state) => {
+        state.publishedDatasets.isLoading = false;
+      })
+
       .addCase(getDatasetByID.pending, (state) => {
         state.datasetByIDActions.isLoading = true;
       })
@@ -183,7 +218,7 @@ const dataSlice = createSlice({
       })
       .addCase(updateDatasetAvailability.rejected, (state, action) => {
         state.updatePublicAccess.isLoading = false;
-        state.error = action.payload;
+        toast.error(action.payload as string);
       })
       .addCase(uploadDatasets.pending, (state) => {
         state.uploadDatasets.isLoading = true;

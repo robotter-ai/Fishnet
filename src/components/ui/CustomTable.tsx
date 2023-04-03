@@ -10,6 +10,7 @@ import { BarLoader } from 'react-spinners';
 import { GrCloudDownload } from 'react-icons/gr';
 import { TiArrowUnsorted } from 'react-icons/ti';
 import { TbMoodSad } from 'react-icons/tb';
+import classNames from 'classnames';
 
 export interface ITableColumns {
   header: string | React.ReactNode;
@@ -38,7 +39,14 @@ const CustomTable: React.FC<CustomTableProps> = ({
             <TableRow>
               {columns.map((item, i) => (
                 <TableCell key={i}>
-                  <div className="flex gap-2 items-center whitespace-nowrap">
+                  <div
+                    className={classNames(
+                      'flex gap-2 items-center whitespace-nowrap',
+                      {
+                        'justify-end': item.header === 'Filter',
+                      }
+                    )}
+                  >
                     {item.header}
                     {item.isSortable ? (
                       <TiArrowUnsorted color="rgba(28, 28, 28, 0.6)" />

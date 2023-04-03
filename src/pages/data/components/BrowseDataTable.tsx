@@ -1,7 +1,6 @@
 import { Starred } from '@components/form';
 import ClickToCopy from '@components/ui/ClickToCopy';
-import { BsDot } from 'react-icons/bs';
-import { STATUS_COLOR } from '@shared/constant';
+import { StatusIdentifier } from '@shared/constant';
 import { Link } from 'react-router-dom';
 import { ExecutePrompt } from '@shared/components/Prompts';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
@@ -30,13 +29,13 @@ const COLUMNS: ITableColumns[] = [
     isSortable: true,
   },
   {
-    header: 'Access',
-    cell: (item) => (
-      <div className="flex gap-3">
-        <p className="w-[200px] truncate">{item.id_hash}</p>
-        <ClickToCopy text={item.id_hash} />
-      </div>
-    ),
+    header: 'Status',
+    cell: ({ permission_status }) =>
+      permission_status ? (
+        <StatusIdentifier status={permission_status} />
+      ) : (
+        <p className="text-blue whitespace-nowrap">Access request</p>
+      ),
     isSortable: true,
   },
   {
@@ -55,20 +54,6 @@ const COLUMNS: ITableColumns[] = [
     header: 'Filter',
     cell: (item) => (
       <ExecutePrompt against="algorithm" selectedHash={item.id_hash} />
-    ),
-  },
-];
-
-const rows = [
-  {
-    access: <p className="whitespace-nowrap text-blue">Access request</p>,
-  },
-  {
-    access: (
-      <div className="flex items-center whitespace-nowrap text-center">
-        <p>Allowed</p>
-        <BsDot size={45} color={STATUS_COLOR.Allowed} />
-      </div>
     ),
   },
 ];

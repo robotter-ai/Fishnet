@@ -13,6 +13,11 @@ const getAlgorithms = async () => {
   return data;
 };
 
+const getPublishedAlgorithms = async (by: string) => {
+  const { data } = await axios.get(`/algorithms?by=${by}`);
+  return data;
+};
+
 const getAlgorithmByID = async (id: string) => {
   const { data } = await axios.get(`/algorithms/${id}`);
   return data;
@@ -35,6 +40,7 @@ const uploadgetAlgorithm = async (inputs: UploadAlgorithmProps) => {
 
 const algorithmService = {
   getAlgorithms,
+  getPublishedAlgorithms,
   getAlgorithmByID,
   getExecutions,
   getExecutionResultByID,

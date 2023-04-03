@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import {
   getAlgorithms,
   getExecutions,
+  getPublishedAlgorithms,
   resetUploadActions,
 } from '@slices/algorithmSlice';
 import useModal from '@shared/hooks/useModal';
@@ -23,6 +24,7 @@ export default () => {
     executions,
     executionActions,
     algorithmByIDActions,
+    publishedAlgorithms,
   } = useAppSelector((state) => state.algorithm);
   const {
     isOpen: isOpenPublished,
@@ -46,6 +48,7 @@ export default () => {
       handleCloseAlgorithmDetails();
       dispatch(resetUploadActions());
       dispatch(getAlgorithms());
+      dispatch(getPublishedAlgorithms());
     }
   }, [uploadActions.success]);
 
@@ -56,6 +59,7 @@ export default () => {
       setTitle('Algorithms');
     }
     dispatch(getAlgorithms());
+    dispatch(getPublishedAlgorithms());
     dispatch(getExecutions());
   }, [isSelect]);
 
@@ -64,6 +68,7 @@ export default () => {
     algorithms,
     executions,
     isLoading,
+    publishedAlgorithms,
     isLoadingExecution: executionActions.isLoading,
     isOpenPublished,
     handleClosePublished,

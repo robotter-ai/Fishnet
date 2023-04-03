@@ -60,7 +60,7 @@ const PublishedTable = ({
   isLoading,
   handleOpenAlgoDetails,
 }: {
-  data: Record<string, any>[];
+  data: any[];
   isLoading: boolean;
   handleOpenAlgoDetails: (id: string) => void;
 }) => {
