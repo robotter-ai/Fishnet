@@ -11,6 +11,8 @@ import ClickToCopy from '@components/ui/ClickToCopy';
 import dayjs from 'dayjs';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
+import useOwner from '@shared/hooks/useOwner';
+import { ExecutePrompt } from '@shared/components/Prompts';
 import useDataDetails from './hooks/useDataDetails';
 import DataChart from './components/DataChart';
 import EditDataTable from './components/EditDataTable';
@@ -27,6 +29,7 @@ const DataDetails = () => {
     dataDetails,
     datasetByIDActions,
   } = useDataDetails();
+  const { isOwner } = useOwner(dataDetails?.owner);
   const { isOpen, handleClose } = publishedModalProps;
   const { isOpenNewChart, handleOpenNewChart, handleCloseNewChart } =
     newChartModalProps;
@@ -73,10 +76,19 @@ const DataDetails = () => {
         <div>
           {/* eslint-disable-next-line no-nested-ternary */}
           {isPublished ? (
-            dataDetails?.permission_status ? (
+            isOwner ? (
               <div className="flex gap-4">
-                <Button text="Use" size="md" btnStyle="outline-blue" />
-                <Button text="Save" size="md" />
+                <ExecutePrompt
+                  btnSize="md"
+                  against="algorithm"
+                  selectedHash={dataDetails?.id_hash}
+                />
+                <Button
+                  text="Save"
+                  size="md"
+                  isLoading={isLoading}
+                  onClick={handleUploadDataset}
+                />
               </div>
             ) : (
               <Button text="Access request" size="md" />

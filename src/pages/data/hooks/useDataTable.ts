@@ -4,7 +4,7 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import Papa from 'papaparse';
 import { getDatasets, getPublishedDatasets } from '@slices/dataSlice';
 import { setCsvJson, preprocessTimeseries } from '@slices/timeseriesSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useSelectData from '@shared/hooks/useSelectData';
 
 export default () => {
@@ -12,6 +12,7 @@ export default () => {
   const { setTitle } = usePageTitle();
   const dispatch = useAppDispatch();
   const { isSelect } = useSelectData();
+  const [searchParams] = useSearchParams();
   const { isLoading, datasets, error, publishedDatasets } = useAppSelector(
     (state) => state.datasets
   );
@@ -24,9 +25,20 @@ export default () => {
     data: datasets || [],
   });
 
+  const query: string = searchParams.get('tab') || 'published';
+
+  const dataMapper = {
+    published: publishedDatasets.data,
+    'browse-data': datasets,
+  };
+  const dataToUse = dataMapper?.[query];
+
   useEffect(() => {
-    setFilterParams((prevState) => ({ ...prevState, data: datasets }));
-  }, [datasets]);
+    setFilterParams((prevState) => ({
+      ...prevState,
+      data: dataToUse,
+    }));
+  }, [query, datasets, publishedDatasets.data]);
 
   useEffect(() => {
     setTitle('Data');
@@ -51,10 +63,10 @@ export default () => {
   };
 
   const handleFilterTable = (value: any) => {
-    if (!value) return setFilterParams({ value, data: datasets });
+    if (!value) return setFilterParams({ value, data: dataToUse });
     return setFilterParams({
       value,
-      data: datasets.filter(({ name }: any) =>
+      data: dataToUse.filter(({ name }: any) =>
         name.toLowerCase().includes(value.toLowerCase())
       ),
     });

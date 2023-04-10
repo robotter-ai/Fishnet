@@ -37,7 +37,7 @@ const columns = ({
     isSortable: true,
   },
   {
-    header: 'Descrition',
+    header: 'Description',
     cell: ({ bio }) => bio,
     isSortable: true,
   },

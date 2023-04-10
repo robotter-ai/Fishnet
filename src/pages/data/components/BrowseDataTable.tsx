@@ -31,10 +31,10 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'Status',
     cell: ({ permission_status }) =>
-      permission_status ? (
-        <StatusIdentifier status={permission_status} />
-      ) : (
+      permission_status === 'NOT REQUESTED' ? (
         <p className="text-blue whitespace-nowrap">Access request</p>
+      ) : (
+        <StatusIdentifier status={permission_status} />
       ),
     isSortable: true,
   },
@@ -53,7 +53,11 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'Filter',
     cell: (item) => (
-      <ExecutePrompt against="algorithm" selectedHash={item.id_hash} />
+      <ExecutePrompt
+        against="algorithm"
+        selectedHash={item.id_hash}
+        disabled={item.permission_status !== 'allowed'}
+      />
     ),
   },
 ];

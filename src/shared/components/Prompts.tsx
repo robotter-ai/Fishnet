@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { IoCheckbox } from 'react-icons/io5';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
 
 interface PromptInterface {
@@ -56,7 +56,8 @@ export const ExecutePrompt: React.FC<{
   against: 'data' | 'algorithm';
   disabled?: boolean;
   btnStyle?: 'solid' | 'thin';
-}> = ({ disabled, against, selectedHash, btnStyle }) => {
+  btnSize?: 'sm' | 'md';
+}> = ({ disabled, against, selectedHash, btnStyle, btnSize = 'sm' }) => {
   const dispatch = useAppDispatch();
   const { auth } = useAppSelector((state) => state.profile);
   const { details, success, isLoading, result } = useAppSelector(
@@ -103,6 +104,7 @@ export const ExecutePrompt: React.FC<{
         <div className="w-full flex justify-end">
           <Button
             text={isSelect ? 'Select' : 'Use'}
+            size={btnSize}
             btnStyle="outline-blue"
             onClick={() => {
               dispatch(
@@ -203,8 +205,13 @@ export const PublishedModal: React.FC<{
   backTo: '/data' | '/algorithms';
 }> = ({ title, hash, publishedName, isOpen, handleClose, backTo }) => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleEditRecord = () => {
+    if (backTo === '/algorithms') {
+      searchParams.set('details', hash);
+      setSearchParams(searchParams);
+    }
     handleClose();
   };
 

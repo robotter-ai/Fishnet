@@ -1,4 +1,5 @@
 import { BsDot } from 'react-icons/bs';
+import capitalize from 'lodash.capitalize';
 
 export const VALUES_AND_INTERVAL = [
   'returnsBTC',
@@ -55,7 +56,10 @@ const NEW_STATUS_COLOR: { [key: string]: string } = {
 
 export const StatusIdentifier = ({ status }: { status: string }) => (
   <div className="flex items-center whitespace-nowrap text-center">
-    <p>{status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}</p>
-    <BsDot size={45} color={NEW_STATUS_COLOR[status.toLowerCase()]} />
+    <p>{capitalize(status)}</p>
+    <BsDot
+      size={45}
+      color={NEW_STATUS_COLOR[status ? status.toLowerCase() : '']}
+    />
   </div>
 );

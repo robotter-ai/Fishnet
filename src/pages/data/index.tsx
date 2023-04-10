@@ -32,10 +32,7 @@ const MyData = () => {
   ];
   const TableMapper: { [key: string]: ReactNode } = {
     published: (
-      <PublishedTable
-        data={publishedDatasets.data}
-        isLoading={publishedDatasets.isLoading}
-      />
+      <PublishedTable data={data} isLoading={publishedDatasets.isLoading} />
     ),
     'browse-data': <BrowseDataTable data={data} isLoading={isLoading} />,
   };

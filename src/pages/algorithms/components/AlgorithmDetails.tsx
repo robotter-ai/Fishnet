@@ -14,6 +14,7 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import { TextareaAutosize } from '@mui/material';
 import { ExecutePrompt } from '@shared/components/Prompts';
+import AddressWrap from '@shared/components/AddressWrap';
 
 const AlgorithmDetails = ({
   isLoadingUpload,
@@ -67,7 +68,7 @@ const AlgorithmDetails = ({
     },
     {
       name: 'Owner',
-      value: <p className="text-blue">{algorithmDetails?.owner}</p>,
+      value: <AddressWrap hash={algorithmDetails?.owner} />,
     },
     {
       name: 'Creation date',
@@ -122,7 +123,7 @@ const AlgorithmDetails = ({
           <DataSummary summary={summary} />
         </div>
         <TextareaAutosize
-          className="bg-[#f3f3f3] w-full h-full rounded mt-4 font-mono"
+          className="bg-[#f3f3f3] w-full h-full rounded mt-4 p-4 font-mono"
           name="code"
           value={`${algorithmDetails?.code}`}
           onChange={(e) =>
