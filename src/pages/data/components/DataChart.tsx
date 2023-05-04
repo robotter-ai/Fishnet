@@ -28,12 +28,11 @@ import { useAppSelector } from '@shared/hooks/useStore';
 //   });
 // }
 
-const DataChart = () => {
-  const { csvJson } = useAppSelector((state) => state.timeseries);
+const DataChart: React.FC<{ data: any[] }> = ({ data }) => {
   // const { isOpen, handleOpen, handleClose } = useModal();
   const duration = ['D', 'W', '1M', '3M', 'Y', 'All'];
   const [activeDuration, setActiveDuration] = useState(2);
-  const data = csvJson.slice(0, 10).map((item) => ({
+  const dataToUse = data.slice(0, 10).map((item: any) => ({
     date: dayjs(item.date).format('MMM DD'),
     volaBTC: item.volaBTC,
     returnsBTC: item.returnsBTC,
@@ -68,7 +67,7 @@ const DataChart = () => {
         </div>
       </div>
       <ResponsiveContainer width="100%" height={250}>
-        <AreaChart data={data}>
+        <AreaChart data={dataToUse}>
           <defs>
             <linearGradient id="colorVolaBTC" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#0054ff" stopOpacity={0.5} />

@@ -13,12 +13,14 @@ import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
 import useOwner from '@shared/hooks/useOwner';
 import { ExecutePrompt } from '@shared/components/Prompts';
+import { useAppSelector } from '@shared/hooks/useStore';
 import useDataDetails from './hooks/useDataDetails';
 import DataChart from './components/DataChart';
 import EditDataTable from './components/EditDataTable';
 
 const DataDetails = () => {
   const navigate = useNavigate();
+  const { csvJson } = useAppSelector((state) => state.timeseries);
   const {
     handleOnChange,
     isPublished,
@@ -129,8 +131,9 @@ const DataDetails = () => {
           >
             <IoIosAddCircleOutline className="text-blue" size={150} />
           </div> */}
+          <DataChart data={csvJson} />
+          <DataChart data={[]} />
         </div>
-        <DataChart />
         <div className="mt-8 flex flex-col gap-3">
           <h1>Dataset</h1>
           <p>
