@@ -1,7 +1,7 @@
 import TextInput from '@components/form/TextInput';
 import CustomButton from '@components/ui/Button';
-import ClickToCopy from '@components/ui/ClickToCopy';
-import { useAppSelector } from '@shared/hooks/useStore';
+import ClickToCopy from '@shared/components/ClickToCopy';
+import useAuth from '@shared/hooks/useAuth';
 import { UserProps } from '@slices/profileSlice/profileService';
 import { VscAdd, VscArrowRight, VscChromeMinimize } from 'react-icons/vsc';
 
@@ -18,7 +18,7 @@ const Account: React.FC<IAccountProps> = ({
   handleOnChange,
   handleUpdateProfile,
 }) => {
-  const { auth } = useAppSelector((state) => state.profile);
+  const auth = useAuth();
   const actions = [
     { icon: <VscAdd /> },
     { icon: <VscChromeMinimize /> },
@@ -78,8 +78,8 @@ const Account: React.FC<IAccountProps> = ({
           ))}
         </div>
         <div className="flex flex-col items-center gap-2">
-          <p>{auth.address}</p>
-          <ClickToCopy text={auth.address} color="#0458FF" />
+          <p>{auth?.address}</p>
+          <ClickToCopy text={auth?.address} color="#0458FF" />
         </div>
         <button type="button" className="mt-4 text-[#FD686A] text-lg">
           Log out

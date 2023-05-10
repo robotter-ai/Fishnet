@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 import Button from '@components/ui/Button';
 import { Starred } from '@components/form';
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { getDatasets, getPublishedDatasets } from '@slices/dataSlice';
+import { getPublishedDatasets } from '@slices/dataSlice';
 import ToggleAvailability from '@shared/components/ToggleAvailability';
+import useAuth from '@shared/hooks/useAuth';
 
-const COLUMNS = (dispatch: any): ITableColumns[] => [
+const COLUMNS: ITableColumns[] = [
   {
     header: 'Name',
     accessor: 'name',
@@ -37,18 +38,14 @@ const COLUMNS = (dispatch: any): ITableColumns[] => [
     header: 'Public access',
     accessor: 'available',
     cell: (item) => (
-      <ToggleAvailability
-        available={item.available}
-        datasetId={item.id_hash}
-        refetchFunc={() => dispatch(getDatasets())}
-      />
+      <ToggleAvailability available={item.available} datasetId={item.id_hash} />
     ),
     isSortable: true,
   },
   {
     header: 'Description',
     accessor: 'desc',
-    cell: (item) => <p>{item.desc}</p>,
+    cell: (item) => <p className="w-52 line-clamp-3">{item.desc}</p>,
   },
   {
     header: '',
@@ -69,16 +66,17 @@ const COLUMNS = (dispatch: any): ITableColumns[] => [
 
 const MyDataTable = () => {
   const dispatch = useAppDispatch();
+  const auth = useAuth();
   const { publishedDatasets } = useAppSelector((state) => state.datasets);
 
   useEffect(() => {
-    dispatch(getPublishedDatasets());
+    dispatch(getPublishedDatasets(auth?.address));
   }, []);
 
   return (
     <CustomTable
       data={publishedDatasets.data}
-      columns={COLUMNS(dispatch)}
+      columns={COLUMNS}
       isLoading={publishedDatasets.isLoading}
     />
   );

@@ -34,7 +34,7 @@ const CustomButton: React.FC<ButtonProps> = ({
     'app-btn block px-7 text-white text-[14px] rounded-[10px]',
     {
       'h-[32px]': size === 'sm',
-      'h-[44px]': size === 'md',
+      'h-[44px] font-bold': size === 'md',
       'h-[60px] text-[18px] font-bold': size === 'lg',
       'btn-outline-blue': btnStyle === 'outline-blue',
       'btn-outline-red': btnStyle === 'outline-red',

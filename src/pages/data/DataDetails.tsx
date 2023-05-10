@@ -1,19 +1,20 @@
 import { RxCaretLeft } from 'react-icons/rx';
 import { IoCheckbox } from 'react-icons/io5';
-// import { IoIosAddCircleOutline } from 'react-icons/io';
+import { IoIosAddCircleOutline } from 'react-icons/io';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '@components/ui/Button';
 import AppModal from '@components/ui/AppModal';
 import { CheckBox } from '@components/form';
 import { VALUES_AND_INTERVAL } from '@shared/constant';
 import TextInput from '@components/form/TextInput';
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
 import dayjs from 'dayjs';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
 import useOwner from '@shared/hooks/useOwner';
 import { ExecutePrompt } from '@shared/components/Prompts';
 import { useAppSelector } from '@shared/hooks/useStore';
+import AddressWrap from '@shared/components/AddressWrap';
 import useDataDetails from './hooks/useDataDetails';
 import DataChart from './components/DataChart';
 import EditDataTable from './components/EditDataTable';
@@ -48,7 +49,7 @@ const DataDetails = () => {
     },
     {
       name: 'Owner',
-      value: <p className="text-blue">{dataDetails?.owner}</p>,
+      value: <AddressWrap hash={dataDetails?.owner} />,
     },
     {
       name: 'Creation date',
@@ -125,23 +126,23 @@ const DataDetails = () => {
             />
           </div>
           <DataSummary summary={summary} />
-          {/* <div
+          <div
             className="flex items-center justify-center min-h-[391px] bg-[#FAFAFA] rounded-[10px] cursor-pointer"
             onClick={handleOpenNewChart}
           >
             <IoIosAddCircleOutline className="text-blue" size={150} />
-          </div> */}
+          </div>
           <DataChart data={csvJson} />
           <DataChart data={[]} />
         </div>
-        <div className="mt-8 flex flex-col gap-3">
+        {/* <div className="mt-8 flex flex-col gap-3">
           <h1>Dataset</h1>
           <p>
             Check the data you want to upload. Select a time interval. You can
             also rename the indicator.
           </p>
           <EditDataTable isPublished={isPublished} />
-        </div>
+        </div> */}
       </div>
       <AppModal
         title="Values and Interval"

@@ -1,10 +1,5 @@
-import { useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { useAccount } from 'wagmi';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { getUserInfo, setAuth } from '@slices/profileSlice';
 
 import Login from '@pages/Login';
 import MyData from '@pages/data';
@@ -16,30 +11,6 @@ import MyProfile from '@pages/my-profile';
 import Layout from './layouts';
 
 export default function App() {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { isConnected, address } = useAccount();
-  const { connected, publicKey } = useWallet();
-  const { auth } = useAppSelector((state) => state.profile);
-
-  useEffect(() => {
-    dispatch(
-      setAuth({
-        address: address || publicKey?.toBase58(),
-        isConnected: isConnected || connected,
-      })
-    );
-  }, [isConnected, connected, dispatch]);
-
-  useEffect(() => {
-    if (auth.isConnected) {
-      navigate('/data', { replace: true });
-      dispatch(getUserInfo());
-    } else {
-      navigate('/', { replace: true });
-    }
-  }, [auth.isConnected]);
-
   return (
     <>
       <Routes>

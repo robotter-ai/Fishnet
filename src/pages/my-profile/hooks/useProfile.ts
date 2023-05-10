@@ -4,17 +4,19 @@ import useSelectData from '@shared/hooks/useSelectData';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useOnChange from '@shared/hooks/useOnChange';
 import { getAllUsers, getUserInfo, updateUserInfo } from '@slices/profileSlice';
+import useAuth from '@shared/hooks/useAuth';
 
 export default () => {
   const dispatch = useAppDispatch();
   const { setTitle } = usePageTitle();
   const { isSelect } = useSelectData();
-  const { auth, userInfo, updateActions, allUsers } = useAppSelector(
+  const auth = useAuth();
+  const { userInfo, updateActions, allUsers } = useAppSelector(
     (app) => app.profile
   );
   const { inputs, handleOnChange } = useOnChange({
     username: userInfo?.username || '',
-    address: auth.address,
+    address: auth?.address,
     bio: userInfo?.bio || '',
     email: userInfo?.email || '',
     link: userInfo?.link || '',
@@ -29,9 +31,7 @@ export default () => {
   }, [isSelect]);
 
   useEffect(() => {
-    if (updateActions.success) {
-      dispatch(getUserInfo());
-    }
+    dispatch(getUserInfo(auth?.address));
     dispatch(getAllUsers());
   }, [updateActions.success]);
 

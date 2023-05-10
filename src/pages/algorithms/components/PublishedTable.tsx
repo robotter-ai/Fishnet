@@ -1,5 +1,5 @@
 import { Starred } from '@components/form';
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
 import { DeletePrompt, ExecutePrompt } from '@shared/components/Prompts';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 
@@ -36,12 +36,12 @@ const COLUMNS = (
   },
   {
     header: 'Description',
-    cell: ({ desc }) => <p>{desc}</p>,
+    cell: ({ desc }) => <p className="w-52 line-clamp-3">{desc}</p>,
   },
   {
     header: '',
     cell: ({ forgotten }) => (
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
         <Starred starred={forgotten} />
         <DeletePrompt />
       </div>

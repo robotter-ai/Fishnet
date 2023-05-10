@@ -4,12 +4,12 @@ import { ReactComponent as Metamask } from '@assets/images/metamask.svg';
 import { ReactComponent as Solana } from '@assets/images/solana.svg';
 import { ReactComponent as Phantom } from '@assets/images/phantom.svg';
 import Button from '@components/ui/Button';
-import useAuth from '../hooks/useAuth';
+import useLoginForm from '../hooks/useLoginForm';
 
 export type WalletProps = 'Metamask' | 'Solana' | 'Phantom';
 
 function LoginForm() {
-  const { handleConnectWallet } = useAuth();
+  const { handleConnectWallet } = useLoginForm();
   const [activeWallet, setActiveWallet] = useState<WalletProps>('Metamask');
 
   const wallets: { name: WalletProps; icon: React.ReactNode }[] = [

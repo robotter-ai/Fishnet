@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { RootState } from 'src/store';
 import algorithmService, { UploadAlgorithmProps } from './service';
 
 export const getAlgorithms = createAsyncThunk(
@@ -20,12 +19,9 @@ export const getAlgorithms = createAsyncThunk(
 
 export const getPublishedAlgorithms = createAsyncThunk(
   'algorithm/getPublishedAlgorithms',
-  async (_, thunkAPI) => {
+  async (address: string, thunkAPI) => {
     try {
-      const { profile } = thunkAPI.getState() as RootState;
-      return await algorithmService.getPublishedAlgorithms(
-        profile.auth.address
-      );
+      return await algorithmService.getPublishedAlgorithms(address);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message

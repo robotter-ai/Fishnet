@@ -8,9 +8,9 @@ import {
 } from '@mui/material';
 import { BarLoader } from 'react-spinners';
 import { GrCloudDownload } from 'react-icons/gr';
-import { TiArrowUnsorted } from 'react-icons/ti';
 import { TbMoodSad } from 'react-icons/tb';
 import classNames from 'classnames';
+import { FilterIcon, SortArrowIcon } from '@assets/icons';
 
 export interface ITableColumns {
   header: string | React.ReactNode;
@@ -38,7 +38,15 @@ const CustomTable: React.FC<CustomTableProps> = ({
           <TableHead>
             <TableRow>
               {columns.map((item, i) => (
-                <TableCell key={i}>
+                <TableCell
+                  key={i}
+                  style={{
+                    padding: 0,
+                    paddingRight: columns.length - 1 === i ? 0 : 15,
+                    paddingTop: 15,
+                    paddingBottom: 15,
+                  }}
+                >
                   <div
                     className={classNames(
                       'flex gap-2 items-center whitespace-nowrap',
@@ -47,9 +55,14 @@ const CustomTable: React.FC<CustomTableProps> = ({
                       }
                     )}
                   >
+                    {item.header === 'Filter' ? <FilterIcon /> : null}{' '}
                     {item.header}
                     {item.isSortable ? (
-                      <TiArrowUnsorted color="rgba(28, 28, 28, 0.6)" />
+                      <SortArrowIcon
+                        className="cursor-pointer"
+                        width={9}
+                        height={10}
+                      />
                     ) : null}
                   </div>
                 </TableCell>
@@ -63,7 +76,17 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 {columns.map((column, i) => (
-                  <TableCell key={i}>{column.cell(item)}</TableCell>
+                  <TableCell
+                    key={i}
+                    style={{
+                      padding: 0,
+                      paddingRight: columns.length - 1 === i ? 0 : 15,
+                      paddingTop: 12,
+                      paddingBottom: 12,
+                    }}
+                  >
+                    {column.cell(item)}
+                  </TableCell>
                 ))}
               </TableRow>
             ))}

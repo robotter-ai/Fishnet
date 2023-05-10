@@ -1,16 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { RootState } from 'src/store';
 import monitorAccessService from './service';
 
 export const getIncomingPermissions = createAsyncThunk(
   'monitorAccess/getIncomingPermissions',
-  async (_, thunkAPI) => {
+  async (address: string, thunkAPI) => {
     try {
-      const { profile } = thunkAPI.getState() as RootState;
-      return await monitorAccessService.getIncomingPermissions(
-        profile.auth.address
-      );
+      return await monitorAccessService.getIncomingPermissions(address);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -23,12 +19,9 @@ export const getIncomingPermissions = createAsyncThunk(
 
 export const getOutgoingPermissions = createAsyncThunk(
   'monitorAccess/getOutgoingPermissions',
-  async (_, thunkAPI) => {
+  async (address: string, thunkAPI) => {
     try {
-      const { profile } = thunkAPI.getState() as RootState;
-      return await monitorAccessService.getOutgoingPermissions(
-        profile.auth.address
-      );
+      return await monitorAccessService.getOutgoingPermissions(address);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message

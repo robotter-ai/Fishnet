@@ -1,32 +1,35 @@
-import { TbBellRinging2 } from 'react-icons/tb';
-import { BsThreeDots } from 'react-icons/bs';
+import { useState } from 'react';
 import WallteIcon from '@assets/images/wallet-icon.png';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import { useAppSelector } from '@shared/hooks/useStore';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import useAuth from '@shared/hooks/useAuth';
+import { AlarmClockIcon, ThreeDotsIcon } from '@assets/icons';
+import { useDetectClickOutside } from 'react-detect-click-outside';
 
 function TopNavigation() {
   const { title } = usePageTitle();
-  const { auth } = useAppSelector((state) => state.profile);
+  const auth = useAuth();
   const [toggledInfo, setToggledInfo] = useState<
     'notification' | 'profile' | null
   >(null);
+  const ref = useDetectClickOutside({
+    onTriggered: () => setToggledInfo(null),
+  });
 
   return (
     <div id="top-navigation">
       <div className="flex justify-between">
         <h1>{title}</h1>
-        <div className="relative flex items-center gap-[15px]">
+        <div ref={ref} className="relative flex items-center gap-[15px]">
           <div className="flex items-center gap-3 rounded-[10px] p-[5px] px-[15px] border border-[#C4C4C4]">
             <span className="truncate w-[10rem] text-[#1C1C1C]">
-              {auth.address}
+              {auth?.address}
             </span>
             <img src={WallteIcon} alt="" />
           </div>
           <div
-            className="bg-white rounded-[10px] p-[8.5px] cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
+            className="bg-white h-9 w-9 rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
             style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
             onClick={() =>
               setToggledInfo(
@@ -34,16 +37,16 @@ function TopNavigation() {
               )
             }
           >
-            <TbBellRinging2 color="#1C1C1C" size={24} />
+            <AlarmClockIcon />
           </div>
           <div
-            className="bg-white rounded-[10px] p-[8.5px] cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
+            className="bg-white h-9 w-9 rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
             style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
             onClick={() =>
               setToggledInfo(toggledInfo === 'profile' ? null : 'profile')
             }
           >
-            <BsThreeDots color="#1C1C1C" size={24} />
+            <ThreeDotsIcon />
           </div>
           {toggledInfo === 'profile' ? (
             <div

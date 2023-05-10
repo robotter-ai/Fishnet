@@ -6,8 +6,10 @@ import { getDatasets, getPublishedDatasets } from '@slices/dataSlice';
 import { setCsvJson, preprocessTimeseries } from '@slices/timeseriesSlice';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useSelectData from '@shared/hooks/useSelectData';
+import useAuth from '@shared/hooks/useAuth';
 
 export default () => {
+  const auth = useAuth();
   const navigate = useNavigate();
   const { setTitle } = usePageTitle();
   const dispatch = useAppDispatch();
@@ -16,7 +18,6 @@ export default () => {
   const { isLoading, datasets, error, publishedDatasets } = useAppSelector(
     (state) => state.datasets
   );
-  const { auth } = useAppSelector((state) => state.profile);
   const { isLoading: isLoadingUploadTimeseries } = useAppSelector(
     (state) => state.timeseries
   );
@@ -25,13 +26,14 @@ export default () => {
     data: datasets || [],
   });
 
-  const query: string = searchParams.get('tab') || 'published';
+  const query: 'published' | 'browse-data' =
+    (searchParams.get('tab') as 'published' | 'browse-data') || 'published';
 
-  const dataMapper = {
+  const dataMapper: Record<'published' | 'browse-data', any> = {
     published: publishedDatasets.data,
     'browse-data': datasets,
   };
-  const dataToUse = dataMapper?.[query];
+  const dataToUse = dataMapper[query];
 
   useEffect(() => {
     setFilterParams((prevState) => ({
@@ -42,8 +44,8 @@ export default () => {
 
   useEffect(() => {
     setTitle('Data');
-    dispatch(getDatasets());
-    dispatch(getPublishedDatasets());
+    dispatch(getDatasets(auth?.address));
+    dispatch(getPublishedDatasets(auth?.address));
   }, [dispatch]);
 
   const handleCsvToJson = (file: any) => {
@@ -55,7 +57,7 @@ export default () => {
       },
     });
     const formData = new FormData();
-    formData.append('owner', auth.address);
+    formData.append('owner', auth?.address);
     formData.append('data_file', file);
     dispatch(preprocessTimeseries(formData)).then(() => {
       navigate(`/data/${'upload'}/details`);

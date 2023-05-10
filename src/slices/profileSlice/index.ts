@@ -1,14 +1,12 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import type { RootState } from 'src/store';
 import profileService, { UserProps } from './profileService';
 
 export const getUserInfo = createAsyncThunk(
   'profile/getUserInfo',
-  async (_, thunkAPI) => {
+  async (address: string, thunkAPI) => {
     try {
-      const { profile } = thunkAPI.getState() as RootState;
-      return await profileService.getUserInfo(profile.auth.address);
+      return await profileService.getUserInfo(address);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -54,7 +52,6 @@ interface ProfileSliceProps {
   success: boolean | null;
   error: any;
   userInfo: UserProps | any;
-  auth: { address: any; isConnected: boolean };
   updateActions: { isLoading: boolean; success: boolean | null; error: any };
   allUsers: { data: null; isLoading: boolean; success: boolean | null };
 }
@@ -64,7 +61,6 @@ const initialState: ProfileSliceProps = {
   success: null,
   error: null,
   userInfo: null,
-  auth: { address: null, isConnected: false },
   updateActions: { isLoading: false, success: null, error: null },
   allUsers: { data: null, isLoading: false, success: null },
 };
@@ -73,15 +69,6 @@ const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-    setAuth: (
-      state,
-      action: PayloadAction<{ address: any; isConnected: boolean }>
-    ) => {
-      state.auth = action.payload;
-    },
-    logoutUser: (state) => {
-      state.auth = { address: '', isConnected: false };
-    },
     resetProfileSlice: (state) => {
       state.success = null;
       state.error = null;
@@ -137,7 +124,6 @@ const profileSlice = createSlice({
   },
 });
 
-export const { setAuth, resetUpdateSlice, resetProfileSlice } =
-  profileSlice.actions;
+export const { resetUpdateSlice, resetProfileSlice } = profileSlice.actions;
 
 export default profileSlice;

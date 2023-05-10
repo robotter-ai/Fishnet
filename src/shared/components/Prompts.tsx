@@ -1,7 +1,9 @@
+import { TrashIcon } from '@assets/icons';
 import TextInput from '@components/form/TextInput';
 import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
+import useAuth from '@shared/hooks/useAuth';
 import useModal from '@shared/hooks/useModal';
 import useSelectData from '@shared/hooks/useSelectData';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
@@ -11,7 +13,6 @@ import {
   resetExecutionDetails,
 } from '@slices/executionSlice';
 import { useEffect, useState } from 'react';
-import { AiOutlineDelete } from 'react-icons/ai';
 import { IoCheckbox } from 'react-icons/io5';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
@@ -27,7 +28,7 @@ export const DeletePrompt: React.FC<PromptInterface> = ({ title, message }) => {
   return (
     <>
       <div role="button" className="cursor-pointer" onClick={handleOpen}>
-        <AiOutlineDelete size={24} color="#29324A" />
+        <TrashIcon />
       </div>
       <AppModal
         title={title || 'The changes will not not be saved'}
@@ -59,7 +60,7 @@ export const ExecutePrompt: React.FC<{
   btnSize?: 'sm' | 'md';
 }> = ({ disabled, against, selectedHash, btnStyle, btnSize = 'sm' }) => {
   const dispatch = useAppDispatch();
-  const { auth } = useAppSelector((state) => state.profile);
+  const auth = useAuth();
   const { details, success, isLoading, result } = useAppSelector(
     (state) => state.execution
   );
@@ -71,7 +72,7 @@ export const ExecutePrompt: React.FC<{
     dispatch(
       changeExecutionDetails({
         input: 'owner',
-        value: auth.address,
+        value: auth?.address,
       })
     );
     if (success) {

@@ -1,6 +1,6 @@
 import { Starred } from '@components/form';
 import Button from '@components/ui/Button';
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { Link } from 'react-router-dom';
 

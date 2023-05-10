@@ -5,10 +5,9 @@ import dataService from './dataService';
 
 export const getDatasets = createAsyncThunk(
   'datasets/getDatasets',
-  async (_, thunkAPI) => {
+  async (address: string, thunkAPI) => {
     try {
-      const { profile } = thunkAPI.getState() as RootState;
-      return await dataService.getDatasets(profile.auth.address);
+      return await dataService.getDatasets(address);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -21,10 +20,9 @@ export const getDatasets = createAsyncThunk(
 
 export const getPublishedDatasets = createAsyncThunk(
   'datasets/getPublishedDatasets',
-  async (_, thunkAPI) => {
+  async (address: string, thunkAPI) => {
     try {
-      const { profile } = thunkAPI.getState() as RootState;
-      return await dataService.getPublishedDatasets(profile.auth.address);
+      return await dataService.getPublishedDatasets(address);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message

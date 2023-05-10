@@ -1,12 +1,13 @@
 import Button from '@components/ui/Button';
 import { Starred } from '@components/form';
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import { useEffect } from 'react';
 import { getIncomingPermissions } from '@slices/monitorAccessSlice';
 import { StatusIdentifier } from '@shared/constant';
+import useAuth from '@shared/hooks/useAuth';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -61,12 +62,13 @@ const COLUMNS: ITableColumns[] = [
 
 const IncomingTable = () => {
   const dispatch = useAppDispatch();
+  const auth = useAuth();
   const { incomingActions, incomingPermissions } = useAppSelector(
     (state) => state.monitorAccess
   );
 
   useEffect(() => {
-    dispatch(getIncomingPermissions());
+    dispatch(getIncomingPermissions(auth?.address));
   }, []);
 
   return (

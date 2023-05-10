@@ -1,4 +1,4 @@
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
 import { StatusIdentifier } from '@shared/constant';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import dayjs from 'dayjs';

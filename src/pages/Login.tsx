@@ -3,9 +3,24 @@ import Button from '@components/ui/Button';
 import { LoginForm } from '@features/auth';
 import AppModal from '@components/ui/AppModal';
 import useModal from '@shared/hooks/useModal';
+import { useEffect } from 'react';
+import { getUserInfo } from '@slices/profileSlice';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '@shared/hooks/useStore';
+import useAuth from '@shared/hooks/useAuth';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const auth = useAuth();
   const { isOpen, handleOpen, handleClose } = useModal();
+
+  useEffect(() => {
+    if (auth?.address) {
+      navigate('/data', { replace: true });
+      dispatch(getUserInfo(auth?.address));
+    }
+  }, [auth?.address]);
 
   return (
     <div className="flex flex-col h-screen">

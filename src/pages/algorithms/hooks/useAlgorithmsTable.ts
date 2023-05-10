@@ -10,11 +10,13 @@ import {
 } from '@slices/algorithmSlice';
 import useModal from '@shared/hooks/useModal';
 import { useSearchParams } from 'react-router-dom';
+import useAuth from '@shared/hooks/useAuth';
 
 export default () => {
   const { setTitle } = usePageTitle();
   const { isSelect } = useSelectData();
   const dispatch = useAppDispatch();
+  const auth = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     isLoading,
@@ -48,7 +50,7 @@ export default () => {
       handleCloseAlgorithmDetails();
       dispatch(resetUploadActions());
       dispatch(getAlgorithms());
-      dispatch(getPublishedAlgorithms());
+      dispatch(getPublishedAlgorithms(auth?.address));
     }
   }, [uploadActions.success]);
 
@@ -59,7 +61,7 @@ export default () => {
       setTitle('Algorithms');
     }
     dispatch(getAlgorithms());
-    dispatch(getPublishedAlgorithms());
+    dispatch(getPublishedAlgorithms(auth?.address));
     dispatch(getExecutions());
   }, [isSelect]);
 

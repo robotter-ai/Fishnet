@@ -1,10 +1,13 @@
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
+import useAuth from '@shared/hooks/useAuth';
 import TopNavigation from './top-navigation';
 import SideNavigation from './side-navigation';
 import './layout.scss';
 
 const Layout = () => {
-  return (
+  const auth = useAuth();
+
+  return auth?.address ? (
     <div id="layout-wrapper">
       <SideNavigation />
       <TopNavigation />
@@ -12,6 +15,8 @@ const Layout = () => {
         <Outlet />
       </main>
     </div>
+  ) : (
+    <Navigate to="/" replace />
   );
 };
 

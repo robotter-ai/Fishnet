@@ -4,21 +4,25 @@ import AppModal from '@components/ui/AppModal';
 import CustomButton from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { resetDataSlice, updateDatasetAvailability } from '@slices/dataSlice';
+import {
+  getDatasets,
+  resetDataSlice,
+  updateDatasetAvailability,
+} from '@slices/dataSlice';
 import { toast } from 'react-toastify';
+import useAuth from '@shared/hooks/useAuth';
 
 interface IToggleAvailabilityProps {
   datasetId: string;
   available: boolean;
-  refetchFunc: () => void;
 }
 
 const ToggleAvailability: React.FC<IToggleAvailabilityProps> = ({
   datasetId,
   available,
-  refetchFunc,
 }) => {
   const dispatch = useAppDispatch();
+  const auth = useAuth();
   const [availabilityParams, setAvailabilityParam] = useState({
     dataset_id: '',
     available: !available,
@@ -32,7 +36,7 @@ const ToggleAvailability: React.FC<IToggleAvailabilityProps> = ({
     if (success) {
       toast.success('Dataset have been updated!');
       dispatch(resetDataSlice());
-      refetchFunc();
+      dispatch(getDatasets(auth?.address));
       handleClose();
     }
   }, [success]);

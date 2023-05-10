@@ -1,4 +1,4 @@
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
 
 interface IAddressWrap {
   hash: string;

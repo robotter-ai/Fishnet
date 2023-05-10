@@ -11,11 +11,12 @@ import {
 } from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
 import { uploadTimeseries } from '@slices/timeseriesSlice';
+import useAuth from '@shared/hooks/useAuth';
 
 export default () => {
   const { id } = useParams();
   const { setTitle } = usePageTitle();
-  const { auth } = useAppSelector((app) => app.profile);
+  const auth = useAuth();
   const dispatch = useAppDispatch();
   const {
     datasets: {
@@ -39,7 +40,7 @@ export default () => {
     } else {
       dispatch(resetDataDetails());
     }
-    dispatch(changeDataDetails({ name: 'owner', value: auth.address }));
+    dispatch(changeDataDetails({ name: 'owner', value: auth?.address }));
     dispatch(changeDataDetails({ name: 'ownsAllTimeseries', value: true }));
   }, []);
 

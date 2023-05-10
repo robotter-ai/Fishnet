@@ -1,5 +1,5 @@
 import { Starred } from '@components/form';
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
 import { StatusIdentifier } from '@shared/constant';
 import { Link } from 'react-router-dom';
 import { ExecutePrompt } from '@shared/components/Prompts';
@@ -40,7 +40,7 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'Description',
-    cell: (item) => <p>{item.desc}</p>,
+    cell: (item) => <p className="w-52 line-clamp-3">{item.desc}</p>,
   },
   {
     header: '',

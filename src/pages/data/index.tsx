@@ -68,7 +68,7 @@ const MyData = () => {
           />
           <Button size="md" onClick={handleOpen}>
             <div className="flex gap-3 items-center">
-              <MdAdd size={20} />
+              <MdAdd size={15} />
               <span>Upload data</span>
             </div>
           </Button>
@@ -120,7 +120,7 @@ const MyData = () => {
               'Please wait...'
             ) : (
               <div className="flex justify-center gap-3 items-center">
-                <MdAdd size={20} />
+                <MdAdd size={15} />
                 <span>Choose data</span>
               </div>
             )}

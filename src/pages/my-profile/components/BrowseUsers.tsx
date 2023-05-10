@@ -1,5 +1,5 @@
 import CustomButton from '@components/ui/Button';
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 
 const columns = ({
@@ -38,7 +38,7 @@ const columns = ({
   },
   {
     header: 'Description',
-    cell: ({ bio }) => bio,
+    cell: ({ bio }) => <p className="w-52 line-clamp-3">{bio}</p>,
     isSortable: true,
   },
   {

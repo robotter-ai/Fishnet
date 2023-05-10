@@ -1,5 +1,5 @@
-import { IoCopyOutline } from 'react-icons/io5';
 import { toast } from 'react-toastify';
+import { CopyIcon } from '@assets/icons';
 
 interface ClickToCopyProps {
   text: string;
@@ -21,7 +21,7 @@ const ClickToCopy: React.FC<ClickToCopyProps> = ({
 
   return (
     <div role="button" className="w-fit" onClick={handleCopyText}>
-      <IoCopyOutline size={20} color={color} />
+      <CopyIcon color={color} />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import dayjs from 'dayjs';
-import ClickToCopy from '@components/ui/ClickToCopy';
+import ClickToCopy from '@shared/components/ClickToCopy';
 import CustomButton from '@components/ui/Button';
 import DataSummary from '@shared/components/Summary';
 import TextInput from '@components/form/TextInput';
@@ -15,6 +15,7 @@ import { useSearchParams } from 'react-router-dom';
 import { TextareaAutosize } from '@mui/material';
 import { ExecutePrompt } from '@shared/components/Prompts';
 import AddressWrap from '@shared/components/AddressWrap';
+import useAuth from '@shared/hooks/useAuth';
 
 const AlgorithmDetails = ({
   isLoadingUpload,
@@ -24,7 +25,8 @@ const AlgorithmDetails = ({
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
   const { algorithmDetails } = useAppSelector((state) => state.algorithm);
-  const { auth } = useAppSelector((state) => state.profile);
+  const auth = useAuth();
+
   const isViewById = !!searchParams.get('details');
 
   useEffect(() => {
@@ -36,7 +38,7 @@ const AlgorithmDetails = ({
         dispatch(
           changeAlgorithmDetails({
             name: 'owner',
-            value: auth.address,
+            value: auth?.address,
           })
         );
         dispatch(

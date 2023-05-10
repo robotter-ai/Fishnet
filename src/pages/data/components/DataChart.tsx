@@ -8,13 +8,14 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import dayjs from 'dayjs';
-import { AiOutlineLine, AiOutlineDelete } from 'react-icons/ai';
+import { AiOutlineLine } from 'react-icons/ai';
 import { RxDotsHorizontal } from 'react-icons/rx';
 import { useState } from 'react';
 import classNames from 'classnames';
 // import useModal from '@shared/hooks/useModal';
 // import { DeletePrompt } from '@shared/components/Prompts';
 import { useAppSelector } from '@shared/hooks/useStore';
+import { TrashIcon } from '@assets/icons';
 
 // const data: { date: string; volaBTC: number; returnsBTC: number }[] = [];
 
@@ -59,7 +60,7 @@ const DataChart: React.FC<{ data: any[] }> = ({ data }) => {
             className="bg-white p-3 flex items-center rounded-md cursor-pointer"
             // onClick={handleOpen}
           >
-            <AiOutlineDelete size={20} />
+            <TrashIcon />
           </div>
           <div className="bg-white p-3 flex items-center rounded-md cursor-pointer">
             <RxDotsHorizontal />
