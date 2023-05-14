@@ -17,7 +17,7 @@ const COLUMNS = (dispatch: any, handleOpen: () => void): ITableColumns[] => [
         {dayjs.unix(timestamp).format('YYYY-MM-DD HH:MM')}
       </p>
     ),
-    isSortable: true,
+    sortWith: 'timestamp',
   },
   {
     header: 'Hash of data',
@@ -27,7 +27,7 @@ const COLUMNS = (dispatch: any, handleOpen: () => void): ITableColumns[] => [
         <ClickToCopy text={datasetID} />
       </div>
     ),
-    isSortable: true,
+    sortWith: 'datasetID',
   },
   {
     header: 'Hash of algorithm',
@@ -37,12 +37,12 @@ const COLUMNS = (dispatch: any, handleOpen: () => void): ITableColumns[] => [
         <ClickToCopy text={algorithmID} />
       </div>
     ),
-    isSortable: true,
+    sortWith: 'algorithmID',
   },
   {
     header: 'Result',
     cell: ({ status }) => <StatusIdentifier status={status} />,
-    isSortable: true,
+    sortWith: 'status',
   },
   {
     header: 'Filter',

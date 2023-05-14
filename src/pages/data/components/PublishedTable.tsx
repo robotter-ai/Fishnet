@@ -17,7 +17,7 @@ const COLUMNS: ITableColumns[] = [
         {item.name}
       </Link>
     ),
-    isSortable: true,
+    sortWith: 'name',
   },
   {
     header: 'Hash',
@@ -28,7 +28,7 @@ const COLUMNS: ITableColumns[] = [
         <ClickToCopy text={item.id_hash} />
       </div>
     ),
-    isSortable: true,
+    sortWith: 'id_hash',
   },
   {
     header: 'Public access',
@@ -36,12 +36,13 @@ const COLUMNS: ITableColumns[] = [
     cell: (item) => (
       <ToggleAvailability available={item.available} datasetId={item.id_hash} />
     ),
-    isSortable: true,
+    sortWith: 'available',
   },
   {
     header: 'Description',
     accessor: 'desc',
     cell: (item) => <p className="w-52 line-clamp-3">{item.desc}</p>,
+    sortWith: 'desc',
   },
   {
     header: '',

@@ -10,7 +10,7 @@ const columns = ({
   {
     header: 'Name',
     cell: ({ username }) => <p className="whitespace-nowrap">{username}</p>,
-    isSortable: true,
+    sortWith: 'username',
   },
   {
     header: 'Hash',
@@ -20,7 +20,7 @@ const columns = ({
         <ClickToCopy text={id_hash} />
       </div>
     ),
-    isSortable: true,
+    sortWith: 'id_hash',
   },
   {
     header: 'Link',
@@ -34,12 +34,12 @@ const columns = ({
         {link}
       </a>
     ),
-    isSortable: true,
+    sortWith: 'link',
   },
   {
     header: 'Description',
     cell: ({ bio }) => <p className="w-52 line-clamp-3">{bio}</p>,
-    isSortable: true,
+    sortWith: 'bio',
   },
   {
     header: '',

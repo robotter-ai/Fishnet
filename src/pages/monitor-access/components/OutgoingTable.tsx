@@ -20,7 +20,7 @@ const COLUMNS: ITableColumns[] = [
         {item.name}
       </Link>
     ),
-    isSortable: true,
+    sortWith: 'name',
   },
   {
     header: 'Hash',
@@ -30,12 +30,12 @@ const COLUMNS: ITableColumns[] = [
         <ClickToCopy text={id_hash} />
       </div>
     ),
-    isSortable: true,
+    sortWith: 'id_hash',
   },
   {
     header: 'Status',
     cell: ({ status }) => <StatusIdentifier status={status} />,
-    isSortable: true,
+    sortWith: 'status',
   },
   {
     header: '',

@@ -27,11 +27,6 @@ export default () => {
     timeseries: { isLoading: isLoadingTimeseries },
   } = useAppSelector((app) => app);
   const { isOpen, handleOpen, handleClose } = useModal();
-  const {
-    isOpen: isOpenNewChart,
-    handleOpen: handleOpenNewChart,
-    handleClose: handleCloseNewChart,
-  } = useModal();
   const isPublished = id && id !== 'upload';
 
   useEffect(() => {
@@ -73,10 +68,5 @@ export default () => {
     isPublished,
     dataDetails,
     publishedModalProps: { handleClose, isOpen },
-    newChartModalProps: {
-      isOpenNewChart,
-      handleOpenNewChart,
-      handleCloseNewChart,
-    },
   };
 };

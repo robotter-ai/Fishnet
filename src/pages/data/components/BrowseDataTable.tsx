@@ -4,8 +4,9 @@ import { StatusIdentifier } from '@shared/constant';
 import { Link } from 'react-router-dom';
 import { ExecutePrompt } from '@shared/components/Prompts';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
+import useAuth from '@shared/hooks/useAuth';
 
-const COLUMNS: ITableColumns[] = [
+const COLUMNS = (address: string): ITableColumns[] => [
   {
     header: 'Name',
     cell: (item) => (
@@ -16,7 +17,7 @@ const COLUMNS: ITableColumns[] = [
         {item.name}
       </Link>
     ),
-    isSortable: true,
+    sortWith: 'name',
   },
   {
     header: 'Hash',
@@ -26,7 +27,7 @@ const COLUMNS: ITableColumns[] = [
         <ClickToCopy text={item.id_hash} />
       </div>
     ),
-    isSortable: true,
+    sortWith: 'id_hash',
   },
   {
     header: 'Status',
@@ -36,11 +37,12 @@ const COLUMNS: ITableColumns[] = [
       ) : (
         <StatusIdentifier status={permission_status} />
       ),
-    isSortable: true,
+    sortWith: 'permission_status',
   },
   {
     header: 'Description',
     cell: (item) => <p className="w-52 line-clamp-3">{item.desc}</p>,
+    sortWith: 'desc',
   },
   {
     header: '',
@@ -52,13 +54,16 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'Filter',
-    cell: (item) => (
-      <ExecutePrompt
-        against="algorithm"
-        selectedHash={item.id_hash}
-        disabled={item.permission_status !== 'allowed'}
-      />
-    ),
+    cell: (item) => {
+      return (
+        <ExecutePrompt
+          against="algorithm"
+          selectedHash={item.id_hash}
+          // disabled={item.permission_status !== 'allowed'}
+          disabled={address !== item.owner}
+        />
+      );
+    },
   },
 ];
 
@@ -69,7 +74,15 @@ const BrowseDataTable = ({
   data: Record<string, any>[];
   isLoading: boolean;
 }) => {
-  return <CustomTable data={data} columns={COLUMNS} isLoading={isLoading} />;
+  const auth = useAuth();
+
+  return (
+    <CustomTable
+      data={data}
+      columns={COLUMNS(auth?.address)}
+      isLoading={isLoading}
+    />
+  );
 };
 
 export default BrowseDataTable;

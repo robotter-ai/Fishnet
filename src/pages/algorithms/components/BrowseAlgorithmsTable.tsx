@@ -2,9 +2,11 @@ import { Starred } from '@components/form';
 import ClickToCopy from '@shared/components/ClickToCopy';
 import { ExecutePrompt } from '@shared/components/Prompts';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
+import useAuth from '@shared/hooks/useAuth';
 
 const COLUMNS = (
-  handleOpenAlgoDetails: (id: string) => void
+  handleOpenAlgoDetails: (id: string) => void,
+  address: string
 ): ITableColumns[] => [
   {
     header: 'Name',
@@ -17,7 +19,7 @@ const COLUMNS = (
         {name}
       </button>
     ),
-    isSortable: true,
+    sortWith: 'name',
   },
   {
     header: 'Hash',
@@ -27,16 +29,17 @@ const COLUMNS = (
         <ClickToCopy text={id_hash} />
       </div>
     ),
-    isSortable: true,
+    sortWith: 'id_hash',
   },
   {
     header: 'Total usages',
     cell: ({ current_revision }) => current_revision,
-    isSortable: true,
+    sortWith: 'current_revision',
   },
   {
     header: 'Description',
     cell: ({ desc }) => <p className="w-52 line-clamp-3">{desc}</p>,
+    sortWith: 'desc',
   },
   {
     header: '',
@@ -48,8 +51,12 @@ const COLUMNS = (
   },
   {
     header: 'Filter',
-    cell: ({ id_hash }) => (
-      <ExecutePrompt against="data" selectedHash={id_hash} />
+    cell: ({ id_hash, owner }) => (
+      <ExecutePrompt
+        against="data"
+        selectedHash={id_hash}
+        disabled={address !== owner}
+      />
     ),
   },
 ];
@@ -63,10 +70,12 @@ const BrowseAlgorithmsTable = ({
   isLoading: boolean;
   handleOpenAlgoDetails: (id: string) => void;
 }) => {
+  const auth = useAuth();
+
   return (
     <CustomTable
       data={data}
-      columns={COLUMNS(handleOpenAlgoDetails)}
+      columns={COLUMNS(handleOpenAlgoDetails, auth?.address)}
       isLoading={isLoading}
     />
   );

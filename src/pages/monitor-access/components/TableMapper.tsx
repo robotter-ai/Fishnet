@@ -37,7 +37,7 @@ const accountColumns = ({
         {name}
       </Link>
     ),
-    isSortable: true,
+    sortWith: 'name',
   },
   {
     header: 'Hash of account',
@@ -47,7 +47,7 @@ const accountColumns = ({
         <ClickToCopy text={requestor} />
       </div>
     ),
-    isSortable: true,
+    sortWith: 'requestor',
   },
   {
     header: 'Usages left',
@@ -56,12 +56,11 @@ const accountColumns = ({
         {Number(maxExecutionCount) - Number(executionCount)}
       </div>
     ),
-    isSortable: true,
   },
   {
     header: 'Usage limit',
     cell: ({ maxExecutionCount }) => maxExecutionCount,
-    isSortable: true,
+    sortWith: 'maxExecutionCount',
   },
   {
     header: '',
@@ -92,7 +91,7 @@ const algorithmsColumns = ({
         {name}
       </Link>
     ),
-    isSortable: true,
+    sortWith: 'name',
   },
   {
     header: 'Hash of algorithm',
@@ -102,7 +101,7 @@ const algorithmsColumns = ({
         <ClickToCopy text={algorithmID} />
       </div>
     ),
-    isSortable: true,
+    sortWith: 'algorithmID',
   },
   {
     header: 'Usages left',
@@ -111,12 +110,11 @@ const algorithmsColumns = ({
         {Number(maxExecutionCount) - Number(executionCount)}
       </div>
     ),
-    isSortable: true,
   },
   {
     header: 'Usage limit',
     cell: ({ maxExecutionCount }) => maxExecutionCount,
-    isSortable: true,
+    sortWith: 'maxExecutionCount',
   },
   {
     header: '',
@@ -147,7 +145,7 @@ const accountAndAlgorithmColumns = ({
         {name}
       </Link>
     ),
-    isSortable: true,
+    sortWith: 'name',
   },
   {
     header: 'Hash',
@@ -169,7 +167,7 @@ const accountAndAlgorithmColumns = ({
         </div>
       </div>
     ),
-    isSortable: true,
+    sortWith: 'requestor',
   },
   {
     header: 'Usages left',
@@ -178,12 +176,11 @@ const accountAndAlgorithmColumns = ({
         {Number(maxExecutionCount) - Number(executionCount)}
       </div>
     ),
-    isSortable: true,
   },
   {
     header: 'Usage limit',
     cell: ({ maxExecutionCount }) => maxExecutionCount,
-    isSortable: true,
+    sortWith: 'maxExecutionCount',
   },
   {
     header: '',

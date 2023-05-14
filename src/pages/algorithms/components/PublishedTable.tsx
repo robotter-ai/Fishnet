@@ -17,7 +17,7 @@ const COLUMNS = (
         {name}
       </button>
     ),
-    isSortable: true,
+    sortWith: 'name',
   },
   {
     header: 'Hash',
@@ -27,16 +27,17 @@ const COLUMNS = (
         <ClickToCopy text={id_hash} />
       </div>
     ),
-    isSortable: true,
+    sortWith: 'id_hash',
   },
   {
     header: 'Total usages',
     cell: ({ current_revision }) => current_revision,
-    isSortable: true,
+    sortWith: 'current_revision',
   },
   {
     header: 'Description',
     cell: ({ desc }) => <p className="w-52 line-clamp-3">{desc}</p>,
+    sortWith: 'desc',
   },
   {
     header: '',

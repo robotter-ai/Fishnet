@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -16,7 +17,7 @@ export interface ITableColumns {
   header: string | React.ReactNode;
   accessor?: string;
   cell: (value: any) => React.ReactNode;
-  isSortable?: boolean;
+  sortWith?: any;
 }
 
 interface CustomTableProps {
@@ -30,6 +31,38 @@ const CustomTable: React.FC<CustomTableProps> = ({
   isLoading,
   columns,
 }) => {
+  const [sortData, setSetSortData] = useState(data || []);
+  const [order, setOrder] = useState(true);
+
+  useEffect(() => {
+    setSetSortData(data);
+  }, [data]);
+
+  const handleSortData = (key: string | number) => {
+    if (!sortData?.length) return;
+
+    setSetSortData((prevState) => {
+      const sortedData = [...prevState].sort((a, b) => {
+        const x = JSON.stringify(a[key]).toLowerCase();
+        const y = JSON.stringify(b[key]).toLowerCase();
+
+        if (order) {
+          if (x < y) return -1;
+          if (x > y) return 1;
+        }
+
+        if (x < y) return 1;
+        if (x > y) return -1;
+
+        return 0;
+      });
+
+      return sortedData;
+    });
+
+    setOrder(!order);
+  };
+
   return (
     <div>
       {isLoading ? <BarLoader color="#0054FF" width="100%" /> : null}
@@ -57,11 +90,12 @@ const CustomTable: React.FC<CustomTableProps> = ({
                   >
                     {item.header === 'Filter' ? <FilterIcon /> : null}{' '}
                     {item.header}
-                    {item.isSortable ? (
+                    {item.sortWith ? (
                       <SortArrowIcon
                         className="cursor-pointer"
                         width={9}
                         height={10}
+                        onClick={() => handleSortData(item.sortWith)}
                       />
                     ) : null}
                   </div>
@@ -70,7 +104,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((item, idx) => (
+            {sortData?.map((item, idx) => (
               <TableRow
                 key={idx}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -90,7 +124,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 ))}
               </TableRow>
             ))}
-            {!data?.length && isLoading ? (
+            {!sortData?.length && isLoading ? (
               <TableRow
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
@@ -102,7 +136,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 </TableCell>
               </TableRow>
             ) : null}
-            {!data?.length && !isLoading ? (
+            {!sortData?.length && !isLoading ? (
               <TableRow
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >

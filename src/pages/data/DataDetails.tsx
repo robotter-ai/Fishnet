@@ -1,11 +1,8 @@
 import { RxCaretLeft } from 'react-icons/rx';
 import { IoCheckbox } from 'react-icons/io5';
-import { IoIosAddCircleOutline } from 'react-icons/io';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '@components/ui/Button';
 import AppModal from '@components/ui/AppModal';
-import { CheckBox } from '@components/form';
-import { VALUES_AND_INTERVAL } from '@shared/constant';
 import TextInput from '@components/form/TextInput';
 import ClickToCopy from '@shared/components/ClickToCopy';
 import dayjs from 'dayjs';
@@ -13,29 +10,23 @@ import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
 import useOwner from '@shared/hooks/useOwner';
 import { ExecutePrompt } from '@shared/components/Prompts';
-import { useAppSelector } from '@shared/hooks/useStore';
 import AddressWrap from '@shared/components/AddressWrap';
 import useDataDetails from './hooks/useDataDetails';
-import DataChart from './components/DataChart';
-import EditDataTable from './components/EditDataTable';
+import TimeseriesCharts from './components/TimeseriesCharts';
 
 const DataDetails = () => {
   const navigate = useNavigate();
-  const { csvJson } = useAppSelector((state) => state.timeseries);
   const {
     handleOnChange,
     isPublished,
     handleUploadDataset,
     isLoading,
     publishedModalProps,
-    newChartModalProps,
     dataDetails,
     datasetByIDActions,
   } = useDataDetails();
   const { isOwner } = useOwner(dataDetails?.owner);
   const { isOpen, handleClose } = publishedModalProps;
-  const { isOpenNewChart, handleOpenNewChart, handleCloseNewChart } =
-    newChartModalProps;
 
   const summary = [
     {
@@ -126,41 +117,9 @@ const DataDetails = () => {
             />
           </div>
           <DataSummary summary={summary} />
-          <div
-            className="flex items-center justify-center min-h-[391px] bg-[#FAFAFA] rounded-[10px] cursor-pointer"
-            onClick={handleOpenNewChart}
-          >
-            <IoIosAddCircleOutline className="text-blue" size={150} />
-          </div>
-          <DataChart data={csvJson} />
-          <DataChart data={[]} />
         </div>
-        {/* <div className="mt-8 flex flex-col gap-3">
-          <h1>Dataset</h1>
-          <p>
-            Check the data you want to upload. Select a time interval. You can
-            also rename the indicator.
-          </p>
-          <EditDataTable isPublished={isPublished} />
-        </div> */}
+        <TimeseriesCharts />
       </div>
-      <AppModal
-        title="Values and Interval"
-        isOpen={isOpenNewChart}
-        handleClose={handleCloseNewChart}
-        fullWidth
-      >
-        <div className="grid grid-cols-7 gap-3 shadow-lg p-4 rounded">
-          {VALUES_AND_INTERVAL.map((item, i) => (
-            <div key={i}>
-              <CheckBox label={item} />
-            </div>
-          ))}
-        </div>
-        <div className="text-center mt-5">
-          <Button text="Save" size="lg" onClick={handleClose} />
-        </div>
-      </AppModal>
       <AppModal
         title="Select file (.csv)"
         isOpen={isOpen}

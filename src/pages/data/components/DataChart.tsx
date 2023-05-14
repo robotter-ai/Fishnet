@@ -14,29 +14,20 @@ import { useState } from 'react';
 import classNames from 'classnames';
 // import useModal from '@shared/hooks/useModal';
 // import { DeletePrompt } from '@shared/components/Prompts';
-import { useAppSelector } from '@shared/hooks/useStore';
 import { TrashIcon } from '@assets/icons';
 
-// const data: { date: string; volaBTC: number; returnsBTC: number }[] = [];
-
-// for (let i = 0; i <= 6; i++) {
-//   data.push({
-//     date: dayjs(new Date())
-//       .add(i * 6, 'day')
-//       .format('MMM DD'),
-//     volaBTC: Math.floor(Math.random() * (1 + 2000 - 50)) + 50,
-//     returnsBTC: Math.floor(Math.random() * (1 + 2000 - 50)) + 50,
-//   });
-// }
-
-const DataChart: React.FC<{ data: any[] }> = ({ data }) => {
-  // const { isOpen, handleOpen, handleClose } = useModal();
+const DataChart: React.FC<{
+  data: any[];
+  chart: any;
+  handleOpenChart: () => void;
+  handleDeleteChart: () => void;
+}> = ({ data, chart, handleOpenChart, handleDeleteChart }) => {
   const duration = ['D', 'W', '1M', '3M', 'Y', 'All'];
   const [activeDuration, setActiveDuration] = useState(2);
   const dataToUse = data.slice(0, 10).map((item: any) => ({
     date: dayjs(item.date).format('MMM DD'),
-    volaBTC: item.volaBTC,
-    returnsBTC: item.returnsBTC,
+    [chart.keys[0]]: item[chart.keys[0]],
+    [chart.keys[1]]: item[chart.keys[1]],
   }));
 
   return (
@@ -58,11 +49,14 @@ const DataChart: React.FC<{ data: any[] }> = ({ data }) => {
         <div className="flex gap-2">
           <div
             className="bg-white p-3 flex items-center rounded-md cursor-pointer"
-            // onClick={handleOpen}
+            onClick={handleDeleteChart}
           >
             <TrashIcon />
           </div>
-          <div className="bg-white p-3 flex items-center rounded-md cursor-pointer">
+          <div
+            className="bg-white p-3 flex items-center rounded-md cursor-pointer"
+            onClick={handleOpenChart}
+          >
             <RxDotsHorizontal />
           </div>
         </div>
@@ -70,14 +64,27 @@ const DataChart: React.FC<{ data: any[] }> = ({ data }) => {
       <ResponsiveContainer width="100%" height={250}>
         <AreaChart data={dataToUse}>
           <defs>
-            <linearGradient id="colorVolaBTC" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#0054ff" stopOpacity={0.5} />
-              <stop offset="95%" stopColor="#0054ff" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="colorReturnsBTC" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#6affd2" stopOpacity={0.5} />
-              <stop offset="95%" stopColor="#6affd2" stopOpacity={0} />
-            </linearGradient>
+            {chart.keys.map((item: string, idx: number) => (
+              <linearGradient
+                key={idx}
+                id={`color${item}`}
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop
+                  offset="5%"
+                  stopColor={idx ? '#6affd2' : '#0054ff'}
+                  stopOpacity={0.5}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={idx ? '#6affd2' : '#0054ff'}
+                  stopOpacity={0}
+                />
+              </linearGradient>
+            ))}
           </defs>
           <XAxis dataKey="date" axisLine={false} tickLine={false} />
           <YAxis
@@ -87,33 +94,26 @@ const DataChart: React.FC<{ data: any[] }> = ({ data }) => {
           />
           <CartesianGrid opacity={0.5} vertical={false} />
           <Tooltip />
-          <Area
-            type="linear"
-            dataKey="volaBTC"
-            stroke="#0054ff"
-            strokeWidth={1.5}
-            fillOpacity={1}
-            fill="url(#colorVolaBTC)"
-          />
-          <Area
-            type="linear"
-            dataKey="returnsBTC"
-            stroke="#6affd2"
-            strokeWidth={1.5}
-            fillOpacity={1}
-            fill="url(#colorReturnsBTC)"
-          />
+          {chart.keys.map((item: string, idx: number) => (
+            <Area
+              key={idx}
+              type="linear"
+              dataKey={item}
+              stroke={idx ? '#6affd2' : '#0054ff'}
+              strokeWidth={1.5}
+              fillOpacity={1}
+              fill={`url(#color${item})`}
+            />
+          ))}
         </AreaChart>
       </ResponsiveContainer>
       <div className="flex gap-3 ml-[3.9rem]">
-        <div className="flex items-center gap-2">
-          <AiOutlineLine color="#0054ff" />
-          <p>volaBTC</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <AiOutlineLine color="#6affd2" />
-          <p>returnsBTC</p>
-        </div>
+        {chart.keys.map((item: string, idx: number) => (
+          <div key={idx} className="flex items-center gap-2">
+            <AiOutlineLine color={idx ? '#6affd2' : '#0054ff'} />
+            <p>{item}</p>
+          </div>
+        ))}
       </div>
       {/* <DeletePrompt isOpen={isOpen} handleClose={handleClose} /> */}
     </div>
