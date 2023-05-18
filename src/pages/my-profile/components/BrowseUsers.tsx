@@ -14,13 +14,13 @@ const columns = ({
   },
   {
     header: 'Hash',
-    cell: ({ id_hash }) => (
+    cell: ({ item_hash }) => (
       <div className="flex gap-3">
-        <p className="w-[200px] truncate">{id_hash}</p>
-        <ClickToCopy text={id_hash} />
+        <p className="w-[200px] truncate">{item_hash}</p>
+        <ClickToCopy text={item_hash} />
       </div>
     ),
-    sortWith: 'id_hash',
+    sortWith: 'item_hash',
   },
   {
     header: 'Link',

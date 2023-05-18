@@ -1,7 +1,10 @@
 import { PlusCircleIcon } from '@assets/icons';
-import useTimeseriesChart from '../hooks/useTimeseriesChart';
+import AppModal from '@components/ui/AppModal';
+import { VALUES_AND_INTERVAL } from '@shared/constant';
+import { CheckBox } from '@components/form';
+import Button from '@components/ui/Button';
 import DataChart from './DataChart';
-import ValuesIntervalModal from './ValuesIntervalModal';
+import useTimeseriesChart from '../hooks/useTimeseriesChart';
 
 const TimeseriesCharts = () => {
   const {
@@ -43,13 +46,33 @@ const TimeseriesCharts = () => {
       </p>
       <EditDataTable isPublished={isPublished} />
     </div> */}
-      <ValuesIntervalModal
+      <AppModal
+        title="Values and Interval"
         isOpen={isOpen}
-        selectedChart={selectedChart}
         handleClose={handleClose}
-        handleSaveChart={handleSaveChart}
-        handleOnchangeChart={handleOnchangeChart}
-      />
+        fullWidth
+      >
+        <div className="grid grid-cols-7 gap-3 shadow-lg p-4 rounded">
+          {VALUES_AND_INTERVAL.map((item, i) => {
+            return (
+              <div key={i}>
+                <CheckBox
+                  label={item}
+                  checked={
+                    selectedChart.keys
+                      ? selectedChart.keys.includes(item)
+                      : false
+                  }
+                  onChange={() => handleOnchangeChart('keys', item)}
+                />
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex justify-center mt-5">
+          <Button text="Save" size="lg" onClick={handleSaveChart} />
+        </div>
+      </AppModal>
     </div>
   );
 };

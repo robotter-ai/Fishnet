@@ -62,9 +62,9 @@ const AlgorithmDetails = ({
       value: (
         <div className="flex items-center gap-[11px]">
           <p className="w-[200px] truncate">
-            {algorithmDetails?.id_hash || ''}
+            {algorithmDetails?.item_hash || ''}
           </p>
-          <ClickToCopy text={algorithmDetails?.id_hash || ''} />
+          <ClickToCopy text={algorithmDetails?.item_hash || ''} />
         </div>
       ),
     },
@@ -140,7 +140,7 @@ const AlgorithmDetails = ({
           <ExecutePrompt
             against="data"
             btnStyle="solid"
-            selectedHash={algorithmDetails?.id_hash}
+            selectedHash={algorithmDetails?.item_hash}
           />
         ) : (
           <CustomButton

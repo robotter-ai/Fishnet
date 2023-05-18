@@ -11,7 +11,7 @@ const COLUMNS: ITableColumns[] = [
     accessor: 'name',
     cell: (item) => (
       <Link
-        to={`/data/${item.id_hash}/details`}
+        to={`/data/${item.item_hash}/details`}
         className="text-blue whitespace-nowrap"
       >
         {item.name}
@@ -20,21 +20,23 @@ const COLUMNS: ITableColumns[] = [
     sortWith: 'name',
   },
   {
-    header: 'Hash',
-    accessor: 'id_hash',
+    header: 'Owner',
     cell: (item) => (
       <div className="flex gap-3">
-        <p className="w-[200px] truncate">{item.id_hash}</p>
-        <ClickToCopy text={item.id_hash} />
+        <p className="w-[200px] truncate">{item.owner}</p>
+        <ClickToCopy text={item.owner} />
       </div>
     ),
-    sortWith: 'id_hash',
+    sortWith: 'owner',
   },
   {
     header: 'Public access',
     accessor: 'available',
     cell: (item) => (
-      <ToggleAvailability available={item.available} datasetId={item.id_hash} />
+      <ToggleAvailability
+        available={item.available}
+        datasetId={item.item_hash}
+      />
     ),
     sortWith: 'available',
   },
@@ -57,7 +59,7 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'Filter',
     cell: (item) => (
-      <ExecutePrompt against="algorithm" selectedHash={item.id_hash} />
+      <ExecutePrompt against="algorithm" selectedHash={item.item_hash} />
     ),
   },
 ];

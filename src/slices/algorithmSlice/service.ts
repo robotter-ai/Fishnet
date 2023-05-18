@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export type UploadAlgorithmProps = {
-  id_hash?: string;
+  item_hash?: string;
   name: string;
   desc: string;
   owner: string;
@@ -34,7 +34,7 @@ const getExecutionResultByID = async (id: string) => {
 };
 
 const uploadgetAlgorithm = async (inputs: UploadAlgorithmProps) => {
-  const { data } = await axios.put('/algorithms/upload', inputs);
+  const { data } = await axios.put('/algorithms', inputs);
   return data;
 };
 

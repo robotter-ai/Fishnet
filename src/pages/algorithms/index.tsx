@@ -114,7 +114,7 @@ const Algorithms = () => {
         title="Algorithm"
         isOpen={isOpenPublished}
         handleClose={handleClosePublished}
-        hash={algorithmDetails?.id_hash}
+        hash={algorithmDetails?.item_hash}
         publishedName={algorithmDetails?.name}
         backTo="/algorithms"
       />

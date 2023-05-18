@@ -7,7 +7,7 @@ import './layout.scss';
 const Layout = () => {
   const auth = useAuth();
 
-  return auth?.address ? (
+  return auth.isConnected ? (
     <div id="layout-wrapper">
       <SideNavigation />
       <TopNavigation />

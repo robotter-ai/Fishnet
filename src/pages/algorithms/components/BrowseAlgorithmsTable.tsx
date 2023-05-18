@@ -10,11 +10,11 @@ const COLUMNS = (
 ): ITableColumns[] => [
   {
     header: 'Name',
-    cell: ({ name, id_hash }) => (
+    cell: ({ name, item_hash }) => (
       <button
         type="button"
         className="text-blue"
-        onClick={() => handleOpenAlgoDetails(id_hash)}
+        onClick={() => handleOpenAlgoDetails(item_hash)}
       >
         {name}
       </button>
@@ -22,14 +22,14 @@ const COLUMNS = (
     sortWith: 'name',
   },
   {
-    header: 'Hash',
-    cell: ({ id_hash }) => (
+    header: 'Owner',
+    cell: (item) => (
       <div className="flex gap-3">
-        <p className="w-[200px] truncate">{id_hash}</p>
-        <ClickToCopy text={id_hash} />
+        <p className="w-[200px] truncate">{item.owner}</p>
+        <ClickToCopy text={item.owner} />
       </div>
     ),
-    sortWith: 'id_hash',
+    sortWith: 'owner',
   },
   {
     header: 'Total usages',
@@ -51,10 +51,10 @@ const COLUMNS = (
   },
   {
     header: 'Filter',
-    cell: ({ id_hash, owner }) => (
+    cell: ({ item_hash, owner }) => (
       <ExecutePrompt
         against="data"
-        selectedHash={id_hash}
+        selectedHash={item_hash}
         disabled={address !== owner}
       />
     ),

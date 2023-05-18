@@ -6,8 +6,10 @@ import classNames from 'classnames';
 import useAuth from '@shared/hooks/useAuth';
 import { AlarmClockIcon, ThreeDotsIcon } from '@assets/icons';
 import { useDetectClickOutside } from 'react-detect-click-outside';
+import useLogout from '@shared/hooks/useLogout';
 
 function TopNavigation() {
+  useLogout();
   const { title } = usePageTitle();
   const auth = useAuth();
   const [toggledInfo, setToggledInfo] = useState<

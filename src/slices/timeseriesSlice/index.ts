@@ -10,7 +10,7 @@ export const preprocessTimeseries = createAsyncThunk(
   async (formData: any, thunkAPI) => {
     try {
       const { data } = await axios.post(
-        '/timeseries/csv/preprocess',
+        '/timeseries/preprocess/csv',
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -91,7 +91,7 @@ export const timeseriesSlice = createSlice({
         state.isLoading = false;
         state.success = true;
         state.timeseries = action.payload.map((item: any) => ({
-          id_hash: item.id_hash,
+          item_hash: item.item_hash,
           name: item.name,
           owner: item.owner,
           data: item.data,

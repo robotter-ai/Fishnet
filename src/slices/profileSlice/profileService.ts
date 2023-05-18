@@ -9,17 +9,17 @@ export type UserProps = {
 };
 
 const getUserInfo = async (address: string) => {
-  const { data } = await axios.get(`/user/${address}`);
+  const { data } = await axios.get(`/users/${address}`);
   return data;
 };
 
 const getAllUsers = async () => {
-  const { data } = await axios.get('/allusers');
+  const { data } = await axios.get('/users');
   return data;
 };
 
 const updateUserInfo = async (userDetails: UserProps) => {
-  const { data } = await axios.put('/user', userDetails);
+  const { data } = await axios.put('/users', userDetails);
   return data;
 };
 

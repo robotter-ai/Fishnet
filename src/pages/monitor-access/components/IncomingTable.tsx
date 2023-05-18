@@ -14,7 +14,7 @@ const COLUMNS: ITableColumns[] = [
     header: 'Name',
     cell: (item) => (
       <Link
-        to={`/data/${item.id_hash}/details`}
+        to={`/data/${item.item_hash}/details`}
         className="text-blue whitespace-nowrap"
       >
         {item.name}
@@ -24,13 +24,13 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'Hash of data',
-    cell: ({ id_hash }) => (
+    cell: ({ item_hash }) => (
       <div className="flex gap-3">
-        <p className="w-[200px] truncate">{id_hash}</p>
-        <ClickToCopy text={id_hash} />
+        <p className="w-[200px] truncate">{item_hash}</p>
+        <ClickToCopy text={item_hash} />
       </div>
     ),
-    sortWith: 'id_hash',
+    sortWith: 'item_hash',
   },
   {
     header: 'Status',

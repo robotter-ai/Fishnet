@@ -3,7 +3,7 @@ import getErrMsg from '@shared/utils/getErrMsg';
 import axios from 'axios';
 
 export type TimeseriesProps = {
-  id_hash?: string;
+  item_hash?: string;
   name: string;
   desc?: string;
   owner: string;

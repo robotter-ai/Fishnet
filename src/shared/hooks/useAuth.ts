@@ -2,11 +2,23 @@ import { useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-export default (): { address: any; isConnected: boolean } => {
+interface AuthProps {
+  address: string;
+  wallet: string;
+  isConnected: boolean;
+}
+
+export default (): AuthProps => {
   const { isConnected, address } = useAccount();
   const { connected, publicKey } = useWallet();
 
-  const auth = JSON.parse(localStorage.getItem('auth') as string);
+  const auth: AuthProps = JSON.parse(
+    localStorage.getItem('auth') as string
+  ) || {
+    address: '',
+    wallet: '',
+    isConnected: isConnected || connected,
+  };
 
   useEffect(() => {
     if (address || publicKey?.toBase58()) {
@@ -14,11 +26,12 @@ export default (): { address: any; isConnected: boolean } => {
         'auth',
         JSON.stringify({
           address: address || publicKey?.toBase58(),
+          wallet: address ? 'metamask' : 'phantom',
           isConnected: isConnected || connected,
         })
       );
     }
-  }, [address, publicKey?.toBase58()]);
+  }, [isConnected, connected, address, publicKey?.toBase58()]);
 
   return auth;
 };

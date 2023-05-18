@@ -33,8 +33,8 @@ const DataDetails = () => {
       name: 'Hash',
       value: (
         <div className="flex items-center gap-[11px]">
-          <p className="w-[200px] truncate">{dataDetails?.id_hash || ''}</p>
-          <ClickToCopy text={dataDetails?.id_hash} />
+          <p className="w-[200px] truncate">{dataDetails?.item_hash || ''}</p>
+          <ClickToCopy text={dataDetails?.item_hash} />
         </div>
       ),
     },
@@ -75,7 +75,7 @@ const DataDetails = () => {
                 <ExecutePrompt
                   btnSize="md"
                   against="algorithm"
-                  selectedHash={dataDetails?.id_hash}
+                  selectedHash={dataDetails?.item_hash}
                 />
                 <Button
                   text="Save"
@@ -133,9 +133,9 @@ const DataDetails = () => {
           <p>{dataDetails?.name || ''} published</p>
           <div className="flex flex-col items-center gap-2">
             <p className="text-blue w-[400px] truncate select-none">
-              {dataDetails?.id_hash || ''}
+              {dataDetails?.item_hash || ''}
             </p>
-            <ClickToCopy text={dataDetails?.id_hash || ''} color="#0458FF" />
+            <ClickToCopy text={dataDetails?.item_hash || ''} color="#0458FF" />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">
@@ -145,7 +145,7 @@ const DataDetails = () => {
             btnStyle="outline-blue"
             fullWidth
             onClick={() => {
-              navigate(`/data/${dataDetails?.id_hash}/details`);
+              navigate(`/data/${dataDetails?.item_hash}/details`);
               handleClose();
             }}
           />

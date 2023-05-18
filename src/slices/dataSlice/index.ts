@@ -71,9 +71,9 @@ export const uploadDatasets = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const { datasets, timeseries } = thunkAPI.getState() as RootState;
-      // get all id_hash from timeseries
+      // get all item_hash from timeseries
       const timeseriesIDs = timeseries.timeseries.map(
-        (item: any) => item.id_hash
+        (item: any) => item.item_hash
       );
       // add timeseriesIDs to dataset
       const datasetRequest = {

@@ -12,7 +12,6 @@ import { AiOutlineLine } from 'react-icons/ai';
 import { RxDotsHorizontal } from 'react-icons/rx';
 import { useState } from 'react';
 import classNames from 'classnames';
-// import useModal from '@shared/hooks/useModal';
 // import { DeletePrompt } from '@shared/components/Prompts';
 import { TrashIcon } from '@assets/icons';
 

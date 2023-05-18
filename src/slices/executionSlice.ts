@@ -15,7 +15,7 @@ export const postExecutionRequest = createAsyncThunk(
   'execution/postExecutionRequest',
   async (inputs: ExecutionProps, thunkAPI) => {
     try {
-      const { data } = await axios.post('/executions/request', inputs);
+      const { data } = await axios.post('/executions', inputs);
       return data;
     } catch (err: any) {
       const errMsg =
