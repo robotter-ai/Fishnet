@@ -55,7 +55,7 @@ const COLUMNS = (
       <ExecutePrompt
         against="data"
         selectedHash={item_hash}
-        disabled={address !== owner}
+        // disabled={address !== owner}
       />
     ),
   },

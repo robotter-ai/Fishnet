@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 const getIncomingPermissions = async (user_id: string) => {
-  const { data } = await axios.get(`/user/${user_id}/permissions/incoming`);
+  const { data } = await axios.get(`/users/${user_id}/permissions/incoming`);
   return data;
 };
 
 const getOutgoingPermissions = async (user_id: string) => {
-  const { data } = await axios.get(`/user/${user_id}/permissions/outgoing`);
+  const { data } = await axios.get(`/users/${user_id}/permissions/outgoing`);
   return data;
 };
 

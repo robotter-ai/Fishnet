@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export type UploadDatasetProps = {
+export type DatasetProps = {
   item_hash?: string;
   name: string;
   desc: string;
@@ -28,8 +28,8 @@ const getPublishedDatasets = async (by: string) => {
 };
 
 const getDatasetByID = async (id: string) => {
-  const { data } = await axios.get(`/datasets?id=${id}`);
-  return data[0];
+  const { data } = await axios.get(`/datasets/${id}`);
+  return data;
 };
 
 const updateDatasetAvailability = async (
@@ -39,8 +39,13 @@ const updateDatasetAvailability = async (
   await axios.put(`/datasets/${dataset_id}/available/${available}`);
 };
 
-const uploadDatasets = async (dataset: UploadDatasetProps) => {
+const updateDatasets = async (dataset: DatasetProps) => {
   const { data } = await axios.put('/datasets', dataset);
+  return data;
+};
+
+const uploadDataset = async (dataset: any) => {
+  const { data } = await axios.post('/datasets/upload/timeseries', dataset);
   return data;
 };
 
@@ -49,7 +54,8 @@ const dataService = {
   getPublishedDatasets,
   getDatasetByID,
   updateDatasetAvailability,
-  uploadDatasets,
+  updateDatasets,
+  uploadDataset,
 };
 
 export default dataService;

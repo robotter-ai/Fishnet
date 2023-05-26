@@ -223,7 +223,6 @@ export const PublishedModal: React.FC<{
 
   return (
     <AppModal
-      title="Select file (.csv)"
       isOpen={isOpen}
       handleClose={handleClose}
       withInfo

@@ -30,19 +30,14 @@ const Algorithms = () => {
   } = useAlgorithmsTable();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const tabs = () => {
-    if (isSelectAlgorithm) {
-      return [
-        { key: 'published', name: 'Published' },
-        { key: 'browse-algorithms', name: 'Browse algorithms' },
-      ];
-    }
-    return [
-      { key: 'published', name: 'Published' },
-      { key: 'browse-algorithms', name: 'Browse algorithms' },
-      { key: 'execution-history', name: 'Execution history' },
-    ];
-  };
+  const tabs = [
+    { key: 'published', name: 'Published' },
+    { key: 'browse-algorithms', name: 'Browse algorithms' },
+    ...(!isSelectAlgorithm
+      ? [{ key: 'execution-history', name: 'Execution history' }]
+      : []),
+  ];
+
   const TableMapper: { [key: string]: React.ReactNode } = {
     published: (
       <PublishedTable
@@ -69,7 +64,7 @@ const Algorithms = () => {
     <>
       <div className="flex justify-between items-center mb-5">
         <div className="flex gap-4">
-          {tabs().map((item, i) => (
+          {tabs.map((item, i) => (
             <div
               key={i}
               className={classNames(

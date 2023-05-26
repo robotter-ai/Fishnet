@@ -116,14 +116,10 @@ const MyData = () => {
             onClick={() => inputFileRef.current?.click()}
             disabled={isLoadingUploadTimeseries}
           >
-            {isLoadingUploadTimeseries ? (
-              'Please wait...'
-            ) : (
-              <div className="flex justify-center gap-3 items-center">
-                <MdAdd size={15} />
-                <span>Choose data</span>
-              </div>
-            )}
+            <div className="flex justify-center gap-3 items-center">
+              <MdAdd size={15} />
+              <span>Choose data</span>
+            </div>
           </Button>
         </div>
       </AppModal>

@@ -55,7 +55,7 @@ const OutgoingTable = () => {
   );
 
   useEffect(() => {
-    dispatch(getOutgoingPermissions(auth?.address));
+    dispatch(getOutgoingPermissions(auth.address));
   }, []);
 
   return (

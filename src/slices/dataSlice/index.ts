@@ -66,21 +66,43 @@ export const updateDatasetAvailability = createAsyncThunk(
   }
 );
 
-export const uploadDatasets = createAsyncThunk(
-  'datasets/uploadDatasets',
+export const updateDatasets = createAsyncThunk(
+  'datasets/updateDatasets',
   async (_, thunkAPI) => {
     try {
       const { datasets, timeseries } = thunkAPI.getState() as RootState;
-      // get all item_hash from timeseries
-      const timeseriesIDs = timeseries.timeseries.map(
-        (item: any) => item.item_hash
-      );
-      // add timeseriesIDs to dataset
       const datasetRequest = {
         ...datasets.dataDetails,
-        timeseriesIDs,
+        timeseriesIDs: timeseries.timeseries.map((item: any) => item.item_hash),
       };
-      return await dataService.uploadDatasets(datasetRequest);
+      return await dataService.updateDatasets(datasetRequest);
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
+
+export const uploadDataset = createAsyncThunk(
+  'datasets/uploadDataset',
+  async (_, thunkAPI) => {
+    try {
+      const { datasets, timeseries } = thunkAPI.getState() as RootState;
+
+      const params = {
+        dataset: {
+          ...datasets.dataDetails,
+          timeseriesIDs: [],
+          // timeseriesIDs: timeseries.timeseries.map(
+          //   (item: any) => item.item_hash
+          // ),
+        },
+        timeseries: timeseries.timeseries,
+      };
+      return await dataService.uploadDataset(params);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -94,17 +116,15 @@ export const uploadDatasets = createAsyncThunk(
 interface DataProps {
   isLoading: boolean;
   success: boolean | null;
-  error: any;
   datasets: Record<string, any>[] | any;
   dataDetails: any;
   updatePublicAccess: {
     isLoading: boolean;
     success: boolean | null;
   };
-  uploadDatasets: {
+  updateDatasets: {
     isLoading: boolean;
     success: boolean | null;
-    error: any;
   };
   datasetByIDActions: {
     isLoading: boolean;
@@ -115,22 +135,28 @@ interface DataProps {
     isLoading: boolean;
     success: boolean | null;
   };
+  uploadDatasetActions: {
+    isLoading: boolean;
+    success: boolean | null;
+  };
 }
 
 const initialState: DataProps = {
   isLoading: false,
   success: null,
-  error: null,
   datasets: null,
   dataDetails: null,
   updatePublicAccess: {
     isLoading: false,
     success: null,
   },
-  uploadDatasets: {
+  updateDatasets: {
     isLoading: false,
     success: null,
-    error: null,
+  },
+  uploadDatasetActions: {
+    isLoading: false,
+    success: null,
   },
   datasetByIDActions: {
     isLoading: false,
@@ -149,10 +175,9 @@ const dataSlice = createSlice({
   reducers: {
     resetDataSlice: (state) => {
       state.success = null;
-      state.error = null;
       state.updatePublicAccess.success = null;
-      state.uploadDatasets.success = null;
-      state.uploadDatasets.error = null;
+      state.updateDatasets.success = null;
+      state.uploadDatasetActions.success = null;
     },
     changeDataDetails: (
       state,
@@ -179,7 +204,7 @@ const dataSlice = createSlice({
       })
       .addCase(getDatasets.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        toast.error(action.payload as string);
       })
 
       .addCase(getPublishedDatasets.pending, (state) => {
@@ -218,17 +243,30 @@ const dataSlice = createSlice({
         state.updatePublicAccess.isLoading = false;
         toast.error(action.payload as string);
       })
-      .addCase(uploadDatasets.pending, (state) => {
-        state.uploadDatasets.isLoading = true;
+      .addCase(updateDatasets.pending, (state) => {
+        state.updateDatasets.isLoading = true;
       })
-      .addCase(uploadDatasets.fulfilled, (state, action) => {
-        state.uploadDatasets.isLoading = false;
-        state.uploadDatasets.success = true;
+      .addCase(updateDatasets.fulfilled, (state, action) => {
+        state.updateDatasets.isLoading = false;
+        state.updateDatasets.success = true;
         state.dataDetails = action.payload;
       })
-      .addCase(uploadDatasets.rejected, (state, action) => {
-        state.uploadDatasets.isLoading = false;
-        state.error = action.payload;
+      .addCase(updateDatasets.rejected, (state, action) => {
+        state.updateDatasets.isLoading = false;
+        toast.error(action.payload as string);
+      })
+
+      .addCase(uploadDataset.pending, (state) => {
+        state.uploadDatasetActions.isLoading = true;
+      })
+      .addCase(uploadDataset.fulfilled, (state, action) => {
+        state.uploadDatasetActions.isLoading = false;
+        state.uploadDatasetActions.success = true;
+        state.dataDetails = action.payload.dataset;
+      })
+      .addCase(uploadDataset.rejected, (state, action) => {
+        state.uploadDatasetActions.isLoading = false;
+        toast.error(action.payload as string);
       });
   },
 });

@@ -15,7 +15,7 @@ export default () => {
   const dispatch = useAppDispatch();
   const { isSelect } = useSelectData();
   const [searchParams] = useSearchParams();
-  const { isLoading, datasets, error, publishedDatasets } = useAppSelector(
+  const { isLoading, datasets, publishedDatasets } = useAppSelector(
     (state) => state.datasets
   );
   const { isLoading: isLoadingUploadTimeseries } = useAppSelector(
@@ -81,7 +81,6 @@ export default () => {
     handleFilterTable,
     isSelectData: isSelect,
     isLoading,
-    error,
     handleCsvToJson,
     isLoadingUploadTimeseries,
   };

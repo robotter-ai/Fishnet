@@ -36,16 +36,28 @@ h1 {
     background: $white;
     color: $blue;
     border: 1px solid $blue;
+    &:disabled {
+      background: none;
+      color: $disabled;
+      border: 1px solid $disabled;
+    }
   }
   &.btn-outline-red {
     background: $white;
     color: $red;
     border: 1px solid $red;
+    &:disabled {
+      background: none;
+      color: $disabled;
+      border: 1px solid $disabled;
+    }
   }
   &:disabled {
-    color: $disabled;
-    border: 1px solid $disabled;
-    cursor: not-allowed;
+    background: linear-gradient(
+      83.49deg,
+      rgb(113, 201, 250, 0.25) -108.79%,
+      rgb(0, 84, 255, 0.25) 76.92%
+    );
   }
 }
 

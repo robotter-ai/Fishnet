@@ -46,13 +46,13 @@ const COLUMNS = (dispatch: any, handleOpen: () => void): ITableColumns[] => [
   },
   {
     header: 'Filter',
-    cell: ({ resultID }) => (
+    cell: ({ item_hash }) => (
       <div className="flex gap-3 justify-end">
         <CustomButton
           text="Result"
           btnStyle="outline-blue"
           onClick={() => {
-            dispatch(getExecutionResultByID(resultID));
+            dispatch(getExecutionResultByID(item_hash));
             handleOpen();
           }}
         />

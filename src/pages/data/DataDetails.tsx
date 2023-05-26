@@ -121,7 +121,6 @@ const DataDetails = () => {
         <TimeseriesCharts />
       </div>
       <AppModal
-        title="Select file (.csv)"
         isOpen={isOpen}
         handleClose={handleClose}
         withInfo

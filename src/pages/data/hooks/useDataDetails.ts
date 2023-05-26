@@ -7,10 +7,9 @@ import {
   getDatasetByID,
   resetDataDetails,
   resetDataSlice,
-  uploadDatasets,
+  uploadDataset,
 } from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
-import { uploadTimeseries } from '@slices/timeseriesSlice';
 import useAuth from '@shared/hooks/useAuth';
 
 export default () => {
@@ -18,14 +17,8 @@ export default () => {
   const { setTitle } = usePageTitle();
   const auth = useAuth();
   const dispatch = useAppDispatch();
-  const {
-    datasets: {
-      dataDetails,
-      uploadDatasets: uploadActions,
-      datasetByIDActions,
-    },
-    timeseries: { isLoading: isLoadingTimeseries },
-  } = useAppSelector((app) => app);
+  const { dataDetails, uploadDatasetActions, datasetByIDActions } =
+    useAppSelector((app) => app.datasets);
   const { isOpen, handleOpen, handleClose } = useModal();
   const isPublished = id && id !== 'upload';
 
@@ -44,16 +37,14 @@ export default () => {
   }, [dataDetails?.name]);
 
   useEffect(() => {
-    if (uploadActions.success) {
+    if (uploadDatasetActions.success) {
       handleOpen();
       dispatch(resetDataSlice());
     }
-  }, [uploadActions.success]);
+  }, [uploadDatasetActions.success]);
 
   const handleUploadDataset = () => {
-    dispatch(uploadTimeseries()).then(() => {
-      dispatch(uploadDatasets());
-    });
+    dispatch(uploadDataset());
   };
 
   const handleOnChange = (name: string, value: any) => {
@@ -64,7 +55,7 @@ export default () => {
     handleOnChange,
     handleUploadDataset,
     datasetByIDActions,
-    isLoading: isLoadingTimeseries || uploadActions.isLoading,
+    isLoading: uploadDatasetActions.isLoading,
     isPublished,
     dataDetails,
     publishedModalProps: { handleClose, isOpen },
