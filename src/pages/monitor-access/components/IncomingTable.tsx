@@ -5,11 +5,22 @@ import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import { useEffect } from 'react';
-import { getIncomingPermissions } from '@slices/monitorAccessSlice';
+import {
+  denyPermissions,
+  getIncomingPermissions,
+  resetPermissions,
+} from '@slices/monitorAccessSlice';
 import { StatusIdentifier } from '@shared/constant';
 import useAuth from '@shared/hooks/useAuth';
+import { DeletePrompt } from '@shared/components/Prompts';
 
-const COLUMNS: ITableColumns[] = [
+const COLUMNS = ({
+  handleRefusePermision,
+  denyPermissionsActions,
+}: {
+  denyPermissionsActions: any;
+  handleRefusePermision: (id: string[]) => void;
+}): ITableColumns[] => [
   {
     header: 'Name',
     cell: (item) => (
@@ -24,13 +35,13 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'Hash of data',
-    cell: ({ item_hash }) => (
+    cell: ({ datasetID }) => (
       <div className="flex gap-3">
-        <p className="w-[200px] truncate">{item_hash}</p>
-        <ClickToCopy text={item_hash} />
+        <p className="w-[200px] truncate">{datasetID}</p>
+        <ClickToCopy text={datasetID} />
       </div>
     ),
-    sortWith: 'item_hash',
+    sortWith: 'datasetID',
   },
   {
     header: 'Status',
@@ -50,12 +61,21 @@ const COLUMNS: ITableColumns[] = [
     header: 'Filter',
     cell: (item) => (
       <div className="flex gap-2 justify-end">
-        {item.status === 'Allowed' ? (
+        {item.status === 'ALLOWED' ? (
           <Button text="Settings" btnStyle="outline-blue" />
         ) : (
           <Button text="Allow" btnStyle="outline-blue" />
         )}
-        <Button text="Refuse" btnStyle="outline-red" />
+        <DeletePrompt
+          title="Warning!"
+          button={(handleOpen) => (
+            <Button text="Refuse" btnStyle="outline-red" onClick={handleOpen} />
+          )}
+          message="You want to refuse access. Are you sure?"
+          isLoading={denyPermissionsActions.isLoading}
+          completed={denyPermissionsActions.success}
+          onConfirm={() => handleRefusePermision([item.item_hash])}
+        />
       </div>
     ),
   },
@@ -64,18 +84,24 @@ const COLUMNS: ITableColumns[] = [
 const IncomingTable = () => {
   const dispatch = useAppDispatch();
   const auth = useAuth();
-  const { incomingActions, incomingPermissions } = useAppSelector(
-    (state) => state.monitorAccess
-  );
+  const { incomingActions, incomingPermissions, denyPermissionsActions } =
+    useAppSelector((state) => state.monitorAccess);
 
   useEffect(() => {
     dispatch(getIncomingPermissions(auth?.address));
-  }, []);
+    if (denyPermissionsActions.success) {
+      resetPermissions();
+    }
+  }, [denyPermissionsActions.success]);
+
+  const handleRefusePermision = (item_hashes: string[]) => {
+    dispatch(denyPermissions(item_hashes));
+  };
 
   return (
     <CustomTable
       data={incomingPermissions}
-      columns={COLUMNS}
+      columns={COLUMNS({ handleRefusePermision, denyPermissionsActions })}
       isLoading={incomingActions.isLoading}
     />
   );

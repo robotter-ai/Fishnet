@@ -17,19 +17,40 @@ import { IoCheckbox } from 'react-icons/io5';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
 
-interface PromptInterface {
+interface IDeletePrompt {
   title?: string;
   message?: string;
+  completed?: boolean;
+  isLoading?: boolean;
+  button?: (handleOpen: () => void) => React.ReactNode;
+  onConfirm?: () => void;
 }
 
-export const DeletePrompt: React.FC<PromptInterface> = ({ title, message }) => {
+export const DeletePrompt: React.FC<IDeletePrompt> = ({
+  title,
+  message,
+  completed,
+  button,
+  isLoading,
+  onConfirm,
+}) => {
   const { isOpen, handleOpen, handleClose } = useModal();
+
+  useEffect(() => {
+    if (completed) {
+      handleClose();
+    }
+  }, [completed]);
 
   return (
     <>
-      <div role="button" className="cursor-pointer" onClick={handleOpen}>
-        <TrashIcon />
-      </div>
+      {button ? (
+        button(handleOpen)
+      ) : (
+        <div role="button" className="cursor-pointer" onClick={handleOpen}>
+          <TrashIcon />
+        </div>
+      )}
       <AppModal
         title={title || 'The changes will not not be saved'}
         isOpen={isOpen}
@@ -44,8 +65,16 @@ export const DeletePrompt: React.FC<PromptInterface> = ({ title, message }) => {
             btnStyle="outline-red"
             size="lg"
             fullWidth
+            isLoading={isLoading}
+            onClick={onConfirm}
           />
-          <Button text="No, back" size="lg" fullWidth onClick={handleClose} />
+          <Button
+            text="No, back"
+            size="lg"
+            fullWidth
+            onClick={handleClose}
+            disabled={isLoading}
+          />
         </div>
       </AppModal>
     </>

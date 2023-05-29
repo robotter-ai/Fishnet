@@ -12,11 +12,15 @@ import useDataSettings from './hooks/useDataSettings';
 const DataSettings = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
   const {
-    isOpen: isOpenAccessSettings,
-    handleOpen: handleOpenAccessSettings,
-    handleClose: handleCloseAccessSettings,
-  } = useModal();
-  const { datasetPermission } = useDataSettings();
+    inputs,
+    isLoading,
+    datasetPermission,
+    handleAddAccess,
+    handleOnchangeInput,
+    isOpenAccessSettings,
+    handleOpenAccessSettings,
+    handleCloseAccessSettings,
+  } = useDataSettings();
 
   return (
     <div id="data-settings">
@@ -78,6 +82,8 @@ const DataSettings = () => {
             placeholder="Hash of user (optional)"
             bgColor="#F6F8FB"
             fullWidth
+            value={inputs.requestor}
+            onChange={(e) => handleOnchangeInput('requestor', e.target.value)}
           />
           <TextInput
             label={
@@ -99,15 +105,27 @@ const DataSettings = () => {
             placeholder="Hash of algorithm (optional)"
             bgColor="#F6F8FB"
             fullWidth
+            value={inputs.algorithmID}
+            onChange={(e) => handleOnchangeInput('algorithmID', e.target.value)}
           />
           <TextInput
             label="How many times may  user use the data?"
             placeholder="Set the limit"
             bgColor="#F6F8FB"
             fullWidth
+            value={inputs.requestedExecutionCount || ''}
+            onChange={(e) =>
+              handleOnchangeInput('requestedExecutionCount', e.target.value)
+            }
           />
           <div className="mt-3">
-            <CustomButton text="Add" size="lg" fullWidth />
+            <CustomButton
+              text="Add"
+              size="lg"
+              fullWidth
+              isLoading={isLoading}
+              onClick={handleAddAccess}
+            />
           </div>
         </div>
       </AppModal>

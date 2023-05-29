@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ToggleButton } from '@components/form';
 import AppModal from '@components/ui/AppModal';
 import CustomButton from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import {
-  getDatasets,
+  getPublishedDatasets,
   resetDataSlice,
   updateDatasetAvailability,
 } from '@slices/dataSlice';
@@ -23,10 +23,6 @@ const ToggleAvailability: React.FC<IToggleAvailabilityProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const auth = useAuth();
-  const [availabilityParams, setAvailabilityParam] = useState({
-    dataset_id: '',
-    available: !available,
-  });
   const { isLoading, success } = useAppSelector(
     (state) => state.datasets.updatePublicAccess
   );
@@ -35,26 +31,22 @@ const ToggleAvailability: React.FC<IToggleAvailabilityProps> = ({
   useEffect(() => {
     if (success) {
       toast.success('Dataset have been updated!');
+      dispatch(getPublishedDatasets(auth?.address));
       dispatch(resetDataSlice());
-      dispatch(getDatasets(auth?.address));
       handleClose();
     }
   }, [success]);
 
-  const handleSetAvaibilityParams = () => {
-    setAvailabilityParam({ dataset_id: datasetId, available: !available });
-    handleOpen();
-  };
-
   return (
     <>
-      <ToggleButton checked={available} onChange={handleSetAvaibilityParams} />
-
+      <ToggleButton checked={available} onChange={handleOpen} />
       <AppModal title="Warning!" isOpen={isOpen} handleClose={handleClose}>
         <div className="my-[20px]">
-          <p>
-            Any Fishnet user will be able to use this dataset without limits.
-          </p>
+          {!available ? (
+            <p>
+              Any Fishnet user will be able to use this dataset without limits.
+            </p>
+          ) : null}
           <p>Are you sure?</p>
         </div>
         <div className="flex flex-col gap-4">
@@ -67,19 +59,19 @@ const ToggleAvailability: React.FC<IToggleAvailabilityProps> = ({
             onClick={() =>
               dispatch(
                 updateDatasetAvailability({
-                  ...availabilityParams,
+                  dataset_id: datasetId,
+                  available: !available,
                 })
               )
             }
           />
-          {!isLoading ? (
-            <CustomButton
-              text="No, back"
-              size="lg"
-              fullWidth
-              onClick={handleClose}
-            />
-          ) : null}
+          <CustomButton
+            text="No, back"
+            size="lg"
+            fullWidth
+            onClick={handleClose}
+            disabled={isLoading}
+          />
         </div>
       </AppModal>
     </>
