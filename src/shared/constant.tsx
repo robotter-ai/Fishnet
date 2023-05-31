@@ -29,7 +29,7 @@ export const VALUES_AND_INTERVAL = [
 const COLORS = {
   green: '#1CC272',
   yellow: '#FABE23',
-  red: '#FD686A',
+  red: '#ff1f23',
 };
 
 export const STATUS_COLOR: { [key: string]: string } = {
@@ -45,6 +45,7 @@ export const STATUS_COLOR: { [key: string]: string } = {
 const NEW_STATUS_COLOR: { [key: string]: string } = {
   allowed: COLORS.green,
   successful: COLORS.green,
+  granted: COLORS.green,
   success: COLORS.green,
   waiting: COLORS.yellow,
   requested: COLORS.yellow,
@@ -52,6 +53,7 @@ const NEW_STATUS_COLOR: { [key: string]: string } = {
   running: COLORS.yellow,
   refused: COLORS.red,
   failed: COLORS.red,
+  denied: COLORS.red,
 };
 
 export const StatusIdentifier = ({ status }: { status: string }) => (

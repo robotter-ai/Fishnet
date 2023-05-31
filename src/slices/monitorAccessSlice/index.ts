@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import getErrMsg from '@shared/utils/getErrMsg';
 import { RootState } from 'src/store';
-import monitorAccessService, { DatasetPermisionRequestProps } from './service';
+import monitorAccessService, { DatasetPermisionProps } from './service';
 
 export const getIncomingPermissions = createAsyncThunk(
   'monitorAccess/getIncomingPermissions',
@@ -56,6 +56,26 @@ export const requestDatasetPermissions = createAsyncThunk(
   }
 );
 
+export const grantDatasetPermissions = createAsyncThunk(
+  'monitorAccess/grantDatasetPermissions',
+  async (
+    {
+      dataset_id,
+      inputs,
+    }: { dataset_id: string; inputs: DatasetPermisionProps },
+    thunkAPI
+  ) => {
+    try {
+      return await monitorAccessService.grantDatasetPermissions(
+        dataset_id,
+        inputs
+      );
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(getErrMsg(err));
+    }
+  }
+);
+
 export const denyPermissions = createAsyncThunk(
   'monitorAccess/denyPermissions',
   async (item_hashes: string[], thunkAPI) => {
@@ -76,7 +96,12 @@ interface StateProps {
   requestDatasetPermissionActions: {
     isLoading: boolean;
     success: any;
-    inputs: DatasetPermisionRequestProps;
+    inputs: DatasetPermisionProps;
+  };
+  grantDatasetPermissionActions: {
+    isLoading: boolean;
+    success: any;
+    inputs: DatasetPermisionProps;
   };
   denyPermissionsActions: {
     isLoading: boolean;
@@ -90,6 +115,13 @@ const initialStateRequestInputs = {
   requestedExecutionCount: 0,
 };
 
+const initialStateGrantInputs = {
+  authorizer: '',
+  requestor: '',
+  algorithmID: '',
+  maxExecutionCount: 32,
+};
+
 const initialState: StateProps = {
   incomingPermissions: null,
   outgoingPermissions: null,
@@ -100,6 +132,11 @@ const initialState: StateProps = {
     isLoading: false,
     success: null,
     inputs: initialStateRequestInputs,
+  },
+  grantDatasetPermissionActions: {
+    isLoading: false,
+    success: null,
+    inputs: initialStateGrantInputs,
   },
   denyPermissionsActions: {
     isLoading: false,
@@ -114,7 +151,7 @@ const monitorAccessSlice = createSlice({
     changeDatasetPermissionInput: (
       state,
       action: PayloadAction<{
-        input: 'requestor' | 'algorithmID' | 'requestedExecutionCount';
+        input: keyof DatasetPermisionProps;
         value: any;
       }>
     ) => {
@@ -125,8 +162,10 @@ const monitorAccessSlice = createSlice({
     },
     resetPermissions: (state) => {
       state.requestDatasetPermissionActions.success = null;
+      state.grantDatasetPermissionActions.success = null;
       state.denyPermissionsActions.success = null;
       state.requestDatasetPermissionActions.inputs = initialStateRequestInputs;
+      state.grantDatasetPermissionActions.inputs = initialStateGrantInputs;
     },
   },
   extraReducers(builder) {
@@ -193,6 +232,19 @@ const monitorAccessSlice = createSlice({
       })
       .addCase(denyPermissions.rejected, (state, action) => {
         state.denyPermissionsActions.isLoading = false;
+        toast.error(action.payload as string);
+      })
+
+      .addCase(grantDatasetPermissions.pending, (state) => {
+        state.grantDatasetPermissionActions.isLoading = true;
+      })
+      .addCase(grantDatasetPermissions.fulfilled, (state) => {
+        state.grantDatasetPermissionActions.isLoading = false;
+        state.grantDatasetPermissionActions.success = true;
+        toast.success('Permissions have been updated!');
+      })
+      .addCase(grantDatasetPermissions.rejected, (state, action) => {
+        state.grantDatasetPermissionActions.isLoading = false;
         toast.error(action.payload as string);
       });
   },

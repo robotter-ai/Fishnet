@@ -1,10 +1,12 @@
 import axios from 'axios';
 
-export interface DatasetPermisionRequestProps {
-  requestor: string;
-  algorithmID: string;
+export interface DatasetPermisionProps {
+  requestor?: string;
+  algorithmID?: string;
   timeseriesIDs?: string[];
-  requestedExecutionCount: number;
+  requestedExecutionCount?: number;
+  maxExecutionCount?: number;
+  authorizer?: string;
 }
 
 const getIncomingPermissions = async (user_id: string) => {
@@ -24,10 +26,21 @@ const getDatasetPermissions = async (dataset_id: string) => {
 
 const requestDatasetPermissions = async (
   dataset_id: string,
-  inputs: DatasetPermisionRequestProps
+  inputs: DatasetPermisionProps
 ) => {
   const { data } = await axios.put(
     `/permissions/datasets/${dataset_id}/request`,
+    inputs
+  );
+  return data;
+};
+
+const grantDatasetPermissions = async (
+  dataset_id: string,
+  inputs: DatasetPermisionProps
+) => {
+  const { data } = await axios.put(
+    `/permissions/datasets/${dataset_id}/grant`,
     inputs
   );
   return data;
@@ -50,6 +63,7 @@ const monitorAccessService = {
   requestDatasetPermissions,
   denyPermissions,
   approvePermissions,
+  grantDatasetPermissions,
 };
 
 export default monitorAccessService;

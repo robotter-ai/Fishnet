@@ -1,18 +1,83 @@
-import Button from '@components/ui/Button';
 import { Starred } from '@components/form';
 import ClickToCopy from '@shared/components/ClickToCopy';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   denyPermissions,
   getIncomingPermissions,
+  grantDatasetPermissions,
   resetPermissions,
 } from '@slices/monitorAccessSlice';
 import { StatusIdentifier } from '@shared/constant';
 import useAuth from '@shared/hooks/useAuth';
 import { DeletePrompt } from '@shared/components/Prompts';
+import AppModal from '@components/ui/AppModal';
+import TextInput from '@components/form/TextInput';
+import CustomButton from '@components/ui/Button';
+import useModal from '@shared/hooks/useModal';
+
+const AllowComponent = ({ item }: any) => {
+  const auth = useAuth();
+  const dispatch = useAppDispatch();
+  const { isOpen, handleOpen, handleClose } = useModal();
+  const [maxExecutionCount, setmaxExecutionCount] = useState(32);
+  const {
+    grantDatasetPermissionActions: { isLoading, success },
+  } = useAppSelector((state) => state.monitorAccess);
+
+  useEffect(() => {
+    if (success) {
+      dispatch(getIncomingPermissions(auth?.address));
+      resetPermissions();
+    }
+  }, [success]);
+
+  return (
+    <>
+      <CustomButton text="Allow" btnStyle="outline-blue" onClick={handleOpen} />
+      <AppModal
+        title="Set the data usage limit"
+        isOpen={isOpen}
+        withInfo
+        handleClose={handleClose}
+      >
+        <TextInput
+          label="How many times may user use the data?"
+          placeholder="Set the limit"
+          bgColor="#F6F8FB"
+          fullWidth
+          value={maxExecutionCount}
+          onChange={(e) => setmaxExecutionCount(Number(e.target.value))}
+        />
+        <div className="mt-4">
+          <CustomButton
+            text="Save"
+            size="lg"
+            className="mt-4"
+            fullWidth
+            isLoading={isLoading}
+            onClick={() =>
+              dispatch(
+                grantDatasetPermissions({
+                  dataset_id: item.item_hash,
+                  // dataset_id: item.datasetID,
+                  inputs: {
+                    maxExecutionCount,
+                    authorizer: item.authorizer,
+                    requestor: item.requestor,
+                    algorithmID: item.algorithmID,
+                  },
+                })
+              )
+            }
+          />
+        </div>
+      </AppModal>
+    </>
+  );
+};
 
 const COLUMNS = ({
   handleRefusePermision,
@@ -62,14 +127,19 @@ const COLUMNS = ({
     cell: (item) => (
       <div className="flex gap-2 justify-end">
         {item.status === 'ALLOWED' ? (
-          <Button text="Settings" btnStyle="outline-blue" />
+          <CustomButton text="Settings" btnStyle="outline-blue" />
         ) : (
-          <Button text="Allow" btnStyle="outline-blue" />
+          <AllowComponent item={item} />
         )}
         <DeletePrompt
           title="Warning!"
-          button={(handleOpen) => (
-            <Button text="Refuse" btnStyle="outline-red" onClick={handleOpen} />
+          button={(handleOpenRefuseModal) => (
+            <CustomButton
+              text="Refuse"
+              btnStyle="outline-red"
+              onClick={handleOpenRefuseModal}
+              disabled={item.status === 'DENIED'}
+            />
           )}
           message="You want to refuse access. Are you sure?"
           isLoading={denyPermissionsActions.isLoading}
@@ -101,7 +171,10 @@ const IncomingTable = () => {
   return (
     <CustomTable
       data={incomingPermissions}
-      columns={COLUMNS({ handleRefusePermision, denyPermissionsActions })}
+      columns={COLUMNS({
+        handleRefusePermision,
+        denyPermissionsActions,
+      })}
       isLoading={incomingActions.isLoading}
     />
   );
