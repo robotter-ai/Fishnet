@@ -3,17 +3,32 @@ import { nanoid } from 'nanoid';
 import useModal from '@shared/hooks/useModal';
 import { useAppSelector } from '@shared/hooks/useStore';
 
-interface ChartProps {
+export interface ChartProps {
   id: string;
   interval: string;
-  keys: string[];
+  keys: {
+    name: string;
+    color: string;
+  }[];
 }
+
+const getRandomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
 
 const initialState: Partial<ChartProps>[] = [
   {
     id: nanoid(4),
     interval: '',
-    keys: ['volaBTC', 'returnsBTC'],
+    keys: [
+      { name: 'volaBTC', color: '#0054ff' },
+      { name: 'returnsBTC', color: '#6affd2' },
+    ],
   },
 ];
 
@@ -37,15 +52,20 @@ export default () => {
 
   const handleOnchangeChart = (input: 'interval' | 'keys', value: any) => {
     if (input === 'keys') {
-      let keys: string[] = [...(selectedChart.keys || [])];
-      if (keys.length === 2) {
-        keys.pop();
+      if (selectedChart?.keys?.some((x) => x.name === value)) {
+        return setSelectedChart((prevState) => ({
+          ...prevState,
+          keys: [...(prevState.keys as any[])].filter(
+            (item) => item.name !== value
+          ),
+        }));
       }
-      keys = [value, ...keys];
-
       return setSelectedChart((prevState) => ({
         ...prevState,
-        keys,
+        keys: [
+          ...(prevState.keys || []),
+          { name: value, color: getRandomColor() },
+        ],
       }));
     }
     return setSelectedChart((prevState) => ({

@@ -22,7 +22,7 @@ const AllowComponent = ({ item }: any) => {
   const auth = useAuth();
   const dispatch = useAppDispatch();
   const { isOpen, handleOpen, handleClose } = useModal();
-  const [maxExecutionCount, setmaxExecutionCount] = useState(32);
+  const [maxExecutionCount, setMaxExecutionCount] = useState(32);
   const {
     grantDatasetPermissionActions: { isLoading, success },
   } = useAppSelector((state) => state.monitorAccess);
@@ -50,7 +50,7 @@ const AllowComponent = ({ item }: any) => {
           bgColor="#F6F8FB"
           fullWidth
           value={maxExecutionCount}
-          onChange={(e) => setmaxExecutionCount(Number(e.target.value))}
+          onChange={(e) => setMaxExecutionCount(Number(e.target.value))}
         />
         <div className="mt-4">
           <CustomButton
@@ -127,7 +127,11 @@ const COLUMNS = ({
     cell: (item) => (
       <div className="flex gap-2 justify-end">
         {item.status === 'GRANTED' ? (
-          <CustomButton text="Settings" btnStyle="outline-blue" />
+          <CustomButton
+            linkTo={`/monitor-access/${item.datasetID}/settings`}
+            text="Settings"
+            btnStyle="outline-blue"
+          />
         ) : (
           <AllowComponent item={item} />
         )}

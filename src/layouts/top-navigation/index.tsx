@@ -22,7 +22,9 @@ function TopNavigation() {
   });
 
   const isDataDetails =
-    pathname.startsWith('/data') && pathname.endsWith('details');
+    pathname.startsWith('/data') &&
+    pathname.endsWith('details') &&
+    pathname.split('/')[2] !== 'upload';
 
   return (
     <div id="top-navigation">

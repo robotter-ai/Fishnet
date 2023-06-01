@@ -155,7 +155,7 @@ const DataDetails = () => {
           </div>
           <DataSummary summary={summary} />
         </div>
-        <TimeseriesCharts />
+        <TimeseriesCharts isOwner={isOwner} />
       </div>
       <AppModal
         isOpen={isOpen}

@@ -4,9 +4,9 @@ import { VALUES_AND_INTERVAL } from '@shared/constant';
 import { CheckBox } from '@components/form';
 import Button from '@components/ui/Button';
 import DataChart from './DataChart';
-import useTimeseriesChart from '../hooks/useTimeseriesChart';
+import useTimeseriesChart, { ChartProps } from '../hooks/useTimeseriesChart';
 
-const TimeseriesCharts = () => {
+const TimeseriesCharts = ({ isOwner }: any) => {
   const {
     charts,
     csvJson,
@@ -26,17 +26,20 @@ const TimeseriesCharts = () => {
           <DataChart
             key={idx}
             data={csvJson}
-            chart={item}
+            chart={item as ChartProps}
+            isOwner={isOwner}
             handleOpenChart={() => handleOpenChart(item.id as string)}
             handleDeleteChart={() => handleDeleteChart(item.id as string)}
           />
         ))}
-        <div
-          className="flex items-center justify-center min-h-[391px] bg-[#FAFAFA] rounded-[10px] cursor-pointer"
-          onClick={() => handleOpenChart('new')}
-        >
-          <PlusCircleIcon className="text-blue" height={120} width={120} />
-        </div>
+        {isOwner ? (
+          <div
+            className="flex items-center justify-center min-h-[391px] bg-[#FAFAFA] rounded-[10px] cursor-pointer"
+            onClick={() => handleOpenChart('new')}
+          >
+            <PlusCircleIcon className="text-blue" height={120} width={120} />
+          </div>
+        ) : null}
       </div>
       {/* <div className="mt-8 flex flex-col gap-3">
       <h1>Dataset</h1>
@@ -58,11 +61,7 @@ const TimeseriesCharts = () => {
               <div key={i}>
                 <CheckBox
                   label={item}
-                  checked={
-                    selectedChart.keys
-                      ? selectedChart.keys.includes(item)
-                      : false
-                  }
+                  checked={selectedChart?.keys?.some((x) => x.name === item)}
                   onChange={() => handleOnchangeChart('keys', item)}
                 />
               </div>
