@@ -27,7 +27,7 @@ export default () => {
   });
 
   const query: 'published' | 'browse-data' =
-    (searchParams.get('tab') as 'published' | 'browse-data') || 'published';
+    (searchParams.get('tab') as 'published' | 'browse-data') || 'browse-data';
 
   const dataMapper: Record<'published' | 'browse-data', any> = {
     published: publishedDatasets.data,

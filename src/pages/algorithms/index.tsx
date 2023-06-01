@@ -31,8 +31,8 @@ const Algorithms = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const tabs = [
-    { key: 'published', name: 'Published' },
     { key: 'browse-algorithms', name: 'Browse algorithms' },
+    { key: 'published', name: 'Published' },
     ...(!isSelectAlgorithm
       ? [{ key: 'execution-history', name: 'Execution history' }]
       : []),
@@ -57,7 +57,7 @@ const Algorithms = () => {
       <ExecutionHistoryTable data={executions} isLoading={isLoadingExecution} />
     ),
   };
-  const query: null | string = searchParams.get('tab') || 'published';
+  const query: null | string = searchParams.get('tab') || 'browse-algorithms';
   const TableComponent = TableMapper?.[query];
 
   return (

@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import WallteIcon from '@assets/images/wallet-icon.png';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import useAuth from '@shared/hooks/useAuth';
 import { AlarmClockIcon, ThreeDotsIcon } from '@assets/icons';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import useLogout from '@shared/hooks/useLogout';
+import { StatusIndicator } from '@shared/constant';
 
 function TopNavigation() {
   useLogout();
-  const { title } = usePageTitle();
+  const { title, pageStatus } = usePageTitle();
   const auth = useAuth();
+  const { pathname } = useLocation();
   const [toggledInfo, setToggledInfo] = useState<
     'notification' | 'profile' | null
   >(null);
@@ -19,10 +21,18 @@ function TopNavigation() {
     onTriggered: () => setToggledInfo(null),
   });
 
+  const isDataDetails =
+    pathname.startsWith('/data') && pathname.endsWith('details');
+
   return (
     <div id="top-navigation">
       <div className="flex justify-between">
-        <h1>{title}</h1>
+        <div className="flex items-center">
+          <h1>{title}</h1>
+          {isDataDetails && pageStatus !== 'NOT REQUESTED' ? (
+            <StatusIndicator status={pageStatus || ''} />
+          ) : null}
+        </div>
         <div ref={ref} className="relative flex items-center gap-[15px]">
           <div className="flex items-center gap-3 rounded-[10px] p-[5px] px-[15px] border border-[#C4C4C4]">
             <span className="truncate w-[10rem] text-[#1C1C1C]">

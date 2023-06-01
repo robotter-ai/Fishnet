@@ -31,9 +31,14 @@ const COLUMNS = (address: string): ITableColumns[] => [
   },
   {
     header: 'Status',
-    cell: ({ permission_status }) =>
+    cell: ({ permission_status, item_hash }) =>
       permission_status === 'NOT REQUESTED' ? (
-        <p className="text-blue whitespace-nowrap">Access request</p>
+        <Link
+          to={`/data/${item_hash}/details`}
+          className="text-blue whitespace-nowrap"
+        >
+          Access request
+        </Link>
       ) : (
         <StatusIdentifier status={permission_status} />
       ),

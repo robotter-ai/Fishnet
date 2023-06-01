@@ -27,8 +27,8 @@ const MyData = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
 
   const tabs = [
-    { key: 'published', name: 'Published' },
     { key: 'browse-data', name: 'Browse data' },
+    { key: 'published', name: 'Published' },
   ];
   const TableMapper: { [key: string]: ReactNode } = {
     published: (
@@ -36,7 +36,7 @@ const MyData = () => {
     ),
     'browse-data': <BrowseDataTable data={data} isLoading={isLoading} />,
   };
-  const query: null | string = searchParams.get('tab') || 'published';
+  const query: null | string = searchParams.get('tab') || 'browse-data';
   const TableComponent = TableMapper?.[query];
 
   return (

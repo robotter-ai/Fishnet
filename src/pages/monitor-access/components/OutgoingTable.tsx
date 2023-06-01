@@ -1,4 +1,3 @@
-import Button from '@components/ui/Button';
 import { Starred } from '@components/form';
 import ClickToCopy from '@shared/components/ClickToCopy';
 import { Link } from 'react-router-dom';
@@ -8,17 +7,21 @@ import { useEffect } from 'react';
 import { getOutgoingPermissions } from '@slices/monitorAccessSlice';
 import { StatusIdentifier } from '@shared/constant';
 import useAuth from '@shared/hooks/useAuth';
+import { ExecutePrompt } from '@shared/components/Prompts';
 
 const COLUMNS: ITableColumns[] = [
   {
     header: 'Name',
     cell: (item) => (
-      <Link
-        to={`/data/${item.item_hash}/details`}
-        className="text-blue whitespace-nowrap"
-      >
-        {item.name}
-      </Link>
+      <>
+        <Link
+          to={`/data/${item.item_hash}/details`}
+          className="text-blue whitespace-nowrap"
+        >
+          {item.name}
+        </Link>
+        <p>Usages left: {item.executionCount}</p>
+      </>
     ),
     sortWith: 'name',
   },
@@ -43,7 +46,13 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'Filter',
-    cell: ({ item_hash }) => <Button text="Refuse" btnStyle="outline-red" />,
+    cell: ({ item_hash, status }) => (
+      <ExecutePrompt
+        against="algorithm"
+        selectedHash={item_hash}
+        disabled={status !== 'ALLOWED'}
+      />
+    ),
   },
 ];
 

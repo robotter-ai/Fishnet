@@ -11,11 +11,22 @@ import ViewLoader from '@shared/components/ViewLoader';
 import useOwner from '@shared/hooks/useOwner';
 import { ExecutePrompt } from '@shared/components/Prompts';
 import AddressWrap from '@shared/components/AddressWrap';
+import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
+import {
+  changeDatasetPermissionInput,
+  requestDatasetPermissions,
+} from '@slices/monitorAccessSlice';
+import useAuth from '@shared/hooks/useAuth';
 import useDataDetails from './hooks/useDataDetails';
 import TimeseriesCharts from './components/TimeseriesCharts';
 
 const DataDetails = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const auth = useAuth();
+  const { requestDatasetPermissionActions } = useAppSelector(
+    (state) => state.monitorAccess
+  );
   const {
     handleOnChange,
     isPublished,
@@ -24,6 +35,8 @@ const DataDetails = () => {
     publishedModalProps,
     dataDetails,
     datasetByIDActions,
+    handleUpdateDataset,
+    updateDatasetsActions,
   } = useDataDetails();
   const { isOwner } = useOwner(dataDetails?.owner);
   const { isOpen, handleClose } = publishedModalProps;
@@ -58,6 +71,8 @@ const DataDetails = () => {
     },
   ];
 
+  const disabled = !isOwner;
+
   return (
     <div>
       <div className="flex justify-between items-center mb-5">
@@ -70,22 +85,42 @@ const DataDetails = () => {
         <div>
           {/* eslint-disable-next-line no-nested-ternary */}
           {isPublished ? (
-            isOwner ? (
+            isOwner ||
+            dataDetails?.available ||
+            dataDetails?.permission_status === 'GRANTED' ? (
               <div className="flex gap-4">
                 <ExecutePrompt
                   btnSize="md"
                   against="algorithm"
                   selectedHash={dataDetails?.item_hash}
                 />
-                <Button
-                  text="Save"
-                  size="md"
-                  isLoading={isLoading}
-                  onClick={handleUploadDataset}
-                />
+                {isOwner ? (
+                  <Button
+                    text="Save"
+                    size="md"
+                    isLoading={updateDatasetsActions.isLoading}
+                    onClick={handleUpdateDataset}
+                  />
+                ) : null}
               </div>
             ) : (
-              <Button text="Access request" size="md" />
+              <Button
+                text="Access request"
+                size="md"
+                onClick={() => {
+                  dispatch(
+                    changeDatasetPermissionInput({
+                      input: 'requestor',
+                      value: auth.address,
+                    })
+                  );
+                  dispatch(requestDatasetPermissions(dataDetails?.item_hash));
+                }}
+                isLoading={
+                  dataDetails?.permission_status === 'REQUESTED' ||
+                  requestDatasetPermissionActions.isLoading
+                }
+              />
             )
           ) : (
             <Button
@@ -107,6 +142,7 @@ const DataDetails = () => {
               value={dataDetails?.name || ''}
               onChange={(e) => handleOnChange('name', e.target.value)}
               fullWidth
+              disabled={disabled}
             />
             <TextInput
               label="Description"
@@ -114,6 +150,7 @@ const DataDetails = () => {
               value={dataDetails?.desc || ''}
               onChange={(e) => handleOnChange('desc', e.target.value)}
               fullWidth
+              disabled={disabled}
             />
           </div>
           <DataSummary summary={summary} />
@@ -127,9 +164,11 @@ const DataDetails = () => {
         withHeader={false}
       >
         <div className="flex flex-col items-center gap-4">
-          <h1>Data published!</h1>
+          <h1>Data {!isPublished ? 'published' : 'updated'}!</h1>
           <IoCheckbox className="text-blue" size={70} />
-          <p>{dataDetails?.name || ''} published</p>
+          <p>
+            {dataDetails?.name || ''} {!isPublished ? 'published' : 'updated'}
+          </p>
           <div className="flex flex-col items-center gap-2">
             <p className="text-blue w-[400px] truncate select-none">
               {dataDetails?.item_hash || ''}

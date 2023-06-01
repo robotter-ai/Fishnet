@@ -27,8 +27,8 @@ const getPublishedDatasets = async (by: string) => {
   return data;
 };
 
-const getDatasetByID = async (id: string) => {
-  const { data } = await axios.get(`/datasets/${id}`);
+const getDatasetByID = async (id: string, view_as: string) => {
+  const { data } = await axios.get(`/datasets/${id}?view_as=${view_as}`);
   return data;
 };
 

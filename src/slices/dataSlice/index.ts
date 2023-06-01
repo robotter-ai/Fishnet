@@ -35,9 +35,9 @@ export const getPublishedDatasets = createAsyncThunk(
 
 export const getDatasetByID = createAsyncThunk(
   'datasets/getDatasetByID',
-  async (id: string, thunkAPI) => {
+  async (params: { id: string; view_as: string }, thunkAPI) => {
     try {
-      return await dataService.getDatasetByID(id);
+      return await dataService.getDatasetByID(params.id, params.view_as);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -96,9 +96,6 @@ export const uploadDataset = createAsyncThunk(
         dataset: {
           ...datasets.dataDetails,
           timeseriesIDs: [],
-          // timeseriesIDs: timeseries.timeseries.map(
-          //   (item: any) => item.item_hash
-          // ),
         },
         timeseries: timeseries.timeseries,
       };
@@ -122,7 +119,7 @@ interface DataProps {
     isLoading: boolean;
     success: boolean | null;
   };
-  updateDatasets: {
+  updateDatasetsActions: {
     isLoading: boolean;
     success: boolean | null;
   };
@@ -150,7 +147,7 @@ const initialState: DataProps = {
     isLoading: false,
     success: null,
   },
-  updateDatasets: {
+  updateDatasetsActions: {
     isLoading: false,
     success: null,
   },
@@ -176,7 +173,7 @@ const dataSlice = createSlice({
     resetDataSlice: (state) => {
       state.success = null;
       state.updatePublicAccess.success = null;
-      state.updateDatasets.success = null;
+      state.updateDatasetsActions.success = null;
       state.uploadDatasetActions.success = null;
     },
     changeDataDetails: (
@@ -244,15 +241,15 @@ const dataSlice = createSlice({
         toast.error(action.payload as string);
       })
       .addCase(updateDatasets.pending, (state) => {
-        state.updateDatasets.isLoading = true;
+        state.updateDatasetsActions.isLoading = true;
       })
       .addCase(updateDatasets.fulfilled, (state, action) => {
-        state.updateDatasets.isLoading = false;
-        state.updateDatasets.success = true;
+        state.updateDatasetsActions.isLoading = false;
+        state.updateDatasetsActions.success = true;
         state.dataDetails = action.payload;
       })
       .addCase(updateDatasets.rejected, (state, action) => {
-        state.updateDatasets.isLoading = false;
+        state.updateDatasetsActions.isLoading = false;
         toast.error(action.payload as string);
       })
 

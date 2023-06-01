@@ -13,6 +13,7 @@ interface TextInputProps {
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => void;
+  disabled?: boolean;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -23,6 +24,7 @@ const TextInput: React.FC<TextInputProps> = ({
   placeholder,
   value,
   onChange,
+  disabled,
 }) => {
   return (
     <label
@@ -42,6 +44,7 @@ const TextInput: React.FC<TextInputProps> = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        disabled={disabled}
       />
     </label>
   );

@@ -110,9 +110,9 @@ interface StateProps {
 }
 
 const initialStateRequestInputs = {
-  requestor: '',
-  algorithmID: '',
-  requestedExecutionCount: 0,
+  requestor: undefined,
+  algorithmID: undefined,
+  requestedExecutionCount: undefined,
 };
 
 const initialStateGrantInputs = {

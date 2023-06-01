@@ -56,12 +56,16 @@ const NEW_STATUS_COLOR: { [key: string]: string } = {
   denied: COLORS.red,
 };
 
+export const StatusIndicator = ({ status }: { status: string }) => (
+  <BsDot
+    size={45}
+    color={NEW_STATUS_COLOR[status ? status.toLowerCase() : '']}
+  />
+);
+
 export const StatusIdentifier = ({ status }: { status: string }) => (
   <div className="flex items-center whitespace-nowrap text-center">
     <p>{capitalize(status)}</p>
-    <BsDot
-      size={45}
-      color={NEW_STATUS_COLOR[status ? status.toLowerCase() : '']}
-    />
+    <StatusIndicator status={status} />
   </div>
 );

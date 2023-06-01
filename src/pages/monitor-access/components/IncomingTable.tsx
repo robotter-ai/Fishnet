@@ -30,6 +30,7 @@ const AllowComponent = ({ item }: any) => {
   useEffect(() => {
     if (success) {
       dispatch(getIncomingPermissions(auth?.address));
+      handleClose();
       resetPermissions();
     }
   }, [success]);
@@ -61,8 +62,7 @@ const AllowComponent = ({ item }: any) => {
             onClick={() =>
               dispatch(
                 grantDatasetPermissions({
-                  dataset_id: item.item_hash,
-                  // dataset_id: item.datasetID,
+                  dataset_id: item.datasetID,
                   inputs: {
                     maxExecutionCount,
                     authorizer: item.authorizer,
@@ -126,7 +126,7 @@ const COLUMNS = ({
     header: 'Filter',
     cell: (item) => (
       <div className="flex gap-2 justify-end">
-        {item.status === 'ALLOWED' ? (
+        {item.status === 'GRANTED' ? (
           <CustomButton text="Settings" btnStyle="outline-blue" />
         ) : (
           <AllowComponent item={item} />
