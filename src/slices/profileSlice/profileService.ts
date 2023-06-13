@@ -23,10 +23,16 @@ const updateUserInfo = async (userDetails: UserProps) => {
   return data;
 };
 
+const getNotifications = async (address: string) => {
+  const { data } = await axios.put(`/users/${address}/notifications`);
+  return data;
+};
+
 const profileService = {
   getUserInfo,
   getAllUsers,
   updateUserInfo,
+  getNotifications,
 };
 
 export default profileService;

@@ -5,6 +5,7 @@ import { CheckBox } from '@components/form';
 import Button from '@components/ui/Button';
 import DataChart from './DataChart';
 import useTimeseriesChart, { ChartProps } from '../hooks/useTimeseriesChart';
+import EditDataTable from './EditDataTable';
 
 const TimeseriesCharts = ({ isOwner }: any) => {
   const {
@@ -17,6 +18,7 @@ const TimeseriesCharts = ({ isOwner }: any) => {
     handleOnchangeChart,
     selectedChart,
     handleDeleteChart,
+    timeseries,
   } = useTimeseriesChart();
 
   return (
@@ -41,14 +43,14 @@ const TimeseriesCharts = ({ isOwner }: any) => {
           </div>
         ) : null}
       </div>
-      {/* <div className="mt-8 flex flex-col gap-3">
-      <h1>Dataset</h1>
-      <p>
-        Check the data you want to upload. Select a time interval. You can
-        also rename the indicator.
-      </p>
-      <EditDataTable isPublished={isPublished} />
-    </div> */}
+      <div className="mt-8 flex flex-col gap-3">
+        <h1>Dataset</h1>
+        <p>
+          Check the data you want to upload. Select a time interval. You can
+          also rename the indicator.
+        </p>
+        <EditDataTable data={timeseries} isPublished />
+      </div>
       <AppModal
         title="Values and Interval"
         isOpen={isOpen}

@@ -49,6 +49,19 @@ const uploadDataset = async (dataset: any) => {
   return data;
 };
 
+const generateViews = async (
+  dataset_id: string,
+  request: {
+    timeseriesIDs: string[];
+    granularity: string;
+    startTime: number;
+    endTime: number;
+  }[]
+) => {
+  const { data } = await axios.put(`/datasets/${dataset_id}/views`, request);
+  return data;
+};
+
 const dataService = {
   getDatasets,
   getPublishedDatasets,
@@ -56,6 +69,7 @@ const dataService = {
   updateDatasetAvailability,
   updateDatasets,
   uploadDataset,
+  generateViews,
 };
 
 export default dataService;

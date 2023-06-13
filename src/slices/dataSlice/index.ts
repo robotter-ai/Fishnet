@@ -110,6 +110,43 @@ export const uploadDataset = createAsyncThunk(
   }
 );
 
+export const generateViews = createAsyncThunk(
+  'datasets/generateViews',
+  async (
+    params: {
+      datasetId: string;
+      request?: {
+        timeseriesIDs: string[];
+        granularity: string;
+        startTime: number;
+        endTime: number;
+      }[];
+    },
+    thunkAPI
+  ) => {
+    try {
+      const { datasetId, request } = params;
+      const { timeseries } = thunkAPI.getState() as RootState;
+      return await dataService.generateViews(datasetId, [
+        {
+          timeseriesIDs: [
+            ...timeseries.timeseries.map((item: any) => item.item_hash),
+          ],
+          startTime: 0,
+          endTime: 1686263058,
+          granularity: 'DAY',
+        },
+      ]);
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
+
 interface DataProps {
   isLoading: boolean;
   success: boolean | null;
@@ -136,6 +173,10 @@ interface DataProps {
     isLoading: boolean;
     success: boolean | null;
   };
+  generateViewActions: {
+    isLoading: boolean;
+    success: boolean | null;
+  };
 }
 
 const initialState: DataProps = {
@@ -159,6 +200,10 @@ const initialState: DataProps = {
     isLoading: false,
     success: null,
   },
+  generateViewActions: {
+    isLoading: false,
+    success: null,
+  },
   publishedDatasets: {
     data: null,
     isLoading: false,
@@ -174,6 +219,7 @@ const dataSlice = createSlice({
       state.success = null;
       state.updatePublicAccess.success = null;
       state.updateDatasetsActions.success = null;
+      state.generateViewActions.success = null;
       state.uploadDatasetActions.success = null;
     },
     changeDataDetails: (
@@ -240,6 +286,7 @@ const dataSlice = createSlice({
         state.updatePublicAccess.isLoading = false;
         toast.error(action.payload as string);
       })
+
       .addCase(updateDatasets.pending, (state) => {
         state.updateDatasetsActions.isLoading = true;
       })
@@ -250,6 +297,18 @@ const dataSlice = createSlice({
       })
       .addCase(updateDatasets.rejected, (state, action) => {
         state.updateDatasetsActions.isLoading = false;
+        toast.error(action.payload as string);
+      })
+
+      .addCase(generateViews.pending, (state) => {
+        state.generateViewActions.isLoading = true;
+      })
+      .addCase(generateViews.fulfilled, (state) => {
+        state.generateViewActions.isLoading = false;
+        state.generateViewActions.success = true;
+      })
+      .addCase(generateViews.rejected, (state, action) => {
+        state.generateViewActions.isLoading = false;
         toast.error(action.payload as string);
       })
 

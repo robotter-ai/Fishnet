@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import {
   changeDataDetails,
+  generateViews,
   getDatasetByID,
   resetDataDetails,
   resetDataSlice,
@@ -23,6 +24,7 @@ export default () => {
     uploadDatasetActions,
     datasetByIDActions,
     updateDatasetsActions,
+    generateViewActions,
   } = useAppSelector((app) => app.datasets);
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
@@ -41,21 +43,24 @@ export default () => {
   }, [requestDatasetPermissionActions.success]);
 
   useEffect(() => {
-    setTitle(
-      dataDetails?.name || 'Datasets.csv',
-      dataDetails?.permission_status
-    );
+    setTitle(dataDetails?.name, dataDetails?.permission_status);
   }, [dataDetails?.name]);
 
   useEffect(() => {
-    if (uploadDatasetActions.success || updateDatasetsActions.success) {
+    if (generateViewActions.success || updateDatasetsActions.success) {
       handleOpen();
       dispatch(resetDataSlice());
     }
-  }, [uploadDatasetActions.success, updateDatasetsActions.success]);
+  }, [generateViewActions.success, updateDatasetsActions.success]);
 
   const handleUploadDataset = () => {
     dispatch(uploadDataset());
+    const checkDatasetId = setInterval(() => {
+      if (dataDetails?.item_hash) {
+        dispatch(generateViews({ datasetId: dataDetails?.item_hash }));
+        clearInterval(checkDatasetId);
+      }
+    }, 500);
   };
 
   const handleUpdateDataset = () => {
@@ -70,7 +75,7 @@ export default () => {
     handleOnChange,
     handleUploadDataset,
     datasetByIDActions,
-    isLoading: uploadDatasetActions.isLoading,
+    isLoading: uploadDatasetActions.isLoading || generateViewActions.isLoading,
     isPublished,
     dataDetails,
     publishedModalProps: { handleClose, isOpen },

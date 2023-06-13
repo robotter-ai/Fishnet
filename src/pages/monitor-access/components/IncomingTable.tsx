@@ -17,6 +17,7 @@ import AppModal from '@components/ui/AppModal';
 import TextInput from '@components/form/TextInput';
 import CustomButton from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
+import { getNotifications } from '@slices/profileSlice';
 
 const AllowComponent = ({ item }: any) => {
   const auth = useAuth();
@@ -32,6 +33,7 @@ const AllowComponent = ({ item }: any) => {
       dispatch(getIncomingPermissions(auth?.address));
       handleClose();
       resetPermissions();
+      dispatch(getNotifications(auth.address));
     }
   }, [success]);
 
@@ -165,6 +167,7 @@ const IncomingTable = () => {
     dispatch(getIncomingPermissions(auth?.address));
     if (denyPermissionsActions.success) {
       resetPermissions();
+      dispatch(getNotifications(auth.address));
     }
   }, [denyPermissionsActions.success]);
 

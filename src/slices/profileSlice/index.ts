@@ -47,6 +47,21 @@ export const updateUserInfo = createAsyncThunk(
   }
 );
 
+export const getNotifications = createAsyncThunk(
+  'profile/getNotifications',
+  async (address: string, thunkAPI) => {
+    try {
+      return await profileService.getNotifications(address);
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
+
 interface ProfileSliceProps {
   isLoading: boolean;
   success: boolean | null;
@@ -54,6 +69,11 @@ interface ProfileSliceProps {
   userInfo: UserProps | any;
   updateActions: { isLoading: boolean; success: boolean | null; error: any };
   allUsers: { data: null; isLoading: boolean; success: boolean | null };
+  notificationActions: {
+    data: null;
+    isLoading: boolean;
+    success: boolean | null;
+  };
 }
 
 const initialState: ProfileSliceProps = {
@@ -63,6 +83,7 @@ const initialState: ProfileSliceProps = {
   userInfo: null,
   updateActions: { isLoading: false, success: null, error: null },
   allUsers: { data: null, isLoading: false, success: null },
+  notificationActions: { data: null, isLoading: false, success: null },
 };
 
 const profileSlice = createSlice({
@@ -120,6 +141,18 @@ const profileSlice = createSlice({
         state.updateActions.isLoading = false;
         state.updateActions.error = action.payload;
         toast.error(action.payload as string);
+      })
+
+      .addCase(getNotifications.pending, (state) => {
+        state.notificationActions.isLoading = true;
+      })
+      .addCase(getNotifications.fulfilled, (state, action) => {
+        state.notificationActions.isLoading = false;
+        state.notificationActions.success = true;
+        state.notificationActions.data = action.payload;
+      })
+      .addCase(getNotifications.rejected, (state) => {
+        state.notificationActions.isLoading = false;
       });
   },
 });

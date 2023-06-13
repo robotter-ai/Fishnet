@@ -14,6 +14,7 @@ import { useState } from 'react';
 import classNames from 'classnames';
 import { TrashIcon } from '@assets/icons';
 import { ChartProps } from '../hooks/useTimeseriesChart';
+import mockData from '../../../../mock-data.json';
 
 const DataChart: React.FC<{
   data: any[];

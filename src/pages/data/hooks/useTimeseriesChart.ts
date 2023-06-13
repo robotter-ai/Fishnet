@@ -36,7 +36,7 @@ export default () => {
   const [charts, setCharts] = useState(initialState);
   const [selectedChart, setSelectedChart] = useState<Partial<ChartProps>>({});
   const { isOpen, handleOpen, handleClose } = useModal();
-  const { csvJson } = useAppSelector((state) => state.timeseries);
+  const { csvJson, timeseries } = useAppSelector((state) => state.timeseries);
 
   const handleOpenChart = (id: string) => {
     if (id === 'new') {
@@ -104,5 +104,6 @@ export default () => {
     selectedChart,
     handleSaveChart,
     handleDeleteChart,
+    timeseries,
   };
 };

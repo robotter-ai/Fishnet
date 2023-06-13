@@ -8,10 +8,13 @@ import {
   resetPermissions,
 } from '@slices/monitorAccessSlice';
 import useModal from '@shared/hooks/useModal';
+import { getNotifications } from '@slices/profileSlice';
+import useAuth from '@shared/hooks/useAuth';
 
 export default () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
+  const auth = useAuth();
   const {
     isOpen: isOpenAccessSettings,
     handleOpen: handleOpenAccessSettings,
@@ -30,6 +33,7 @@ export default () => {
     if (success) {
       handleCloseAccessSettings();
       resetPermissions();
+      dispatch(getNotifications(auth.address));
     }
   }, [success]);
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import WallteIcon from '@assets/images/wallet-icon.png';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { Link, useLocation } from 'react-router-dom';
@@ -8,9 +8,13 @@ import { AlarmClockIcon, ThreeDotsIcon } from '@assets/icons';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import useLogout from '@shared/hooks/useLogout';
 import { StatusIndicator } from '@shared/constant';
+import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
+import { getNotifications } from '@slices/profileSlice';
 
 function TopNavigation() {
   useLogout();
+  const dispatch = useAppDispatch();
+  const { data } = useAppSelector((state) => state.profile.notificationActions);
   const { title, pageStatus } = usePageTitle();
   const auth = useAuth();
   const { pathname } = useLocation();
@@ -20,6 +24,10 @@ function TopNavigation() {
   const ref = useDetectClickOutside({
     onTriggered: () => setToggledInfo(null),
   });
+
+  useEffect(() => {
+    dispatch(getNotifications(auth.address));
+  }, [auth.address]);
 
   const isDataDetails =
     pathname.startsWith('/data') &&
@@ -94,24 +102,25 @@ function TopNavigation() {
               style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
             >
               <div className="flex flex-col">
-                {[1, 2, 3].map((_, i) => (
-                  <div
-                    key={i}
-                    className={classNames(
-                      'border-b border-b-[rgba(16, 30, 115, 0.06)] py-4',
-                      {
-                        'border-b-transparent': i + 1 === 3,
-                      }
-                    )}
-                  >
-                    <p className="text-[#29324A] text-base leading-4 mb-2">
-                      Lorem ipsum dolor sit amet, consecte adipis elit
-                    </p>
-                    <p className="text-sm text-[#91989C] leading-none">
-                      8h ago
-                    </p>
-                  </div>
-                ))}
+                {Array.isArray(data) &&
+                  data.map((item: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className={classNames(
+                        'border-b border-b-[rgba(16, 30, 115, 0.06)] py-4',
+                        {
+                          'border-b-transparent': idx + 1 === 3,
+                        }
+                      )}
+                    >
+                      <p className="text-[#29324A] text-base leading-4 mb-2">
+                        {item.message_text}
+                      </p>
+                      {/* <p className="text-sm text-[#91989C] leading-none">
+                        8h ago
+                      </p> */}
+                    </div>
+                  ))}
               </div>
             </div>
           ) : null}
