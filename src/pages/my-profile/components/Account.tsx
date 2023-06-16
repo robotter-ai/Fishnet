@@ -79,7 +79,7 @@ const Account: React.FC<IAccountProps> = ({
         </div>
         <div className="flex flex-col items-center gap-2">
           <p>{auth?.address}</p>
-          <ClickToCopy text={auth?.address} color="#0458FF" />
+          <ClickToCopy text={auth?.address} color="#1DC3CF" />
         </div>
         <button type="button" className="mt-4 text-[#FD686A] text-lg">
           Log out

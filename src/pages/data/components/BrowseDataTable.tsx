@@ -8,7 +8,7 @@ import useAuth from '@shared/hooks/useAuth';
 
 const COLUMNS = (address: string): ITableColumns[] => [
   {
-    header: 'Name',
+    header: 'NAME',
     cell: (item) => (
       <Link
         to={`/data/${item.item_hash}/details`}
@@ -20,17 +20,19 @@ const COLUMNS = (address: string): ITableColumns[] => [
     sortWith: 'name',
   },
   {
-    header: 'Owner',
+    header: 'OWNER',
     cell: (item) => (
       <div className="flex gap-3">
         <p className="w-[200px] truncate">{item.owner}</p>
-        <ClickToCopy text={item.owner} />
+        <div className="bg-icon-bg h-9 w-9 flex items-center justify-center bg-{#E6FAFF} rounded-full">
+          <ClickToCopy text={item.owner} />
+        </div>
       </div>
     ),
     sortWith: 'owner',
   },
   {
-    header: 'Status',
+    header: 'STATUS',
     cell: ({ permission_status, item_hash }) =>
       permission_status === 'NOT REQUESTED' ? (
         <Link
@@ -45,7 +47,7 @@ const COLUMNS = (address: string): ITableColumns[] => [
     sortWith: 'permission_status',
   },
   {
-    header: 'Description',
+    header: 'DESCRIPTION',
     cell: (item) => <p className="w-52 line-clamp-3">{item.desc}</p>,
     sortWith: 'desc',
   },
@@ -58,7 +60,7 @@ const COLUMNS = (address: string): ITableColumns[] => [
     ),
   },
   {
-    header: 'Filter',
+    header: '',
     cell: (item) => {
       return (
         <ExecutePrompt

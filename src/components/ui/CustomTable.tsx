@@ -65,7 +65,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
 
   return (
     <div>
-      {isLoading ? <BarLoader color="#0054FF" width="100%" /> : null}
+      {isLoading ? <BarLoader color="#1DC3CF" width="100%" /> : null}
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -78,6 +78,8 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     paddingRight: columns.length - 1 === i ? 0 : 15,
                     paddingTop: 15,
                     paddingBottom: 15,
+                    color: '#566164',
+                    fontWeight: 500,
                   }}
                 >
                   <div
@@ -117,6 +119,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                       paddingRight: columns.length - 1 === i ? 0 : 15,
                       paddingTop: 12,
                       paddingBottom: 12,
+                      color: '#244141',
                     }}
                   >
                     {column.cell(item)}

@@ -13,14 +13,15 @@ const columns = ({
     sortWith: 'username',
   },
   {
-    header: 'Hash',
-    cell: ({ item_hash }) => (
+    header: 'Owner',
+    // header: 'Hash',
+    cell: ({ address }) => (
       <div className="flex gap-3">
-        <p className="w-[200px] truncate">{item_hash}</p>
-        <ClickToCopy text={item_hash} />
+        <p className="w-[200px] truncate">{address}</p>
+        <ClickToCopy text={address} />
       </div>
     ),
-    sortWith: 'item_hash',
+    sortWith: 'address',
   },
   {
     header: 'Link',

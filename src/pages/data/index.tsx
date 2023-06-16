@@ -1,12 +1,12 @@
-import { ReactNode, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { MdAdd } from 'react-icons/md';
-import classNames from 'classnames';
-import Button from '@components/ui/Button';
-import AppModal from '@components/ui/AppModal';
-import useModal from '@shared/hooks/useModal';
 import { SearchInput } from '@components/form';
+import AppModal from '@components/ui/AppModal';
+import Button from '@components/ui/Button';
+import useModal from '@shared/hooks/useModal';
+import classNames from 'classnames';
+import { ReactNode, useRef } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
+import { MdAdd } from 'react-icons/md';
+import { useSearchParams } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
 import BrowseDataTable from './components/BrowseDataTable';
 import PublishedTable from './components/PublishedTable';
@@ -67,7 +67,7 @@ const MyData = () => {
             onChange={(value) => handleFilterTable(value)}
           />
           <Button size="md" onClick={handleOpen}>
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-3 justify-center items-center">
               <MdAdd size={15} />
               <span>Upload data</span>
             </div>
@@ -101,7 +101,7 @@ const MyData = () => {
           types={['CSV']}
           handleChange={(file: any) => handleCsvToJson(file)}
         >
-          <div className="flex justify-center items-center h-[207px] bg-light-20 rounded-[10px]">
+          <div className="flex justify-center items-center h-[207px] bg-light-20 rounded-[166px]">
             {isLoadingUploadTimeseries ? (
               <FadeLoader color="#0054ff" height={10} margin={-5} width={3} />
             ) : (

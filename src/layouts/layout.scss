@@ -3,7 +3,7 @@
 #layout-wrapper {
   display: grid;
   height: 100vh;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 116px 1fr;
   grid-template-rows: max-content 1fr;
   grid-template-areas:
     "sidenav topnav"
@@ -13,6 +13,7 @@
 #side-navigation {
   background-color: $light_grey;
   grid-area: sidenav;
+  align-items: center;
 }
 
 #top-navigation {

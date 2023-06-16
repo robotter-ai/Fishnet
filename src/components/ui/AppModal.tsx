@@ -1,7 +1,7 @@
 import { Box, Modal } from '@mui/material';
 import classNames from 'classnames';
-import { MdClose } from 'react-icons/md';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
+import { MdClose } from 'react-icons/md';
 
 interface ModalProps {
   title?: string;
@@ -38,14 +38,14 @@ const AppModal: React.FC<ModalProps> = ({
   return (
     <Modal open={isOpen}>
       <Box sx={style(fullWidth)}>
-        <div className="p-6">
+        <div className="p-8">
           {withHeader ? (
             <div className="flex justify-between items-center">
               <h1>{title}</h1>
               <div className="flex justify-between gap-2 items-center">
                 {withInfo ? (
                   <div
-                    className="bg-white rounded-[10px] p-1 cursor-pointer"
+                    className="bg-icon-bg rounded-full p-1 cursor-pointer"
                     style={{
                       boxShadow: '0px 12px 24px rgba(0, 85, 255, 0.08)',
                     }}
@@ -54,8 +54,10 @@ const AppModal: React.FC<ModalProps> = ({
                   </div>
                 ) : null}
                 <div
-                  className="bg-white rounded-[10px] p-1 cursor-pointer"
-                  style={{ boxShadow: '0px 12px 24px rgba(0, 85, 255, 0.08)' }}
+                  className="bg-icon-bg rounded-full p-1 cursor-pointer"
+                  style={{
+                    boxShadow: '0px 12px 24px rgba(0, 85, 255, 0.08)',
+                  }}
                   onClick={handleClose}
                 >
                   <MdClose size={24} color="#172025" />

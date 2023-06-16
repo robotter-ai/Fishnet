@@ -5,9 +5,10 @@ module.exports = {
     extend: {
       colors: {
         white: '#fff',
-        blue: '#0054ff',
+        blue: '#1DC3CF',
         'light-20': '#F6F8FB',
         'dark-20': '#91989C',
+        'icon-bg': '#EDF2FA',
         'dark-50': '#223038',
       },
     },

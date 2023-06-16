@@ -70,7 +70,7 @@ interface ProfileSliceProps {
   updateActions: { isLoading: boolean; success: boolean | null; error: any };
   allUsers: { data: null; isLoading: boolean; success: boolean | null };
   notificationActions: {
-    data: null;
+    data: [] | null;
     isLoading: boolean;
     success: boolean | null;
   };

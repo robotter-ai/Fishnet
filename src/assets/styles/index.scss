@@ -2,13 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Public+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import './variables';
 
 body {
   margin: 0;
   background-color: $white;
-  font-family: 'Public Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -22,7 +22,7 @@ button {
 
 h1,
 p {
-  color: #172025;
+  color: #244141;
 }
 
 h1 {
@@ -31,11 +31,11 @@ h1 {
 }
 
 .app-btn {
-  background: linear-gradient(83.49deg, #71c9fa -108.79%, #0054ff 76.92%);
+  background: linear-gradient(259.65deg, #1DC3CF -19.75%, #0093A7 135.06%);
   &.btn-outline-blue {
-    background: $white;
-    color: $blue;
-    border: 1px solid $blue;
+    background: $button-bg;
+    color: $button-text;
+    // border: 1px solid;
     &:disabled {
       background: none;
       color: $disabled;

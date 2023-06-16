@@ -14,8 +14,10 @@ export default () => {
   const handleConnectWallet = (connectors: WalletProps) => {
     if (connectors === 'Metamask') {
       connect();
-    } else {
+    } else if (connectors === 'Phantom') {
       select(PhantomWalletName);
+    } else {
+      connect();
     }
   };
 

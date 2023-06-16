@@ -24,7 +24,7 @@ const updateUserInfo = async (userDetails: UserProps) => {
 };
 
 const getNotifications = async (address: string) => {
-  const { data } = await axios.put(`/users/${address}/notifications`);
+  const { data } = await axios.get(`/users/${address}/notifications`);
   return data;
 };
 

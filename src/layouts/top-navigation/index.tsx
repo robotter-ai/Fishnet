@@ -44,25 +44,25 @@ function TopNavigation() {
           ) : null}
         </div>
         <div ref={ref} className="relative flex items-center gap-[15px]">
-          <div className="flex items-center gap-3 rounded-[10px] p-[5px] px-[15px] border border-[#C4C4C4]">
+          <div className="flex bg-icon-bg rounded-[33px] items-center gap-3 p-[5px] px-[15px] ">
             <span className="truncate w-[10rem] text-[#1C1C1C]">
               {auth?.address}
             </span>
             <img src={WallteIcon} alt="" />
           </div>
           <div
-            className="bg-white h-9 w-9 rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
+            className="bg-icon-bg h-9 w-9 rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
             style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
-            onClick={() =>
+            onClick={() => {
               setToggledInfo(
                 toggledInfo === 'notification' ? null : 'notification'
-              )
-            }
+              );
+            }}
           >
             <AlarmClockIcon />
           </div>
           <div
-            className="bg-white h-9 w-9 rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
+            className="bg-icon-bg h-9 w-9 rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
             style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
             onClick={() =>
               setToggledInfo(toggledInfo === 'profile' ? null : 'profile')
@@ -72,7 +72,7 @@ function TopNavigation() {
           </div>
           {toggledInfo === 'profile' ? (
             <div
-              className="absolute w-full top-12 bg-white px-5 rounded-[8px] z-50"
+              className="absolute w-full top-12 bg-white px-4 rounded-[8px] z-50"
               style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
             >
               <div className="flex flex-col">
@@ -98,12 +98,12 @@ function TopNavigation() {
           ) : null}
           {toggledInfo === 'notification' ? (
             <div
-              className="absolute w-full top-12 bg-white px-5 rounded-[8px] z-50"
+              className="absolute w-full bg-white top-12 min-h-72 px-5 rounded-[10px] z-[30000000]"
               style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
             >
               <div className="flex flex-col">
                 {Array.isArray(data) &&
-                  data.map((item: any, idx: number) => (
+                  data?.map((item: any, idx: number) => (
                     <div
                       key={idx}
                       className={classNames(
@@ -116,11 +116,52 @@ function TopNavigation() {
                       <p className="text-[#29324A] text-base leading-4 mb-2">
                         {item.message_text}
                       </p>
-                      {/* <p className="text-sm text-[#91989C] leading-none">
+                      <p className="text-sm text-[#91989C] leading-none">
                         8h ago
-                      </p> */}
+                      </p>
                     </div>
                   ))}
+              </div>
+              <div className="flex flex-col">
+                <div
+                  className={classNames(
+                    'border-b border-b-[rgba(16, 30, 115, 0.06)] py-4',
+                    {
+                      'border-b-transparent': 0.2 + 1 === 3,
+                    }
+                  )}
+                >
+                  <p className="text-[#29324A] text-base leading-4 mb-2">
+                    some notification text
+                  </p>
+                  <p className="text-sm text-[#91989C] leading-none">8h ago</p>
+                </div>
+                <div
+                  className={classNames(
+                    'border-b border-b-[rgba(16, 30, 115, 0.06)] py-4',
+                    {
+                      'border-b-transparent': 0.2 + 1 === 3,
+                    }
+                  )}
+                >
+                  <p className="text-[#29324A] text-base leading-4 mb-2">
+                    some notification text
+                  </p>
+                  <p className="text-sm text-[#91989C] leading-none">8h ago</p>
+                </div>
+                <div
+                  className={classNames(
+                    'border-b border-b-[rgba(16, 30, 115, 0.06)] py-4',
+                    {
+                      'border-b-transparent': 0.2 + 1 === 3,
+                    }
+                  )}
+                >
+                  <p className="text-[#29324A] text-base leading-4 mb-2">
+                    some notification text
+                  </p>
+                  <p className="text-sm text-[#91989C] leading-none">8h ago</p>
+                </div>
               </div>
             </div>
           ) : null}

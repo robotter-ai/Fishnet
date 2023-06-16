@@ -1,7 +1,7 @@
 .toggle {
   --width: 60px;
   --height: calc(var(--width) / 2);
-  --border-radius: 10px;
+  --border-radius: 53px;
 
   display: inline-block;
   cursor: pointer;
@@ -17,7 +17,7 @@
   width: var(--width);
   height: var(--height);
   border-radius: var(--border-radius);
-  background: #e6eeff;
+  background: #E6FBFF;
 }
 
 .toggle__fill::after {
@@ -33,7 +33,7 @@
 }
 
 .toggle__input:checked ~ .toggle__fill::after {
-  background: $blue;
+  background: #1DC3CF;
   transform: translateX(30px);
 }
 
@@ -45,7 +45,7 @@
 }
 
 .toggle__input:checked ~ .toggle__link {
-  color: #E6EEFF;
+  color: #E6FBFF;
 }
 
 .checkbox {
@@ -63,12 +63,12 @@
   height: 25px;
   white-space: nowrap;
   border-radius: 5px;
-  background: #e6eeff;
+  background: #E6FBFF;
   border: 1px solid transparent;
 }
 
 .checkbox input:checked ~ .checkbox__fill {
-  background-image: linear-gradient(#e6eeff, #e6eeff), radial-gradient(circle at top left, #8bffdc,#95c4ff);
+  background-image: linear-gradient(#E6FBFF, #E6FBFF), radial-gradient(circle at top left, #8bffdc,#95c4ff);
   background-origin: border-box;
   background-clip: content-box, border-box;
 }

@@ -1,14 +1,14 @@
-import { toast } from 'react-toastify';
 import { CopyIcon } from '@assets/icons';
+import { toast } from 'react-toastify';
 
 interface ClickToCopyProps {
   text: string;
-  color?: '#29324A' | '#0458FF';
+  color?: '#1DC3CF' | '#0458FF' | '#566164';
 }
 
 const ClickToCopy: React.FC<ClickToCopyProps> = ({
   text,
-  color = '#29324A',
+  color = '#1DC3CF',
 }) => {
   const handleCopyText = () => {
     navigator.clipboard.writeText(text);

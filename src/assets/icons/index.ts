@@ -5,6 +5,10 @@ import { ReactComponent as ThreeDotsIcon } from '@assets/icons/three-dots.svg';
 import { ReactComponent as TrashIcon } from '@assets/icons/trash.svg';
 import { ReactComponent as SortArrowIcon } from '@assets/icons/sort-arrow.svg';
 import { ReactComponent as PlusCircleIcon } from '@assets/icons/plus-circle.svg';
+import { ReactComponent as ProfileIcon } from '@assets/icons/account.svg';
+import { ReactComponent as LockIcon } from '@assets/icons/lock.svg';
+import { ReactComponent as DeveloperIcon } from '@assets/icons/developer.svg';
+import { ReactComponent as DatabaseIcon } from '@assets/icons/database.svg';
 
 export {
   AlarmClockIcon,
@@ -14,4 +18,8 @@ export {
   TrashIcon,
   FilterIcon,
   PlusCircleIcon,
+  ProfileIcon,
+  LockIcon,
+  DeveloperIcon,
+  DatabaseIcon,
 };

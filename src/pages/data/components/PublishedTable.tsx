@@ -7,7 +7,7 @@ import ToggleAvailability from '@shared/components/ToggleAvailability';
 
 const COLUMNS: ITableColumns[] = [
   {
-    header: 'Name',
+    header: 'NAME',
     accessor: 'name',
     cell: (item) => (
       <Link
@@ -20,7 +20,7 @@ const COLUMNS: ITableColumns[] = [
     sortWith: 'name',
   },
   {
-    header: 'Owner',
+    header: 'OWNER',
     cell: (item) => (
       <div className="flex gap-3">
         <p className="w-[200px] truncate">{item.owner}</p>
@@ -30,7 +30,7 @@ const COLUMNS: ITableColumns[] = [
     sortWith: 'owner',
   },
   {
-    header: 'Public access',
+    header: 'PUBLIC ACCESS',
     accessor: 'available',
     cell: (item) => (
       <ToggleAvailability
@@ -41,7 +41,7 @@ const COLUMNS: ITableColumns[] = [
     sortWith: 'available',
   },
   {
-    header: 'Description',
+    header: 'DESCRIPTION',
     accessor: 'desc',
     cell: (item) => <p className="w-52 line-clamp-3">{item.desc}</p>,
     sortWith: 'desc',
@@ -50,14 +50,14 @@ const COLUMNS: ITableColumns[] = [
     header: '',
     accessor: 'forgotten',
     cell: (item) => (
-      <div className="flex items-center gap-3">
+      <div className="flex justify-center items-center">
         <Starred starred={item.forgotten} />
-        <DeletePrompt />
+        {/* <DeletePrompt /> */}
       </div>
     ),
   },
   {
-    header: 'Filter',
+    header: '',
     cell: (item) => (
       <ExecutePrompt against="algorithm" selectedHash={item.item_hash} />
     ),
