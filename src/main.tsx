@@ -1,41 +1,43 @@
-import React, { useMemo } from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { WagmiConfig, createClient, configureChains, mainnet } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
+import '@assets/styles/index.scss';
+import 'react-toastify/dist/ReactToastify.css';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
-import { store } from './store';
-import App from './App';
+import React, { useMemo } from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import { WagmiConfig, configureChains, createConfig, mainnet } from 'wagmi';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+import { publicProvider } from 'wagmi/providers/public';
 import './config';
+import { store } from './store';
 
-import 'react-toastify/dist/ReactToastify.css';
-import '@assets/styles/index.scss';
+import App from './App';
 
-const { provider, webSocketProvider } = configureChains(
+const { publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
   [publicProvider()]
 );
 
-const client = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
-  provider,
-  webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
+  connectors: [new MetaMaskConnector(), new InjectedConnector()],
 });
 
 const MainApp = () => {
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  const wallets = useMemo(() => [new PhantomWalletAdapter()], [network]);
+  const wallets = useMemo(() => [], [network]);
 
   return (
-    <WagmiConfig client={client}>
+    <WagmiConfig config={wagmiConfig}>
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <BrowserRouter>

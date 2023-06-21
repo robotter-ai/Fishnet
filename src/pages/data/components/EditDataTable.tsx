@@ -1,38 +1,26 @@
-import { TiArrowUnsorted } from 'react-icons/ti';
-import { MdDeleteOutline } from 'react-icons/md';
+import { CheckIcon } from '@assets/icons';
 import { ReactComponent as EditIcon } from '@assets/icons/edit-pencil.svg';
-import { CheckBox } from '@components/form';
-import { LineChart, Line, XAxis, YAxis, AreaChart, Area } from 'recharts';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-
-// const data = [
-//   {
-//     name: 'Page A',
-//     uv: 40,
-//   },
-//   {
-//     name: 'Page B',
-//     uv: 3000,
-//   },
-//   {
-//     name: 'Page C',
-//     uv: 2000,
-//   },
-// ];
+import { Area, AreaChart, XAxis, YAxis } from 'recharts';
 
 const COLUMNS: ITableColumns[] = [
   {
-    header: 'Indicator',
-    cell: (item) => (
-      <div className="flex gap-3">
-        {item.name}
-        <EditIcon color="#0054ff" className="cursor-pointer" />
-      </div>
-    ),
+    header: 'INDICATOR',
+    cell: (item) => <div className="">{item.name}</div>,
     sortWith: 'name',
   },
   {
-    header: 'Chart',
+    header: 'EDIT',
+    cell: () => (
+      <div className="flex">
+        <div className="flex justify-center items-center w-8 h-8 rounded-full text-sm bg-[#E6FAFF]">
+          <EditIcon width="16px" color="#1DC3CF" className="cursor-pointer" />
+        </div>
+      </div>
+    ),
+  },
+  {
+    header: 'CHART',
     cell: ({ data }) => {
       const dataToUse = data
         .map((item: any[]) => ({ date: item[0], value: item[1] }))
@@ -42,7 +30,7 @@ const COLUMNS: ITableColumns[] = [
           <Area
             type="monotone"
             dataKey="value"
-            stroke="#0054ff"
+            stroke="#1DC3CF"
             fillOpacity={1}
             fill="url(#colorValue)"
           />
@@ -53,27 +41,29 @@ const COLUMNS: ITableColumns[] = [
     },
   },
   {
-    header: 'Values',
+    header: 'VALUES',
     cell: ({ data }) => {
       const dataToUse = data.map((item: any[]) => item[1]);
       return (
         <div>
-          {Math.min(...dataToUse).toFixed(1)} :{' '}
+          {Math.min(...dataToUse).toFixed(1)} — {}
           {Math.max(...dataToUse).toFixed(1)}
         </div>
       );
     },
+    sortWith: 'name',
   },
   {
-    header: 'Time interval',
+    header: 'TIME INTERVAL',
     cell: (item) => '',
   },
   {
-    header: '',
+    header: 'CHECK TO UPLOAD',
     cell: (item) => (
-      <div className="cursor-pointer">
-        {/* <MdDeleteOutline size={24} color="#172025" /> */}
-        {/* <CheckBox /> */}
+      <div className="cursor-pointer flex gap-2">
+        <div className="flex justify-center items-center w-8 h-8 rounded-full text-sm bg-[#E6FAFF]">
+          <CheckIcon width="16px" color="#1DC3CF" className="cursor-pointer" />
+        </div>
       </div>
     ),
   },

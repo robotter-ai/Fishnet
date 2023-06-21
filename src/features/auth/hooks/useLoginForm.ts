@@ -1,23 +1,21 @@
+import { PhantomConnector } from 'phantom-wagmi-connector';
 import { useConnect, useDisconnect } from 'wagmi';
-import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { PhantomWalletName } from '@solana/wallet-adapter-wallets';
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import type { WalletProps } from '../components/LoginForm';
 
 export default () => {
-  const { select } = useWallet();
-  const { connect } = useConnect({
-    connector: new MetaMaskConnector(),
-  });
+  const { connect } = useConnect();
   const { disconnect } = useDisconnect();
 
   const handleConnectWallet = (connectors: WalletProps) => {
     if (connectors === 'Metamask') {
-      connect();
-    } else if (connectors === 'Phantom') {
-      select(PhantomWalletName);
+      connect({
+        connector: new MetaMaskConnector(),
+      });
     } else {
-      connect();
+      connect({
+        connector: new PhantomConnector(),
+      });
     }
   };
 

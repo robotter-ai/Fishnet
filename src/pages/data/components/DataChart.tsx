@@ -1,20 +1,19 @@
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-} from 'recharts';
+import { TrashIcon } from '@assets/icons';
+import classNames from 'classnames';
 import dayjs from 'dayjs';
+import { useState, useEffect } from 'react';
 import { AiOutlineLine } from 'react-icons/ai';
 import { RxDotsHorizontal } from 'react-icons/rx';
-import { useState } from 'react';
-import classNames from 'classnames';
-import { TrashIcon } from '@assets/icons';
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import { ChartProps } from '../hooks/useTimeseriesChart';
-import mockData from '../../../../mock-data.json';
 
 const DataChart: React.FC<{
   data: any[];
@@ -37,11 +36,60 @@ const DataChart: React.FC<{
     return keysWithValue;
   };
 
-  const dataToUse = data.slice(0, 10).map((item: any) => ({
+  const dataDurationFilter = () => {
+    const datedData: any = [];
+    data.forEach((item) => {
+      let group = null;
+      switch (activeDuration) {
+        case 0:
+          group = datedData.find((g: any) =>
+            dayjs(item.date).isSame(g[0].date, 'day')
+          );
+          break;
+        case 1:
+          group = datedData.find((g: any) =>
+            dayjs(item.date).isSame(g[0].date, 'week')
+          );
+          break;
+        case 2:
+          group = datedData.find((g: any) =>
+            dayjs(item.date).isSame(g[0].date, 'month')
+          );
+          break;
+        case 3:
+          group = datedData.find((g: any) =>
+            dayjs(item.date).isSame(g[0].date, 'months')
+          );
+          break;
+        case 4:
+          group = datedData.find((g: any) =>
+            dayjs(item.date).isSame(g[0].date, 'year')
+          );
+          break;
+        default:
+          group = datedData.find((g: any) =>
+            dayjs(item.date).isSame(g[0].date, 'year')
+          );
+          break;
+      }
+
+      if (group) {
+        group.push(item);
+      } else {
+        datedData.push([item]);
+      }
+    });
+    // console.log(activeDuration, datedData[0]);
+    return datedData[0];
+  };
+  const dataToUse = dataDurationFilter()?.map((item: any) => ({
     date: dayjs(item.date).format('MMM DD'),
     ...getChartData(item),
   }));
 
+  useEffect(() => {
+    dataDurationFilter();
+  }, [activeDuration]);
   return (
     <div className="bg-[#FAFAFA] rounded-[10px] p-4">
       <div className="flex justify-between mb-7 ml-[3.9rem]">

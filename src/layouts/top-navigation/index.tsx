@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import WallteIcon from '@assets/images/wallet-icon.png';
+import WalletIcon from '@assets/images/wallet-icon.png';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import { getNotifications } from '@slices/profileSlice';
 
 function TopNavigation() {
-  useLogout();
+  const { handleLogout } = useLogout();
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.profile.notificationActions);
   const { title, pageStatus } = usePageTitle();
@@ -27,7 +27,7 @@ function TopNavigation() {
 
   useEffect(() => {
     dispatch(getNotifications(auth.address));
-  }, [auth.address]);
+  }, []);
 
   const isDataDetails =
     pathname.startsWith('/data') &&
@@ -48,7 +48,7 @@ function TopNavigation() {
             <span className="truncate w-[10rem] text-[#1C1C1C]">
               {auth?.address}
             </span>
-            <img src={WallteIcon} alt="" />
+            <img src={WalletIcon} alt="" />
           </div>
           <div
             className="bg-icon-bg h-9 w-9 rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
@@ -89,7 +89,10 @@ function TopNavigation() {
                 <button
                   type="button"
                   className="pb-3 pt-2 self-start text-[#FD686A] text-lg"
-                  onClick={() => setToggledInfo(null)}
+                  onClick={() => {
+                    setToggledInfo(null);
+                    handleLogout();
+                  }}
                 >
                   Log out
                 </button>
