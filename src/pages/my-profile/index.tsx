@@ -57,7 +57,9 @@ const MyProfile = () => {
             </div>
           ))}
         </div>
-        {searchParams.get('tab') === 'browse-users' ? <SearchInput /> : null}
+        {searchParams.get('tab') === 'browse-users' ? (
+          <SearchInput value="" onChange={() => null} />
+        ) : null}
       </div>
       {TableComponent}
     </div>

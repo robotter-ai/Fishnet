@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 interface ClickToCopyProps {
   text: string;
-  color?: '#1DC3CF' | '#0458FF' | '#566164';
+  color?: '#1DC3CF' | '#566164';
 }
 
 const ClickToCopy: React.FC<ClickToCopyProps> = ({

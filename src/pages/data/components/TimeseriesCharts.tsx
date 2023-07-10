@@ -1,10 +1,15 @@
+/* eslint-disable no-nested-ternary */
 import { PlusCircleIcon } from '@assets/icons';
-import AppModal from '@components/ui/AppModal';
-import { VALUES_AND_INTERVAL } from '@shared/constant';
 import { CheckBox } from '@components/form';
+import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
-import DataChart from './DataChart';
+import { VALUES_AND_INTERVAL } from '@shared/constant';
+import { useAppSelector } from '@shared/hooks/useStore';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import useDataDetails from '../hooks/useDataDetails';
 import useTimeseriesChart, { ChartProps } from '../hooks/useTimeseriesChart';
+import DataChart from './DataChart';
 import EditDataTable from './EditDataTable';
 
 const TimeseriesCharts = ({ isOwner }: any) => {
@@ -20,14 +25,41 @@ const TimeseriesCharts = ({ isOwner }: any) => {
     handleDeleteChart,
     timeseries,
   } = useTimeseriesChart();
+  const { handleGetViews } = useDataDetails();
+  const { id } = useParams<{ id: string }>();
+  const [viewData, setViewData] = useState({ data: [], columnValue: [] });
+  const [isViewValue, setViewValue] = useState(false);
 
+  const { views } = useAppSelector((state) => state.datasets);
+  function getData() {
+    let data;
+    let columnValue;
+    if (!csvJson.length && id === 'upload') {
+      data = csvJson;
+    } else if (!views.length && id !== 'upload') {
+      data = localStorage.getItem('viewValues');
+    } else if (csvJson.length) {
+      data = csvJson;
+    } else {
+      data = views[0].values;
+      columnValue = views[0].columns;
+      setViewValue(true);
+    }
+    return { data, columnValue };
+  }
+  useEffect(() => {
+    setViewData(getData());
+  }, []);
+  const { data, columnValue } = viewData;
   return (
     <div>
       <div className="grid grid-cols-2 gap-5 mb-5">
         {charts.map((item, idx) => (
           <DataChart
             key={idx}
-            data={csvJson}
+            columns={columnValue}
+            data={data}
+            isViewValue={isViewValue}
             chart={item as ChartProps}
             isOwner={isOwner}
             handleOpenChart={() => handleOpenChart(item.id as string)}

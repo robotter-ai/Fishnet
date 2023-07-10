@@ -8,9 +8,9 @@ import useModal from '@shared/hooks/useModal';
 import useSelectData from '@shared/hooks/useSelectData';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import {
-  changeExecutionDetails,
-  postExecutionRequest,
-  resetExecutionDetails,
+    changeExecutionDetails,
+    postExecutionRequest,
+    resetExecutionDetails,
 } from '@slices/executionSlice';
 import { useEffect, useState } from 'react';
 import { IoCheckbox } from 'react-icons/io5';
@@ -160,7 +160,7 @@ export const ExecutePrompt: React.FC<{
           <div className="flex flex-col items-center gap-4">
             <h1>Pending execution</h1>
             <div className="p-4">
-              <FadeLoader color="#0054ff" height={15} margin={-2.5} width={3} />
+              <FadeLoader color="#1DC3CF" height={15} margin={-2.5} width={3} />
             </div>
             <p>Please wait</p>
           </div>
@@ -263,7 +263,7 @@ export const PublishedModal: React.FC<{
         <p>{publishedName} published</p>
         <div className="flex flex-col items-center gap-2">
           <p className="text-blue w-[400px] truncate select-none">{hash}</p>
-          <ClickToCopy text={hash} color="#0458FF" />
+          <ClickToCopy text={hash} color="#1DC3CF" />
         </div>
       </div>
       <div className="flex flex-col gap-4 mt-7">

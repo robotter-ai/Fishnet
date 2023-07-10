@@ -2,6 +2,7 @@ import { CheckIcon } from '@assets/icons';
 import { ReactComponent as EditIcon } from '@assets/icons/edit-pencil.svg';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { Area, AreaChart, XAxis, YAxis } from 'recharts';
+import useTimeseriesChart from '../hooks/useTimeseriesChart';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -76,6 +77,8 @@ const EditDataTable = ({
   data: any[];
   isPublished: any;
 }) => {
+  const { selectedChart, handleDeleteChart, timeseries, dataDetails } =
+    useTimeseriesChart();
   return (
     <CustomTable
       data={data}

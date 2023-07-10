@@ -9,6 +9,13 @@ export type DatasetProps = {
   timeseriesIDs: string[];
 };
 
+export interface ViewValues {
+  [key: string]: [string, string][];
+}
+export interface DataType {
+  name: string;
+  date: string;
+}
 export type GetDatasetProps = {
   id?: string;
   view_as?: string;
@@ -61,7 +68,10 @@ const generateViews = async (
   const { data } = await axios.put(`/datasets/${dataset_id}/views`, request);
   return data;
 };
-
+const getViews = async (dataset_id: string) => {
+  const { data } = await axios.get(`/datasets/${dataset_id}/views`);
+  return data;
+};
 const dataService = {
   getDatasets,
   getPublishedDatasets,
@@ -70,6 +80,7 @@ const dataService = {
   updateDatasets,
   uploadDataset,
   generateViews,
+  getViews,
 };
 
 export default dataService;

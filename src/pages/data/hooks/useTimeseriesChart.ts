@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { nanoid } from 'nanoid';
 import useModal from '@shared/hooks/useModal';
 import { useAppSelector } from '@shared/hooks/useStore';
+import { nanoid } from 'nanoid';
+import { useState } from 'react';
 
 export interface ChartProps {
   id: string;
@@ -26,7 +26,7 @@ const initialState: Partial<ChartProps>[] = [
     id: nanoid(4),
     interval: '',
     keys: [
-      { name: 'volaBTC', color: '#0054ff' },
+      // { name: 'volaBTC', color: '#1DC3CF' },
       { name: 'returnsBTC', color: '#6affd2' },
     ],
   },
@@ -37,7 +37,9 @@ export default () => {
   const [selectedChart, setSelectedChart] = useState<Partial<ChartProps>>({});
   const { isOpen, handleOpen, handleClose } = useModal();
   const { csvJson, timeseries } = useAppSelector((state) => state.timeseries);
+  const { dataDetails } = useAppSelector((state) => state.datasets);
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const handleOpenChart = (id: string) => {
     if (id === 'new') {
       setSelectedChart({
@@ -68,10 +70,10 @@ export default () => {
         ],
       }));
     }
-    return setSelectedChart((prevState) => ({
+    return (prevState: any) => ({
       ...prevState,
       [input]: value,
-    }));
+    });
   };
 
   const handleSaveChart = () => {
@@ -88,6 +90,7 @@ export default () => {
     handleClose();
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const handleDeleteChart = (id: string) => {
     setCharts((prevState) => {
       return [...prevState].filter((item) => item.id !== id);
@@ -105,5 +108,6 @@ export default () => {
     handleSaveChart,
     handleDeleteChart,
     timeseries,
+    dataDetails,
   };
 };

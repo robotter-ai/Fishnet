@@ -1,24 +1,24 @@
-import { RxCaretLeft } from 'react-icons/rx';
-import { IoCheckbox } from 'react-icons/io5';
-import { Link, useNavigate } from 'react-router-dom';
-import Button from '@components/ui/Button';
-import AppModal from '@components/ui/AppModal';
 import TextInput from '@components/form/TextInput';
+import AppModal from '@components/ui/AppModal';
+import Button from '@components/ui/Button';
+import AddressWrap from '@shared/components/AddressWrap';
 import ClickToCopy from '@shared/components/ClickToCopy';
-import dayjs from 'dayjs';
+import { ExecutePrompt } from '@shared/components/Prompts';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
+import useAuth from '@shared/hooks/useAuth';
 import useOwner from '@shared/hooks/useOwner';
-import { ExecutePrompt } from '@shared/components/Prompts';
-import AddressWrap from '@shared/components/AddressWrap';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import {
   changeDatasetPermissionInput,
   requestDatasetPermissions,
 } from '@slices/monitorAccessSlice';
-import useAuth from '@shared/hooks/useAuth';
-import useDataDetails from './hooks/useDataDetails';
+import dayjs from 'dayjs';
+import { IoCheckbox } from 'react-icons/io5';
+import { RxCaretLeft } from 'react-icons/rx';
+import { Link, useNavigate } from 'react-router-dom';
 import TimeseriesCharts from './components/TimeseriesCharts';
+import useDataDetails from './hooks/useDataDetails';
 
 const DataDetails = () => {
   const navigate = useNavigate();
@@ -127,7 +127,9 @@ const DataDetails = () => {
               text="Publish"
               size="md"
               isLoading={isLoading}
-              onClick={handleUploadDataset}
+              onClick={() => {
+                handleUploadDataset();
+              }}
             />
           )}
         </div>
@@ -173,7 +175,7 @@ const DataDetails = () => {
             <p className="text-blue w-[400px] truncate select-none">
               {dataDetails?.item_hash || ''}
             </p>
-            <ClickToCopy text={dataDetails?.item_hash || ''} color="#0458FF" />
+            <ClickToCopy text={dataDetails?.item_hash || ''} color="#1DC3CF" />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">

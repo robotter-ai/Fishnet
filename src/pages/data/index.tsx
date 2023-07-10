@@ -103,7 +103,7 @@ const MyData = () => {
         >
           <div className="flex justify-center items-center h-[207px] bg-light-20 rounded-[166px]">
             {isLoadingUploadTimeseries ? (
-              <FadeLoader color="#0054ff" height={10} margin={-5} width={3} />
+              <FadeLoader color="#1DC3CF" height={10} margin={-5} width={3} />
             ) : (
               <p className="text-blue text-2xl">Drag and Drop</p>
             )}

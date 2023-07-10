@@ -126,15 +126,15 @@ export const generateViews = createAsyncThunk(
   ) => {
     try {
       const { datasetId, request } = params;
-      const { timeseries } = thunkAPI.getState() as RootState;
+      const { datasets } = thunkAPI.getState() as RootState;
+      const timeseries = datasets.dataDetails.timeseriesIDs;
       return await dataService.generateViews(datasetId, [
         {
-          timeseriesIDs: [
-            ...timeseries.timeseries.map((item: any) => item.item_hash),
-          ],
+          timeseriesIDs: [...timeseries.map((item: any) => item)],
           startTime: 0,
           endTime: 1686263058,
           granularity: 'DAY',
+          // endTime: Date.now(),
         },
       ]);
     } catch (err: any) {
@@ -147,11 +147,26 @@ export const generateViews = createAsyncThunk(
   }
 );
 
+export const getViews = createAsyncThunk(
+  'datasets/getViews',
+  async (datasetId: string, thunkAPI) => {
+    try {
+      return await dataService.getViews(datasetId);
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
 interface DataProps {
   isLoading: boolean;
   success: boolean | null;
   datasets: Record<string, any>[] | any;
   dataDetails: any;
+  views: any[];
   updatePublicAccess: {
     isLoading: boolean;
     success: boolean | null;
@@ -177,6 +192,10 @@ interface DataProps {
     isLoading: boolean;
     success: boolean | null;
   };
+  getViewActions: {
+    isLoading: boolean;
+    success: boolean | null;
+  };
 }
 
 const initialState: DataProps = {
@@ -184,6 +203,7 @@ const initialState: DataProps = {
   success: null,
   datasets: null,
   dataDetails: null,
+  views: [],
   updatePublicAccess: {
     isLoading: false,
     success: null,
@@ -204,6 +224,10 @@ const initialState: DataProps = {
     isLoading: false,
     success: null,
   },
+  getViewActions: {
+    isLoading: false,
+    success: null,
+  },
   publishedDatasets: {
     data: null,
     isLoading: false,
@@ -220,6 +244,7 @@ const dataSlice = createSlice({
       state.updatePublicAccess.success = null;
       state.updateDatasetsActions.success = null;
       state.generateViewActions.success = null;
+      state.getViewActions.success = null;
       state.uploadDatasetActions.success = null;
     },
     changeDataDetails: (
@@ -303,12 +328,27 @@ const dataSlice = createSlice({
       .addCase(generateViews.pending, (state) => {
         state.generateViewActions.isLoading = true;
       })
-      .addCase(generateViews.fulfilled, (state) => {
+      .addCase(generateViews.fulfilled, (state, action) => {
         state.generateViewActions.isLoading = false;
         state.generateViewActions.success = true;
+        toast.success(action.payload as string);
+        state.views = action.payload.views;
       })
       .addCase(generateViews.rejected, (state, action) => {
         state.generateViewActions.isLoading = false;
+        toast.error(action.payload as string);
+      })
+      .addCase(getViews.pending, (state) => {
+        state.getViewActions.isLoading = true;
+      })
+      .addCase(getViews.fulfilled, (state, action) => {
+        state.getViewActions.isLoading = false;
+        state.getViewActions.success = true;
+        toast.success(action.payload as string);
+        state.views = action.payload.views;
+      })
+      .addCase(getViews.rejected, (state, action) => {
+        state.getViewActions.isLoading = false;
         toast.error(action.payload as string);
       })
 
@@ -319,6 +359,7 @@ const dataSlice = createSlice({
         state.uploadDatasetActions.isLoading = false;
         state.uploadDatasetActions.success = true;
         state.dataDetails = action.payload.dataset;
+        toast.success(action.payload as string);
       })
       .addCase(uploadDataset.rejected, (state, action) => {
         state.uploadDatasetActions.isLoading = false;

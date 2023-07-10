@@ -10,9 +10,10 @@ import useLogout from '@shared/hooks/useLogout';
 import { StatusIndicator } from '@shared/constant';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import { getNotifications } from '@slices/profileSlice';
+import useLoginForm from '@features/auth/hooks/useLoginForm';
 
 function TopNavigation() {
-  const { handleLogout } = useLogout();
+  const { handleDisconnectWallet } = useLoginForm();
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.profile.notificationActions);
   const { title, pageStatus } = usePageTitle();
@@ -91,7 +92,7 @@ function TopNavigation() {
                   className="pb-3 pt-2 self-start text-[#FD686A] text-lg"
                   onClick={() => {
                     setToggledInfo(null);
-                    handleLogout();
+                    handleDisconnectWallet();
                   }}
                 >
                   Log out
@@ -101,7 +102,7 @@ function TopNavigation() {
           ) : null}
           {toggledInfo === 'notification' ? (
             <div
-              className="absolute w-full bg-white top-12 min-h-72 px-5 rounded-[10px] z-[30000000]"
+              className="absolute w-full bg-white top-12 min-h-72 px-5 rounded-[10px] z-[30000000] overflow-y-scroll"
               style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
             >
               <div className="flex flex-col">
@@ -125,7 +126,7 @@ function TopNavigation() {
                     </div>
                   ))}
               </div>
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <div
                   className={classNames(
                     'border-b border-b-[rgba(16, 30, 115, 0.06)] py-4',
@@ -165,7 +166,20 @@ function TopNavigation() {
                   </p>
                   <p className="text-sm text-[#91989C] leading-none">8h ago</p>
                 </div>
-              </div>
+                <div
+                  className={classNames(
+                    'border-b border-b-[rgba(16, 30, 115, 0.06)] py-4',
+                    {
+                      'border-b-transparent': 0.2 + 1 === 3,
+                    }
+                  )}
+                >
+                  <p className="text-[#29324A] text-base leading-4 mb-2">
+                    some notification text
+                  </p>
+                  <p className="text-sm text-[#91989C] leading-none">8h ago</p>
+                </div>
+              </div> */}
             </div>
           ) : null}
         </div>

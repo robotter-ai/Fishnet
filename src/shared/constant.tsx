@@ -26,6 +26,12 @@ export const VALUES_AND_INTERVAL = [
   'cashvolBNB',
 ];
 
+export type Data = {
+  [Key in keyof typeof VALUES_AND_INTERVAL]?: string;
+} & {
+  date: string;
+};
+
 const COLORS = {
   green: '#1CC272',
   yellow: '#FABE23',

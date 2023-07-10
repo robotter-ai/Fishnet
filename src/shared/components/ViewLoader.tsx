@@ -4,7 +4,7 @@ const ViewLoader = ({ isLoading }: { isLoading: boolean }) => {
   if (isLoading) {
     return (
       <div className="absolute flex justify-center items-center inset-0 bg-white bg-opacity-50 backdrop-blur-sm rounded-md z-[99]">
-        <FadeLoader color="#0054ff" height={10} margin={-5} width={3} />
+        <FadeLoader color="#1DC3CF" height={10} margin={-5} width={3} />
       </div>
     );
   }
