@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FilterIcon, SortArrowIcon } from '@assets/icons';
 import {
   Table,
   TableBody,
@@ -7,11 +7,12 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { BarLoader } from 'react-spinners';
+import useModal from '@shared/hooks/useModal';
+import classNames from 'classnames';
+import { useEffect, useState } from 'react';
 import { GrCloudDownload } from 'react-icons/gr';
 import { TbMoodSad } from 'react-icons/tb';
-import classNames from 'classnames';
-import { FilterIcon, SortArrowIcon } from '@assets/icons';
+import { BarLoader } from 'react-spinners';
 
 export interface ITableColumns {
   header: string | React.ReactNode;
@@ -24,15 +25,19 @@ interface CustomTableProps {
   data: Record<string, any>[];
   columns: ITableColumns[];
   isLoading?: boolean;
+  handleOpen?: () => void;
 }
 
 const CustomTable: React.FC<CustomTableProps> = ({
   data,
   isLoading,
   columns,
+  handleOpen,
 }) => {
   const [sortData, setSetSortData] = useState(data || []);
   const [order, setOrder] = useState(true);
+  const { isOpen, handleClose } = useModal();
+  const [price, setPrice] = useState('');
 
   useEffect(() => {
     setSetSortData(data);
@@ -80,18 +85,28 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     paddingBottom: 15,
                     color: '#566164',
                     fontWeight: 500,
+                    fontSize: 12,
+                    // width: 'auto',
                   }}
                 >
                   <div
                     className={classNames(
                       'flex gap-2 items-center whitespace-nowrap',
                       {
-                        'justify-end': item.header === 'Filter',
+                        'justify-end': item.header === 'CHECK',
                       }
                     )}
                   >
                     {item.header === 'Filter' ? <FilterIcon /> : null}{' '}
-                    {item.header}
+                    {item.header === 'CHECK' ? (
+                      <div className="flex gap-2 justify-end uppercase">
+                        <p> Check to upload</p>
+                        <p className="capitalize font-normal text-blue"> all</p>
+                      </div>
+                    ) : (
+                      item.header
+                    )}{' '}
+                    {/* {item.header} */}
                     {item.sortWith ? (
                       <SortArrowIcon
                         className="cursor-pointer"
@@ -120,6 +135,14 @@ const CustomTable: React.FC<CustomTableProps> = ({
                       paddingTop: 12,
                       paddingBottom: 12,
                       color: '#244141',
+                      fontSize: 14,
+                    }}
+                    sx={{
+                      '&:last-child td, &:last-child tr': {
+                        border: 0,
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                      },
                     }}
                   >
                     {column.cell(item)}

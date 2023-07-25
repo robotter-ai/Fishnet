@@ -6,7 +6,7 @@ interface ButtonProps {
   text?: string;
   children?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
-  btnStyle?: 'outline-blue' | 'outline-red';
+  btnStyle?: 'outline-blue' | 'outline-red' | 'usdc-blue';
   onClick?: () => void;
   isLoading?: boolean;
   disabled?: boolean;
@@ -18,7 +18,7 @@ interface ButtonProps {
 }
 
 const CustomButton: React.FC<ButtonProps> = ({
-  type = 'button',
+  type = 'button' || 'download',
   text,
   size = 'sm',
   btnStyle,
@@ -39,6 +39,7 @@ const CustomButton: React.FC<ButtonProps> = ({
       'h-[64px] text-[18px] font-bold': size === 'lg',
       'btn-outline-blue': btnStyle === 'outline-blue',
       'btn-outline-red': btnStyle === 'outline-red',
+      'btn-usdc-blue': btnStyle === 'usdc-blue',
       'w-full': fullWidth,
       '!border-none': withoutBorder,
     }

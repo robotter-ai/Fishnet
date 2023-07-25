@@ -58,8 +58,9 @@ const TimeseriesCharts = ({ isOwner }: any) => {
           <DataChart
             key={idx}
             columns={columnValue}
-            data={data}
-            isViewValue={isViewValue}
+            // data={data}
+            data={csvJson}
+            // isViewValue={isViewValue}
             chart={item as ChartProps}
             isOwner={isOwner}
             handleOpenChart={() => handleOpenChart(item.id as string)}
@@ -68,10 +69,10 @@ const TimeseriesCharts = ({ isOwner }: any) => {
         ))}
         {isOwner ? (
           <div
-            className="flex items-center justify-center min-h-[391px] bg-[#FAFAFA] rounded-[10px] cursor-pointer"
+            className="flex items-center justify-center min-h-[391px] bg-form-bg rounded-[32px] cursor-pointer"
             onClick={() => handleOpenChart('new')}
           >
-            <PlusCircleIcon className="text-blue" height={120} width={120} />
+            <PlusCircleIcon className="text-blue" height={100} width={100} />
           </div>
         ) : null}
       </div>
@@ -89,7 +90,7 @@ const TimeseriesCharts = ({ isOwner }: any) => {
         handleClose={handleClose}
         fullWidth
       >
-        <div className="grid grid-cols-7 gap-3 shadow-lg p-4 rounded">
+        <div className="grid grid-cols-8 gap-3 rounded">
           {VALUES_AND_INTERVAL.map((item, i) => {
             return (
               <div key={i}>
@@ -102,8 +103,8 @@ const TimeseriesCharts = ({ isOwner }: any) => {
             );
           })}
         </div>
-        <div className="flex justify-center mt-5">
-          <Button text="Save" size="lg" onClick={handleSaveChart} />
+        <div className="w-full flex justify-center mt-5">
+          <Button text="Save" size="md" onClick={handleSaveChart} />
         </div>
       </AppModal>
     </div>

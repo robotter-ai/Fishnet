@@ -33,10 +33,14 @@ const COLUMNS: ITableColumns[] = [
         <ClickToCopy text={item_hash} />
       </div>
     ),
-    sortWith: 'item_hash',
   },
   {
     header: 'Status',
+    cell: ({ status }) => <StatusIdentifier status={status} />,
+    sortWith: 'status',
+  },
+  {
+    header: 'Description',
     cell: ({ status }) => <StatusIdentifier status={status} />,
     sortWith: 'status',
   },

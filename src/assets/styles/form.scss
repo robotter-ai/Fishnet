@@ -62,13 +62,14 @@
   width: 25px;
   height: 25px;
   white-space: nowrap;
-  border-radius: 5px;
+  border-radius: 50%;
   background: #E6FBFF;
-  border: 1px solid transparent;
+  // border: 1px solid transparent;
 }
 
 .checkbox input:checked ~ .checkbox__fill {
-  background-image: linear-gradient(#E6FBFF, #E6FBFF), radial-gradient(circle at top left, #8bffdc,#95c4ff);
+  color: #0093A7;
+  border: 1px solid #0093A7;
   background-origin: border-box;
   background-clip: content-box, border-box;
 }

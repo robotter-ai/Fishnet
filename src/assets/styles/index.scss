@@ -30,17 +30,27 @@ h1 {
   font-weight: bold;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+  height: 4px;
+  // border-radius: 0px;
+}
+
 .app-btn {
   background: linear-gradient(259.65deg, #1DC3CF -19.75%, #0093A7 135.06%);
   &.btn-outline-blue {
-    background: $button-bg;
-    color: $button-text;
-    // border: 1px solid;
+    background: white !important;
+    border: 1px solid;
+    color: #1DC3CF;
     &:disabled {
       background: none;
       color: $disabled;
       border: 1px solid $disabled;
     }
+  }
+  &.btn-usdc-blue{
+    background: #3E73C4;
+    color: $white;
   }
   &.btn-outline-red {
     background: $white;

@@ -108,7 +108,6 @@ const COLUMNS = ({
         <ClickToCopy text={datasetID} />
       </div>
     ),
-    sortWith: 'datasetID',
   },
   {
     header: 'Status',

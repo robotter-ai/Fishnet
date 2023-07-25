@@ -8,9 +8,9 @@ import useModal from '@shared/hooks/useModal';
 import useSelectData from '@shared/hooks/useSelectData';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import {
-    changeExecutionDetails,
-    postExecutionRequest,
-    resetExecutionDetails,
+  changeExecutionDetails,
+  postExecutionRequest,
+  resetExecutionDetails,
 } from '@slices/executionSlice';
 import { useEffect, useState } from 'react';
 import { IoCheckbox } from 'react-icons/io5';

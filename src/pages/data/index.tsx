@@ -83,7 +83,7 @@ const MyData = () => {
         handleClose={handleClose}
         withInfo
       >
-        <p className="my-[20px]">
+        <p className="my-[20px] text-sm leading-5">
           The data remains on your computer until you publish it. At this stage,
           the data is not published
         </p>
@@ -101,7 +101,7 @@ const MyData = () => {
           types={['CSV']}
           handleChange={(file: any) => handleCsvToJson(file)}
         >
-          <div className="flex justify-center items-center h-[207px] bg-light-20 rounded-[166px]">
+          <div className="flex justify-center items-center h-[207px] bg-light-20 my-8 rounded-[32px]">
             {isLoadingUploadTimeseries ? (
               <FadeLoader color="#1DC3CF" height={10} margin={-5} width={3} />
             ) : (
@@ -117,7 +117,7 @@ const MyData = () => {
             disabled={isLoadingUploadTimeseries}
           >
             <div className="flex justify-center gap-3 items-center">
-              <MdAdd size={15} />
+              <MdAdd size={24} />
               <span>Choose data</span>
             </div>
           </Button>

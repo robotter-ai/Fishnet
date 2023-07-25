@@ -43,17 +43,13 @@ const DataDetails = () => {
 
   const summary = [
     {
-      name: 'Hash',
+      name: 'Hash of the data',
       value: (
         <div className="flex items-center gap-[11px]">
           <p className="w-[200px] truncate">{dataDetails?.item_hash || ''}</p>
           <ClickToCopy text={dataDetails?.item_hash} />
         </div>
       ),
-    },
-    {
-      name: 'Owner',
-      value: <AddressWrap hash={dataDetails?.owner} />,
     },
     {
       name: 'Creation date',
@@ -66,9 +62,25 @@ const DataDetails = () => {
       ),
     },
     {
-      name: 'Usages',
-      value: dataDetails?.current_revision || 0,
+      name: 'Downloads',
+      value: <p> {dataDetails?.desc} </p>,
     },
+    {
+      name: 'Total Sold',
+      value: <p> {dataDetails?.desc} USDC </p>,
+    },
+    {
+      name: 'Current Price',
+      value: <p> {dataDetails?.desc} USDC </p>,
+    },
+    {
+      name: 'Owner',
+      value: <AddressWrap hash={dataDetails?.owner} />,
+    },
+    // {
+    //   name: 'Usages',
+    //   value: dataDetails?.current_revision || 0,
+    // },
   ];
 
   const disabled = !isOwner;
@@ -137,13 +149,23 @@ const DataDetails = () => {
       <div className="relative">
         <ViewLoader isLoading={datasetByIDActions.isLoading} />
         <div className="grid grid-cols-2 gap-5 mb-5">
-          <div className="bg-[#FAFAFA] flex flex-col gap-4 p-6 rounded-[10px]">
+          <div className="bg-form-bg flex flex-col gap-4 p-6 text-text-dark rounded-[32px]">
             <TextInput
               label="Data name"
               placeholder="Name the data"
               value={dataDetails?.name || ''}
               onChange={(e) => handleOnChange('name', e.target.value)}
               fullWidth
+              disabled={disabled}
+            />
+            <TextInput
+              label="Set price in USDC"
+              placeholder="Enter the price"
+              value={dataDetails?.price || ''}
+              onChange={(e) => handleOnChange('price', e.target.value)}
+              fullWidth
+              inputType
+              size="sm"
               disabled={disabled}
             />
             <TextInput
@@ -190,7 +212,7 @@ const DataDetails = () => {
             }}
           />
           <Button
-            text="My Data"
+            text="Home"
             size="lg"
             fullWidth
             onClick={() => navigate('/data')}

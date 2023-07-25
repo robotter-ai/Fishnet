@@ -1,30 +1,39 @@
-import { Starred } from '@components/form';
-import ClickToCopy from '@shared/components/ClickToCopy';
-import { StatusIdentifier } from '@shared/constant';
-import { Link } from 'react-router-dom';
-import { ExecutePrompt } from '@shared/components/Prompts';
+import { FreeTagIcon, PriceTagIcon } from '@assets/icons';
+import CustomButton from '@components/ui/Button';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
+import PriceButton from '@components/ui/PriceButton';
+import ClickToCopy from '@shared/components/ClickToCopy';
 import useAuth from '@shared/hooks/useAuth';
+import useTransaction from '@shared/hooks/useTransaction';
+import { Link } from 'react-router-dom';
 
+// const { setRecipientAddress } = useTransaction()
 const COLUMNS = (address: string): ITableColumns[] => [
   {
     header: 'NAME',
     cell: (item) => (
-      <Link
-        to={`/data/${item.item_hash}/details`}
-        className="text-blue whitespace-nowrap"
-      >
-        {item.name}
-      </Link>
+      <div className="min-w-[210px]">
+        <Link
+          to={`/data/${item.item_hash}/details`}
+          className="text-blue whitespace-nowrap"
+        >
+          {item.name}
+        </Link>
+      </div>
     ),
     sortWith: 'name',
   },
   {
-    header: 'OWNER',
+    header: 'DESCRIPTION',
+    cell: (item) => <p className="w-[190px] line-clamp-3">{item.desc}</p>,
+    sortWith: 'desc',
+  },
+  {
+    header: 'SELLER',
     cell: (item) => (
-      <div className="flex gap-3">
-        <p className="w-[200px] truncate">{item.owner}</p>
-        <div className="bg-icon-bg h-9 w-9 flex items-center justify-center bg-{#E6FAFF} rounded-full">
+      <div className="w-[150px] flex gap-3">
+        <p className="truncate w-[70px]">{item.owner}</p>
+        <div className="h-9 w-9 flex items-center justify-center bg-[#E6FAFF] rounded-full">
           <ClickToCopy text={item.owner} />
         </div>
       </div>
@@ -32,45 +41,56 @@ const COLUMNS = (address: string): ITableColumns[] => [
     sortWith: 'owner',
   },
   {
-    header: 'STATUS',
-    cell: ({ permission_status, item_hash }) =>
-      permission_status === 'NOT REQUESTED' ? (
-        <Link
-          to={`/data/${item_hash}/details`}
-          className="text-blue whitespace-nowrap"
-        >
-          Access request
-        </Link>
-      ) : (
-        <StatusIdentifier status={permission_status} />
-      ),
-    sortWith: 'permission_status',
-  },
-  {
-    header: 'DESCRIPTION',
-    cell: (item) => <p className="w-52 line-clamp-3">{item.desc}</p>,
-    sortWith: 'desc',
-  },
-  {
-    header: '',
+    header: 'DLS',
     cell: (item) => (
-      <div className="flex gap-3">
-        <Starred starred={item.forgotten} />
-      </div>
+      <div className="flex w-[100px] gap-3">{item?.forgotten}</div>
     ),
+    sortWith: '',
   },
   {
-    header: '',
-    cell: (item) => {
-      return (
-        <ExecutePrompt
-          against="algorithm"
-          selectedHash={item.item_hash}
-          // disabled={item.permission_status !== 'allowed'}
-          disabled={address !== item.owner}
-        />
-      );
-    },
+    header: 'PRICE',
+    cell: ({ available, price }) =>
+      available ? (
+        <div className="flex gap-3 items-center">
+          <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
+            <FreeTagIcon />
+          </div>
+          <p className="w-[120px]">Free</p>
+        </div>
+      ) : (
+        // make this a component so you can pass use the transaction hook that you wrote in it
+        <PriceButton price={price} />
+      ),
+    sortWith: 'price',
+  },
+  {
+    header: '     ',
+    cell: ({ available, item_hash, permission_status }) =>
+      // eslint-disable-next-line no-nested-ternary
+      available ? (
+        <div className="w-auto flex items-end justify-end">
+          <CustomButton btnStyle="outline-blue" size="sm" fullWidth>
+            Download
+          </CustomButton>
+        </div>
+      ) : available && permission_status === 'NOT GRANTED' ? (
+        <div className="w-auto flex items-end justify-end">
+          <CustomButton size="sm" fullWidth btnStyle="outline-blue">
+            Request Access
+          </CustomButton>
+        </div>
+      ) : (
+        <div className="w-auto flex items-end justify-end">
+          <CustomButton
+            size="sm"
+            fullWidth
+            btnStyle="usdc-blue"
+            linkTo={`/data/${item_hash}/details`}
+          >
+            Buy
+          </CustomButton>
+        </div>
+      ),
   },
 ];
 
@@ -82,7 +102,6 @@ const BrowseDataTable = ({
   isLoading: boolean;
 }) => {
   const auth = useAuth();
-
   return (
     <CustomTable
       data={data}

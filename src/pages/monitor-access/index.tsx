@@ -1,19 +1,19 @@
-import { ReactNode } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { SearchInput } from '@components/form';
-import classNames from 'classnames';
-import useModal from '@shared/hooks/useModal';
 import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
-import useMonitorAccessTable from './hooks/useMonitorAccessTable';
+import useModal from '@shared/hooks/useModal';
+import classNames from 'classnames';
+import { ReactNode } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import IncomingTable from './components/IncomingTable';
 import MyDataTable from './components/MyDataTable';
 import OutgoingTable from './components/OutgoingTable';
-import IncomingTable from './components/IncomingTable';
+import useMonitorAccessTable from './hooks/useMonitorAccessTable';
 
 const MonitorAccess = () => {
   useMonitorAccessTable();
   const [searchParam, setSearchParams] = useSearchParams();
-  const { isOpen, handleOpen, handleClose } = useModal();
+  const { isOpen, handleClose } = useModal();
 
   const tabs = [
     { key: 'my-data', name: 'My data' },
@@ -50,7 +50,7 @@ const MonitorAccess = () => {
             </div>
           ))}
         </div>
-        <SearchInput />
+        <SearchInput value="" onChange={handleClose} />
       </div>
       {TableComponent}
       <AppModal

@@ -10,6 +10,8 @@ module.exports = {
         'dark-20': '#91989C',
         'icon-bg': '#EDF2FA',
         'dark-50': '#223038',
+        'text-dark': '#244141',
+        'form-bg': '#F6FAFB',
       },
     },
   },

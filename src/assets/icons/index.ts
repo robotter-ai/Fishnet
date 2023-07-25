@@ -10,6 +10,8 @@ import { ReactComponent as PlusCircleIcon } from '@assets/icons/plus-circle.svg'
 import { ReactComponent as SortArrowIcon } from '@assets/icons/sort-arrow.svg';
 import { ReactComponent as ThreeDotsIcon } from '@assets/icons/three-dots.svg';
 import { ReactComponent as TrashIcon } from '@assets/icons/trash.svg';
+import { ReactComponent as PriceTagIcon } from '@assets/icons/priceIcon.svg';
+import { ReactComponent as FreeTagIcon } from '@assets/icons/priceFreeIcon.svg';
 
 export {
   AlarmClockIcon,
@@ -24,4 +26,6 @@ export {
   SortArrowIcon,
   ThreeDotsIcon,
   TrashIcon,
+  PriceTagIcon,
+  FreeTagIcon,
 };

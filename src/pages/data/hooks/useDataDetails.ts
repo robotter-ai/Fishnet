@@ -52,10 +52,12 @@ export default () => {
     ) {
       handleGenerateViews(dataDetails?.item_hash);
     } else if (typeof id === 'string' && id !== 'upload') {
-      handleGenerateViews(dataDetails?.item_hash);
+      handleGetViews(id);
+      // handleGenerateViews(dataDetails?.item_hash);
     }
     localStorage.setItem('viewValues', views[0]);
   }, [dataDetails?.item_hash]);
+
   useEffect(() => {
     setTitle(dataDetails?.name, dataDetails?.permission_status);
   }, [dataDetails?.name]);
@@ -69,10 +71,8 @@ export default () => {
 
   useEffect(() => {
     if (uploadDatasetActions.success && generateViewActions.success) {
-      dispatch(resetDataSlice());
       handleOpen();
-      const convertedData = convertViewValuesToDataType(views[0].values);
-      console.log(convertedData);
+      dispatch(resetDataSlice());
     }
   }, [generateViewActions.success, uploadDatasetActions.success]);
 

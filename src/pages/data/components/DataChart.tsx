@@ -69,12 +69,10 @@ const DataChart: React.FC<{
       // @ts-ignore
       const convValue = convertViewValuesToDataType(data);
       setCurrentData(convValue);
-      console.log(currentData);
     }
   }, [isViewValue]);
 
   const dataDurationFilter = () => {
-    console.log(data);
     const datedData: any = [];
     data.forEach((item) => {
       let group = null;
@@ -117,28 +115,37 @@ const DataChart: React.FC<{
         datedData.push([item]);
       }
     });
-    console.log(datedData[0]);
     return datedData[0];
   };
   const dataToUse = dataDurationFilter()?.map((item: any) => ({
-    date: dayjs(item.date).format('MMM DD'),
+    date: dayjs(item.date)
+      .toDate()
+      .toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+      .split(',')[0],
     ...getChartData(item),
   }));
-  console.log(dataToUse);
 
   useEffect(() => {
     dataDurationFilter();
   }, [activeDuration]);
   return (
-    <div className="bg-[#FAFAFA] rounded-[10px] p-4">
-      <div className="flex justify-between mb-7 ml-[3.9rem]">
-        <div className="bg-[#E6EEFF] flex items-center rounded-md p-1">
+    <div className="bg-form-bg rounded-[32px] py-5 px-6">
+      <div className="flex justify-between mb-7">
+        <div className="bg-[#E6EEFF] w-[232px] h-8 flex items-center justify-between rounded-[76px] p-1 px-4">
           {duration.map((item, i) => (
             <p
               key={i}
-              className={classNames('py-2 px-3 rounded-md cursor-pointer', {
-                'bg-white': i === activeDuration,
-              })}
+              className={classNames(
+                'text-xs flex items-center justify-center rounded-full text-center h-6 w-6 cursor-pointer',
+                {
+                  'bg-white': i === activeDuration,
+                }
+              )}
               onClick={() => setActiveDuration(i)}
             >
               {item}
@@ -148,13 +155,13 @@ const DataChart: React.FC<{
         {isOwner ? (
           <div className="flex gap-2">
             <div
-              className="bg-white p-3 flex items-center rounded-md cursor-pointer"
+              className="bg-white p-2 flex items-center rounded-full cursor-pointer"
               onClick={handleDeleteChart}
             >
               <TrashIcon />
             </div>
             <div
-              className="bg-white p-3 flex items-center rounded-md cursor-pointer"
+              className="bg-white p-2 flex items-center rounded-full cursor-pointer"
               onClick={handleOpenChart}
             >
               <RxDotsHorizontal />
@@ -201,7 +208,7 @@ const DataChart: React.FC<{
             ))}
           </AreaChart>
         ) : (
-          <AreaChart data={dataToUse}>
+          <AreaChart data={dataToUse} margin={{ left: -2 }}>
             <defs>
               {chart.keys.map((item, idx: number) => (
                 <linearGradient
@@ -223,7 +230,11 @@ const DataChart: React.FC<{
               tickLine={false}
               tickFormatter={(number) => (number === 0 ? '' : number)}
             />
-            <CartesianGrid opacity={0.5} vertical={false} />
+            <CartesianGrid
+              opacity={0.8}
+              stroke="#C8CCCD"
+              strokeDasharray="5 5"
+            />
             <Tooltip />
             {chart.keys.map((item, idx: number) => (
               <Area
@@ -243,7 +254,7 @@ const DataChart: React.FC<{
         {chart.keys.map((item, idx: number) => (
           <div key={idx} className="flex items-center gap-2">
             <AiOutlineLine color={item.color} />
-            <p>{item.name}</p>
+            <p className="text-xs">{item.name}</p>
           </div>
         ))}
       </div>

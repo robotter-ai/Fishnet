@@ -36,6 +36,13 @@
     "no-plusplus": "off",
     "no-param-reassign": "off",
     "jsx-a11y/interactive-supports-focus": "off",
-    "linebreak-style": "off"
+    "linebreak-style": "off",
+    "react/no-unstable-nested-components": [
+      "warn",
+      {
+        "allowAsProps": true,
+        "customValidators": [] /* optional array of validators used for propTypes validation */
+      }
+]
   }
 }

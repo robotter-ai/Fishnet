@@ -21,8 +21,10 @@ const style = (fullWidth: boolean) => {
     transform: 'translate(-50%, -50%)',
     width: fullWidth ? 1000 : 478,
     bgcolor: '#fff',
-    borderRadius: '10px',
+    borderRadius: '32px',
     boxShadow: '0px 12px 24px rgba(0, 85, 255, 0.08)',
+    border: 'none',
+    outline: 'none',
   };
 };
 
