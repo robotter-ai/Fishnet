@@ -7,8 +7,8 @@ interface IAddressWrap {
 
 const AddressWrap: React.FC<IAddressWrap> = ({ hash, withoutCopy }) => {
   return (
-    <div className="flex gap-3">
-      <p className="w-[200px] truncate">{hash}</p>
+    <div className="flex gap-3 items-center">
+      <p className="w-[100px] truncate">{hash}</p>
       {withoutCopy ? <ClickToCopy text={hash} /> : null}
     </div>
   );

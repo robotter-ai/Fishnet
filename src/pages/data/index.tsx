@@ -8,6 +8,7 @@ import { FileUploader } from 'react-drag-drop-files';
 import { MdAdd } from 'react-icons/md';
 import { useSearchParams } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
+import { ExportIcon } from '@assets/icons';
 import BrowseDataTable from './components/BrowseDataTable';
 import PublishedTable from './components/PublishedTable';
 import useDataTable from './hooks/useDataTable';
@@ -68,7 +69,7 @@ const MyData = () => {
           />
           <Button size="md" onClick={handleOpen}>
             <div className="flex gap-3 justify-center items-center">
-              <MdAdd size={15} />
+              <ExportIcon />
               <span>Upload data</span>
             </div>
           </Button>

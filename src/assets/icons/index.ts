@@ -1,4 +1,4 @@
-import { ReactComponent as ProfileIcon } from '@assets/icons/account.svg';
+import { ReactComponent as ProfileIcon } from '@assets/icons/profile-circle.svg';
 import { ReactComponent as AlarmClockIcon } from '@assets/icons/alarm-clock.svg';
 import { ReactComponent as CheckIcon } from '@assets/icons/check.svg';
 import { ReactComponent as CopyIcon } from '@assets/icons/copy.svg';
@@ -12,6 +12,10 @@ import { ReactComponent as ThreeDotsIcon } from '@assets/icons/three-dots.svg';
 import { ReactComponent as TrashIcon } from '@assets/icons/trash.svg';
 import { ReactComponent as PriceTagIcon } from '@assets/icons/priceIcon.svg';
 import { ReactComponent as FreeTagIcon } from '@assets/icons/priceFreeIcon.svg';
+import { ReactComponent as FolderIcon } from '@assets/icons/folder.svg';
+import { ReactComponent as BellIcon } from '@assets/icons/bell.svg';
+import { ReactComponent as ExportIcon } from '@assets/icons/export.svg';
+import { ReactComponent as SearchIcon } from '@assets/icons/search.svg';
 
 export {
   AlarmClockIcon,
@@ -28,4 +32,8 @@ export {
   TrashIcon,
   PriceTagIcon,
   FreeTagIcon,
+  FolderIcon,
+  BellIcon,
+  ExportIcon,
+  SearchIcon,
 };

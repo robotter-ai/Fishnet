@@ -4,30 +4,22 @@ import Button from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
 import classNames from 'classnames';
 import { ReactNode } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import IncomingTable from './components/IncomingTable';
 import MyDataTable from './components/MyDataTable';
 import OutgoingTable from './components/OutgoingTable';
 import useMonitorAccessTable from './hooks/useMonitorAccessTable';
 
 const MonitorAccess = () => {
-  useMonitorAccessTable();
-  const [searchParam, setSearchParams] = useSearchParams();
+  const { tabs, query, setSearchParams } = useMonitorAccessTable();
   const { isOpen, handleClose } = useModal();
 
-  const tabs = [
-    { key: 'my-data', name: 'My data' },
-    { key: 'outgoing', name: 'Outgoing' },
-    { key: 'incoming', name: 'Incoming' },
-  ];
-
   const TableMapper: { [key: string]: ReactNode } = {
-    'my-data': <MyDataTable />,
+    published: <MyDataTable />,
     outgoing: <OutgoingTable />,
     incoming: <IncomingTable />,
   };
-  const query: null | string = searchParam.get('tab') || 'my-data';
-  const TableComponent = TableMapper?.[query];
+
+  const TableComponent = TableMapper[query];
 
   return (
     <div>

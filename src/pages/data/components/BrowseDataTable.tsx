@@ -32,7 +32,7 @@ const COLUMNS = (address: string): ITableColumns[] => [
     header: 'SELLER',
     cell: (item) => (
       <div className="w-[150px] flex gap-3">
-        <p className="truncate w-[70px]">{item.owner}</p>
+        <p className="truncate w-[100px]">{item.owner}</p>
         <div className="h-9 w-9 flex items-center justify-center bg-[#E6FAFF] rounded-full">
           <ClickToCopy text={item.owner} />
         </div>
@@ -64,31 +64,36 @@ const COLUMNS = (address: string): ITableColumns[] => [
     sortWith: 'price',
   },
   {
-    header: '     ',
+    header: '',
     cell: ({ available, item_hash, permission_status }) =>
       // eslint-disable-next-line no-nested-ternary
       available ? (
         <div className="w-auto flex items-end justify-end">
-          <CustomButton btnStyle="outline-blue" size="sm" fullWidth>
-            Download
-          </CustomButton>
+          <CustomButton
+            text="Download"
+            btnStyle="outline-blue"
+            size="sm"
+            fullWidth
+          />
         </div>
       ) : available && permission_status === 'NOT GRANTED' ? (
         <div className="w-auto flex items-end justify-end">
-          <CustomButton size="sm" fullWidth btnStyle="outline-blue">
-            Request Access
-          </CustomButton>
+          <CustomButton
+            text="Request Access"
+            size="sm"
+            btnStyle="outline-blue"
+            fullWidth
+          />
         </div>
       ) : (
         <div className="w-auto flex items-end justify-end">
           <CustomButton
+            text="Request Access"
             size="sm"
             fullWidth
-            btnStyle="usdc-blue"
+            btnStyle="solid-blue"
             linkTo={`/data/${item_hash}/details`}
-          >
-            Buy
-          </CustomButton>
+          />
         </div>
       ),
   },

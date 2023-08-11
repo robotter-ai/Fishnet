@@ -6,7 +6,7 @@ interface ButtonProps {
   text?: string;
   children?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
-  btnStyle?: 'outline-blue' | 'outline-red' | 'usdc-blue';
+  btnStyle?: 'outline-blue' | 'outline-red' | 'solid-blue';
   onClick?: () => void;
   isLoading?: boolean;
   disabled?: boolean;
@@ -31,7 +31,7 @@ const CustomButton: React.FC<ButtonProps> = ({
   withoutBorder,
 }) => {
   const btnClassnames = classNames(
-    'app-btn block px-7 text-white text-[14px] rounded-[150px]',
+    'app-btn block px-5 text-white text-[14px] rounded-[150px] whitespace-nowrap',
     {
       'h-[32px]': size === 'sm',
       'h-[44px] font-bold': size === 'md',
@@ -39,7 +39,7 @@ const CustomButton: React.FC<ButtonProps> = ({
       'h-[64px] text-[18px] font-bold': size === 'lg',
       'btn-outline-blue': btnStyle === 'outline-blue',
       'btn-outline-red': btnStyle === 'outline-red',
-      'btn-usdc-blue': btnStyle === 'usdc-blue',
+      'btn-solid-blue': btnStyle === 'solid-blue',
       'w-full': fullWidth,
       '!border-none': withoutBorder,
     }

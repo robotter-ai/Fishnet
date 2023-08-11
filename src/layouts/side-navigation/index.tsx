@@ -1,10 +1,4 @@
-import {
-  DatabaseIcon,
-  DeveloperIcon,
-  LockIcon,
-  ProfileIcon,
-} from '@assets/icons';
-import { LinearProgress } from '@mui/material';
+import { FolderIcon, LockIcon, ProfileIcon } from '@assets/icons';
 import classNames from 'classnames';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -12,12 +6,12 @@ function NavList() {
   const links = [
     {
       to: '/data',
-      icon: <DatabaseIcon />,
+      icon: <FolderIcon />,
     },
-    {
-      to: '/algorithms',
-      icon: <DeveloperIcon />,
-    },
+    // {
+    //   to: '/algorithms',
+    //   icon: <DeveloperIcon />,
+    // },
     {
       to: '/monitor-access',
       icon: <LockIcon />,
@@ -60,20 +54,12 @@ function SideNavigation() {
     >
       <div>
         <Link to="/data">
-          <img src="./fishnet0.png" alt="Robotter PNG" width={36} />
+          <img src="./fishnet.png" alt="Robotter PNG" width={36} />
         </Link>
         <nav className="mt-[56px]">
           <NavList />
         </nav>
       </div>
-      {/* <div className="border-t pt-[32px] border-t-[#e0e0e0]">
-        <p className="text-[#7B8290]">
-          <span className="font-bold text-[#172025]">123 GB</span> of 200
-        </p>
-        <div className="text-blue mt-[24px]">
-          <LinearProgress variant="determinate" value={40} color="inherit" />
-        </div>
-      </div> */}
     </div>
   );
 }

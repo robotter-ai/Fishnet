@@ -7,7 +7,6 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import useModal from '@shared/hooks/useModal';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { GrCloudDownload } from 'react-icons/gr';
@@ -25,19 +24,15 @@ interface CustomTableProps {
   data: Record<string, any>[];
   columns: ITableColumns[];
   isLoading?: boolean;
-  handleOpen?: () => void;
 }
 
 const CustomTable: React.FC<CustomTableProps> = ({
   data,
   isLoading,
   columns,
-  handleOpen,
 }) => {
   const [sortData, setSetSortData] = useState(data || []);
   const [order, setOrder] = useState(true);
-  const { isOpen, handleClose } = useModal();
-  const [price, setPrice] = useState('');
 
   useEffect(() => {
     setSetSortData(data);

@@ -87,7 +87,7 @@ const Algorithms = () => {
           {!isSelectAlgorithm &&
           searchParams.get('tab') !== 'execution-history' ? (
             <Button size="md" onClick={() => handleOpenAlgoDetails('upload')}>
-              <div className="flex gap-3 items-center">
+              <div className="flex gap-2 items-center">
                 <MdAdd size={15} />
                 <span>Upload algorithm</span>
               </div>

@@ -6,9 +6,10 @@ module.exports = {
       colors: {
         white: '#fff',
         blue: '#1DC3CF',
+        dark: '#172025',
         'light-20': '#F6F8FB',
         'dark-20': '#91989C',
-        'icon-bg': '#EDF2FA',
+        'light-blue': '#EDF2FA',
         'dark-50': '#223038',
         'text-dark': '#244141',
         'form-bg': '#F6FAFB',

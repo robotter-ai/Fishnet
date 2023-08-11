@@ -20,7 +20,11 @@ const ClickToCopy: React.FC<ClickToCopyProps> = ({
   };
 
   return (
-    <div role="button" className="w-fit" onClick={handleCopyText}>
+    <div
+      role="button"
+      className="w-fit bg-light-blue p-2 rounded-full"
+      onClick={handleCopyText}
+    >
       <CopyIcon color={color} />
     </div>
   );

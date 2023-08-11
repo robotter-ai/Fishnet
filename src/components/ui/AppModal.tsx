@@ -47,7 +47,7 @@ const AppModal: React.FC<ModalProps> = ({
               <div className="flex justify-between gap-2 items-center">
                 {withInfo ? (
                   <div
-                    className="bg-icon-bg rounded-full p-1 cursor-pointer"
+                    className="bg-light-blue rounded-full p-1 cursor-pointer"
                     style={{
                       boxShadow: '0px 12px 24px rgba(0, 85, 255, 0.08)',
                     }}
@@ -56,7 +56,7 @@ const AppModal: React.FC<ModalProps> = ({
                   </div>
                 ) : null}
                 <div
-                  className="bg-icon-bg rounded-full p-1 cursor-pointer"
+                  className="bg-light-blue rounded-full p-1 cursor-pointer"
                   style={{
                     boxShadow: '0px 12px 24px rgba(0, 85, 255, 0.08)',
                   }}

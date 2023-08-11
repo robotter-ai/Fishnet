@@ -37,19 +37,19 @@ h1 {
 }
 
 .app-btn {
-  background: linear-gradient(259.65deg, #1DC3CF -19.75%, #0093A7 135.06%);
+  background: linear-gradient(259.65deg, #1dc3cf -19.75%, #0093a7 135.06%);
   &.btn-outline-blue {
     background: white !important;
     border: 1px solid;
-    color: #1DC3CF;
+    color: #1dc3cf;
     &:disabled {
       background: none;
       color: $disabled;
       border: 1px solid $disabled;
     }
   }
-  &.btn-usdc-blue{
-    background: #3E73C4;
+  &.btn-solid-blue {
+    background: #3e73c4;
     color: $white;
   }
   &.btn-outline-red {
