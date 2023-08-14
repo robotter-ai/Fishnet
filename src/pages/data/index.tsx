@@ -5,10 +5,8 @@ import useModal from '@shared/hooks/useModal';
 import classNames from 'classnames';
 import { ReactNode, useRef } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
-import { MdAdd } from 'react-icons/md';
 import { useSearchParams } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
-import { ExportIcon } from '@assets/icons';
 import BrowseDataTable from './components/BrowseDataTable';
 import PublishedTable from './components/PublishedTable';
 import useDataTable from './hooks/useDataTable';
@@ -16,6 +14,7 @@ import useDataTable from './hooks/useDataTable';
 const MyData = () => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const {
+    tabs,
     data,
     handleCsvToJson,
     isLoading,
@@ -27,10 +26,6 @@ const MyData = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
 
-  const tabs = [
-    { key: 'browse-data', name: 'Browse data' },
-    { key: 'published', name: 'Published' },
-  ];
   const TableMapper: { [key: string]: ReactNode } = {
     published: (
       <PublishedTable data={data} isLoading={publishedDatasets.isLoading} />
@@ -67,12 +62,12 @@ const MyData = () => {
             value={filterParams.value}
             onChange={(value) => handleFilterTable(value)}
           />
-          <Button size="md" onClick={handleOpen}>
-            <div className="flex gap-3 justify-center items-center">
-              <ExportIcon />
-              <span>Upload data</span>
-            </div>
-          </Button>
+          <Button
+            size="md"
+            text="Upload data"
+            icon="upload"
+            onClick={handleOpen}
+          />
         </div>
       </div>
       {TableComponent}
@@ -82,7 +77,6 @@ const MyData = () => {
         }
         isOpen={isOpen}
         handleClose={handleClose}
-        withInfo
       >
         <p className="my-[20px] text-sm leading-5">
           The data remains on your computer until you publish it. At this stage,
@@ -114,14 +108,11 @@ const MyData = () => {
           <Button
             size="lg"
             fullWidth
+            text="Choose data"
+            icon="attach"
             onClick={() => inputFileRef.current?.click()}
             disabled={isLoadingUploadTimeseries}
-          >
-            <div className="flex justify-center gap-3 items-center">
-              <MdAdd size={24} />
-              <span>Choose data</span>
-            </div>
-          </Button>
+          />
         </div>
       </AppModal>
     </div>

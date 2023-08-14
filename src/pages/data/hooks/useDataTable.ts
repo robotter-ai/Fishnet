@@ -35,6 +35,16 @@ export default () => {
   };
   const dataToUse = dataMapper[query];
 
+  const tabs = [
+    { key: 'browse-data', name: 'Browse data' },
+    { key: 'published', name: 'Published' },
+  ];
+
+  const PAGE_TITLE: Record<string, string> = {
+    'browse-data': 'All data',
+    published: 'Your data',
+  };
+
   useEffect(() => {
     setFilterParams((prevState) => ({
       ...prevState,
@@ -43,10 +53,10 @@ export default () => {
   }, [query, datasets, publishedDatasets.data]);
 
   useEffect(() => {
-    setTitle('Data');
+    setTitle(PAGE_TITLE[query]);
     dispatch(getDatasets(auth?.address));
     dispatch(getPublishedDatasets(auth?.address));
-  }, [dispatch]);
+  }, [dispatch, query]);
 
   const handleCsvToJson = (file: any) => {
     Papa.parse(file, {
@@ -75,6 +85,7 @@ export default () => {
   };
 
   return {
+    tabs,
     data: filterParams.data,
     publishedDatasets,
     filterParams,

@@ -1,7 +1,6 @@
 import TextInput from '@components/form/TextInput';
 import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
-import AddressWrap from '@shared/components/AddressWrap';
 import ClickToCopy from '@shared/components/ClickToCopy';
 import { ExecutePrompt } from '@shared/components/Prompts';
 import DataSummary from '@shared/components/Summary';
@@ -17,6 +16,7 @@ import dayjs from 'dayjs';
 import { IoCheckbox } from 'react-icons/io5';
 import { RxCaretLeft } from 'react-icons/rx';
 import { Link, useNavigate } from 'react-router-dom';
+import TruncatedAddress from '@shared/components/TruncatedAddress';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
 
@@ -75,7 +75,7 @@ const DataDetails = () => {
     },
     {
       name: 'Owner',
-      value: <AddressWrap hash={dataDetails?.owner} />,
+      value: <TruncatedAddress hash={dataDetails?.owner} />,
     },
     // {
     //   name: 'Usages',
@@ -89,9 +89,13 @@ const DataDetails = () => {
     <div>
       <div className="flex justify-between items-center mb-5">
         <div>
-          <Link to="/data" className="flex items-center text-blue">
+          <Link
+            to=".."
+            onClick={() => navigate(-1)}
+            className="flex items-center text-blue"
+          >
             <RxCaretLeft size={30} />
-            Published
+            Back
           </Link>
         </div>
         <div>
@@ -117,8 +121,10 @@ const DataDetails = () => {
               </div>
             ) : (
               <Button
-                text="Access request"
+                text="Request access"
                 size="md"
+                icon="lock"
+                btnStyle="outline-blue"
                 onClick={() => {
                   dispatch(
                     changeDatasetPermissionInput({
@@ -194,16 +200,18 @@ const DataDetails = () => {
             {dataDetails?.name || ''} {!isPublished ? 'published' : 'updated'}
           </p>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-blue w-[400px] truncate select-none">
-              {dataDetails?.item_hash || ''}
-            </p>
+            <TruncatedAddress
+              hash={dataDetails?.item_hash || ''}
+              color="primary"
+            />
             <ClickToCopy text={dataDetails?.item_hash || ''} color="#1DC3CF" />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">
           <Button
-            text="Edit data"
+            text="Edit"
             size="lg"
+            icon="edit"
             btnStyle="outline-blue"
             fullWidth
             onClick={() => {
@@ -215,6 +223,7 @@ const DataDetails = () => {
             text="Home"
             size="lg"
             fullWidth
+            icon="home"
             onClick={() => navigate('/data')}
           />
         </div>

@@ -9,7 +9,7 @@ const SearchInput: React.FC<ISearchInputProps> = ({ value, onChange }) => {
   return (
     <div className="relative">
       <input
-        className="border border-solid border-[#F1F5F5] h-[44px] w-72 px-5 py-3 rounded-full"
+        className="outline-none border border-solid border-[#e5e5e5] h-[44px] w-72 px-5 py-3 rounded-full"
         type="text"
         placeholder="Search"
         value={value}

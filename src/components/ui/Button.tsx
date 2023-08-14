@@ -1,21 +1,55 @@
+import {
+  AttachIcon,
+  BuyIcon,
+  DownloadIcon,
+  EditIcon,
+  ExportIcon,
+  HomeIcon,
+  LockIcon,
+  LoginIcon,
+  SettingsIcon,
+} from '@assets/icons';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
 
+type IconTypes =
+  | 'upload'
+  | 'attach'
+  | 'edit'
+  | 'home'
+  | 'download'
+  | 'buy'
+  | 'lock'
+  | 'settings'
+  | 'login';
+
 interface ButtonProps {
   text?: string;
-  children?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
+  icon?: IconTypes;
   btnStyle?: 'outline-blue' | 'outline-red' | 'solid-blue';
   onClick?: () => void;
   isLoading?: boolean;
   disabled?: boolean;
   type?: 'button' | 'submit';
   className?: string;
-  linkTo?: string;
+  href?: string;
   fullWidth?: boolean;
   withoutBorder?: boolean;
 }
+
+const ICONS: Record<IconTypes, JSX.Element> = {
+  upload: <ExportIcon />,
+  attach: <AttachIcon />,
+  edit: <EditIcon />,
+  home: <HomeIcon />,
+  download: <DownloadIcon />,
+  buy: <BuyIcon />,
+  lock: <LockIcon width={19} height={19} />,
+  settings: <SettingsIcon />,
+  login: <LoginIcon width={19} height={19} />,
+};
 
 const CustomButton: React.FC<ButtonProps> = ({
   type = 'button' || 'download',
@@ -26,16 +60,15 @@ const CustomButton: React.FC<ButtonProps> = ({
   fullWidth,
   isLoading,
   disabled,
-  children,
-  linkTo,
+  href,
   withoutBorder,
+  icon,
 }) => {
   const btnClassnames = classNames(
     'app-btn block px-5 text-white text-[14px] rounded-[150px] whitespace-nowrap',
     {
-      'h-[32px]': size === 'sm',
-      'h-[44px] font-bold': size === 'md',
-      'w-[191px] h-[44px] font-bold': size === 'md',
+      'h-9 px-7': size === 'sm',
+      'h-[44px] font-bold  px-10': size === 'md',
       'h-[64px] text-[18px] font-bold': size === 'lg',
       'btn-outline-blue': btnStyle === 'outline-blue',
       'btn-outline-red': btnStyle === 'outline-red',
@@ -45,12 +78,13 @@ const CustomButton: React.FC<ButtonProps> = ({
     }
   );
 
-  if (linkTo) {
+  if (href) {
     return (
       <Link
-        to={linkTo}
-        className={`${btnClassnames} flex justify-center items-center`}
+        to={href}
+        className={`${btnClassnames} flex gap-2 justify-center items-center self-start`}
       >
+        {icon ? ICONS[icon] : null}
         {text}
       </Link>
     );
@@ -77,7 +111,10 @@ const CustomButton: React.FC<ButtonProps> = ({
           />
         </div>
       ) : (
-        children || text
+        <div className="flex gap-3 justify-center items-center">
+          {icon ? ICONS[icon] : null}
+          {text}
+        </div>
       )}
     </button>
   );

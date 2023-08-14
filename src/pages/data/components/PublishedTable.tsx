@@ -2,7 +2,7 @@ import { FreeTagIcon } from '@assets/icons';
 import CustomButton from '@components/ui/Button';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
-import ClickToCopy from '@shared/components/ClickToCopy';
+import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { Link } from 'react-router-dom';
 
 const COLUMNS: ITableColumns[] = [
@@ -26,15 +26,8 @@ const COLUMNS: ITableColumns[] = [
     sortWith: 'desc',
   },
   {
-    header: 'HASH',
-    cell: (item) => (
-      <div className="w-[100px] flex justify-between gap-3 mr-10 items-center">
-        <p className="truncate w-[60px]">{item.item_hash}</p>
-        <div className=" h-9 w-9 flex items-center justify-center bg-[#E6FAFF] rounded-full">
-          <ClickToCopy text={item.item_hash} />
-        </div>
-      </div>
-    ),
+    header: 'SELLERS WALLET',
+    cell: (item) => <TruncatedAddress hash={item.item_hash} withCopy />,
     sortWith: 'owner',
   },
   {
@@ -65,9 +58,12 @@ const COLUMNS: ITableColumns[] = [
     header: '     ',
     cell: () => (
       <div className="w-auto flex items-end justify-end">
-        <CustomButton btnStyle="outline-blue" size="sm" fullWidth>
-          Download
-        </CustomButton>
+        <CustomButton
+          text="Download"
+          icon="download"
+          btnStyle="outline-blue"
+          size="sm"
+        />
       </div>
     ),
   },

@@ -14,7 +14,7 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import { TextareaAutosize } from '@mui/material';
 import { ExecutePrompt } from '@shared/components/Prompts';
-import AddressWrap from '@shared/components/AddressWrap';
+import AddressWrap from '@shared/components/TruncatedAddress';
 import useAuth from '@shared/hooks/useAuth';
 
 const AlgorithmDetails = ({

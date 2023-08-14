@@ -8,6 +8,7 @@ import { getOutgoingPermissions } from '@slices/monitorAccessSlice';
 import { StatusIdentifier } from '@shared/constant';
 import useAuth from '@shared/hooks/useAuth';
 import { ExecutePrompt } from '@shared/components/Prompts';
+import TruncatedAddress from '@shared/components/TruncatedAddress';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -27,12 +28,7 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'Hash',
-    cell: ({ item_hash }) => (
-      <div className="flex gap-3">
-        <p className="w-[200px] truncate">{item_hash}</p>
-        <ClickToCopy text={item_hash} />
-      </div>
-    ),
+    cell: ({ item_hash }) => <TruncatedAddress hash={item_hash} withCopy />,
   },
   {
     header: 'Status',

@@ -16,6 +16,13 @@ import { ReactComponent as FolderIcon } from '@assets/icons/folder.svg';
 import { ReactComponent as BellIcon } from '@assets/icons/bell.svg';
 import { ReactComponent as ExportIcon } from '@assets/icons/export.svg';
 import { ReactComponent as SearchIcon } from '@assets/icons/search.svg';
+import { ReactComponent as AttachIcon } from '@assets/icons/attach.svg';
+import { ReactComponent as EditIcon } from '@assets/icons/edit.svg';
+import { ReactComponent as HomeIcon } from '@assets/icons/home.svg';
+import { ReactComponent as DownloadIcon } from '@assets/icons/download.svg';
+import { ReactComponent as BuyIcon } from '@assets/icons/buy.svg';
+import { ReactComponent as SettingsIcon } from '@assets/icons/settings.svg';
+import { ReactComponent as LoginIcon } from '@assets/icons/login.svg';
 
 export {
   AlarmClockIcon,
@@ -36,4 +43,11 @@ export {
   BellIcon,
   ExportIcon,
   SearchIcon,
+  AttachIcon,
+  EditIcon,
+  HomeIcon,
+  DownloadIcon,
+  BuyIcon,
+  SettingsIcon,
+  LoginIcon,
 };

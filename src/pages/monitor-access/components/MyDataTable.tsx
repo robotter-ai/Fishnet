@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import Button from '@components/ui/Button';
 import { Starred } from '@components/form';
-import ClickToCopy from '@shared/components/ClickToCopy';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
@@ -22,17 +21,6 @@ const COLUMNS: ITableColumns[] = [
       </Link>
     ),
     sortWith: 'name',
-  },
-  {
-    header: 'Hash',
-    accessor: 'item_hash',
-    cell: (item) => (
-      <div className="flex gap-3">
-        <p className="w-[200px] truncate">{item.item_hash}</p>
-        <ClickToCopy text={item.item_hash} />
-      </div>
-    ),
-    sortWith: 'item_hash',
   },
   {
     header: 'Public access',
@@ -59,11 +47,15 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'Filter',
     cell: (item) => (
-      <Button
-        linkTo={`/monitor-access/${item.item_hash}/settings`}
-        text="Settings"
-        btnStyle="outline-blue"
-      />
+      <div className="w-auto flex items-end justify-end">
+        <Button
+          href={`/monitor-access/${item.item_hash}/settings`}
+          text="Settings"
+          size="sm"
+          icon="settings"
+          btnStyle="outline-blue"
+        />
+      </div>
     ),
   },
 ];

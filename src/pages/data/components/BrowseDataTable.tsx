@@ -1,14 +1,11 @@
-import { FreeTagIcon, PriceTagIcon } from '@assets/icons';
+import { FreeTagIcon } from '@assets/icons';
 import CustomButton from '@components/ui/Button';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
-import ClickToCopy from '@shared/components/ClickToCopy';
-import useAuth from '@shared/hooks/useAuth';
-import useTransaction from '@shared/hooks/useTransaction';
+import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { Link } from 'react-router-dom';
 
-// const { setRecipientAddress } = useTransaction()
-const COLUMNS = (address: string): ITableColumns[] => [
+const COLUMNS: ITableColumns[] = [
   {
     header: 'NAME',
     cell: (item) => (
@@ -29,15 +26,8 @@ const COLUMNS = (address: string): ITableColumns[] => [
     sortWith: 'desc',
   },
   {
-    header: 'SELLER',
-    cell: (item) => (
-      <div className="w-[150px] flex gap-3">
-        <p className="truncate w-[100px]">{item.owner}</p>
-        <div className="h-9 w-9 flex items-center justify-center bg-[#E6FAFF] rounded-full">
-          <ClickToCopy text={item.owner} />
-        </div>
-      </div>
-    ),
+    header: 'SELLERS WALLET',
+    cell: (item) => <TruncatedAddress hash={item.owner} withCopy />,
     sortWith: 'owner',
   },
   {
@@ -65,37 +55,34 @@ const COLUMNS = (address: string): ITableColumns[] => [
   },
   {
     header: '',
-    cell: ({ available, item_hash, permission_status }) =>
-      // eslint-disable-next-line no-nested-ternary
-      available ? (
-        <div className="w-auto flex items-end justify-end">
+    cell: ({ available, item_hash, permission_status }) => (
+      <div className="w-auto flex items-end justify-end">
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {available ? (
           <CustomButton
             text="Download"
             btnStyle="outline-blue"
             size="sm"
-            fullWidth
+            icon="download"
           />
-        </div>
-      ) : available && permission_status === 'NOT GRANTED' ? (
-        <div className="w-auto flex items-end justify-end">
+        ) : available && permission_status === 'NOT GRANTED' ? (
           <CustomButton
-            text="Request Access"
+            text="Request"
             size="sm"
+            icon="lock"
             btnStyle="outline-blue"
-            fullWidth
           />
-        </div>
-      ) : (
-        <div className="w-auto flex items-end justify-end">
+        ) : (
           <CustomButton
-            text="Request Access"
+            text="Buy"
             size="sm"
-            fullWidth
+            icon="buy"
             btnStyle="solid-blue"
-            linkTo={`/data/${item_hash}/details`}
+            href={`/data/${item_hash}/details`}
           />
-        </div>
-      ),
+        )}
+      </div>
+    ),
   },
 ];
 
@@ -106,14 +93,7 @@ const BrowseDataTable = ({
   data: Record<string, any>[];
   isLoading: boolean;
 }) => {
-  const auth = useAuth();
-  return (
-    <CustomTable
-      data={data}
-      columns={COLUMNS(auth?.address)}
-      isLoading={isLoading}
-    />
-  );
+  return <CustomTable data={data} columns={COLUMNS} isLoading={isLoading} />;
 };
 
 export default BrowseDataTable;

@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
 import WalletIcon from '@assets/images/wallet-icon.png';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import useAuth from '@shared/hooks/useAuth';
-import { AlarmClockIcon, BellIcon, ThreeDotsIcon } from '@assets/icons';
+import { BellIcon } from '@assets/icons';
 import { useDetectClickOutside } from 'react-detect-click-outside';
-import useLogout from '@shared/hooks/useLogout';
 import { StatusIndicator } from '@shared/constant';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import { getNotifications } from '@slices/profileSlice';
-import useLoginForm from '@features/auth/hooks/useLoginForm';
+import TruncatedAddress from '@shared/components/TruncatedAddress';
 
 function TopNavigation() {
-  const { handleDisconnectWallet } = useLoginForm();
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.profile.notificationActions);
   const { title, pageStatus } = usePageTitle();
@@ -46,8 +44,8 @@ function TopNavigation() {
         </div>
         <div ref={ref} className="relative flex items-center gap-[15px]">
           <div className="flex bg-light-blue rounded-[33px] items-center gap-3 p-[5px] px-[15px] ">
-            <span className="truncate w-[10rem] text-[#1C1C1C]">
-              {auth?.address}
+            <span className="text-[#1C1C1C]">
+              <TruncatedAddress hash={auth?.address} />
             </span>
             <img src={WalletIcon} alt="" />
           </div>

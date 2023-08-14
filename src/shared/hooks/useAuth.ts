@@ -1,6 +1,4 @@
-import { useEffect } from 'react';
-import { useAccount } from 'wagmi';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useAccount, useEnsName } from 'wagmi';
 
 interface AuthProps {
   address: string;
@@ -9,29 +7,8 @@ interface AuthProps {
 }
 
 export default (): AuthProps => {
-  const { isConnected, address } = useAccount();
-  const { connected, publicKey } = useWallet();
+  const { address, isConnected } = useAccount();
+  const { data: ensName } = useEnsName({ address });
 
-  const auth: AuthProps = JSON.parse(
-    localStorage.getItem('auth') as string
-  ) || {
-    address: '',
-    wallet: '',
-    isConnected: isConnected || connected,
-  };
-
-  useEffect(() => {
-    if (address || publicKey?.toBase58()) {
-      localStorage.setItem(
-        'auth',
-        JSON.stringify({
-          address: address || publicKey?.toBase58(),
-          wallet: address ? 'metamask' : 'phantom',
-          isConnected: isConnected || connected,
-        })
-      );
-    }
-  }, [isConnected, connected, address, publicKey?.toBase58()]);
-
-  return auth;
+  return { address: (ensName ?? address) as string, isConnected, wallet: '' };
 };
