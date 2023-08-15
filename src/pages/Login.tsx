@@ -30,14 +30,14 @@ const Login = () => {
     <div className="flex flex-col justify-between h-screen bg-white">
       <div className="py-5 px-8 flex justify-between items-center">
         <img src="./fishnet.png" alt="Robotter PNG" width={50} />
-        <Button text="Connect to a wallet" icon="login" onClick={handleOpen} />
+        <Button text="Connect a wallet" icon="login" onClick={handleOpen} />
       </div>
       <div className="h-full flex justify-center items-center">
         <img src={FishnetLogo} alt="Robotter PNG" width={1063} />
       </div>
       <WaveBg className="w-full" preserveAspectRatio="none" />
       <AppModal
-        title="Connect to a wallet"
+        title="Connect a wallet"
         isOpen={isOpen}
         handleClose={handleClose}
       >

@@ -1,3 +1,4 @@
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useAccount, useEnsName } from 'wagmi';
 
 interface AuthProps {
@@ -10,5 +11,8 @@ export default (): AuthProps => {
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
 
-  return { address: (ensName ?? address) as string, isConnected, wallet: '' };
+  const { connected, publicKey } = useWallet();
+  const connection = connected || isConnected;
+
+  return { address: (publicKey?.toString() ?? ensName ?? address) as string, isConnected: connection, wallet: '' };
 };

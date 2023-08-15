@@ -9,7 +9,7 @@ import useLogin from '../hooks/useLogin';
 export type WalletProps = 'Metamask' | 'Solana' | 'Phantom';
 
 function LoginForm() {
-  const [walletName, setWalletName] = useState<WalletProps>('Metamask');
+  const [walletName, setWalletName] = useState<WalletProps>('Solana');
   const { handleLogin } = useLogin();
 
   const WALLETS = [
