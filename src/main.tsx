@@ -9,6 +9,7 @@ import { WagmiConfig, configureChains, createConfig, mainnet } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import { store } from './store';
 import App from './App';
+import { SolanaContextProvider } from './contexts';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { chains, publicClient, webSocketPublicClient } = configureChains(
@@ -24,12 +25,14 @@ const wagmiConfig = createConfig({
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <WagmiConfig config={wagmiConfig}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </WagmiConfig>
-    </Provider>
+    <SolanaContextProvider>
+      <Provider store={store}>
+        <WagmiConfig config={wagmiConfig}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </WagmiConfig>
+      </Provider>
+    </SolanaContextProvider>
   </React.StrictMode>
 );
