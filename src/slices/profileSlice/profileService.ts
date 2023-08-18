@@ -1,3 +1,4 @@
+import { config } from '@slices/requestConfig';
 import axios from 'axios';
 
 export type UserProps = {
@@ -9,22 +10,22 @@ export type UserProps = {
 };
 
 const getUserInfo = async (address: string) => {
-  const { data } = await axios.get(`/users/${address}`);
+  const { data } = await axios.get(`/users/${address}`, config);
   return data;
 };
 
 const getAllUsers = async () => {
-  const { data } = await axios.get('/users');
+  const { data } = await axios.get('/users', config);
   return data;
 };
 
 const updateUserInfo = async (userDetails: UserProps) => {
-  const { data } = await axios.put('/users', userDetails);
+  const { data } = await axios.put('/users', userDetails, config);
   return data;
 };
 
 const getNotifications = async (address: string) => {
-  const { data } = await axios.get(`/users/${address}/notifications`);
+  const { data } = await axios.get(`/users/${address}/notifications`, config);
   return data;
 };
 

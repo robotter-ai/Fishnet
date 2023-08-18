@@ -1,3 +1,4 @@
+import { config } from '@slices/requestConfig';
 import axios from 'axios';
 
 export type UploadAlgorithmProps = {
@@ -9,32 +10,32 @@ export type UploadAlgorithmProps = {
 };
 
 const getAlgorithms = async () => {
-  const { data } = await axios.get(`/algorithms`);
+  const { data } = await axios.get(`/algorithms`, config);
   return data;
 };
 
 const getPublishedAlgorithms = async (by: string) => {
-  const { data } = await axios.get(`/algorithms?by=${by}`);
+  const { data } = await axios.get(`/algorithms?by=${by}`, config);
   return data;
 };
 
 const getAlgorithmByID = async (id: string) => {
-  const { data } = await axios.get(`/algorithms/${id}`);
+  const { data } = await axios.get(`/algorithms/${id}`, config);
   return data;
 };
 
 const getExecutions = async () => {
-  const { data } = await axios.get('/executions');
+  const { data } = await axios.get('/executions', config);
   return data;
 };
 
 const getExecutionResultByID = async (id: string) => {
-  const { data } = await axios.get(`/results/${id}`);
+  const { data } = await axios.get(`/results/${id}`, config);
   return data;
 };
 
 const uploadgetAlgorithm = async (inputs: UploadAlgorithmProps) => {
-  const { data } = await axios.put('/algorithms', inputs);
+  const { data } = await axios.put('/algorithms', inputs, config);
   return data;
 };
 
