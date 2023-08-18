@@ -108,7 +108,7 @@ const MyData = () => {
           <Button
             size="lg"
             fullWidth
-            text="Choose data"
+            text="Upload data"
             icon="attach"
             onClick={() => inputFileRef.current?.click()}
             disabled={isLoadingUploadTimeseries}

@@ -6,15 +6,13 @@ import { BackpackWalletAdapter, GlowWalletAdapter, PhantomWalletAdapter, Solflar
 
 
 export const SolanaContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const network = WalletAdapterNetwork.Devnet;
+    const network = WalletAdapterNetwork.Mainnet;
     const endpoint = useMemo(() => clusterApiUrl(network), []);
 
     const wallets = useMemo(
         () => [
             new PhantomWalletAdapter(),
             new BackpackWalletAdapter(),
-            new SolflareWalletAdapter(),
-            new GlowWalletAdapter(),
         ],
         []
     );

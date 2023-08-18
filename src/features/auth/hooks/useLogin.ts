@@ -1,14 +1,12 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import bs58 from 'bs58';
 import { useNavigate } from 'react-router-dom';
-import {  useDisconnect } from 'wagmi';
 
-export type WalletNameTypes = 'Phantom' | 'Metamask' | 'Solana';
+type WalletName<T extends string = string> = T & { __brand__: 'WalletName' };
 
 export default () => {
   const navigate = useNavigate();
-  const { disconnect } = useDisconnect();
-  const { connect, select, wallets } = useWallet();
+  const { connect, wallet, disconnect } = useWallet();
 
   const getSerializedSignature = async (signMessage: (message: Uint8Array) => Promise<Uint8Array>, data: Uint8Array): Promise<string> => {
     const signature = await signMessage(data);
@@ -23,12 +21,14 @@ export default () => {
     return await getSerializedSignature(signMessage, messageData);
   };
 
-  const handleLogin = async (name: WalletNameTypes) => {
-    if (name === 'Phantom') {
-      select(wallets[0].adapter.name)
+  const handleConnectWallet = () => {
+    try {
+      connect();
+    } catch(e) {
+      console.log(e);
+    } finally {
+      localStorage.setItem('wallet.connected.name', wallet?.adapter.name.toString() || 'Solana');
     }
-    connect();
-    //localStorage.setItem('wallet.connected.name', name.toString());
   };
 
   const handleDisconnectWallet = () => {
@@ -37,5 +37,5 @@ export default () => {
     localStorage.clear();
   };
 
-  return { handleLogin, handleDisconnectWallet, signChallenge };
+  return { handleConnectWallet, handleDisconnectWallet, signChallenge };
 };

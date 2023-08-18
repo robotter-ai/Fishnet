@@ -1,4 +1,4 @@
-import { config } from '@slices/requestConfig';
+import { config, formConfig } from '@slices/requestConfig';
 import axios from 'axios';
 
 export type DatasetProps = {
@@ -53,7 +53,7 @@ const updateDatasets = async (dataset: DatasetProps) => {
 };
 
 const uploadDataset = async (dataset: any) => {
-  const { data } = await axios.post('/datasets/upload/timeseries', dataset, config);
+  const { data } = await axios.post('/datasets/upload/timeseries', dataset, formConfig);
   return data;
 };
 
