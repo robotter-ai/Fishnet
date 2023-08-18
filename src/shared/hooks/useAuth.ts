@@ -21,6 +21,6 @@ export default (): AuthProps => {
     address: (publicKey?.toString() ?? ensName ?? address) as string,
     walletConnected,
     wallet: wallet?.adapter.name || '',
-    isAuth: !!cookies.get('bearerToken'),
+    isAuth: !!cookies.get('bearerToken') && walletConnected,
   };
 };
