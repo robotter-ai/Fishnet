@@ -1,32 +1,34 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { PhantomConnector } from 'phantom-wagmi-connector';
+import bs58 from 'bs58';
 import { useNavigate } from 'react-router-dom';
-import { useConnect, useDisconnect } from 'wagmi';
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+import {  useDisconnect } from 'wagmi';
 
 export type WalletNameTypes = 'Phantom' | 'Metamask' | 'Solana';
 
-const WALLET_CONNECTORS: Record<WalletNameTypes, any> = {
-  Phantom: new PhantomConnector(), // useless, eth phantom connector
-  Solana: new PhantomConnector(), // useless
-  Metamask: new MetaMaskConnector(),
-};
-
 export default () => {
   const navigate = useNavigate();
-  const { connect } = useConnect();
   const { disconnect } = useDisconnect();
-  const { select, wallets } = useWallet();
+  const { connect, select, wallets } = useWallet();
 
-  const handleLogin = (name: WalletNameTypes) => {
-    if (name === 'Solana') {
+  const getSerializedSignature = async (signMessage: (message: Uint8Array) => Promise<Uint8Array>, data: Uint8Array): Promise<string> => {
+    const signature = await signMessage(data);
+    return bs58.encode(signature);
+  };
+
+  const signChallenge = async (
+    challenge: string,
+    signMessage: (message: Uint8Array) => Promise<Uint8Array>,
+  ) => {
+    const messageData = new TextEncoder().encode(challenge);
+    return await getSerializedSignature(signMessage, messageData);
+  };
+
+  const handleLogin = async (name: WalletNameTypes) => {
+    if (name === 'Phantom') {
       select(wallets[0].adapter.name)
-    } else {
-      localStorage.setItem('wallet.connected.name', name.toString());
-      connect({
-        connector: WALLET_CONNECTORS[name],
-      });
     }
+    connect();
+    //localStorage.setItem('wallet.connected.name', name.toString());
   };
 
   const handleDisconnectWallet = () => {
@@ -35,5 +37,5 @@ export default () => {
     localStorage.clear();
   };
 
-  return { handleLogin, handleDisconnectWallet };
+  return { handleLogin, handleDisconnectWallet, signChallenge };
 };

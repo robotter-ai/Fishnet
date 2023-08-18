@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import classNames from 'classnames';
 import { ReactComponent as Metamask } from '@assets/images/metamask.svg';
-import { ReactComponent as Solana } from '@assets/images/solana.svg';
 import { ReactComponent as Phantom } from '@assets/images/phantom.svg';
 import Button from '@components/ui/Button';
 import useLogin from '../hooks/useLogin';
@@ -13,7 +12,6 @@ function LoginForm() {
   const { handleLogin } = useLogin();
 
   const WALLETS = [
-    { name: 'Solana', icon: <Solana height={20} width={20} /> },
     { name: 'Phantom', icon: <Phantom height={20} width={20} /> },
     { name: 'Metamask', icon: <Metamask height={20} width={20} /> },
   ];
