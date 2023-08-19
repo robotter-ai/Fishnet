@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useOnChange from '@shared/hooks/useOnChange';
 import { getAllUsers, getUserInfo, updateUserInfo } from '@slices/profileSlice';
 import useAuth from '@shared/hooks/useAuth';
+import { getTransactions as queryTransaction } from '@slices/indexerSlice';
 
 export default () => {
   const dispatch = useAppDispatch();
@@ -13,6 +14,9 @@ export default () => {
   const auth = useAuth();
   const { userInfo, updateActions, allUsers } = useAppSelector(
     (app) => app.profile
+  );
+  const { getTransactions } = useAppSelector(
+    (app) => app.indexer
   );
   const { inputs, handleOnChange } = useOnChange({
     username: userInfo?.username || '',
@@ -33,7 +37,12 @@ export default () => {
   useEffect(() => {
     dispatch(getUserInfo(auth?.address));
     dispatch(getAllUsers());
+    dispatch(queryTransaction({ user: 'fisherH6SRzYVd2JE53Kgiax9R9MmtS95TC8ERPr3D7' }));
   }, [updateActions.success]);
+
+  useEffect(() => {
+    // IT WORKS :P: console.log(getTransactions.transactions)
+  }, [getTransactions.success]);
 
   const handleUpdateProfile = () => {
     dispatch(updateUserInfo(inputs));

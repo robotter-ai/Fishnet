@@ -2,8 +2,6 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import bs58 from 'bs58';
 import { useNavigate } from 'react-router-dom';
 
-type WalletName<T extends string = string> = T & { __brand__: 'WalletName' };
-
 export default () => {
   const navigate = useNavigate();
   const { connect, wallet, disconnect } = useWallet();

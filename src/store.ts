@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import algorithmSlice from '@slices/algorithmSlice';
 import appSlice from '@slices/appSlice';
 import authSlice from '@slices/authSlice';
+import indexerSlice from '@slices/indexerSlice';
 import dataSlice from '@slices/dataSlice';
 import executionSlice from '@slices/executionSlice';
 import monitorAccessSlice from '@slices/monitorAccessSlice';
@@ -12,6 +13,7 @@ export const store = configureStore({
   reducer: {
     app: appSlice.reducer,
     auth: authSlice.reducer,
+    indexer: indexerSlice.reducer,
     datasets: dataSlice.reducer,
     algorithm: algorithmSlice.reducer,
     execution: executionSlice.reducer,
