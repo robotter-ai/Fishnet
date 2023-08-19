@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FISHNET_API_URL, getConfig } from './requestConfig';
 
 type ExecEnum = 'algorithmID' | 'datasetID' | 'owner' | 'status';
 
@@ -15,7 +16,7 @@ export const postExecutionRequest = createAsyncThunk(
   'execution/postExecutionRequest',
   async (inputs: ExecutionProps, thunkAPI) => {
     try {
-      const { data } = await axios.post('/executions', inputs);
+      const { data } = await axios.post(FISHNET_API_URL + '/executions', inputs, getConfig());
       return data;
     } catch (err: any) {
       const errMsg =
