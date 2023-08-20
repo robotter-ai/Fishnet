@@ -20,7 +20,7 @@ export const getConfig = (includeAuth = true) => {
     }
   
     return config;
-  };
+};
   
 export const getFormConfig = (includeAuth = true) => {
     const config: HeadersConfig = {
@@ -39,3 +39,4 @@ export const getFormConfig = (includeAuth = true) => {
 
 export const FISHNET_API_URL = import.meta.env.VITE_FISHNET_API_URL;
 export const INDEXER_API_URL = import.meta.env.VITE_INDEXER_API_URL;
+export const TRANSACTIONS_API_URL = import.meta.env.VITE_TRANSACTIONS_API_URL;
