@@ -1,34 +1,34 @@
-import { FC, ReactNode, useMemo } from 'react';
-import '@solana/wallet-adapter-react-ui/styles.css';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { FC, ReactNode, useCallback, useMemo } from 'react';
+import { WalletAdapterNetwork, WalletError } from '@solana/wallet-adapter-base';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import { BackpackWalletAdapter, PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
-import { 
-    BackpackWalletAdapter,
-    PhantomWalletAdapter,
-    SolflareWalletAdapter
-} from '@solana/wallet-adapter-wallets';
 
 
 export const SolanaContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const network = WalletAdapterNetwork.Mainnet;
-    const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+    const endpoint = useMemo(() => clusterApiUrl(network), []);
+
     const wallets = useMemo(
         () => [
-            new BackpackWalletAdapter(),
             new PhantomWalletAdapter(),
-            new SolflareWalletAdapter({ network }),
+            new BackpackWalletAdapter(),
         ],
-        [network]
+        []
+    );
+
+    const onError = useCallback(
+        (error: WalletError) => {
+            // notify({ type: 'error', message: error.message ? `${error.name}: ${error.message}` : error.name });
+            console.error(error);
+        },
+        []
     );
 
     return (
         <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets} autoConnect>
-                <WalletModalProvider>
-                    {children}          
-                </WalletModalProvider>
+            <WalletProvider wallets={wallets} onError={onError}>
+                {children}
             </WalletProvider>
         </ConnectionProvider>
     );

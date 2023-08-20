@@ -5,28 +5,63 @@ import Button from '@components/ui/Button';
 import { LoginForm } from '@features/auth';
 import useAuth from '@shared/hooks/useAuth';
 import useModal from '@shared/hooks/useModal';
-import { useAppDispatch } from '@shared/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import { getUserInfo } from '@slices/profileSlice';
 import { Navigate, useNavigate } from 'react-router-dom';
 import FishnetLogo from '/fishnet-logo.png';
 import { ReactComponent as WaveBg } from '@assets/images/wave.svg';
+import { getChallenge as getChallengeRequest, solveChallenge as solveChallengeRequest} from '@slices/authSlice';
+import { useWallet } from '@solana/wallet-adapter-react';
+import Cookies from "universal-cookie";
+import useLogin from '@features/auth/hooks/useLogin';
 
 const Login = () => {
+  const cookies = new Cookies()
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const auth = useAuth();
   const { isOpen, handleOpen, handleClose } = useModal();
+  const { signChallenge } = useLogin();
+  const { signMessage } = useWallet();
+  const { getChallenge, solveChallenge  } = useAppSelector(
+    (app) => app.auth
+  );
 
   useEffect(() => {
-    if (auth.isConnected) {
-      navigate('/data', { replace: true });
-      dispatch(getUserInfo(auth?.address));
+    localStorage.setItem('wallet.connected.status', auth.address);
+    if (auth.address) {
+      dispatch(getChallengeRequest(auth.address));
     }
-  }, [auth.isConnected]);
+  }, [auth.walletConnected]);
 
-  return auth.isConnected ? (
-    <Navigate to="/data" replace />
-  ) : (
+  const solveChallengeAsync = async () => {
+    if (signMessage && getChallenge.success && getChallenge.challenge && auth.address) {
+      const signature = await signChallenge(getChallenge.challenge, signMessage);
+      dispatch(solveChallengeRequest({ address: auth.address, signature }));
+    }
+  };
+
+  useEffect(() => {
+    if (getChallenge.challenge) {
+      solveChallengeAsync();
+    }
+  }, [getChallenge.success]);
+
+  useEffect(() => {
+    if (solveChallenge.success && solveChallenge.token && solveChallenge.valid_til) {
+      cookies.set(
+        "bearerToken",
+        solveChallenge.token,
+        {
+          path: "/", 
+          maxAge: solveChallenge.valid_til
+        }
+      )
+      navigate('/data', { replace: true });
+    }
+  }, [solveChallenge.success]);
+
+  return (
     <div className="flex flex-col justify-between h-screen bg-white">
       <div className="py-5 px-8 flex justify-between items-center">
         <img src="./fishnet.png" alt="Robotter PNG" width={50} />

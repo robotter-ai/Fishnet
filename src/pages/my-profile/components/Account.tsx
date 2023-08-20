@@ -29,8 +29,8 @@ const Account: React.FC<IAccountProps> = ({
     <div className="flex gap-3 mt-9">
       <div className="flex flex-col gap-6 w-3/4 bg-[#FAFAFA] rounded-lg p-8">
         <TextInput
-          label="Public account name"
-          placeholder="Your name for other users?"
+          label="Username"
+          placeholder="Public name"
           value={inputs.username}
           onChange={(e) => handleOnChange('username', e.target.value)}
           fullWidth

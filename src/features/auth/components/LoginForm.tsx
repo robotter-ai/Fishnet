@@ -1,46 +1,36 @@
-import { useState } from 'react';
 import classNames from 'classnames';
-import { ReactComponent as Metamask } from '@assets/images/metamask.svg';
-import { ReactComponent as Solana } from '@assets/images/solana.svg';
-import { ReactComponent as Phantom } from '@assets/images/phantom.svg';
-import Button from '@components/ui/Button';
 import useLogin from '../hooks/useLogin';
-
-export type WalletProps = 'Metamask' | 'Solana' | 'Phantom';
+import { useWallet } from '@solana/wallet-adapter-react';
+import Button from '@components/ui/Button';
 
 function LoginForm() {
-  const [walletName, setWalletName] = useState<WalletProps>('Solana');
-  const { handleLogin } = useLogin();
-
-  const WALLETS = [
-    { name: 'Solana', icon: <Solana height={20} width={20} /> },
-    { name: 'Phantom', icon: <Phantom height={20} width={20} /> },
-    { name: 'Metamask', icon: <Metamask height={20} width={20} /> },
-  ];
+  const { wallets, select, wallet } = useWallet();
+  const { handleConnectWallet } = useLogin();
+  const solanaWallets = wallets.map((wallet) => wallet.adapter);
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4">
-        {WALLETS.map((item, i) => (
+        {solanaWallets.map((item, i) => (
           <div
             key={i}
             role="button"
             className={classNames(
               'flex justify-between items-center bg-[#F6F8FB] border-2 border-[#F6F8FB] rounded-full py-4 px-5',
               {
-                '!border-blue': walletName === item.name,
+                '!border-blue': wallet?.adapter.name === item.name,
               }
             )}
-            onClick={() => setWalletName(item.name as WalletProps)}
+            onClick={() => select(item.name)}
           >
             <p
               className={classNames('text-dark/50 text-base', {
-                '!text-dark': walletName === item.name,
+                '!text-dark': item.name,
               })}
             >
               {item.name}
             </p>
-            <span>{item.icon}</span>
+            <img src={item.icon} width={40} height={40}></img>
           </div>
         ))}
       </div>
@@ -49,7 +39,7 @@ function LoginForm() {
         size="lg"
         icon="login"
         fullWidth
-        onClick={() => handleLogin(walletName)}
+        onClick={() => handleConnectWallet()}
       />
     </div>
   );

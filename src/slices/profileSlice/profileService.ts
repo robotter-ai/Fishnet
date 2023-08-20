@@ -1,3 +1,4 @@
+import { FISHNET_API_URL, getConfig } from '@slices/requestConfig';
 import axios from 'axios';
 
 export type UserProps = {
@@ -9,22 +10,22 @@ export type UserProps = {
 };
 
 const getUserInfo = async (address: string) => {
-  const { data } = await axios.get(`/users/${address}`);
+  const { data } = await axios.get(FISHNET_API_URL + `/users/${address}`, getConfig());
   return data;
 };
 
 const getAllUsers = async () => {
-  const { data } = await axios.get('/users');
+  const { data } = await axios.get(FISHNET_API_URL + '/users', getConfig());
   return data;
 };
 
 const updateUserInfo = async (userDetails: UserProps) => {
-  const { data } = await axios.put('/users', userDetails);
+  const { data } = await axios.put(FISHNET_API_URL + '/users', userDetails, getConfig());
   return data;
 };
 
 const getNotifications = async (address: string) => {
-  const { data } = await axios.get(`/users/${address}/notifications`);
+  const { data } = await axios.get(FISHNET_API_URL + `/users/${address}/notifications`, getConfig());
   return data;
 };
 

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import getErrMsg from '@shared/utils/getErrMsg';
+import { FISHNET_API_URL, getFormConfig } from '@slices/requestConfig';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -7,9 +8,7 @@ export const preprocessTimeseries = createAsyncThunk(
   'timeseries/preprocessTimeseries',
   async (formData: any, thunkAPI) => {
     try {
-      const { data } = await axios.post('/timeseries/csv', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const { data } = await axios.post(FISHNET_API_URL + '/timeseries/csv', formData, getFormConfig());
       return data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(getErrMsg(err));

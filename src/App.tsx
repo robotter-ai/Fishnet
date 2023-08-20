@@ -1,8 +1,5 @@
-import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { useAccount } from 'wagmi';
-import useLogin, { WalletNameTypes } from '@features/auth/hooks/useLogin';
 
 import Login from '@pages/Login';
 import MyData from '@pages/data';
@@ -14,21 +11,6 @@ import MyProfile from '@pages/my-profile';
 import Layout from './layouts';
 
 export default function App() {
-  const { isConnected } = useAccount();
-  const { handleLogin } = useLogin();
-
-  useEffect(() => {
-    const state = localStorage.getItem('wallet.connected.status') || '';
-    const name = localStorage.getItem('wallet.connected.name') || '';
-    if (!isConnected && state === 'true' && name) {
-      handleLogin(name as WalletNameTypes);
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('wallet.connected.status', isConnected.toString());
-  }, [isConnected]);
-
   return (
     <>
       <Routes>

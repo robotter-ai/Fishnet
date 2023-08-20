@@ -12,13 +12,12 @@ import App from './App';
 import { SolanaContextProvider } from './contexts';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { chains, publicClient, webSocketPublicClient } = configureChains(
+const { publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
   [publicProvider()]
 );
 
 const wagmiConfig = createConfig({
-  autoConnect: true,
   publicClient,
   webSocketPublicClient,
 });
