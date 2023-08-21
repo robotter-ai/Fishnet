@@ -1,4 +1,4 @@
-import { FolderIcon, LockIcon, ProfileIcon } from '@assets/icons';
+import { FolderIcon, LockIcon, LogoutIcon, ProfileIcon } from '@assets/icons';
 import classNames from 'classnames';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -50,7 +50,7 @@ function SideNavigation() {
   return (
     <div
       id="side-navigation"
-      className="flex flex-col justify-between p-[30px]"
+      className="flex flex-col justify-between pt-8 pb-14"
     >
       <div>
         <Link to="/data">
@@ -59,6 +59,9 @@ function SideNavigation() {
         <nav className="mt-[56px]">
           <NavList />
         </nav>
+      </div>
+      <div className="pt-8 border-t border-solid border-t-[#C8CCCD]">
+        <LogoutIcon color="#91999C" />
       </div>
     </div>
   );

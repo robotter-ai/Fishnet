@@ -1,12 +1,12 @@
 import classNames from 'classnames';
-import useLogin from '../hooks/useLogin';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '@components/ui/Button';
+import useLogin from '../hooks/useLogin';
 
 function LoginForm() {
   const { wallets, select, wallet } = useWallet();
   const { handleConnectWallet } = useLogin();
-  const solanaWallets = wallets.map((wallet) => wallet.adapter);
+  const solanaWallets = wallets.map((x) => x.adapter);
 
   return (
     <div className="flex flex-col gap-8">
@@ -30,7 +30,7 @@ function LoginForm() {
             >
               {item.name}
             </p>
-            <img src={item.icon} width={40} height={40}></img>
+            <img src={item.icon} width={40} height={40} alt={item.name} />
           </div>
         ))}
       </div>

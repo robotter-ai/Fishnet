@@ -12,12 +12,12 @@ import {
 import { toast } from 'react-toastify';
 import useAuth from '@shared/hooks/useAuth';
 
-interface IToggleAvailabilityProps {
+interface IPublicAccessToggleProps {
   datasetId: string;
   available: boolean;
 }
 
-const ToggleAvailability: React.FC<IToggleAvailabilityProps> = ({
+const PublicAccessToggle: React.FC<IPublicAccessToggleProps> = ({
   datasetId,
   available,
 }) => {
@@ -78,4 +78,4 @@ const ToggleAvailability: React.FC<IToggleAvailabilityProps> = ({
   );
 };
 
-export default ToggleAvailability;
+export default PublicAccessToggle;

@@ -1,24 +1,33 @@
-import { AccountType, BrickAccountInfo, BrickEvent, InstructionType, UserTranasctionFilters } from "brick-protocol"
-import { INDEXER_API_URL } from "@slices/requestConfig";
+import {
+  AccountType,
+  BrickAccountInfo,
+  BrickEvent,
+  InstructionType,
+  UserTranasctionFilters,
+} from 'brick-protocol';
+import { INDEXER_API_URL } from '@slices/requestConfig';
 
 export type SalesFilters = {
-    seller: string
-    startDate?: number
-    endDate?: number
-    limit?: number
-    skip?: number
-    reverse?: boolean
-}
+  seller: string;
+  startDate?: number;
+  endDate?: number;
+  limit?: number;
+  skip?: number;
+  reverse?: boolean;
+};
 
-export async function queryTransactions(url: string, filters: UserTranasctionFilters): Promise<BrickEvent[]> {
-    let queryArgs = `user: "${filters.user}", `;
-    if (filters.startDate) queryArgs += `startDate: ${filters.startDate}, `;
-    if (filters.endDate) queryArgs += `endDate: ${filters.endDate}, `;
-    if (filters.limit) queryArgs += `limit: ${filters.limit}, `;
-    if (filters.skip) queryArgs += `skip: ${filters.skip}, `;
-    if (filters.reverse) queryArgs += `reverse: ${filters.reverse}, `;
+export async function queryTransactions(
+  url: string,
+  filters: UserTranasctionFilters
+): Promise<BrickEvent[]> {
+  let queryArgs = `user: "${filters.user}", `;
+  if (filters.startDate) queryArgs += `startDate: ${filters.startDate}, `;
+  if (filters.endDate) queryArgs += `endDate: ${filters.endDate}, `;
+  if (filters.limit) queryArgs += `limit: ${filters.limit}, `;
+  if (filters.skip) queryArgs += `skip: ${filters.skip}, `;
+  if (filters.reverse) queryArgs += `reverse: ${filters.reverse}, `;
 
-    const query = `
+  const query = `
         query {
             transactions(${queryArgs}) {
                 id
@@ -135,42 +144,48 @@ export async function queryTransactions(url: string, filters: UserTranasctionFil
             }
         }
     `;
-    const response = await fetch(url + '/graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ query }),
-    });
+  const response = await fetch(`${url}/graphql`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query }),
+  });
 
-    if (!response.ok) {
-        throw new Error(`GraphQL request failed with status ${response.status}`);
-    }
+  if (!response.ok) {
+    throw new Error(`GraphQL request failed with status ${response.status}`);
+  }
 
-    const responseBody = await response.json();
-    return responseBody.data.transactions;
+  const responseBody = await response.json();
+  return responseBody.data.transactions;
 }
 
 export type EventsFilters = {
-    account: string
-    types?: InstructionType[]
-    signer?: string
-    startDate?: number
-    endDate?: number
-    limit?: number
-    skip?: number
-    reverse?: boolean
-}
+  account: string;
+  types?: InstructionType[];
+  signer?: string;
+  startDate?: number;
+  endDate?: number;
+  limit?: number;
+  skip?: number;
+  reverse?: boolean;
+};
 
-export async function queryEvents(url: string, filters: EventsFilters): Promise<BrickEvent[]> {
-    let queryArgs = `account: "${filters.account}", `;
-    if (filters.types) queryArgs += `types: [${filters.types.map(type => `"${type}"`).join(',')}], `;
-    if (filters.signer) queryArgs += `signer: "${filters.signer}", `;
-    if (filters.startDate) queryArgs += `startDate: ${filters.startDate}, `;
-    if (filters.endDate) queryArgs += `endDate: ${filters.endDate}, `;
-    if (filters.limit) queryArgs += `limit: ${filters.limit}, `;
-    if (filters.skip) queryArgs += `skip: ${filters.skip}, `;
-    if (filters.reverse) queryArgs += `reverse: ${filters.reverse}, `;
+export async function queryEvents(
+  url: string,
+  filters: EventsFilters
+): Promise<BrickEvent[]> {
+  let queryArgs = `account: "${filters.account}", `;
+  if (filters.types)
+    queryArgs += `types: [${filters.types
+      .map((type) => `"${type}"`)
+      .join(',')}], `;
+  if (filters.signer) queryArgs += `signer: "${filters.signer}", `;
+  if (filters.startDate) queryArgs += `startDate: ${filters.startDate}, `;
+  if (filters.endDate) queryArgs += `endDate: ${filters.endDate}, `;
+  if (filters.limit) queryArgs += `limit: ${filters.limit}, `;
+  if (filters.skip) queryArgs += `skip: ${filters.skip}, `;
+  if (filters.reverse) queryArgs += `reverse: ${filters.reverse}, `;
 
-    const query = `
+  const query = `
         query {
             events(${queryArgs}) {
                 id
@@ -499,35 +514,41 @@ export async function queryEvents(url: string, filters: EventsFilters): Promise<
             }
         }
     `;
-    const response = await fetch(url + '/graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ query }),
-    });
+  const response = await fetch(`${url}/graphql`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query }),
+  });
 
-    if (!response.ok) {
-        throw new Error(`GraphQL request failed with status ${response.status}`);
-    }
+  if (!response.ok) {
+    throw new Error(`GraphQL request failed with status ${response.status}`);
+  }
 
-    const responseBody = await response.json();
-    return responseBody.data.events;
+  const responseBody = await response.json();
+  return responseBody.data.events;
 }
 
 export type AccountsFilters = {
-    types?: AccountType[]
-    accounts?: string[]
-    authorities?: string[]
-    includeStats?: boolean
-}
+  types?: AccountType[];
+  accounts?: string[];
+  authorities?: string[];
+  includeStats?: boolean;
+};
 
-export async function queryAccounts(url: string, filters: AccountsFilters): Promise<BrickAccountInfo[]> {
-    let queryArgs = '';
-    if (filters.types) queryArgs += `types: [${filters.types.map(type => `"${type}"`).join(',')}], `;
-    if (filters.accounts) queryArgs += `signer: "${filters.accounts}", `;
-    if (filters.authorities) queryArgs += `startDate: ${filters.authorities}, `;
-    if (filters.includeStats) queryArgs += `endDate: ${filters.includeStats}, `;
+export async function queryAccounts(
+  url: string,
+  filters: AccountsFilters
+): Promise<BrickAccountInfo[]> {
+  let queryArgs = '';
+  if (filters.types)
+    queryArgs += `types: [${filters.types
+      .map((type) => `"${type}"`)
+      .join(',')}], `;
+  if (filters.accounts) queryArgs += `signer: "${filters.accounts}", `;
+  if (filters.authorities) queryArgs += `startDate: ${filters.authorities}, `;
+  if (filters.includeStats) queryArgs += `endDate: ${filters.includeStats}, `;
 
-    const query = `
+  const query = `
         query {
             accounts(${queryArgs}) {
                 address
@@ -597,36 +618,36 @@ export async function queryAccounts(url: string, filters: AccountsFilters): Prom
             }
         }
     `;
-    const response = await fetch(url + '/graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ query }),
-    });
+  const response = await fetch(`${url}/graphql`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query }),
+  });
 
-    if (!response.ok) {
-        throw new Error(`GraphQL request failed with status ${response.status}`);
-    }
+  if (!response.ok) {
+    throw new Error(`GraphQL request failed with status ${response.status}`);
+  }
 
-    const responseBody = await response.json();
-    return responseBody.data.accounts;
+  const responseBody = await response.json();
+  return responseBody.data.accounts;
 }
 
 const getAccounts = async (filters: AccountsFilters) => {
-    return await queryAccounts(INDEXER_API_URL, filters);
+  return await queryAccounts(INDEXER_API_URL, filters);
 };
 
 const getEvents = async (filters: EventsFilters) => {
-    return await queryEvents(INDEXER_API_URL, filters);
+  return await queryEvents(INDEXER_API_URL, filters);
 };
 
 const getTransactions = async (filters: UserTranasctionFilters) => {
-    return await queryTransactions(INDEXER_API_URL, filters);
+  return await queryTransactions(INDEXER_API_URL, filters);
 };
 
-const indexerService = {
-    getAccounts,
-    getEvents,
-    getTransactions,
+const indxerService = {
+  getAccounts,
+  getEvents,
+  getTransactions,
 };
 
-export default indexerService;
+export default indxerService;

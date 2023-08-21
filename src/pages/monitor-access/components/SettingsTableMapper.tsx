@@ -24,11 +24,11 @@ const RefuseAccess = ({
   );
 };
 
-const accountColumns = ({
+const SALES_COLUMNS = ({
   handleOpenRefuseAccess,
 }: TableMapperColumns): ITableColumns[] => [
   {
-    header: 'Account name',
+    header: 'USERS WALLET',
     cell: ({ name }) => (
       <Link
         to={`/data/${'dataset-id'}/details`}
@@ -40,7 +40,7 @@ const accountColumns = ({
     sortWith: 'name',
   },
   {
-    header: 'Hash of account',
+    header: 'PROFILE BIO',
     cell: ({ requestor }) => (
       <div className="flex gap-3">
         <p className="w-[200px] truncate">{requestor}</p>
@@ -219,20 +219,20 @@ const TableMapper = ({
 
   const tables = [
     {
-      title: 'Shared by account',
-      columns: accountColumns({ handleOpenRefuseAccess }),
+      title: 'Sales',
+      columns: SALES_COLUMNS({ handleOpenRefuseAccess }),
       data: sharedByAcoount,
     },
     {
-      title: 'Shared by algorithms',
+      title: 'Manual access',
       columns: algorithmsColumns({ handleOpenRefuseAccess }),
       data: sharedByAlgorithm,
     },
-    {
-      title: 'Shared by account and algorithm ',
-      columns: accountAndAlgorithmColumns({ handleOpenRefuseAccess }),
-      data: sharedByAccountAlgorithm,
-    },
+    // {
+    //   title: 'Shared by account and algorithm ',
+    //   columns: accountAndAlgorithmColumns({ handleOpenRefuseAccess }),
+    //   data: sharedByAccountAlgorithm,
+    // },
   ];
 
   return (

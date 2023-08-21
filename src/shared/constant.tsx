@@ -1,6 +1,5 @@
 import { BsDot } from 'react-icons/bs';
 import capitalize from 'lodash.capitalize';
-import { Connection } from '@solana/web3.js';
 
 export const VALUES_AND_INTERVAL = [
   'returnsBTC',
@@ -76,7 +75,3 @@ export const StatusIdentifier = ({ status }: { status: string }) => (
     <StatusIndicator status={status} />
   </div>
 );
-
-export const FISHNET_MARKETPLACE = '5WnQLqDpc35PodFDBH6ZAWzDonvt4SF9R9wHq7mhMBG'
-export const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
-export const SOLANA_CONNECTION = new Connection(import.meta.env.VITE_RPC)

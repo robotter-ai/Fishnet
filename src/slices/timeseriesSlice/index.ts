@@ -8,7 +8,11 @@ export const preprocessTimeseries = createAsyncThunk(
   'timeseries/preprocessTimeseries',
   async (formData: any, thunkAPI) => {
     try {
-      const { data } = await axios.post(FISHNET_API_URL + '/timeseries/csv', formData, getFormConfig());
+      const { data } = await axios.post(
+        `${FISHNET_API_URL}/timeseries/csv`,
+        formData,
+        getFormConfig()
+      );
       return data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(getErrMsg(err));
@@ -50,7 +54,7 @@ export const timeseriesSlice = createSlice({
         state.isLoading = false;
         state.success = true;
         state.timeseries = action.payload.map((item: any) => ({
-          //item_hash: item.item_hash,
+          // item_hash: item.item_hash,
           name: item.name,
           owner: item.owner,
           desc: item.desc,

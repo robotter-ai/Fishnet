@@ -1,4 +1,8 @@
-import { FISHNET_API_URL, getConfig, getFormConfig } from '@slices/requestConfig';
+import {
+  FISHNET_API_URL,
+  getConfig,
+  getFormConfig,
+} from '@slices/requestConfig';
 import axios from 'axios';
 
 export type DatasetProps = {
@@ -8,11 +12,6 @@ export type DatasetProps = {
   owner: string;
   ownsAllTimeseries: boolean;
   timeseriesIDs: string[];
-};
-
-export type UploadDatasetProps = {
-  dataset: DatasetProps
-  timeseries: string[]
 };
 
 export interface ViewValues {
@@ -31,17 +30,26 @@ export type GetDatasetProps = {
 };
 
 const getDatasets = async (view_as: string) => {
-  const { data } = await axios.get(FISHNET_API_URL + `/datasets?view_as=${view_as}`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/datasets?view_as=${view_as}`,
+    getConfig()
+  );
   return data;
 };
 
 const getPublishedDatasets = async (by: string) => {
-  const { data } = await axios.get(FISHNET_API_URL + `/datasets?by=${by}`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/datasets?by=${by}`,
+    getConfig()
+  );
   return data;
 };
 
 const getDatasetByID = async (id: string, view_as: string) => {
-  const { data } = await axios.get(FISHNET_API_URL + `/datasets/${id}?view_as=${view_as}`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/datasets/${id}?view_as=${view_as}`,
+    getConfig()
+  );
   return data;
 };
 
@@ -49,16 +57,27 @@ const updateDatasetAvailability = async (
   dataset_id: string,
   available: boolean
 ) => {
-  await axios.put(FISHNET_API_URL + `/datasets/${dataset_id}/available/${available}`, getConfig());
+  await axios.put(
+    `${FISHNET_API_URL}/datasets/${dataset_id}/available/${available}`,
+    getConfig()
+  );
 };
 
 const updateDatasets = async (dataset: DatasetProps) => {
-  const { data } = await axios.put(FISHNET_API_URL + '/datasets', dataset, getConfig());
+  const { data } = await axios.put(
+    `${FISHNET_API_URL}/datasets`,
+    dataset,
+    getConfig()
+  );
   return data;
 };
 
-const uploadDataset = async (dataset: UploadDatasetProps) => {
-  const { data } = await axios.post(FISHNET_API_URL + '/datasets/upload/timeseries', dataset, getConfig());
+const uploadDataset = async (dataset: any) => {
+  const { data } = await axios.post(
+    `${FISHNET_API_URL}/datasets/upload/timeseries`,
+    dataset,
+    getFormConfig()
+  );
   return data;
 };
 
@@ -71,11 +90,18 @@ const generateViews = async (
     endTime: number;
   }[]
 ) => {
-  const { data } = await axios.put(FISHNET_API_URL + `/datasets/${dataset_id}/views`, request, getConfig());
+  const { data } = await axios.put(
+    `${FISHNET_API_URL}/datasets/${dataset_id}/views`,
+    request,
+    getConfig()
+  );
   return data;
 };
 const getViews = async (dataset_id: string) => {
-  const { data } = await axios.get(FISHNET_API_URL + `/datasets/${dataset_id}/views`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/datasets/${dataset_id}/views`,
+    getConfig()
+  );
   return data;
 };
 const dataService = {

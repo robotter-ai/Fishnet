@@ -21,13 +21,13 @@ const DataChart: React.FC<{
   chart: ChartProps;
   isViewValue?: boolean;
   columns?: string[];
-  isOwner: boolean;
-  handleOpenChart: () => void;
-  handleDeleteChart: () => void;
+  withActions?: boolean;
+  handleOpenChart?: () => void;
+  handleDeleteChart?: () => void;
 }> = ({
   data,
   chart,
-  isOwner,
+  withActions,
   handleOpenChart,
   handleDeleteChart,
   columns,
@@ -152,7 +152,7 @@ const DataChart: React.FC<{
             </p>
           ))}
         </div>
-        {isOwner ? (
+        {withActions ? (
           <div className="flex gap-2">
             <div
               className="bg-white p-2 flex items-center rounded-full cursor-pointer"

@@ -16,7 +16,11 @@ export const postExecutionRequest = createAsyncThunk(
   'execution/postExecutionRequest',
   async (inputs: ExecutionProps, thunkAPI) => {
     try {
-      const { data } = await axios.post(FISHNET_API_URL + '/executions', inputs, getConfig());
+      const { data } = await axios.post(
+        `${FISHNET_API_URL}/executions`,
+        inputs,
+        getConfig()
+      );
       return data;
     } catch (err: any) {
       const errMsg =

@@ -1,16 +1,20 @@
 import classNames from 'classnames';
 
 interface SummaryProps {
+  title?: string;
   summary: {
     name: string;
     value: React.ReactNode | string | number;
   }[];
 }
 
-const DataSummary: React.FC<SummaryProps> = ({ summary }) => {
+const DataSummary: React.FC<SummaryProps> = ({
+  title = 'Summary',
+  summary,
+}) => {
   return (
-    <div className="bg-form-bg rounded-[32px] py-5">
-      <h1 className="py-2 px-6">Summary</h1>
+    <div className="bg-form-bg rounded-[32px] pb-5">
+      <h2 className="py-2 pt-5 px-6">{title}</h2>
       {summary.map((item, i) => (
         <div
           key={i}

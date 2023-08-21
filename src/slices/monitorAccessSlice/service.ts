@@ -11,17 +11,26 @@ export interface DatasetPermisionProps {
 }
 
 const getIncomingPermissions = async (user_id: string) => {
-  const { data } = await axios.get(FISHNET_API_URL + `/users/${user_id}/permissions/incoming`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/users/${user_id}/permissions/incoming`,
+    getConfig()
+  );
   return data;
 };
 
 const getOutgoingPermissions = async (user_id: string) => {
-  const { data } = await axios.get(FISHNET_API_URL + `/users/${user_id}/permissions/outgoing`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/users/${user_id}/permissions/outgoing`,
+    getConfig()
+  );
   return data;
 };
 
 const getDatasetPermissions = async (dataset_id: string) => {
-  const { data } = await axios.get(FISHNET_API_URL + `/datasets/${dataset_id}/permissions`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/datasets/${dataset_id}/permissions`,
+    getConfig()
+  );
   return data;
 };
 
@@ -30,7 +39,7 @@ const requestDatasetPermissions = async (
   inputs: DatasetPermisionProps
 ) => {
   const { data } = await axios.put(
-    FISHNET_API_URL + `/permissions/datasets/${dataset_id}/request`,
+    `${FISHNET_API_URL}/permissions/datasets/${dataset_id}/request`,
     inputs,
     getConfig()
   );
@@ -42,7 +51,7 @@ const grantDatasetPermissions = async (
   inputs: DatasetPermisionProps
 ) => {
   const { data } = await axios.put(
-    FISHNET_API_URL + `/permissions/datasets/${dataset_id}/grant`,
+    `${FISHNET_API_URL}/permissions/datasets/${dataset_id}/grant`,
     inputs,
     getConfig()
   );
@@ -50,12 +59,20 @@ const grantDatasetPermissions = async (
 };
 
 const denyPermissions = async (item_hashes: string[]) => {
-  const { data } = await axios.put(FISHNET_API_URL + `/permissions/deny`, item_hashes, getConfig());
+  const { data } = await axios.put(
+    `${FISHNET_API_URL}/permissions/deny`,
+    item_hashes,
+    getConfig()
+  );
   return data;
 };
 
 const approvePermissions = async (item_hashes: string[]) => {
-  const { data } = await axios.put(FISHNET_API_URL + `/permissions/approve`, item_hashes, getConfig());
+  const { data } = await axios.put(
+    `${FISHNET_API_URL}/permissions/approve`,
+    item_hashes,
+    getConfig()
+  );
   return data;
 };
 
