@@ -2,7 +2,6 @@ import React from 'react';
 import { UserProps } from '@slices/profileSlice/profileService';
 import DataSummary from '@shared/components/Summary';
 import TransactionTable from './TransactionTable';
-import useAuth from '@shared/hooks/useAuth';
 
 interface IOverviewProps {
   inputs: UserProps;
