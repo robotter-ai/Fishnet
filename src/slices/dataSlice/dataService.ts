@@ -10,6 +10,11 @@ export type DatasetProps = {
   timeseriesIDs: string[];
 };
 
+export type UploadDatasetProps = {
+  dataset: DatasetProps
+  timeseries: string[]
+};
+
 export interface ViewValues {
   [key: string]: [string, string][];
 }
@@ -52,8 +57,8 @@ const updateDatasets = async (dataset: DatasetProps) => {
   return data;
 };
 
-const uploadDataset = async (dataset: any) => {
-  const { data } = await axios.post(FISHNET_API_URL + '/datasets/upload/timeseries', dataset, getFormConfig());
+const uploadDataset = async (dataset: UploadDatasetProps) => {
+  const { data } = await axios.post(FISHNET_API_URL + '/datasets/upload/timeseries', dataset, getConfig());
   return data;
 };
 

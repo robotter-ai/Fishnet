@@ -50,7 +50,7 @@ export const timeseriesSlice = createSlice({
         state.isLoading = false;
         state.success = true;
         state.timeseries = action.payload.map((item: any) => ({
-          // item_hash: item.item_hash,
+          //item_hash: item.item_hash,
           name: item.name,
           owner: item.owner,
           desc: item.desc,

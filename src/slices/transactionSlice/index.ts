@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 
 export const initProductTree = createAsyncThunk(
     'transaction/initProductTree',
-    async (accounts: InitProductConfig, thunkAPI) => {
+    async (config: InitProductConfig, thunkAPI) => {
         try {
-            return await transactionService.initProductTree(accounts);
+            return await transactionService.initProductTree(config);
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err);
         }
@@ -15,9 +15,9 @@ export const initProductTree = createAsyncThunk(
 
 export const registerBuy = createAsyncThunk(
     'transaction/registerBuy',
-    async (accounts: PurchaseConfig, thunkAPI) => {
+    async (config: PurchaseConfig, thunkAPI) => {
         try {
-            return await transactionService.registerBuy(accounts);
+            return await transactionService.registerBuy(config);
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err);
         }
@@ -26,9 +26,9 @@ export const registerBuy = createAsyncThunk(
 
 export const queryPurchases = createAsyncThunk(
     'transaction/queryPurchases',
-    async (accounts: QueryPurchaseConfig, thunkAPI) => {
+    async (config: QueryPurchaseConfig, thunkAPI) => {
         try {
-            return await transactionService.queryPurchases(accounts);
+            return await transactionService.queryPurchases(config);
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err);
         }
