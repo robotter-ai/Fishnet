@@ -5,7 +5,6 @@ import { useDisconnect } from 'wagmi';
 export default () => {
   const navigate = useNavigate();
   const { disconnect } = useDisconnect();
-  // const { disconnect: disconnectPhantom } = useWallet();
 
   const wagmiStore = JSON.parse(localStorage.getItem('wagmi.store') as string);
   const isConnected = wagmiStore?.state?.data?.account;

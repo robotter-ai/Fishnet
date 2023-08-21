@@ -3,10 +3,9 @@ import AppModal from '@components/ui/AppModal';
 import CustomButton from '@components/ui/Button';
 import { DeletePrompt } from '@shared/components/Prompts';
 import useModal from '@shared/hooks/useModal';
-import { MdAdd } from 'react-icons/md';
 import { RxCaretLeft } from 'react-icons/rx';
 import { createSearchParams, Link } from 'react-router-dom';
-import TableMapper from './components/TableMapper';
+import TableMapper from './components/SettingsTableMapper';
 import useDataSettings from './hooks/useDataSettings';
 
 const DataSettings = () => {
@@ -28,32 +27,22 @@ const DataSettings = () => {
         <div>
           <Link to="/monitor-access" className="flex items-center text-blue">
             <RxCaretLeft size={30} />
-            Monitor access
+            Back
           </Link>
         </div>
         <div>
           <CustomButton
             text="Add access"
             size="md"
+            icon="lock"
             onClick={handleOpenAccessSettings}
-          >
-            <div className="flex gap-3 items-center">
-              <MdAdd size={15} />
-              <span>Add access</span>
-            </div>
-          </CustomButton>
+          />
         </div>
       </div>
       <TableMapper
         datasetPermission={datasetPermission}
         handleOpenRefuseAccess={handleOpen}
       />
-      {/* <DeletePrompt
-        isOpen={isOpen}
-        handleClose={handleClose}
-        title="Warning!"
-        message="You want to refuse access. Are you sure?"
-      /> */}
       <AppModal
         title="Access Settings"
         withInfo

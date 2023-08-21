@@ -6,7 +6,7 @@ interface AuthProps {
   address: string;
   wallet: string;
   walletConnected: boolean;
-  isAuth: boolean
+  isAuth: boolean;
 }
 
 export default (): AuthProps => {

@@ -1,27 +1,35 @@
 import { SearchInput } from '@components/form';
 import classNames from 'classnames';
-import { useSearchParams } from 'react-router-dom';
-import Account from './components/Account';
+import Overview from './components/Overview';
 import BrowseUsers from './components/BrowseUsers';
-import useProfile from './hooks/useProfile';
+import useProfile, { ITab } from './hooks/useProfile';
+import EditAccount from './components/EditAccount';
 
 const MyProfile = () => {
   const {
+    tabs,
+    query,
     isSelectUser,
     inputs,
     handleOnChange,
     handleUpdateProfile,
     isLoading,
     allUsers,
+    searchParams,
+    setSearchParams,
   } = useProfile();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const tabs = [
-    { key: 'account', name: 'Account' },
-    { key: 'browse-users', name: 'Browse users' },
-  ];
-  const TableMapper: { [key: string]: React.ReactNode } = {
-    account: (
-      <Account
+
+  const TableMapper: Record<ITab, React.ReactNode> = {
+    overview: (
+      <Overview
+        inputs={inputs}
+        handleOnChange={handleOnChange}
+        isLoading={isLoading}
+        handleUpdateProfile={handleUpdateProfile}
+      />
+    ),
+    'edit-account': (
+      <EditAccount
         inputs={inputs}
         handleOnChange={handleOnChange}
         isLoading={isLoading}
@@ -32,8 +40,8 @@ const MyProfile = () => {
       <BrowseUsers allUsers={allUsers} isSelectUser={isSelectUser} />
     ),
   };
-  const query: null | string = searchParams.get('tab') || 'account';
-  const TableComponent = TableMapper?.[query];
+
+  const TableComponent = TableMapper[query];
 
   return (
     <div id="profile">
@@ -57,9 +65,7 @@ const MyProfile = () => {
             </div>
           ))}
         </div>
-        {searchParams.get('tab') === 'browse-users' ? (
-          <SearchInput value="" onChange={() => null} />
-        ) : null}
+        <SearchInput value="" onChange={() => null} />
       </div>
       {TableComponent}
     </div>

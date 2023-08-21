@@ -62,7 +62,7 @@ const TimeseriesCharts = ({ isOwner }: any) => {
             data={csvJson}
             // isViewValue={isViewValue}
             chart={item as ChartProps}
-            isOwner={isOwner}
+            withActions={isOwner}
             handleOpenChart={() => handleOpenChart(item.id as string)}
             handleDeleteChart={() => handleDeleteChart(item.id as string)}
           />

@@ -99,9 +99,8 @@ const CustomTable: React.FC<CustomTableProps> = ({
                         <p className="capitalize font-normal text-blue"> all</p>
                       </div>
                     ) : (
-                      item.header
-                    )}{' '}
-                    {/* {item.header} */}
+                      <span className="uppercase">{item.header}</span>
+                    )}
                     {item.sortWith ? (
                       <SortArrowIcon
                         className="cursor-pointer"

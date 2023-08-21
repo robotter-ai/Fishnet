@@ -16,7 +16,6 @@ import { useParams } from 'react-router-dom';
 import useAuth from '@shared/hooks/useAuth';
 import { DataType, ViewValues } from '@slices/dataSlice/dataService';
 import { initProductTree as initProductTreeTransaction } from '@slices/transactionSlice';
-import { InitProductConfig } from '@slices/transactionSlice/transactionService';
 import { FISHNET_MARKETPLACE, SOLANA_CONNECTION, USDC_MINT } from '@shared/constant';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { VersionedTransaction } from '@solana/web3.js';

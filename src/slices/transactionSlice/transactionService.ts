@@ -29,16 +29,14 @@ export type PurchaseConfig = {
     params: {
         signer: string
         marketplace: string
-        product: string
+        productId: string
         paymentMint: string
         seller: string
         marketplaceAuth: string
-        merkleTree: string
         params: {
             rewardsActive: boolean
             amount: number
             name: string
-            uri: string
         }
     };
 }

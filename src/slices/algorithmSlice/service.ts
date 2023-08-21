@@ -10,32 +10,51 @@ export type UploadAlgorithmProps = {
 };
 
 const getAlgorithms = async () => {
-  const { data } = await axios.get(FISHNET_API_URL + `/algorithms`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/algorithms`,
+    getConfig()
+  );
   return data;
 };
 
 const getPublishedAlgorithms = async (by: string) => {
-  const { data } = await axios.get(FISHNET_API_URL + `/algorithms?by=${by}`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/algorithms?by=${by}`,
+    getConfig()
+  );
   return data;
 };
 
 const getAlgorithmByID = async (id: string) => {
-  const { data } = await axios.get(FISHNET_API_URL + `/algorithms/${id}`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/algorithms/${id}`,
+    getConfig()
+  );
   return data;
 };
 
 const getExecutions = async () => {
-  const { data } = await axios.get(FISHNET_API_URL + '/executions', getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/executions`,
+    getConfig()
+  );
   return data;
 };
 
 const getExecutionResultByID = async (id: string) => {
-  const { data } = await axios.get(FISHNET_API_URL + `/results/${id}`, getConfig());
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/results/${id}`,
+    getConfig()
+  );
   return data;
 };
 
 const uploadgetAlgorithm = async (inputs: UploadAlgorithmProps) => {
-  const { data } = await axios.put(FISHNET_API_URL + '/algorithms', inputs, getConfig());
+  const { data } = await axios.put(
+    `${FISHNET_API_URL}/algorithms`,
+    inputs,
+    getConfig()
+  );
   return data;
 };
 

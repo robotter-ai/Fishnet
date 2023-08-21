@@ -5,17 +5,19 @@ import useModal from '@shared/hooks/useModal';
 import classNames from 'classnames';
 import { ReactNode } from 'react';
 import IncomingTable from './components/IncomingTable';
-import MyDataTable from './components/MyDataTable';
-import OutgoingTable from './components/OutgoingTable';
-import useMonitorAccessTable from './hooks/useMonitorAccessTable';
+import PublishedTable from './components/PublishedTable';
+import useMonitorAccessTable, { ITab } from './hooks/useMonitorAccessTable';
+import BoughtDataTable from './components/BoughtDataTable';
+import SoldDataTable from './components/SoldDataTable';
 
 const MonitorAccess = () => {
   const { tabs, query, setSearchParams } = useMonitorAccessTable();
   const { isOpen, handleClose } = useModal();
 
-  const TableMapper: { [key: string]: ReactNode } = {
-    published: <MyDataTable />,
-    outgoing: <OutgoingTable />,
+  const TableMapper: Record<ITab, ReactNode> = {
+    published: <PublishedTable />,
+    bought: <BoughtDataTable />,
+    sold: <SoldDataTable />,
     incoming: <IncomingTable />,
   };
 

@@ -8,6 +8,11 @@ import { downloadTimeseries as downloadTimeseriesRequest } from '@slices/timeser
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Papa from 'papaparse';
+import { registerBuy as registerBuyRequest, resetTransactionSlice } from '@slices/transactionSlice';
+import useAuth from '@shared/hooks/useAuth';
+import { FISHNET_MARKETPLACE, FISHNET_MARKETPLACE_AUTH, SOLANA_CONNECTION, USDC_MINT } from '@shared/constant';
+import { VersionedTransaction } from '@solana/web3.js';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const BrowseDataTable = ({
   data,
@@ -23,6 +28,48 @@ const BrowseDataTable = ({
   const { downloadTimeseries } = useAppSelector(
     (state) => state.timeseries
   );
+  const { registerBuy } = useAppSelector(
+    (state) => state.transaction
+  );
+  const auth = useAuth();
+  const { sendTransaction } = useWallet();
+
+  const handlePurchase = async(itemHash: string, owner: string, name: string) => {
+    dispatch(registerBuyRequest({
+      params: {
+        signer: auth.address,
+        marketplace: FISHNET_MARKETPLACE,
+        productId: itemHash,
+        paymentMint: USDC_MINT,
+        seller: owner,
+        marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
+        params: {
+            rewardsActive: false,
+            amount: 1,
+            name,
+        }
+      }
+    }))
+  } 
+
+  useEffect(() => {
+    if (registerBuy.transaction && registerBuy.success) {
+      const serializedBase64 = registerBuy.transaction;
+      const serializedBuffer = Buffer.from(serializedBase64, 'base64');
+      const transaction = VersionedTransaction.deserialize(serializedBuffer);
+
+      const processTransaction = async () => {
+        try {
+          await sendTransaction(transaction, SOLANA_CONNECTION);
+          dispatch(resetTransactionSlice())
+        } catch (error) {
+          console.error('Error sending transaction:', error);
+        }
+      };
+  
+      processTransaction();
+    }
+  }, [registerBuy.success])
 
   useEffect(() => {
     if (downloadTimeseries.timeseries) {
@@ -97,10 +144,10 @@ const BrowseDataTable = ({
     },
     {
       header: '',
-      cell: ({ available, item_hash, permission_status, price, timeseriesIDs }) => (
+      cell: ({ available, item_hash, permission_status, price, timeseriesIDs, owner, name }) => (
         <div className="w-auto flex items-end justify-end">
           {/* eslint-disable-next-line no-nested-ternary */}
-          {available && price === '1' ? (
+          {available && permission_status === 'GRANTED' ? (
             <CustomButton
               text="Download"
               btnStyle="outline-blue"
@@ -121,7 +168,7 @@ const BrowseDataTable = ({
               size="sm"
               icon="buy"
               btnStyle="solid-blue"
-              onClick={() => handlePurchase(timeseriesIDs)}
+              onClick={() => handlePurchase(item_hash, owner, name)}
             />
           )}
         </div>
