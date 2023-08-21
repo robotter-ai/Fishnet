@@ -94,7 +94,10 @@ export const uploadDataset = createAsyncThunk(
 
       const params = {
         dataset: {
-          ...datasets.dataDetails,
+          name: datasets.dataDetails.name,
+          desc: datasets.dataDetails.desc,
+          owner: datasets.dataDetails.owner,
+          ownsAllTimeseries: datasets.dataDetails.ownsAllTimeseries,
           timeseriesIDs: [],
         },
         timeseries: timeseries.timeseries,

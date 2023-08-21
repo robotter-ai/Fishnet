@@ -623,10 +623,10 @@ const getTransactions = async (filters: UserTranasctionFilters) => {
     return await queryTransactions(INDEXER_API_URL, filters);
 };
 
-const indxerService = {
+const indexerService = {
     getAccounts,
     getEvents,
     getTransactions,
 };
 
-export default indxerService;
+export default indexerService;
