@@ -13,6 +13,8 @@ export type InitProductConfig = {
             height: number
             buffer: number
             canopy: number
+            name: string, 
+            metadataUrl: string,
         };
     };
 }

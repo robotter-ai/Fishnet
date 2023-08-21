@@ -13,10 +13,10 @@ export default function PriceButton({
   price,
   paymentTrigger,
 }: {
-  price: number;
+  price: string;
   paymentTrigger?: boolean;
 }) {
-  const { setPrice, sendTransaction } = useTransaction();
+  const { setPrice } = useTransaction();
   const [fieldPrice, setFieldPrice] = useState(0);
   const { isOpen, handleOpen, handleClose } = useModal();
   const navigate = useNavigate();
@@ -94,9 +94,6 @@ export default function PriceButton({
     <div
       className="flex gap-3"
       role="button"
-      onClick={() => {
-        sendTransaction?.();
-      }}
     >
       <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
         <PriceTagIcon />

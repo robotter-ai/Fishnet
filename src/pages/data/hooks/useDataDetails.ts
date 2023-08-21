@@ -38,7 +38,6 @@ export default () => {
     initProductTree
   } = useAppSelector((app) => app.transaction);
   const { sendTransaction } = useWallet();
-  console.log(dataDetails)
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
   );
@@ -62,7 +61,7 @@ export default () => {
       uploadDatasetActions.success
     ) {
       const id = dataDetails?.item_hash as string
-      const config: InitProductConfig = {
+      const config = {
         params: {
           signer: auth.address,
           marketplace: FISHNET_MARKETPLACE,
@@ -71,12 +70,14 @@ export default () => {
             id,
             productPrice: Number(dataDetails?.price),
             feeBasisPoints: 0,
-            height: 15,
+            height: 5,
             buffer: 8,
             canopy: 0,
+            name: String(dataDetails?.name), 
+            metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${dataDetails?.item_hash}`,
           }
         }
-      };      
+      };
       dispatch(initProductTreeTransaction(config));
       handleGenerateViews(dataDetails?.item_hash);
     } else if (typeof id === 'string' && id !== 'upload') {
