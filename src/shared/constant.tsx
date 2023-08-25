@@ -77,7 +77,7 @@ export const StatusIdentifier = ({ status }: { status: string }) => (
   </div>
 );
 
+export const FISHNET_MARKETPLACE_AUTH = 'fisherH6SRzYVd2JE53Kgiax9R9MmtS95TC8ERPr3D7'
 export const FISHNET_MARKETPLACE = '5WnQLqDpc35PodFDBH6ZAWzDonvt4SF9R9wHq7mhMBG'
 export const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
 export const SOLANA_CONNECTION = new Connection(import.meta.env.VITE_RPC)
-export const FISHNET_MARKETPLACE_AUTH = 'fisherH6SRzYVd2JE53Kgiax9R9MmtS95TC8ERPr3D7'

@@ -25,7 +25,6 @@ const MyData = () => {
   } = useDataTable();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
-
   const TableMapper: { [key: string]: ReactNode } = {
     published: (
       <PublishedTable data={data} isLoading={publishedDatasets.isLoading} />

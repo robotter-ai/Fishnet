@@ -15,7 +15,7 @@ import {
 import { useParams } from 'react-router-dom';
 import useAuth from '@shared/hooks/useAuth';
 import { DataType, ViewValues } from '@slices/dataSlice/dataService';
-import { initProductTree as initProductTreeTransaction } from '@slices/transactionSlice';
+import { initProductTree as initProductTreeTransaction, resetTransactionSlice } from '@slices/transactionSlice';
 import { FISHNET_MARKETPLACE, SOLANA_CONNECTION, USDC_MINT } from '@shared/constant';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { VersionedTransaction } from '@solana/web3.js';
@@ -57,7 +57,8 @@ export default () => {
   useEffect(() => {
     if (
       dataDetails?.item_hash !== (undefined || null) &&
-      uploadDatasetActions.success
+      uploadDatasetActions.success &&
+      !initProductTree.transaction
     ) {
       const id = dataDetails?.item_hash as string
       const config = {
@@ -84,14 +85,14 @@ export default () => {
       // handleGenerateViews(dataDetails?.item_hash);
     }
     localStorage.setItem('viewValues', views[0]);
-  }, [dataDetails?.item_hash]);
+  }, [uploadDatasetActions.success]);
 
   useEffect(() => {
     setTitle(dataDetails?.name, dataDetails?.permission_status);
   }, [dataDetails?.name]);
 
   useEffect(() => {
-    if (initProductTree.transaction && initProductTree.success) {
+    if (initProductTree.transaction && initProductTree.success && !signature) {
       const serializedBase64 = initProductTree.transaction;
       const serializedBuffer = Buffer.from(serializedBase64, 'base64');
       const transaction = VersionedTransaction.deserialize(serializedBuffer);
@@ -99,6 +100,7 @@ export default () => {
       const processTransaction = async () => {
         try {
           setSignature(await sendTransaction(transaction, SOLANA_CONNECTION));
+          dispatch(resetTransactionSlice())
         } catch (error) {
           console.error('Error sending transaction:', error);
         }
@@ -106,7 +108,7 @@ export default () => {
   
       processTransaction();
     }
-  }, [initProductTree.success]);
+  }, [initProductTree.transaction]);
 
   // useEffect(() => {
   //   if (updateDatasetsActions.success && generateViewActions.success) {
@@ -120,7 +122,7 @@ export default () => {
       handleOpen();
       dispatch(resetDataSlice());
     }
-  }, [generateViewActions.success, uploadDatasetActions.success, initProductTree.success, signature]);
+  }, [signature]);
 
   const handleUploadDataset = () => {
     dispatch(uploadDataset());
