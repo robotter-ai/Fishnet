@@ -1,3 +1,4 @@
+import React from 'react';
 import { UserProps } from '@slices/profileSlice/profileService';
 import DataSummary from '@shared/components/Summary';
 import TransactionTable from './TransactionTable';
@@ -9,34 +10,34 @@ interface IOverviewProps {
   handleUpdateProfile: () => void;
 }
 
-const ACCOUNT = [
-  {
-    name: 'Wallet address',
-    value: '0xe5...48sx',
-  },
-  {
-    name: 'Username',
-    value: 'MikeMilkyway',
-  },
-  {
-    name: 'Emal',
-    value: 'mikemilkyway@gmail.com',
-  },
-  {
-    name: 'Link',
-    value: 'Fishnet.tech',
-  },
-  {
-    name: 'Total downloads',
-    value: 2158,
-  },
-  {
-    name: 'Description',
-    value: '',
-  },
-];
+const Overview: React.FC<IOverviewProps> = ({ inputs }) => {
+  const ACCOUNT = [
+    {
+      name: 'Wallet address',
+      value: inputs.address,
+    },
+    {
+      name: 'Username',
+      value: inputs.username,
+    },
+    {
+      name: 'Email',
+      value: inputs.email,
+    },
+    {
+      name: 'Link',
+      value: inputs.link,
+    },
+    {
+      name: 'Total downloads',
+      value: 0,
+    },
+    {
+      name: 'Description',
+      value: inputs.bio,
+    },
+  ];
 
-const Overview: React.FC<IOverviewProps> = () => {
   return (
     <div className="grid grid-cols-2 gap-5 mt-8">
       <DataSummary title="Your account" summary={ACCOUNT} />

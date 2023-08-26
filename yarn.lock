@@ -4377,10 +4377,10 @@ braces@^3.0.2, braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-brick-protocol@^0.0.14:
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/brick-protocol/-/brick-protocol-0.0.14.tgz#fdef0b631680c20d2a4654e683cd128136b4cd74"
-  integrity sha512-q/G1cBSkiuSKr37fFgL+XH5ddx5oO7i9BI2zDCe8f8L42hfDpnkyBvkP7DrBZJhb8LN9y1BMYdIwJ0JhWPq1rQ==
+brick-protocol@^0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/brick-protocol/-/brick-protocol-0.0.17.tgz#18455dd9922932f140fa3dba8007d74c8775bc1e"
+  integrity sha512-gb5kc4fay/osMblI+qSWPG37xRj2k6VrSUb0bqtFH60cTDG8iAUUCiwxkWHLm9NUKXf8taNqdgWg2NvEdAXbEQ==
   dependencies:
     "@metaplex-foundation/beet" "^0.7.1"
     "@metaplex-foundation/beet-solana" "^0.4.0"

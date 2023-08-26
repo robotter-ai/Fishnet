@@ -3,6 +3,7 @@ import algorithmSlice from '@slices/algorithmSlice';
 import appSlice from '@slices/appSlice';
 import authSlice from '@slices/authSlice';
 import indexerSlice from '@slices/indexerSlice';
+import transactionSlice from '@slices/transactionSlice';
 import dataSlice from '@slices/dataSlice';
 import executionSlice from '@slices/executionSlice';
 import monitorAccessSlice from '@slices/monitorAccessSlice';
@@ -14,6 +15,7 @@ export const store = configureStore({
     app: appSlice.reducer,
     auth: authSlice.reducer,
     indexer: indexerSlice.reducer,
+    transaction: transactionSlice.reducer,
     datasets: dataSlice.reducer,
     algorithm: algorithmSlice.reducer,
     execution: executionSlice.reducer,

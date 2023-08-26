@@ -76,7 +76,7 @@ const uploadDataset = async (dataset: any) => {
   const { data } = await axios.post(
     `${FISHNET_API_URL}/datasets/upload/timeseries`,
     dataset,
-    getFormConfig()
+    getConfig()
   );
   return data;
 };

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
@@ -15,6 +15,10 @@ import {
 import { useParams } from 'react-router-dom';
 import useAuth from '@shared/hooks/useAuth';
 import { DataType, ViewValues } from '@slices/dataSlice/dataService';
+import { initProductTree as initProductTreeTransaction, resetTransactionSlice } from '@slices/transactionSlice';
+import { FISHNET_MARKETPLACE, SOLANA_CONNECTION, USDC_MINT } from '@shared/constant';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { VersionedTransaction } from '@solana/web3.js';
 
 export default () => {
   const { id } = useParams();
@@ -29,12 +33,16 @@ export default () => {
     updateDatasetsActions,
     generateViewActions,
   } = useAppSelector((app) => app.datasets);
-
+  const {
+    initProductTree
+  } = useAppSelector((app) => app.transaction);
+  const { sendTransaction } = useWallet();
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
   );
   const { isOpen, handleOpen, handleClose } = useModal();
   const isPublished = id && id !== 'upload';
+  const [signature, setSignature] = useState<string>('');
 
   useEffect(() => {
     if (isPublished) {
@@ -45,22 +53,62 @@ export default () => {
     dispatch(changeDataDetails({ name: 'owner', value: auth?.address }));
     dispatch(changeDataDetails({ name: 'ownsAllTimeseries', value: true }));
   }, [requestDatasetPermissionActions.success]);
+
   useEffect(() => {
     if (
       dataDetails?.item_hash !== (undefined || null) &&
-      uploadDatasetActions.success
+      uploadDatasetActions.success &&
+      !initProductTree.transaction
     ) {
+      const id = dataDetails?.item_hash as string
+      const config = {
+        params: {
+          signer: auth.address,
+          marketplace: FISHNET_MARKETPLACE,
+          paymentMint: USDC_MINT,
+          params: {
+            id,
+            productPrice: Number(dataDetails?.price),
+            feeBasisPoints: 0,
+            height: 5,
+            buffer: 8,
+            canopy: 0,
+            name: String(dataDetails?.name), 
+            metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${dataDetails?.item_hash}`,
+          }
+        }
+      };
+      dispatch(initProductTreeTransaction(config));
       handleGenerateViews(dataDetails?.item_hash);
     } else if (typeof id === 'string' && id !== 'upload') {
       handleGetViews(id);
       // handleGenerateViews(dataDetails?.item_hash);
     }
     localStorage.setItem('viewValues', views[0]);
-  }, [dataDetails?.item_hash]);
+  }, [uploadDatasetActions.success]);
 
   useEffect(() => {
     setTitle(dataDetails?.name, dataDetails?.permission_status);
   }, [dataDetails?.name]);
+
+  useEffect(() => {
+    if (initProductTree.transaction && initProductTree.success && !signature) {
+      const serializedBase64 = initProductTree.transaction;
+      const serializedBuffer = Buffer.from(serializedBase64, 'base64');
+      const transaction = VersionedTransaction.deserialize(serializedBuffer);
+
+      const processTransaction = async () => {
+        try {
+          setSignature(await sendTransaction(transaction, SOLANA_CONNECTION));
+          dispatch(resetTransactionSlice())
+        } catch (error) {
+          console.error('Error sending transaction:', error);
+        }
+      };
+  
+      processTransaction();
+    }
+  }, [initProductTree.transaction]);
 
   // useEffect(() => {
   //   if (updateDatasetsActions.success && generateViewActions.success) {
@@ -70,11 +118,11 @@ export default () => {
   // }, [generateViewActions.success, updateDatasetsActions.success]);
 
   useEffect(() => {
-    if (uploadDatasetActions.success && generateViewActions.success) {
+    if (uploadDatasetActions.success && generateViewActions.success && initProductTree.success && signature != '') {
       handleOpen();
       dispatch(resetDataSlice());
     }
-  }, [generateViewActions.success, uploadDatasetActions.success]);
+  }, [signature]);
 
   const handleUploadDataset = () => {
     dispatch(uploadDataset());
