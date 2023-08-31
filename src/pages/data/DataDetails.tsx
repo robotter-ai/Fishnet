@@ -37,6 +37,7 @@ const DataDetails = () => {
     datasetByIDActions,
     handleUpdateDataset,
     updateDatasetsActions,
+    disabled,
   } = useDataDetails();
   const { isOwner } = useOwner(dataDetails?.owner);
   const { isOpen, handleClose } = publishedModalProps;
@@ -74,7 +75,7 @@ const DataDetails = () => {
       value: <p> {dataDetails?.desc} USDC </p>,
     },
     {
-      name: 'Owner',
+      name: 'Owners address',
       value: <TruncatedAddress hash={dataDetails?.owner} />,
     },
     // {
@@ -82,8 +83,6 @@ const DataDetails = () => {
     //   value: dataDetails?.current_revision || 0,
     // },
   ];
-
-  const disabled = !isOwner;
 
   return (
     <div>
@@ -104,27 +103,22 @@ const DataDetails = () => {
             isOwner ||
             dataDetails?.available ||
             dataDetails?.permission_status === 'GRANTED' ? (
-              <div className="flex gap-4">
-                <ExecutePrompt
-                  btnSize="md"
-                  against="algorithm"
-                  selectedHash={dataDetails?.item_hash}
-                />
-                {isOwner ? (
-                  <Button
-                    text="Save"
-                    size="md"
-                    isLoading={updateDatasetsActions.isLoading}
-                    onClick={handleUpdateDataset}
-                  />
-                ) : null}
-              </div>
+              <Button
+                text="Download"
+                size="md"
+                icon="download"
+                btnStyle="outline-primary"
+                isLoading={isLoading}
+                onClick={() => {
+                  handleUploadDataset();
+                }}
+              />
             ) : (
               <Button
                 text="Request access"
                 size="md"
                 icon="lock"
-                btnStyle="outline-blue"
+                btnStyle="outline-primary"
                 onClick={() => {
                   dispatch(
                     changeDatasetPermissionInput({
@@ -143,6 +137,7 @@ const DataDetails = () => {
           ) : (
             <Button
               text="Publish"
+              icon="upload"
               size="md"
               isLoading={isLoading}
               onClick={() => {
@@ -170,8 +165,7 @@ const DataDetails = () => {
               value={dataDetails?.price || ''}
               onChange={(e) => handleOnChange('price', e.target.value)}
               fullWidth
-              inputType
-              size="sm"
+              trail="USDC"
               disabled={disabled}
             />
             <TextInput
@@ -212,7 +206,7 @@ const DataDetails = () => {
             text="Edit"
             size="lg"
             icon="edit"
-            btnStyle="outline-blue"
+            btnStyle="outline-primary"
             fullWidth
             onClick={() => {
               navigate(`/data/${dataDetails?.item_hash}/details`);

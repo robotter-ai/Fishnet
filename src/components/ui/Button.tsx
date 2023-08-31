@@ -1,5 +1,6 @@
 import {
   AttachIcon,
+  BoxIcon,
   BuyIcon,
   DownloadIcon,
   EditIcon,
@@ -22,13 +23,14 @@ type IconTypes =
   | 'buy'
   | 'lock'
   | 'settings'
-  | 'login';
+  | 'login'
+  | 'box';
 
 interface ButtonProps {
   text?: string;
   size?: 'sm' | 'md' | 'lg';
   icon?: IconTypes;
-  btnStyle?: 'outline-blue' | 'outline-red' | 'solid-blue';
+  btnStyle?: 'outline-primary' | 'outline-red' | 'solid-secondary';
   onClick?: () => void;
   isLoading?: boolean;
   disabled?: boolean;
@@ -49,6 +51,7 @@ const ICONS: Record<IconTypes, JSX.Element> = {
   lock: <LockIcon width={19} height={19} />,
   settings: <SettingsIcon />,
   login: <LoginIcon width={19} height={19} />,
+  box: <BoxIcon width={19} height={19} />,
 };
 
 const CustomButton: React.FC<ButtonProps> = ({
@@ -70,9 +73,9 @@ const CustomButton: React.FC<ButtonProps> = ({
       'h-9 px-7': size === 'sm',
       'h-[44px] font-bold  px-10': size === 'md',
       'h-[64px] text-[18px] font-bold': size === 'lg',
-      'btn-outline-blue': btnStyle === 'outline-blue',
+      'btn-outline-primary': btnStyle === 'outline-primary',
       'btn-outline-red': btnStyle === 'outline-red',
-      'btn-solid-blue': btnStyle === 'solid-blue',
+      'btn-solid-secondary': btnStyle === 'solid-secondary',
       'w-full': fullWidth,
       '!border-none': withoutBorder,
     }

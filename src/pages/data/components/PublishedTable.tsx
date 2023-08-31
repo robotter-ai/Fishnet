@@ -27,7 +27,7 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'SELLERS WALLET',
-    cell: (item) => <TruncatedAddress hash={item.item_hash} withCopy />,
+    cell: (item) => <TruncatedAddress hash={item.item_hash} copy />,
     sortWith: 'owner',
   },
   {
@@ -61,7 +61,7 @@ const COLUMNS: ITableColumns[] = [
         <CustomButton
           text="Download"
           icon="download"
-          btnStyle="outline-blue"
+          btnStyle="outline-primary"
           size="sm"
         />
       </div>

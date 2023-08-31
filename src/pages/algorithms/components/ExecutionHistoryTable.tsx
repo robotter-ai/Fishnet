@@ -50,7 +50,7 @@ const COLUMNS = (dispatch: any, handleOpen: () => void): ITableColumns[] => [
       <div className="flex gap-3 justify-end">
         <CustomButton
           text="Result"
-          btnStyle="outline-blue"
+          btnStyle="outline-primary"
           onClick={() => {
             dispatch(getExecutionResultByID(item_hash));
             handleOpen();

@@ -135,7 +135,7 @@ export const ExecutePrompt: React.FC<{
           <Button
             text={isSelect ? 'Select' : 'Use'}
             size={btnSize}
-            btnStyle="outline-blue"
+            btnStyle="outline-primary"
             onClick={() => {
               dispatch(
                 changeExecutionDetails({
@@ -201,7 +201,7 @@ export const ExecutePrompt: React.FC<{
             <div className="flex flex-col gap-4">
               <Button
                 text={`Select ${against}`}
-                btnStyle="outline-blue"
+                btnStyle="outline-primary"
                 size="lg"
                 fullWidth
                 onClick={handleSelect}
@@ -270,7 +270,7 @@ export const PublishedModal: React.FC<{
         <Button
           text={`Edit ${title.toLowerCase()}`}
           size="lg"
-          btnStyle="outline-blue"
+          btnStyle="outline-primary"
           fullWidth
           onClick={handleEditRecord}
         />

@@ -44,7 +44,7 @@ h2 {
 
 .app-btn {
   background: linear-gradient(259.65deg, #1dc3cf -19.75%, #0093a7 135.06%);
-  &.btn-outline-blue {
+  &.btn-outline-primary {
     background: white !important;
     border: 1px solid;
     color: #1dc3cf;
@@ -54,7 +54,7 @@ h2 {
       border: 1px solid $disabled;
     }
   }
-  &.btn-solid-blue {
+  &.btn-solid-secondary {
     background: #3e73c4;
     color: $white;
   }

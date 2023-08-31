@@ -46,7 +46,7 @@ const columns = ({
     header: '',
     cell: () =>
       isSelectUser ? (
-        <CustomButton text="Select" btnStyle="outline-blue" />
+        <CustomButton text="Select" btnStyle="outline-primary" />
       ) : null,
   },
 ];

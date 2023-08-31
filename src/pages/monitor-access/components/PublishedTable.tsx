@@ -68,7 +68,7 @@ const COLUMNS: ITableColumns[] = [
           text="Settings"
           size="sm"
           icon="settings"
-          btnStyle="outline-blue"
+          btnStyle="outline-primary"
         />
       </div>
     ),

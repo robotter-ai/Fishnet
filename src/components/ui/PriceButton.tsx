@@ -69,8 +69,7 @@ export default function PriceButton({
           label="enter your price"
           fullWidth
           bgColor="#0093A714"
-          withRoundBorder
-          inputType
+          // inputType
           value={fieldPrice}
           onChange={(e) => handleInput(e)}
         />
@@ -78,24 +77,17 @@ export default function PriceButton({
           <CustomButton
             size="lg"
             fullWidth
+            text="Save"
             onClick={() => {
               handleClose();
               navigate('/data?tab=published');
             }}
-          >
-            <div className="flex justify-center gap-3 items-center">
-              <span>Save</span>
-            </div>
-          </CustomButton>
+          />
         </div>
       </AppModal>
     </>
   ) : (
-    <div
-      className="flex gap-3"
-      role="button"
-      onClick={() => {}}
-    >
+    <div className="flex gap-3" role="button" onClick={() => {}}>
       <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
         <PriceTagIcon />
       </div>

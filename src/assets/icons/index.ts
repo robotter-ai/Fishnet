@@ -24,6 +24,7 @@ import { ReactComponent as BuyIcon } from '@assets/icons/buy.svg';
 import { ReactComponent as SettingsIcon } from '@assets/icons/settings.svg';
 import { ReactComponent as LoginIcon } from '@assets/icons/login.svg';
 import { ReactComponent as LogoutIcon } from '@assets/icons/logout.svg';
+import { ReactComponent as BoxIcon } from '@assets/icons/box.svg';
 
 export {
   AlarmClockIcon,
@@ -52,4 +53,5 @@ export {
   SettingsIcon,
   LoginIcon,
   LogoutIcon,
+  BoxIcon,
 };

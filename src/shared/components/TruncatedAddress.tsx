@@ -4,12 +4,12 @@ import classNames from 'classnames';
 interface ITruncatedAddress {
   hash: string;
   color?: 'primary';
-  withCopy?: boolean;
+  copy?: boolean;
 }
 
 const TruncatedAddress: React.FC<ITruncatedAddress> = ({
   hash,
-  withCopy,
+  copy,
   color,
 }) => {
   const getTruncatedAddress = () => {
@@ -29,7 +29,7 @@ const TruncatedAddress: React.FC<ITruncatedAddress> = ({
       >
         {getTruncatedAddress()}
       </p>
-      {withCopy ? <ClickToCopy text={hash} /> : null}
+      {copy ? <ClickToCopy text={hash} /> : null}
     </div>
   );
 };

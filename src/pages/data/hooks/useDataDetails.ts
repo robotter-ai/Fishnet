@@ -15,10 +15,18 @@ import {
 import { useParams } from 'react-router-dom';
 import useAuth from '@shared/hooks/useAuth';
 import { DataType, ViewValues } from '@slices/dataSlice/dataService';
-import { initProductTree as initProductTreeTransaction, resetTransactionSlice } from '@slices/transactionSlice';
-import { FISHNET_MARKETPLACE, SOLANA_CONNECTION, USDC_MINT } from '@shared/constant';
+import {
+  initProductTree as initProductTreeTransaction,
+  resetTransactionSlice,
+} from '@slices/transactionSlice';
+import {
+  FISHNET_MARKETPLACE,
+  SOLANA_CONNECTION,
+  USDC_MINT,
+} from '@shared/constant';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { VersionedTransaction } from '@solana/web3.js';
+import useOwner from '@shared/hooks/useOwner';
 
 export default () => {
   const { id } = useParams();
@@ -33,9 +41,7 @@ export default () => {
     updateDatasetsActions,
     generateViewActions,
   } = useAppSelector((app) => app.datasets);
-  const {
-    initProductTree
-  } = useAppSelector((app) => app.transaction);
+  const { initProductTree } = useAppSelector((app) => app.transaction);
   const { sendTransaction } = useWallet();
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
@@ -43,6 +49,9 @@ export default () => {
   const { isOpen, handleOpen, handleClose } = useModal();
   const isPublished = id && id !== 'upload';
   const [signature, setSignature] = useState<string>('');
+  const { isOwner } = useOwner(dataDetails?.owner);
+
+  const disabled = !isOwner;
 
   useEffect(() => {
     if (isPublished) {
@@ -60,23 +69,22 @@ export default () => {
       uploadDatasetActions.success &&
       !initProductTree.transaction
     ) {
-      const id = dataDetails?.item_hash as string
       const config = {
         params: {
           signer: auth.address,
           marketplace: FISHNET_MARKETPLACE,
           paymentMint: USDC_MINT,
           params: {
-            id,
+            id: dataDetails?.item_hash as string,
             productPrice: Number(dataDetails?.price),
             feeBasisPoints: 0,
             height: 5,
             buffer: 8,
             canopy: 0,
-            name: String(dataDetails?.name), 
+            name: String(dataDetails?.name),
             metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${dataDetails?.item_hash}`,
-          }
-        }
+          },
+        },
       };
       dispatch(initProductTreeTransaction(config));
       handleGenerateViews(dataDetails?.item_hash);
@@ -100,29 +108,27 @@ export default () => {
       const processTransaction = async () => {
         try {
           setSignature(await sendTransaction(transaction, SOLANA_CONNECTION));
-          dispatch(resetTransactionSlice())
+          dispatch(resetTransactionSlice());
         } catch (error) {
           console.error('Error sending transaction:', error);
         }
       };
-  
+
       processTransaction();
     }
   }, [initProductTree.transaction]);
 
-  // useEffect(() => {
-  //   if (updateDatasetsActions.success && generateViewActions.success) {
-  //     handleOpen();
-  //     dispatch(resetDataSlice());
-  //   }
-  // }, [generateViewActions.success, updateDatasetsActions.success]);
-
   useEffect(() => {
-    if (uploadDatasetActions.success && generateViewActions.success && initProductTree.success && signature != '') {
+    if (
+      uploadDatasetActions.success
+      // generateViewActions.success &&
+      // initProductTree.success &&
+      // signature !== ''
+    ) {
       handleOpen();
       dispatch(resetDataSlice());
     }
-  }, [signature]);
+  }, [signature, uploadDatasetActions.success]);
 
   const handleUploadDataset = () => {
     dispatch(uploadDataset());
@@ -181,5 +187,7 @@ export default () => {
     handleUpdateDataset,
     views,
     handleGetViews,
+    disabled,
+    isOwner,
   };
 };

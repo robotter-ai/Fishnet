@@ -39,7 +39,11 @@ const AllowComponent = ({ item }: any) => {
 
   return (
     <>
-      <CustomButton text="Allow" btnStyle="outline-blue" onClick={handleOpen} />
+      <CustomButton
+        text="Allow"
+        btnStyle="outline-primary"
+        onClick={handleOpen}
+      />
       <AppModal
         title="Set the data usage limit"
         isOpen={isOpen}
@@ -131,7 +135,7 @@ const COLUMNS = ({
           <CustomButton
             href={`/monitor-access/${item.datasetID}/settings`}
             text="Settings"
-            btnStyle="outline-blue"
+            btnStyle="outline-primary"
           />
         ) : (
           <AllowComponent item={item} />

@@ -50,7 +50,11 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'Filter',
     cell: ({ item_hash, status }) => (
-      <CustomButton text="Download" icon="download" btnStyle="outline-blue" />
+      <CustomButton
+        text="Download"
+        icon="download"
+        btnStyle="outline-primary"
+      />
     ),
   },
 ];

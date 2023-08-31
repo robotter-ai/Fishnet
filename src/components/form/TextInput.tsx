@@ -14,23 +14,19 @@ interface TextInputProps {
       | React.ChangeEvent<HTMLSelectElement>
   ) => void;
   disabled?: boolean;
-  withRoundBorder?: boolean;
-  inputType?: boolean;
-  size?: string;
+  trail?: string;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
   label,
   type = 'text',
-  size = 'lg',
   bgColor = '#fff',
   fullWidth,
   placeholder,
   value,
   onChange,
   disabled,
-  withRoundBorder,
-  inputType,
+  trail,
 }) => {
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     // Regular expression to match only numbers and decimal inputs
@@ -43,45 +39,10 @@ const TextInput: React.FC<TextInputProps> = ({
       event.preventDefault();
     }
   };
-  return inputType ? (
+
+  return (
     <label
-      className={classNames({
-        'w-full': fullWidth,
-      })}
-    >
-      <div className="w-full relative flex items-center isolate">
-        <input
-          type={type}
-          onInput={handleInput}
-          className={classNames(
-            `bg-[${bgColor}] px-6 py-5 rounded-lg outline-none border border-[#F6F8FB] focus:border-blue`,
-            {
-              'w-full': fullWidth,
-              'rounded-[150px]': withRoundBorder,
-              'py-3 px-4 text-sm': size === 'sm',
-            }
-          )}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          disabled={disabled}
-        />
-        <p
-          className={classNames(
-            `text-[#91999C] font-normal absolute right-0 z-10 flex items-center justify-center mr-6`,
-            {
-              'text-sm': size === 'sm',
-            }
-          )}
-        >
-          {' '}
-          USDC{' '}
-        </p>
-      </div>
-    </label>
-  ) : (
-    <label
-      className={classNames({
+      className={classNames('relative', {
         'w-full': fullWidth,
       })}
     >
@@ -89,7 +50,7 @@ const TextInput: React.FC<TextInputProps> = ({
       <input
         type={type}
         className={classNames(
-          `bg-[${bgColor}] py-3 px-4 mt-2 outline-none border border-transparent focus:border-blue text-sm rounded-[60px]`,
+          `bg-[${bgColor}] py-3 px-4 mt-1 outline-none border border-transparent focus:border-blue text-sm rounded-full`,
           {
             'w-full': fullWidth,
           }
@@ -99,6 +60,9 @@ const TextInput: React.FC<TextInputProps> = ({
         onChange={onChange}
         disabled={disabled}
       />
+      {trail ? (
+        <span className="absolute top-1/2 right-6 text-dark-20">{trail}</span>
+      ) : null}
     </label>
   );
 };

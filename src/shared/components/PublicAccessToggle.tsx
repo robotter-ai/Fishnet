@@ -52,7 +52,7 @@ const PublicAccessToggle: React.FC<IPublicAccessToggleProps> = ({
         <div className="flex flex-col gap-4">
           <CustomButton
             text="Yes"
-            btnStyle="outline-blue"
+            btnStyle="outline-primary"
             size="lg"
             fullWidth
             isLoading={isLoading}

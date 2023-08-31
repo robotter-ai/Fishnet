@@ -17,7 +17,7 @@ const RefuseAccess = ({
     <div className="flex justify-end">
       <Button
         text="Refuse"
-        btnStyle="outline-blue"
+        btnStyle="outline-primary"
         onClick={handleOpenRefuseAccess}
       />
     </div>

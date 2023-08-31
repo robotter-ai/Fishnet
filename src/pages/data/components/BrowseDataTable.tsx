@@ -8,9 +8,17 @@ import { downloadTimeseries as downloadTimeseriesRequest } from '@slices/timeser
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Papa from 'papaparse';
-import { registerBuy as registerBuyRequest, resetTransactionSlice } from '@slices/transactionSlice';
+import {
+  registerBuy as registerBuyRequest,
+  resetTransactionSlice,
+} from '@slices/transactionSlice';
 import useAuth from '@shared/hooks/useAuth';
-import { FISHNET_MARKETPLACE, FISHNET_MARKETPLACE_AUTH, SOLANA_CONNECTION, USDC_MINT } from '@shared/constant';
+import {
+  FISHNET_MARKETPLACE,
+  FISHNET_MARKETPLACE_AUTH,
+  SOLANA_CONNECTION,
+  USDC_MINT,
+} from '@shared/constant';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 
@@ -25,32 +33,34 @@ const BrowseDataTable = ({
   const handleDownload = (timeseriesIDs: string[]) => {
     dispatch(downloadTimeseriesRequest(timeseriesIDs));
   };
-  const { downloadTimeseries } = useAppSelector(
-    (state) => state.timeseries
-  );
-  const { registerBuy } = useAppSelector(
-    (state) => state.transaction
-  );
+  const { downloadTimeseries } = useAppSelector((state) => state.timeseries);
+  const { registerBuy } = useAppSelector((state) => state.transaction);
   const auth = useAuth();
   const { sendTransaction } = useWallet();
 
-  const handlePurchase = async(itemHash: string, owner: string, name: string) => {
-    dispatch(registerBuyRequest({
-      params: {
-        signer: auth.address,
-        marketplace: FISHNET_MARKETPLACE,
-        productId: itemHash,
-        paymentMint: USDC_MINT,
-        seller: owner,
-        marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
+  const handlePurchase = async (
+    itemHash: string,
+    owner: string,
+    name: string
+  ) => {
+    dispatch(
+      registerBuyRequest({
         params: {
+          signer: auth.address,
+          marketplace: FISHNET_MARKETPLACE,
+          productId: itemHash,
+          paymentMint: USDC_MINT,
+          seller: owner,
+          marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
+          params: {
             rewardsActive: false,
             amount: 1,
             name,
-        }
-      }
-    }))
-  } 
+          },
+        },
+      })
+    );
+  };
 
   useEffect(() => {
     if (registerBuy.transaction && registerBuy.success) {
@@ -61,15 +71,15 @@ const BrowseDataTable = ({
       const processTransaction = async () => {
         try {
           await sendTransaction(transaction, SOLANA_CONNECTION);
-          dispatch(resetTransactionSlice())
+          dispatch(resetTransactionSlice());
         } catch (error) {
           console.error('Error sending transaction:', error);
         }
       };
-  
+
       processTransaction();
     }
-  }, [registerBuy.success])
+  }, [registerBuy.success]);
 
   useEffect(() => {
     if (downloadTimeseries.timeseries) {
@@ -85,14 +95,14 @@ const BrowseDataTable = ({
       downloadLink.href = url;
       downloadLink.download = 'data.csv';
       downloadLink.style.display = 'none';
-    
+
       document.body.appendChild(downloadLink);
       downloadLink.click();
-      
+
       URL.revokeObjectURL(url);
       document.body.removeChild(downloadLink);
     }
-  }, [downloadTimeseries.success])
+  }, [downloadTimeseries.success]);
 
   const COLUMNS: ITableColumns[] = [
     {
@@ -116,7 +126,7 @@ const BrowseDataTable = ({
     },
     {
       header: 'SELLERS WALLET',
-      cell: (item) => <TruncatedAddress hash={item.owner} withCopy />,
+      cell: (item) => <TruncatedAddress hash={item.owner} copy />,
       sortWith: 'owner',
     },
     {
@@ -128,8 +138,8 @@ const BrowseDataTable = ({
     },
     {
       header: 'PRICE',
-      cell: ({ price }) => 
-        price == '0' ? (
+      cell: ({ price }) =>
+        price === '0' ? (
           <div className="flex gap-3 items-center">
             <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
               <FreeTagIcon />
@@ -144,30 +154,40 @@ const BrowseDataTable = ({
     },
     {
       header: '',
-      cell: ({ available, item_hash, permission_status, price, timeseriesIDs, owner, name }) => (
+      cell: ({
+        available,
+        item_hash,
+        permission_status,
+        price,
+        timeseriesIDs,
+        owner,
+        name,
+      }) => (
         <div className="w-auto flex items-end justify-end">
           {/* eslint-disable-next-line no-nested-ternary */}
           {available && permission_status === 'GRANTED' ? (
             <CustomButton
               text="Download"
-              btnStyle="outline-blue"
+              btnStyle="outline-primary"
               size="sm"
               icon="download"
               onClick={() => handleDownload(timeseriesIDs)}
             />
-          ) : available && permission_status === 'NOT GRANTED' && price === '0' ? (
+          ) : available &&
+            permission_status === 'NOT GRANTED' &&
+            price === '0' ? (
             <CustomButton
               text="Request"
               size="sm"
               icon="lock"
-              btnStyle="outline-blue"
+              btnStyle="outline-primary"
             />
           ) : (
             <CustomButton
               text="Buy"
               size="sm"
               icon="buy"
-              btnStyle="solid-blue"
+              btnStyle="solid-secondary"
               onClick={() => handlePurchase(item_hash, owner, name)}
             />
           )}
