@@ -47,23 +47,22 @@ const registerBuy = async (config: PurchaseConfig) => {
     return data;
 };
 
-export type QueryPurchaseConfig = {
+export type ValidateSignatureConfig = {
     params: {
-        ownerAddress: string
-        productMint: string
+        signature: string
     };
 }
 
-const queryPurchases = async (config: QueryPurchaseConfig) => {
+const validateSignature = async (config: ValidateSignatureConfig) => {
     const mergedConfig = { ...config, ...getConfig(false) };
-    const { data } = await axios.get(`${TRANSACTIONS_API_URL}/queryPurchases`, mergedConfig);
+    const { data } = await axios.get(`${TRANSACTIONS_API_URL}/validateSignature`, mergedConfig);
     return data;
 };
 
 const transactionService = {
     initProductTree,
     registerBuy,
-    queryPurchases,
+    validateSignature,
 };
 
 export default transactionService;

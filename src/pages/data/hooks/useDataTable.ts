@@ -21,6 +21,9 @@ export default () => {
   const { isLoading: isLoadingUploadTimeseries } = useAppSelector(
     (state) => state.timeseries
   );
+  const { validateSignature } = useAppSelector(
+    (state) => state.transaction
+  );
   const [filterParams, setFilterParams] = useState({
     value: '',
     data: datasets || [],
@@ -56,7 +59,7 @@ export default () => {
     setTitle(PAGE_TITLE[query]);
     dispatch(getDatasets(auth?.address));
     dispatch(getPublishedDatasets(auth?.address));
-  }, [dispatch, query]);
+  }, [dispatch, query, validateSignature.success]);
 
   const handleCsvToJson = (file: any) => {
     Papa.parse(file, {

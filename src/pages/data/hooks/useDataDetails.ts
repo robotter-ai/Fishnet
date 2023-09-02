@@ -67,7 +67,8 @@ export default () => {
     if (
       dataDetails?.item_hash !== (undefined || null) &&
       uploadDatasetActions.success &&
-      !initProductTree.transaction
+      initProductTree.transaction === null &&
+      signature === '' 
     ) {
       const config = {
         params: {
@@ -120,15 +121,15 @@ export default () => {
 
   useEffect(() => {
     if (
-      uploadDatasetActions.success
+      uploadDatasetActions.success &&
       // generateViewActions.success &&
-      // initProductTree.success &&
-      // signature !== ''
+      initProductTree.success &&
+      signature !== ''
     ) {
       handleOpen();
       dispatch(resetDataSlice());
     }
-  }, [signature, uploadDatasetActions.success]);
+  }, [signature]);
 
   const handleUploadDataset = () => {
     dispatch(uploadDataset());

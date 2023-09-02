@@ -5,12 +5,12 @@ import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import { downloadTimeseries as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Papa from 'papaparse';
 import {
   registerBuy as registerBuyRequest,
-  resetTransactionSlice,
+  validateSignature as validateTransaction,
 } from '@slices/transactionSlice';
 import useAuth from '@shared/hooks/useAuth';
 import {
@@ -37,6 +37,7 @@ const BrowseDataTable = ({
   const { registerBuy } = useAppSelector((state) => state.transaction);
   const auth = useAuth();
   const { sendTransaction } = useWallet();
+  const [signature, setSignature] = useState<string>('');
 
   const handlePurchase = async (
     itemHash: string,
@@ -70,8 +71,7 @@ const BrowseDataTable = ({
 
       const processTransaction = async () => {
         try {
-          await sendTransaction(transaction, SOLANA_CONNECTION);
-          dispatch(resetTransactionSlice());
+          setSignature(await sendTransaction(transaction, SOLANA_CONNECTION));
         } catch (error) {
           console.error('Error sending transaction:', error);
         }
@@ -80,6 +80,12 @@ const BrowseDataTable = ({
       processTransaction();
     }
   }, [registerBuy.success]);
+
+  useEffect(() => {
+    if (signature !== '') {
+      dispatch(validateTransaction({params: { signature }}));
+    }
+  }, [signature]);
 
   useEffect(() => {
     if (downloadTimeseries.timeseries) {

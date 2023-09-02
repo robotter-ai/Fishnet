@@ -1,4 +1,4 @@
-import transactionService, { InitProductConfig, PurchaseConfig, QueryPurchaseConfig } from "./transactionService";
+import transactionService, { InitProductConfig, PurchaseConfig, ValidateSignatureConfig } from "./transactionService";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
@@ -24,11 +24,11 @@ export const registerBuy = createAsyncThunk(
     }
 );
 
-export const queryPurchases = createAsyncThunk(
-    'transaction/queryPurchases',
-    async (config: QueryPurchaseConfig, thunkAPI) => {
+export const validateSignature = createAsyncThunk(
+    'transaction/validateSignature',
+    async (config: ValidateSignatureConfig, thunkAPI) => {
         try {
-            return await transactionService.queryPurchases(config);
+            return await transactionService.validateSignature(config);
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err);
         }
@@ -49,7 +49,7 @@ interface IndexerProps {
         success: boolean | null;
         transaction: string | null;
     };
-    queryPurchases: {
+    validateSignature: {
         isLoading: boolean;
         success: boolean | null;
         purchases: number | null;
@@ -70,7 +70,7 @@ const initialState: IndexerProps = {
         success: null,
         transaction: null,
     },
-    queryPurchases: {
+    validateSignature: {
         isLoading: false,
         success: null,
         purchases: null,
@@ -87,8 +87,8 @@ const transactionSlice = createSlice({
             state.initProductTree.transaction = null;
             state.registerBuy.success = null;
             state.registerBuy.transaction = null;
-            state.queryPurchases.success = null;
-            state.queryPurchases.purchases = null;
+            state.validateSignature.success = null;
+            state.validateSignature.purchases = null;
         },
     },
     extraReducers(builder) {
@@ -119,16 +119,16 @@ const transactionSlice = createSlice({
             toast.error(action.payload as string);
         })
     
-        .addCase(queryPurchases.pending, (state) => {
-            state.queryPurchases.isLoading = true;
+        .addCase(validateSignature.pending, (state) => {
+            state.validateSignature.isLoading = true;
         })
-        .addCase(queryPurchases.fulfilled, (state, action) => {
-            state.queryPurchases.isLoading = false;
-            state.queryPurchases.success = true;
-            state.queryPurchases.purchases = action.payload.purchases;
+        .addCase(validateSignature.fulfilled, (state, action) => {
+            state.validateSignature.isLoading = false;
+            state.validateSignature.success = true;
+            state.validateSignature.purchases = action.payload.purchases;
         })
-        .addCase(queryPurchases.rejected, (state, action) => {
-            state.queryPurchases.isLoading = false;
+        .addCase(validateSignature.rejected, (state, action) => {
+            state.validateSignature.isLoading = false;
             toast.error(action.payload as string);
         });
     }, 
