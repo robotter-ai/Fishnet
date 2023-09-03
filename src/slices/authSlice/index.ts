@@ -146,9 +146,7 @@ const authSlice = createSlice({
   },
 });
 
-export const {
-  resetChallengeDetails,
-} = authSlice.actions;
+export const { resetChallengeDetails } = authSlice.actions;
 // export const {} = authSlice.actions;
 
 export default authSlice;

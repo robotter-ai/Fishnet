@@ -17,22 +17,21 @@ const MyProfile = () => {
     allUsers,
     searchParams,
     setSearchParams,
+    transactions,
+    address,
   } = useProfile();
 
   const TableMapper: Record<ITab, React.ReactNode> = {
     overview: (
-      <Overview
-        inputs={inputs}
-        handleOnChange={handleOnChange}
-        isLoading={isLoading}
-        handleUpdateProfile={handleUpdateProfile}
-      />
+      <Overview inputs={inputs} address={address} transactions={transactions} />
     ),
     'edit-account': (
       <EditAccount
         inputs={inputs}
         handleOnChange={handleOnChange}
         isLoading={isLoading}
+        address={address}
+        transactions={transactions}
         handleUpdateProfile={handleUpdateProfile}
       />
     ),
@@ -53,7 +52,7 @@ const MyProfile = () => {
               className={classNames(
                 'text-dark-20 border-b-2 border-transparent cursor-pointer',
                 {
-                  '!text-dark-50 !border-blue': item.key === query,
+                  '!text-dark-50 !border-primary': item.key === query,
                 }
               )}
               onClick={() => {

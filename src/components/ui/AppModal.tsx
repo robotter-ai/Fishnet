@@ -19,7 +19,7 @@ const style = (fullWidth: boolean) => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: fullWidth ? 1000 : 478,
+    width: fullWidth ? 1000 : 460,
     bgcolor: '#fff',
     borderRadius: '32px',
     boxShadow: '0px 12px 24px rgba(0, 85, 255, 0.08)',

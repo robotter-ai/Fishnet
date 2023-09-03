@@ -12,14 +12,12 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'Name',
     cell: (item) => (
-      <>
-        <Link
-          to={`/data/${item.item_hash}/details`}
-          className="text-blue whitespace-nowrap"
-        >
-          {item.name}
-        </Link>
-      </>
+      <Link
+        to={`/data/${item.item_hash}/details`}
+        className="text-blue whitespace-nowrap"
+      >
+        {item.name}
+      </Link>
     ),
     sortWith: 'name',
   },

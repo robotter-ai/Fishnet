@@ -70,7 +70,7 @@ const Algorithms = () => {
               className={classNames(
                 'text-dark-20 border-b-2 border-transparent cursor-pointer',
                 {
-                  '!text-dark-50 !border-blue': item.key === query,
+                  '!text-dark-50 !border-primary': item.key === query,
                 }
               )}
               onClick={() => {

@@ -45,7 +45,7 @@ const BrowseDataTable = ({
     owner: string,
     name: string
   ) => {
-    setItemHash(itemHash)
+    setItemHash(itemHash);
     dispatch(
       registerBuyRequest({
         params: {
@@ -74,13 +74,18 @@ const BrowseDataTable = ({
       const processTransaction = async () => {
         try {
           const sig = await sendTransaction(transaction, SOLANA_CONNECTION);
-          let blockhash = (await SOLANA_CONNECTION.getLatestBlockhash('finalized'));
-          await SOLANA_CONNECTION.confirmTransaction({
-            blockhash: blockhash.blockhash,
-            lastValidBlockHeight: blockhash.lastValidBlockHeight,
-            signature: sig,
-          }, 'confirmed');
-          setSignature(sig)
+          const blockhash = await SOLANA_CONNECTION.getLatestBlockhash(
+            'finalized'
+          );
+          await SOLANA_CONNECTION.confirmTransaction(
+            {
+              blockhash: blockhash.blockhash,
+              lastValidBlockHeight: blockhash.lastValidBlockHeight,
+              signature: sig,
+            },
+            'confirmed'
+          );
+          setSignature(sig);
         } catch (error) {
           console.error('Error sending transaction:', error);
         }
@@ -92,7 +97,11 @@ const BrowseDataTable = ({
 
   useEffect(() => {
     if (signature !== '') {
-      dispatch(validateTransaction({params: { signature, itemHash: selectedItemHash }}));
+      dispatch(
+        validateTransaction({
+          params: { signature, itemHash: selectedItemHash },
+        })
+      );
     }
   }, [signature]);
 
@@ -126,7 +135,7 @@ const BrowseDataTable = ({
         <div className="min-w-[210px]">
           <Link
             to={`/data/${item.item_hash}/details`}
-            className="text-blue whitespace-nowrap"
+            className="text-primary whitespace-nowrap"
           >
             {item.name}
           </Link>

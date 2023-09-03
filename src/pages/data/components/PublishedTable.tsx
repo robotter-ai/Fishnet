@@ -12,7 +12,7 @@ const COLUMNS: ITableColumns[] = [
       <div className="min-w-[210px]">
         <Link
           to={`/data/${item.item_hash}/details`}
-          className="text-blue whitespace-nowrap"
+          className="text-primary whitespace-nowrap"
         >
           {item.name}
         </Link>

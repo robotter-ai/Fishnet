@@ -50,7 +50,7 @@ const TextInput: React.FC<TextInputProps> = ({
       <input
         type={type}
         className={classNames(
-          `bg-[${bgColor}] py-3 px-4 mt-1 outline-none border border-transparent focus:border-blue text-sm rounded-full`,
+          `bg-[${bgColor}] py-3 px-4 mt-1 outline-none border border-transparent focus:border-primary text-sm rounded-full`,
           {
             'w-full': fullWidth,
           }

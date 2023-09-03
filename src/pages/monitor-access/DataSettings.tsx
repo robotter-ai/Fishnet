@@ -25,7 +25,7 @@ const DataSettings = () => {
     <div id="data-settings">
       <div className="flex justify-between items-center mb-5">
         <div>
-          <Link to="/monitor-access" className="flex items-center text-blue">
+          <Link to="/monitor-access" className="flex items-center text-primary">
             <RxCaretLeft size={30} />
             Back
           </Link>
@@ -62,7 +62,7 @@ const DataSettings = () => {
                       tab: 'browse-users',
                     }).toString(),
                   }}
-                  className="text-blue hover:underline"
+                  className="text-primary hover:underline"
                 >
                   select from list
                 </Link>
@@ -85,7 +85,7 @@ const DataSettings = () => {
                       select: 'true',
                     }).toString(),
                   }}
-                  className="text-blue hover:underline"
+                  className="text-primary hover:underline"
                 >
                   select from list
                 </Link>

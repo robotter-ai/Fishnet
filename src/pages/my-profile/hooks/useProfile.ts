@@ -54,10 +54,6 @@ export default () => {
     );
   }, [updateActions.success]);
 
-  useEffect(() => {
-    // IT WORKS :P: console.log(getTransactions.transactions)
-  }, [getTransactions.success]);
-
   const handleUpdateProfile = () => {
     dispatch(updateUserInfo(inputs));
   };
@@ -65,6 +61,7 @@ export default () => {
   return {
     query,
     tabs,
+    address: auth?.address,
     isSelectUser: isSelect,
     inputs,
     handleOnChange,
@@ -73,5 +70,6 @@ export default () => {
     allUsers,
     searchParams,
     setSearchParams,
+    transactions: getTransactions.transactions,
   };
 };

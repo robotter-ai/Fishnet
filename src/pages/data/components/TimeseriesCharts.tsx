@@ -51,6 +51,7 @@ const TimeseriesCharts = ({ isOwner }: any) => {
     setViewData(getData());
   }, []);
   const { data, columnValue } = viewData;
+
   return (
     <div>
       <div className="grid grid-cols-2 gap-5 mb-5">
@@ -67,15 +68,21 @@ const TimeseriesCharts = ({ isOwner }: any) => {
             handleDeleteChart={() => handleDeleteChart(item.id as string)}
           />
         ))}
-        {isOwner ? (
-          <div
-            className="flex items-center justify-center min-h-[391px] bg-form-bg rounded-[32px] cursor-pointer"
-            onClick={() => handleOpenChart('new')}
-          >
-            <PlusCircleIcon className="text-blue" height={100} width={100} />
-          </div>
-        ) : null}
       </div>
+      {isOwner ? (
+        <div className="flex gap-5">
+          {[1, 2].map((_, idx) => (
+            <div
+              key={idx}
+              className="flex-1 flex gap-4 items-center justify-center text-primary h-16 bg-[#E6FBFF] rounded-[32px] cursor-pointer"
+              onClick={() => handleOpenChart('new')}
+            >
+              <PlusCircleIcon className="text-primary" height={35} width={35} />
+              <span>New chart</span>
+            </div>
+          ))}
+        </div>
+      ) : null}
       <div className="mt-8 flex flex-col gap-3">
         <h1>Dataset</h1>
         <p>
@@ -85,12 +92,11 @@ const TimeseriesCharts = ({ isOwner }: any) => {
         <EditDataTable data={timeseries} isPublished />
       </div>
       <AppModal
-        title="Values and Interval"
+        title="Select values for the chart"
         isOpen={isOpen}
         handleClose={handleClose}
-        fullWidth
       >
-        <div className="grid grid-cols-8 gap-3 rounded">
+        <div className="grid grid-cols-2 gap-4 rounded">
           {VALUES_AND_INTERVAL.map((item, i) => {
             return (
               <div key={i}>
@@ -103,8 +109,14 @@ const TimeseriesCharts = ({ isOwner }: any) => {
             );
           })}
         </div>
-        <div className="w-full flex justify-center mt-5">
-          <Button text="Save" size="md" onClick={handleSaveChart} />
+        <div className="w-full flex justify-center mt-6">
+          <Button
+            text="Save"
+            size="md"
+            icon="box"
+            fullWidth
+            onClick={handleSaveChart}
+          />
         </div>
       </AppModal>
     </div>

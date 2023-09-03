@@ -18,7 +18,7 @@ function LoginForm() {
             className={classNames(
               'flex justify-between items-center bg-[#F6F8FB] border-2 border-[#F6F8FB] rounded-full py-4 px-5',
               {
-                '!border-blue': wallet?.adapter.name === item.name,
+                '!border-primary': wallet?.adapter.name === item.name,
               }
             )}
             onClick={() => select(item.name)}

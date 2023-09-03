@@ -25,6 +25,8 @@ import { ReactComponent as SettingsIcon } from '@assets/icons/settings.svg';
 import { ReactComponent as LoginIcon } from '@assets/icons/login.svg';
 import { ReactComponent as LogoutIcon } from '@assets/icons/logout.svg';
 import { ReactComponent as BoxIcon } from '@assets/icons/box.svg';
+import { ReactComponent as ArrowDownIcon } from '@assets/icons/arrow-down.svg';
+import { ReactComponent as ArrowUpIcon } from '@assets/icons/arrow-up.svg';
 
 export {
   AlarmClockIcon,
@@ -54,4 +56,6 @@ export {
   LoginIcon,
   LogoutIcon,
   BoxIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
 };

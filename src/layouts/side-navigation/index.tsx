@@ -30,9 +30,9 @@ function NavList() {
             {({ isActive }) => (
               <div
                 className={classNames(
-                  'text-[#7B8290] text-[16px] hover:text-blue',
+                  'text-[#7B8290] text-[16px] hover:text-primary',
                   {
-                    '!text-blue': isActive,
+                    '!text-primary': isActive,
                   }
                 )}
               >

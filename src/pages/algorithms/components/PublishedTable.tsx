@@ -1,6 +1,6 @@
 import { Starred } from '@components/form';
 import ClickToCopy from '@shared/components/ClickToCopy';
-import { DeletePrompt, ExecutePrompt } from '@shared/components/Prompts';
+import { DeletePrompt } from '@shared/components/Prompts';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 
 const COLUMNS = (
@@ -11,7 +11,7 @@ const COLUMNS = (
     cell: ({ name, item_hash }) => (
       <button
         type="button"
-        className="text-blue"
+        className="text-primary"
         onClick={() => handleOpenAlgoDetails(item_hash)}
       >
         {name}
@@ -48,12 +48,12 @@ const COLUMNS = (
       </div>
     ),
   },
-  {
-    header: 'Filter',
-    cell: ({ item_hash }) => (
-      <ExecutePrompt against="data" selectedHash={item_hash} />
-    ),
-  },
+  // {
+  //   header: 'Filter',
+  //   cell: ({ item_hash }) => (
+  //     <ExecutePrompt against="data" selectedHash={item_hash} />
+  //   ),
+  // },
 ];
 
 const PublishedTable = ({

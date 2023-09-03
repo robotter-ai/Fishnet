@@ -38,7 +38,6 @@ interface ButtonProps {
   className?: string;
   href?: string;
   fullWidth?: boolean;
-  withoutBorder?: boolean;
 }
 
 const ICONS: Record<IconTypes, JSX.Element> = {
@@ -64,7 +63,6 @@ const CustomButton: React.FC<ButtonProps> = ({
   isLoading,
   disabled,
   href,
-  withoutBorder,
   icon,
 }) => {
   const btnClassnames = classNames(
@@ -77,7 +75,6 @@ const CustomButton: React.FC<ButtonProps> = ({
       'btn-outline-red': btnStyle === 'outline-red',
       'btn-solid-secondary': btnStyle === 'solid-secondary',
       'w-full': fullWidth,
-      '!border-none': withoutBorder,
     }
   );
 

@@ -96,7 +96,10 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     {item.header === 'CHECK' ? (
                       <div className="flex gap-2 justify-end uppercase">
                         <p> Check to upload</p>
-                        <p className="capitalize font-normal text-blue"> all</p>
+                        <p className="capitalize font-normal text-primary">
+                          {' '}
+                          all
+                        </p>
                       </div>
                     ) : (
                       <span className="uppercase">{item.header}</span>

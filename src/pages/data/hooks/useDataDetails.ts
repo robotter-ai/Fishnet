@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
@@ -67,7 +67,7 @@ export default () => {
       dataDetails?.item_hash !== (undefined || null) &&
       uploadDatasetActions.success &&
       initProductTree.transaction === null &&
-      signature === '' 
+      signature === ''
     ) {
       const config = {
         params: {
@@ -100,11 +100,7 @@ export default () => {
   }, [dataDetails?.name]);
 
   useEffect(() => {
-    if (
-      initProductTree.transaction &&
-      initProductTree.success &&
-      !signature
-    ) {
+    if (initProductTree.transaction && initProductTree.success && !signature) {
       const serializedBase64 = initProductTree.transaction;
       const serializedBuffer = Buffer.from(serializedBase64, 'base64');
       const transaction = VersionedTransaction.deserialize(serializedBuffer);
@@ -124,14 +120,14 @@ export default () => {
 
   useEffect(() => {
     if (
-      uploadDatasetActions.success &&
-      initProductTree.success &&
-      signature !== ''
+      uploadDatasetActions.success
+      // initProductTree.success &&
+      // signature !== ''
     ) {
       handleOpen();
       dispatch(resetDataSlice());
     }
-  }, [signature]);
+  }, [signature, uploadDatasetActions.success]);
 
   const handleUploadDataset = () => {
     dispatch(uploadDataset());

@@ -32,7 +32,7 @@ const SALES_COLUMNS = ({
     cell: ({ name }) => (
       <Link
         to={`/data/${'dataset-id'}/details`}
-        className="text-blue whitespace-nowrap"
+        className="text-primary whitespace-nowrap"
       >
         {name}
       </Link>
@@ -52,7 +52,7 @@ const SALES_COLUMNS = ({
   {
     header: 'Usages left',
     cell: ({ maxExecutionCount, executionCount }) => (
-      <div className="bg-[#E6EEFF] w-[84px] h-[34px] flex pl-4 items-center rounded-md border border-blue">
+      <div className="bg-[#E6EEFF] w-[84px] h-[34px] flex pl-4 items-center rounded-md border border-primary">
         {Number(maxExecutionCount) - Number(executionCount)}
       </div>
     ),
@@ -86,7 +86,7 @@ const algorithmsColumns = ({
     cell: ({ name }) => (
       <Link
         to={`/data/${'dataset-id'}/details`}
-        className="text-blue whitespace-nowrap"
+        className="text-primary whitespace-nowrap"
       >
         {name}
       </Link>
@@ -106,7 +106,7 @@ const algorithmsColumns = ({
   {
     header: 'Usages left',
     cell: ({ maxExecutionCount, executionCount }) => (
-      <div className="bg-[#E6EEFF] w-[84px] h-[34px] flex pl-4 items-center rounded-md border border-blue">
+      <div className="bg-[#E6EEFF] w-[84px] h-[34px] flex pl-4 items-center rounded-md border border-primary">
         {Number(maxExecutionCount) - Number(executionCount)}
       </div>
     ),
@@ -140,7 +140,7 @@ const accountAndAlgorithmColumns = ({
     cell: ({ name }) => (
       <Link
         to={`/data/${'dataset-id'}/details`}
-        className="text-blue whitespace-nowrap"
+        className="text-primary whitespace-nowrap"
       >
         {name}
       </Link>
@@ -152,14 +152,14 @@ const accountAndAlgorithmColumns = ({
     cell: ({ requestor, algorithmID }) => (
       <div className="flex flex-col gap-3">
         <div>
-          <p className="text-blue text-[10px]">Account</p>
+          <p className="text-primary text-[10px]">Account</p>
           <div className="flex gap-3">
             <p className="w-[200px] truncate">{requestor}</p>
             <ClickToCopy text={requestor} />
           </div>
         </div>
         <div>
-          <p className="text-blue text-[10px]">Algorithm</p>
+          <p className="text-primary text-[10px]">Algorithm</p>
           <div className="flex gap-3">
             <p className="w-[200px] truncate">{algorithmID}</p>
             <ClickToCopy text={algorithmID} />
@@ -172,7 +172,7 @@ const accountAndAlgorithmColumns = ({
   {
     header: 'Usages left',
     cell: ({ maxExecutionCount, executionCount }) => (
-      <div className="bg-[#E6EEFF] w-[84px] h-[34px] flex pl-4 items-center rounded-md border border-blue">
+      <div className="bg-[#E6EEFF] w-[84px] h-[34px] flex pl-4 items-center rounded-md border border-primary">
         {Number(maxExecutionCount) - Number(executionCount)}
       </div>
     ),

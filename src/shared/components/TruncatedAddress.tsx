@@ -24,7 +24,7 @@ const TruncatedAddress: React.FC<ITruncatedAddress> = ({
     <div className="flex gap-3 items-center">
       <p
         className={classNames({
-          'text-blue': color === 'primary',
+          'text-primary': color === 'primary',
         })}
       >
         {getTruncatedAddress()}

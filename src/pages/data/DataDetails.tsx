@@ -16,9 +16,9 @@ import { IoCheckbox } from 'react-icons/io5';
 import { RxCaretLeft } from 'react-icons/rx';
 import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
+import { downloadTimeseries as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
-import {downloadTimeseries as downloadTimeseriesRequest} from "@slices/timeseriesSlice";
 
 const DataDetails = () => {
   const navigate = useNavigate();
@@ -190,7 +190,7 @@ const DataDetails = () => {
       >
         <div className="flex flex-col items-center gap-4">
           <h1>Data {!isPublished ? 'published' : 'updated'}!</h1>
-          <IoCheckbox className="text-blue" size={70} />
+          <IoCheckbox className="text-primary" size={70} />
           <p>
             {dataDetails?.name || ''} {!isPublished ? 'published' : 'updated'}
           </p>

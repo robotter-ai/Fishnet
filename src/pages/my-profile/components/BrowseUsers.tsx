@@ -28,7 +28,7 @@ const columns = ({
     cell: ({ link }) => (
       <a
         href={link}
-        className="text-blue hover:underline"
+        className="text-primary hover:underline"
         rel="noreferrer"
         target="_blank"
       >

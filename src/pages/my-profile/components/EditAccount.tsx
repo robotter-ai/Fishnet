@@ -5,6 +5,8 @@ import TransactionTable from './TransactionTable';
 
 interface IEditAccountProps {
   inputs: UserProps;
+  transactions: any;
+  address: any;
   isLoading: boolean;
   handleOnChange: (input: string, value: any) => void;
   handleUpdateProfile: () => void;
@@ -13,6 +15,8 @@ interface IEditAccountProps {
 const EditAccount: React.FC<IEditAccountProps> = ({
   inputs,
   isLoading,
+  transactions,
+  address,
   handleOnChange,
   handleUpdateProfile,
 }) => {
@@ -56,7 +60,7 @@ const EditAccount: React.FC<IEditAccountProps> = ({
           fullWidth
         />
       </div>
-      <TransactionTable />
+      <TransactionTable address={address} data={transactions} />
     </div>
   );
 };

@@ -13,7 +13,6 @@ import {
 } from '@slices/algorithmSlice';
 import { useSearchParams } from 'react-router-dom';
 import { TextareaAutosize } from '@mui/material';
-import { ExecutePrompt } from '@shared/components/Prompts';
 import AddressWrap from '@shared/components/TruncatedAddress';
 import useAuth from '@shared/hooks/useAuth';
 
@@ -135,7 +134,7 @@ const AlgorithmDetails = ({
           }
         />
       </div>
-      <div className="flex justify-center mt-5">
+      {/* <div className="flex justify-center mt-5">
         {searchParams.get('details') !== 'upload' ? (
           <ExecutePrompt
             against="data"
@@ -150,7 +149,7 @@ const AlgorithmDetails = ({
             onClick={() => dispatch(uploadgetAlgorithm(algorithmDetails))}
           />
         )}
-      </div>
+      </div> */}
     </>
   );
 };

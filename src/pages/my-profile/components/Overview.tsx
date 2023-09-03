@@ -1,20 +1,24 @@
 import React from 'react';
 import { UserProps } from '@slices/profileSlice/profileService';
 import DataSummary from '@shared/components/Summary';
+import TruncatedAddress from '@shared/components/TruncatedAddress';
 import TransactionTable from './TransactionTable';
 
 interface IOverviewProps {
   inputs: UserProps;
-  isLoading: boolean;
-  handleOnChange: (input: string, value: any) => void;
-  handleUpdateProfile: () => void;
+  transactions: any;
+  address: any;
 }
 
-const Overview: React.FC<IOverviewProps> = ({ inputs }) => {
+const Overview: React.FC<IOverviewProps> = ({
+  inputs,
+  transactions,
+  address,
+}) => {
   const ACCOUNT = [
     {
       name: 'Wallet address',
-      value: inputs.address,
+      value: <TruncatedAddress hash={inputs.address} copy />,
     },
     {
       name: 'Username',
@@ -41,7 +45,7 @@ const Overview: React.FC<IOverviewProps> = ({ inputs }) => {
   return (
     <div className="grid grid-cols-2 gap-5 mt-8">
       <DataSummary title="Your account" summary={ACCOUNT} />
-      <TransactionTable />
+      <TransactionTable address={address} data={transactions} />
     </div>
   );
 };

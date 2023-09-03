@@ -1,6 +1,5 @@
 import { Starred } from '@components/form';
 import ClickToCopy from '@shared/components/ClickToCopy';
-import { ExecutePrompt } from '@shared/components/Prompts';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import useAuth from '@shared/hooks/useAuth';
 
@@ -13,7 +12,7 @@ const COLUMNS = (
     cell: ({ name, item_hash }) => (
       <button
         type="button"
-        className="text-blue"
+        className="text-primary"
         onClick={() => handleOpenAlgoDetails(item_hash)}
       >
         {name}
@@ -49,16 +48,16 @@ const COLUMNS = (
       </div>
     ),
   },
-  {
-    header: 'Filter',
-    cell: ({ item_hash, owner }) => (
-      <ExecutePrompt
-        against="data"
-        selectedHash={item_hash}
-        // disabled={address !== owner}
-      />
-    ),
-  },
+  // {
+  //   header: 'Filter',
+  //   cell: ({ item_hash, owner }) => (
+  //     <ExecutePrompt
+  //       against="data"
+  //       selectedHash={item_hash}
+  //       // disabled={address !== owner}
+  //     />
+  //   ),
+  // },
 ];
 
 const BrowseAlgorithmsTable = ({
