@@ -108,6 +108,11 @@ const authSlice = createSlice({
         [action.payload.name]: action.payload.value,
       };
     },
+    resetChallengeDetails: (state) => {
+      state.getChallenge.success = null;
+      state.getChallenge.challenge = null;
+      state.solveChallenge.success = null;
+    },
   },
   extraReducers(builder) {
     builder
@@ -141,6 +146,9 @@ const authSlice = createSlice({
   },
 });
 
+export const {
+  resetChallengeDetails,
+} = authSlice.actions;
 // export const {} = authSlice.actions;
 
 export default authSlice;

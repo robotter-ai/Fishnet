@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { getOutgoingPermissions } from '@slices/monitorAccessSlice';
 import useAuth from '@shared/hooks/useAuth';
 import CustomButton from '@components/ui/Button';
+import dayjs from 'dayjs';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -18,7 +19,6 @@ const COLUMNS: ITableColumns[] = [
         >
           {item.name}
         </Link>
-        <Starred starred={item.forgotten} />
       </>
     ),
     sortWith: 'name',
@@ -35,8 +35,12 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'DATE',
-    cell: (item) => '',
-    sortWith: '',
+    cell: ({ timestamp }) => (
+      <p className="whitespace-nowrap">
+        {dayjs.unix(timestamp).format('YYYY-MM-DD HH:MM')}
+      </p>
+    ),
+    sortWith: 'timestamp',
   },
   {
     header: 'PRICE',

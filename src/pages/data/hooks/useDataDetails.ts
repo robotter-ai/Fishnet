@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
@@ -50,7 +50,6 @@ export default () => {
   const isPublished = id && id !== 'upload';
   const [signature, setSignature] = useState<string>('');
   const { isOwner } = useOwner(dataDetails?.owner);
-
   const disabled = !isOwner;
 
   useEffect(() => {
@@ -101,7 +100,11 @@ export default () => {
   }, [dataDetails?.name]);
 
   useEffect(() => {
-    if (initProductTree.transaction && initProductTree.success && !signature) {
+    if (
+      initProductTree.transaction &&
+      initProductTree.success &&
+      !signature
+    ) {
       const serializedBase64 = initProductTree.transaction;
       const serializedBuffer = Buffer.from(serializedBase64, 'base64');
       const transaction = VersionedTransaction.deserialize(serializedBuffer);
@@ -109,13 +112,13 @@ export default () => {
       const processTransaction = async () => {
         try {
           setSignature(await sendTransaction(transaction, SOLANA_CONNECTION));
-          dispatch(resetTransactionSlice());
         } catch (error) {
           console.error('Error sending transaction:', error);
         }
       };
 
       processTransaction();
+      dispatch(resetTransactionSlice());
     }
   }, [initProductTree.transaction]);
 

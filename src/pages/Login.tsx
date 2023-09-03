@@ -11,6 +11,7 @@ import FishnetLogo from '/fishnet-logo.png';
 import { ReactComponent as WaveBg } from '@assets/images/wave.svg';
 import {
   getChallenge as getChallengeRequest,
+  resetChallengeDetails,
   solveChallenge as solveChallengeRequest,
 } from '@slices/authSlice';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -65,6 +66,7 @@ const Login = () => {
         path: '/',
         maxAge: solveChallenge.valid_til,
       });
+      dispatch(resetChallengeDetails());
       navigate('/data', { replace: true });
     }
   }, [solveChallenge.success]);

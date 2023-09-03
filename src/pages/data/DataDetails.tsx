@@ -67,15 +67,15 @@ const DataDetails = () => {
     },
     {
       name: 'Downloads',
-      value: <p> {dataDetails?.desc} </p>,
+      value: <p> 0 </p>,
     },
     {
       name: 'Total Sold',
-      value: <p> {dataDetails?.desc} USDC </p>,
+      value: <p> 0 USDC </p>,
     },
     {
       name: 'Current Price',
-      value: <p> {dataDetails?.desc} USDC </p>,
+      value: <p> {dataDetails?.price} USDC </p>,
     },
     {
       name: 'Owners address',
