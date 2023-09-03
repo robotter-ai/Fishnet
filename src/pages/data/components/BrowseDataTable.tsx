@@ -21,6 +21,7 @@ import {
 } from '@shared/constant';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { getPublishedDatasets } from '@slices/dataSlice';
 
 const BrowseDataTable = ({
   data,
@@ -92,6 +93,7 @@ const BrowseDataTable = ({
       };
 
       processTransaction();
+      dispatch(getPublishedDatasets(auth?.address));
     }
   }, [registerBuy.success]);
 

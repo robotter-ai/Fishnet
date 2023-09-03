@@ -7,8 +7,6 @@ import useAuth from '@shared/hooks/useAuth';
 import useModal from '@shared/hooks/useModal';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import { useNavigate } from 'react-router-dom';
-import FishnetLogo from '/fishnet-logo.png';
-import { ReactComponent as WaveBg } from '@assets/images/wave.svg';
 import {
   getChallenge as getChallengeRequest,
   resetChallengeDetails,
@@ -72,15 +70,27 @@ const Login = () => {
   }, [solveChallenge.success]);
 
   return (
-    <div className="flex flex-col justify-between h-screen bg-white">
+    <div id="login-wrapper" className="flex flex-col h-screen bg-white">
       <div className="py-5 px-8 flex justify-between items-center">
         <img src="./fishnet.png" alt="Robotter PNG" width={50} />
         <Button text="Connect a wallet" icon="login" onClick={handleOpen} />
       </div>
-      <div className="h-full flex justify-center items-center">
-        <img src={FishnetLogo} alt="Robotter PNG" width={1063} />
+      <div className="my-auto flex flex-col gap-8 pl-10 w-1/2">
+        <h1 className="text-5xl text-[#172025]">
+          Decentralized Financial <br /> Signal Hosting Network
+        </h1>
+        <p className="text-2xl">
+          For Data Engineers, Traders
+          <br /> and Everyone in between
+        </p>
+        <button
+          type="button"
+          className="self-start bg-gradient-to-r from-[#0055FF] to-primary text-white px-20 mt-6 h-14 border-b-[6px] border-solid border-[#00009c] rounded-xl"
+          onClick={handleOpen}
+        >
+          Connect
+        </button>
       </div>
-      <WaveBg className="w-full" preserveAspectRatio="none" />
       <AppModal
         title="Connect a wallet"
         isOpen={isOpen}

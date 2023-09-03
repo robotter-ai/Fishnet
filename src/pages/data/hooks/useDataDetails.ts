@@ -120,9 +120,9 @@ export default () => {
 
   useEffect(() => {
     if (
-      uploadDatasetActions.success
-      // initProductTree.success &&
-      // signature !== ''
+      uploadDatasetActions.success &&
+      initProductTree.success &&
+      signature !== ''
     ) {
       handleOpen();
       dispatch(resetDataSlice());
