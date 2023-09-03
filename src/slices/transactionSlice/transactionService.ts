@@ -50,6 +50,7 @@ const registerBuy = async (config: PurchaseConfig) => {
 export type ValidateSignatureConfig = {
     params: {
         signature: string
+        itemHash: string
     };
 }
 

@@ -38,12 +38,14 @@ const BrowseDataTable = ({
   const auth = useAuth();
   const { sendTransaction } = useWallet();
   const [signature, setSignature] = useState<string>('');
+  const [selectedItemHash, setItemHash] = useState<string>('');
 
   const handlePurchase = async (
     itemHash: string,
     owner: string,
     name: string
   ) => {
+    setItemHash(itemHash)
     dispatch(
       registerBuyRequest({
         params: {
@@ -71,7 +73,14 @@ const BrowseDataTable = ({
 
       const processTransaction = async () => {
         try {
-          setSignature(await sendTransaction(transaction, SOLANA_CONNECTION));
+          const sig = await sendTransaction(transaction, SOLANA_CONNECTION);
+          let blockhash = (await SOLANA_CONNECTION.getLatestBlockhash('finalized'));
+          await SOLANA_CONNECTION.confirmTransaction({
+            blockhash: blockhash.blockhash,
+            lastValidBlockHeight: blockhash.lastValidBlockHeight,
+            signature: sig,
+          }, 'confirmed');
+          setSignature(sig)
         } catch (error) {
           console.error('Error sending transaction:', error);
         }
@@ -83,7 +92,7 @@ const BrowseDataTable = ({
 
   useEffect(() => {
     if (signature !== '') {
-      dispatch(validateTransaction({params: { signature }}));
+      dispatch(validateTransaction({params: { signature, itemHash: selectedItemHash }}));
     }
   }, [signature]);
 
