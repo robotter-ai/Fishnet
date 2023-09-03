@@ -2,7 +2,6 @@ import TextInput from '@components/form/TextInput';
 import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
 import ClickToCopy from '@shared/components/ClickToCopy';
-import { ExecutePrompt } from '@shared/components/Prompts';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
 import useAuth from '@shared/hooks/useAuth';
@@ -19,10 +18,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
+import {downloadTimeseries as downloadTimeseriesRequest} from "@slices/timeseriesSlice";
 
 const DataDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const handleDownload = (timeseriesIDs: string[]) => {
+    dispatch(downloadTimeseriesRequest(timeseriesIDs));
+  };
   const auth = useAuth();
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
@@ -109,9 +112,7 @@ const DataDetails = () => {
                 icon="download"
                 btnStyle="outline-primary"
                 isLoading={isLoading}
-                onClick={() => {
-                  handleUploadDataset();
-                }}
+                onClick={() => handleDownload(dataDetails.timeseriesIDs)}
               />
             ) : (
               <Button
