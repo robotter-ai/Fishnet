@@ -52,7 +52,7 @@ interface IndexerProps {
     validateSignature: {
         isLoading: boolean;
         success: boolean | null;
-        purchases: number | null;
+        message: string | null;
     };
 }
   
@@ -73,7 +73,7 @@ const initialState: IndexerProps = {
     validateSignature: {
         isLoading: false,
         success: null,
-        purchases: null,
+        message: null,
     },
 };
   
@@ -88,7 +88,7 @@ const transactionSlice = createSlice({
             state.registerBuy.success = null;
             state.registerBuy.transaction = null;
             state.validateSignature.success = null;
-            state.validateSignature.purchases = null;
+            state.validateSignature.message = null;
         },
     },
     extraReducers(builder) {
@@ -125,7 +125,7 @@ const transactionSlice = createSlice({
         .addCase(validateSignature.fulfilled, (state, action) => {
             state.validateSignature.isLoading = false;
             state.validateSignature.success = true;
-            state.validateSignature.purchases = action.payload.purchases;
+            state.validateSignature.message = action.payload.message;
         })
         .addCase(validateSignature.rejected, (state, action) => {
             state.validateSignature.isLoading = false;

@@ -122,7 +122,6 @@ export default () => {
   useEffect(() => {
     if (
       uploadDatasetActions.success &&
-      // generateViewActions.success &&
       initProductTree.success &&
       signature !== ''
     ) {
