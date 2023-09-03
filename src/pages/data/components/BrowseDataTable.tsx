@@ -93,7 +93,7 @@ const BrowseDataTable = ({
 
       processTransaction();
     }
-  }, [registerBuy.success]);
+  }, [registerBuy.transaction, registerBuy.success]);
 
   useEffect(() => {
     if (signature !== '') {
