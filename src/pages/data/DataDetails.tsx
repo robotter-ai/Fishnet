@@ -5,7 +5,6 @@ import ClickToCopy from '@shared/components/ClickToCopy';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
 import useAuth from '@shared/hooks/useAuth';
-import useOwner from '@shared/hooks/useOwner';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import {
   changeDatasetPermissionInput,
@@ -40,21 +39,23 @@ const DataDetails = () => {
     datasetByIDActions,
     handleUpdateDataset,
     updateDatasetsActions,
-    disabled,
+    isOwner,
   } = useDataDetails();
-  const { isOwner } = useOwner(dataDetails?.owner);
   const { isOpen, handleClose } = publishedModalProps;
 
-  const summary = [
+  const SUMMARY = [
     {
       name: 'Hash of the data',
-      value: (
-        <div className="flex items-center gap-[11px]">
-          <p className="w-[200px] truncate">{dataDetails?.item_hash || ''}</p>
-          <ClickToCopy text={dataDetails?.item_hash} />
-        </div>
-      ),
+      value: <TruncatedAddress hash={dataDetails?.item_hash} copy />,
     },
+    ...(!isOwner
+      ? [
+          {
+            name: 'Name',
+            value: dataDetails?.name,
+          },
+        ]
+      : []),
     {
       name: 'Creation date',
       value: (
@@ -67,24 +68,37 @@ const DataDetails = () => {
     },
     {
       name: 'Downloads',
-      value: <p> 0 </p>,
+      value: <p>0</p>,
     },
-    {
-      name: 'Total Sold',
-      value: <p> 0 USDC </p>,
-    },
-    {
-      name: 'Current Price',
-      value: <p> {dataDetails?.price} USDC </p>,
-    },
-    {
-      name: 'Owners address',
-      value: <TruncatedAddress hash={dataDetails?.owner} />,
-    },
-    // {
-    //   name: 'Usages',
-    //   value: dataDetails?.current_revision || 0,
-    // },
+    ...(isOwner
+      ? [
+          {
+            name: 'Total Sold',
+            value: <p>0 USDC</p>,
+          },
+          {
+            name: 'Current Price',
+            value: <p>{dataDetails?.price} USDC</p>,
+          },
+          {
+            name: 'Owners address',
+            value: <TruncatedAddress hash={dataDetails?.owner} />,
+          },
+        ]
+      : [
+          {
+            name: 'Sellers wallet',
+            value: <TruncatedAddress hash={dataDetails?.owner} copy />,
+          },
+          {
+            name: 'Current Price',
+            value: <p>{dataDetails?.price} USDC</p>,
+          },
+          {
+            name: 'Description',
+            value: dataDetails?.desc,
+          },
+        ]),
   ];
 
   return (
@@ -94,7 +108,7 @@ const DataDetails = () => {
           <Link
             to=".."
             onClick={() => navigate(-1)}
-            className="flex items-center text-blue"
+            className="flex items-center text-primary"
           >
             <RxCaretLeft size={30} />
             Back
@@ -150,38 +164,38 @@ const DataDetails = () => {
       </div>
       <div className="relative">
         <ViewLoader isLoading={datasetByIDActions.isLoading} />
-        <div className="grid grid-cols-2 gap-5 mb-5">
-          <div className="bg-form-bg flex flex-col gap-4 p-6 text-text-dark rounded-[32px]">
-            <TextInput
-              label="Data name"
-              placeholder="Name the data"
-              value={dataDetails?.name || ''}
-              onChange={(e) => handleOnChange('name', e.target.value)}
-              fullWidth
-              disabled={disabled}
-            />
-            <TextInput
-              label="Set price in USDC"
-              placeholder="Enter the price"
-              value={dataDetails?.price || ''}
-              onChange={(e) => handleOnChange('price', e.target.value)}
-              fullWidth
-              trail="USDC"
-              disabled={disabled}
-            />
-            <TextInput
-              label="Description"
-              placeholder="What is the data about?"
-              value={dataDetails?.desc || ''}
-              onChange={(e) => handleOnChange('desc', e.target.value)}
-              fullWidth
-              disabled={disabled}
-            />
+        {isOwner ? (
+          <div className="grid grid-cols-2 gap-5 mb-5">
+            <div className="bg-form-bg flex flex-col gap-4 p-6 text-text-dark rounded-[32px]">
+              <TextInput
+                label="Data name"
+                placeholder="Name the data"
+                value={dataDetails?.name || ''}
+                onChange={(e) => handleOnChange('name', e.target.value)}
+                fullWidth
+              />
+              <TextInput
+                label="Set price in USDC"
+                placeholder="Enter the price"
+                value={dataDetails?.price || ''}
+                onChange={(e) => handleOnChange('price', e.target.value)}
+                fullWidth
+                trail="USDC"
+              />
+              <TextInput
+                label="Description"
+                placeholder="What is the data about?"
+                value={dataDetails?.desc || ''}
+                onChange={(e) => handleOnChange('desc', e.target.value)}
+                fullWidth
+              />
+            </div>
+            <DataSummary summary={SUMMARY} />
           </div>
-          <DataSummary summary={summary} />
-        </div>
-        <TimeseriesCharts isOwner={isOwner} />
+        ) : null}
+        <TimeseriesCharts isOwner={isOwner} summary={SUMMARY} />
       </div>
+
       <AppModal
         isOpen={isOpen}
         handleClose={handleClose}

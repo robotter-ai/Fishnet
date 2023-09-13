@@ -7,12 +7,13 @@ import { VALUES_AND_INTERVAL } from '@shared/constant';
 import { useAppSelector } from '@shared/hooks/useStore';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import DataSummary from '@shared/components/Summary';
 import useDataDetails from '../hooks/useDataDetails';
 import useTimeseriesChart, { ChartProps } from '../hooks/useTimeseriesChart';
 import DataChart from './DataChart';
 import EditDataTable from './EditDataTable';
 
-const TimeseriesCharts = ({ isOwner }: any) => {
+const TimeseriesCharts = ({ isOwner, summary }: any) => {
   const {
     charts,
     csvJson,
@@ -55,6 +56,7 @@ const TimeseriesCharts = ({ isOwner }: any) => {
   return (
     <div>
       <div className="grid grid-cols-2 gap-5 mb-5">
+        {!isOwner ? <DataSummary summary={summary} /> : null}
         {charts.map((item, idx) => (
           <DataChart
             key={idx}
@@ -84,11 +86,7 @@ const TimeseriesCharts = ({ isOwner }: any) => {
         </div>
       ) : null}
       <div className="mt-8 flex flex-col gap-3">
-        <h1>Dataset</h1>
-        <p>
-          Check the data you want to upload. Select a time interval. You can
-          also rename the indicator.
-        </p>
+        <h1>Datasets records</h1>
         <EditDataTable data={timeseries} isPublished />
       </div>
       <AppModal

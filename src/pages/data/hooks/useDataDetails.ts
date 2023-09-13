@@ -50,7 +50,6 @@ export default () => {
   const isPublished = id && id !== 'upload';
   const [signature, setSignature] = useState<string>('');
   const { isOwner } = useOwner(dataDetails?.owner);
-  const disabled = !isOwner;
 
   useEffect(() => {
     if (isPublished) {
@@ -96,7 +95,7 @@ export default () => {
   }, [uploadDatasetActions.success]);
 
   useEffect(() => {
-    setTitle(dataDetails?.name, dataDetails?.permission_status);
+    setTitle(dataDetails?.name || 'New data', dataDetails?.permission_status);
   }, [dataDetails?.name]);
 
   useEffect(() => {
@@ -186,7 +185,6 @@ export default () => {
     handleUpdateDataset,
     views,
     handleGetViews,
-    disabled,
     isOwner,
   };
 };

@@ -8,10 +8,6 @@ function NavList() {
       to: '/data',
       icon: <FolderIcon />,
     },
-    // {
-    //   to: '/algorithms',
-    //   icon: <DeveloperIcon />,
-    // },
     {
       to: '/monitor-access',
       icon: <LockIcon />,
@@ -52,7 +48,7 @@ function SideNavigation() {
       id="side-navigation"
       className="flex flex-col justify-between pt-8 pb-14"
     >
-      <div>
+      <div className="flex flex-col items-center">
         <Link to="/data">
           <img src="./fishnet.png" alt="Robotter PNG" width={36} />
         </Link>
