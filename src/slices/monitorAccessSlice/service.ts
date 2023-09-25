@@ -40,7 +40,7 @@ const requestDatasetPermissions = async (
 ) => {
   const { data } = await axios.put(
     `${FISHNET_API_URL}/permissions/datasets/${dataset_id}/request`,
-    inputs,
+    undefined,
     getConfig()
   );
   return data;

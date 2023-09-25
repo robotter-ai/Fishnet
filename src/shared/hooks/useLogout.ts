@@ -1,26 +1,18 @@
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 import { useDisconnect } from 'wagmi';
 
 export default () => {
+  const cookies = new Cookies();
   const navigate = useNavigate();
   const { disconnect } = useDisconnect();
-
-  const wagmiStore = JSON.parse(localStorage.getItem('wagmi.store') as string);
-  const isConnected = wagmiStore?.state?.data?.account;
 
   const handleLogout = () => {
     disconnect();
     localStorage.clear();
+    cookies.remove('bearerToken');
     navigate('/', { replace: true });
   };
-
-  useEffect(() => {
-    if (!isConnected) {
-      localStorage.clear();
-      navigate('/', { replace: true });
-    }
-  }, [isConnected]);
 
   return { handleLogout };
 };

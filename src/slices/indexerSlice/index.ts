@@ -7,7 +7,7 @@ import {
 } from 'brick-protocol';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import indexerService from '@slices/indexerSlice/indexerService';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 export const getAccounts = createAsyncThunk(
   'indexer/getAccounts',

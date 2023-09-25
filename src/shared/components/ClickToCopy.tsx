@@ -1,5 +1,5 @@
 import { CopyIcon } from '@assets/icons';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 interface ClickToCopyProps {
   text: string;
@@ -12,17 +12,13 @@ const ClickToCopy: React.FC<ClickToCopyProps> = ({
 }) => {
   const handleCopyText = () => {
     navigator.clipboard.writeText(text);
-    toast.success('Copied!', {
-      position: 'top-center',
-      hideProgressBar: true,
-      autoClose: 1000,
-    });
+    toast.success('Copied!');
   };
 
   return (
     <div
       role="button"
-      className="w-fit bg-blue/10 p-2 rounded-full"
+      className="w-fit bg-primary/10 p-2 rounded-full"
       onClick={handleCopyText}
     >
       <CopyIcon color={color} />

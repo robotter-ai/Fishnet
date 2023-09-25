@@ -133,10 +133,11 @@ const DataChart: React.FC<{
   useEffect(() => {
     dataDurationFilter();
   }, [activeDuration]);
+
   return (
     <div className="bg-form-bg rounded-[32px] py-5 px-6">
       <div className="flex justify-between mb-7">
-        <div className="bg-[#E6EEFF] w-[232px] h-8 flex items-center justify-between rounded-[76px] p-1 px-4">
+        <div className="bg-[#E6EEFF] w-[232px] h-8 flex items-center justify-between rounded-full ml-[54px] p-1 px-4">
           {duration.map((item, i) => (
             <p
               key={i}
@@ -250,7 +251,7 @@ const DataChart: React.FC<{
           </AreaChart>
         )}
       </ResponsiveContainer>
-      <div className="flex gap-3 mt-5 overflow-x-auto">
+      <div className="flex gap-3 mt-5 overflow-x-auto ml-[54px]">
         {chart.keys.map((item, idx: number) => (
           <div key={idx} className="flex items-center gap-2">
             <AiOutlineLine color={item.color} />

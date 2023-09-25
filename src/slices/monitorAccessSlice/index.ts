@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import getErrMsg from '@shared/utils/getErrMsg';
 import { RootState } from 'src/store';
 import monitorAccessService, { DatasetPermisionProps } from './service';

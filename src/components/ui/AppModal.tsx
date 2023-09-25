@@ -22,7 +22,7 @@ const style = (fullWidth: boolean) => {
     width: fullWidth ? 1000 : 460,
     bgcolor: '#fff',
     borderRadius: '32px',
-    boxShadow: '0px 12px 24px rgba(0, 85, 255, 0.08)',
+    boxShadow: '0px 12px 24px rgba(0, 147, 167, 0.08)',
     border: 'none',
     outline: 'none',
   };

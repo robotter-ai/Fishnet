@@ -1,8 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import getErrMsg from '@shared/utils/getErrMsg';
-import { FISHNET_API_URL, getConfig, getFormConfig } from '@slices/requestConfig';
+import {
+  FISHNET_API_URL,
+  getConfig,
+  getFormConfig,
+} from '@slices/requestConfig';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 export const preprocessTimeseries = createAsyncThunk(
   'timeseries/preprocessTimeseries',
@@ -21,15 +25,19 @@ export const preprocessTimeseries = createAsyncThunk(
 );
 
 export type DownloadTimeseries = {
-  timeseriesIDs: string[],
-  compression: boolean
-}
+  timeseriesIDs: string[];
+  compression: boolean;
+};
 
 export const downloadTimeseries = createAsyncThunk(
   'timeseries/downloadTimeseries',
   async (timeseriesIDs: string[], thunkAPI) => {
     try {
-      const { data } = await axios.post(FISHNET_API_URL + '/timeseries/csv/download', timeseriesIDs, getConfig());
+      const { data } = await axios.post(
+        `${FISHNET_API_URL}/timeseries/csv/download`,
+        timeseriesIDs,
+        getConfig()
+      );
       return data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(getErrMsg(err));
@@ -42,7 +50,11 @@ interface TimeseriesProps {
   success: boolean | null;
   timeseries: any;
   csvJson: any[];
-  downloadTimeseries: { timeseries: any | null, isLoading: boolean, success: boolean | null },
+  downloadTimeseries: {
+    timeseries: any | null;
+    isLoading: boolean;
+    success: boolean | null;
+  };
 }
 
 const initialState: TimeseriesProps = {

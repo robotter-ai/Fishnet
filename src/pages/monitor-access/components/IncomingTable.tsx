@@ -1,5 +1,3 @@
-import { Starred } from '@components/form';
-import ClickToCopy from '@shared/components/ClickToCopy';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
@@ -10,7 +8,6 @@ import {
   grantDatasetPermissions,
   resetPermissions,
 } from '@slices/monitorAccessSlice';
-import { StatusIdentifier } from '@shared/constant';
 import useAuth from '@shared/hooks/useAuth';
 import { DeletePrompt } from '@shared/components/Prompts';
 import AppModal from '@components/ui/AppModal';
@@ -105,30 +102,21 @@ const COLUMNS = ({
     sortWith: 'name',
   },
   {
-    header: 'Hash of data',
-    cell: ({ datasetID }) => (
-      <div className="flex gap-3">
-        <p className="w-[200px] truncate">{datasetID}</p>
-        <ClickToCopy text={datasetID} />
-      </div>
-    ),
+    header: 'Description',
+    cell: ({ datasetID }) => '',
   },
   {
-    header: 'Status',
-    cell: ({ status }) => <StatusIdentifier status={status} />,
+    header: 'BUYERS Wallet',
+    cell: ({ status }) => '',
     sortWith: 'status',
   },
   {
-    header: 'Request from',
-    cell: ({ requestor }) => requestor,
+    header: 'DLs',
+    cell: ({ requestor }) => '',
     sortWith: 'requestor',
   },
   {
     header: '',
-    cell: (item) => <Starred starred={item.forgotten} />,
-  },
-  {
-    header: 'Filter',
     cell: (item) => (
       <div className="flex gap-2 justify-end">
         {item.status === 'GRANTED' ? (

@@ -34,14 +34,13 @@ const DataDetails = () => {
     isPublished,
     handleUploadDataset,
     isLoading,
-    publishedModalProps,
+    publishedModalProps: { isOpen, handleClose },
     dataDetails,
     datasetByIDActions,
     handleUpdateDataset,
     updateDatasetsActions,
     isOwner,
   } = useDataDetails();
-  const { isOpen, handleClose } = publishedModalProps;
 
   const SUMMARY = [
     {
@@ -82,7 +81,7 @@ const DataDetails = () => {
           },
           {
             name: 'Owners address',
-            value: <TruncatedAddress hash={dataDetails?.owner} />,
+            value: <TruncatedAddress hash={dataDetails?.owner} copy />,
           },
         ]
       : [
@@ -101,6 +100,77 @@ const DataDetails = () => {
         ]),
   ];
 
+  const action = () => {
+    if (isOwner) {
+      return (
+        <Button
+          text="Save"
+          icon="box"
+          size="md"
+          isLoading={isLoading}
+          onClick={() => {
+            handleUploadDataset();
+          }}
+        />
+      );
+    }
+
+    if (
+      dataDetails?.available ||
+      dataDetails?.permission_status === 'GRANTED'
+    ) {
+      return (
+        <Button
+          text="Download"
+          size="md"
+          icon="download"
+          btnStyle="outline-primary"
+          isLoading={isLoading}
+          onClick={() => handleDownload(dataDetails.timeseriesIDs)}
+        />
+      );
+    }
+
+    if (
+      !dataDetails?.available ||
+      !(dataDetails?.permission_status === 'GRANTED')
+    ) {
+      return (
+        <Button
+          text="Request access"
+          size="md"
+          icon="lock"
+          btnStyle="outline-primary"
+          onClick={() => {
+            dispatch(
+              changeDatasetPermissionInput({
+                input: 'requestor',
+                value: auth.address,
+              })
+            );
+            dispatch(requestDatasetPermissions(dataDetails?.item_hash));
+          }}
+          isLoading={
+            dataDetails?.permission_status === 'REQUESTED' ||
+            requestDatasetPermissionActions.isLoading
+          }
+        />
+      );
+    }
+
+    return (
+      <Button
+        text="Publish"
+        icon="upload"
+        size="md"
+        isLoading={isLoading}
+        onClick={() => {
+          handleUploadDataset();
+        }}
+      />
+    );
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-5">
@@ -114,53 +184,7 @@ const DataDetails = () => {
             Back
           </Link>
         </div>
-        <div>
-          {/* eslint-disable-next-line no-nested-ternary */}
-          {isPublished ? (
-            isOwner ||
-            dataDetails?.available ||
-            dataDetails?.permission_status === 'GRANTED' ? (
-              <Button
-                text="Download"
-                size="md"
-                icon="download"
-                btnStyle="outline-primary"
-                isLoading={isLoading}
-                onClick={() => handleDownload(dataDetails.timeseriesIDs)}
-              />
-            ) : (
-              <Button
-                text="Request access"
-                size="md"
-                icon="lock"
-                btnStyle="outline-primary"
-                onClick={() => {
-                  dispatch(
-                    changeDatasetPermissionInput({
-                      input: 'requestor',
-                      value: auth.address,
-                    })
-                  );
-                  dispatch(requestDatasetPermissions(dataDetails?.item_hash));
-                }}
-                isLoading={
-                  dataDetails?.permission_status === 'REQUESTED' ||
-                  requestDatasetPermissionActions.isLoading
-                }
-              />
-            )
-          ) : (
-            <Button
-              text="Publish"
-              icon="upload"
-              size="md"
-              isLoading={isLoading}
-              onClick={() => {
-                handleUploadDataset();
-              }}
-            />
-          )}
-        </div>
+        <div>{action()}</div>
       </div>
       <div className="relative">
         <ViewLoader isLoading={datasetByIDActions.isLoading} />

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import Button from '@components/ui/Button';
-import { Starred } from '@components/form';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
@@ -40,24 +39,19 @@ const COLUMNS: ITableColumns[] = [
     header: 'DLS',
     accessor: 'desc',
     cell: (item) => '',
-    sortWith: '',
+    sortWith: 'item',
   },
   {
     header: 'Profit',
     accessor: 'desc',
     cell: (item) => '',
-    sortWith: '',
+    sortWith: 'item',
   },
   {
     header: 'Price',
     accessor: 'desc',
     cell: (item) => '',
-    sortWith: '',
-  },
-  {
-    header: '',
-    accessor: 'forgotten',
-    cell: (item) => <Starred starred={item.forgotten} />,
+    sortWith: 'item',
   },
   {
     header: '',
@@ -77,7 +71,7 @@ const COLUMNS: ITableColumns[] = [
 
 const STATISTICS = [
   {
-    name: 'Profit',
+    name: 'Total profit',
     value: '7447 USDC',
   },
   {
@@ -87,14 +81,6 @@ const STATISTICS = [
   {
     name: 'Unique downloads',
     value: 987,
-  },
-  {
-    name: 'Average price',
-    value: 58,
-  },
-  {
-    name: 'Current Price',
-    value: <p>19 USDC</p>,
   },
 ];
 

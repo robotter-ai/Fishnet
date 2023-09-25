@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { FISHNET_API_URL, getConfig } from './requestConfig';
 
 type ExecEnum = 'algorithmID' | 'datasetID' | 'owner' | 'status';

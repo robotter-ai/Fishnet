@@ -2,8 +2,9 @@ import { ChangeEvent, HTMLInputTypeAttribute } from 'react';
 import classNames from 'classnames';
 
 interface TextInputProps {
-  label: string | React.ReactNode;
+  label?: string | React.ReactNode;
   type?: HTMLInputTypeAttribute;
+  size?: 'sm' | 'md' | 'lg';
   placeholder: string;
   fullWidth?: boolean;
   bgColor?: '#fff' | '#F6F8FB' | '#0093A714';
@@ -21,6 +22,7 @@ const TextInput: React.FC<TextInputProps> = ({
   label,
   type = 'text',
   bgColor = '#fff',
+  size,
   fullWidth,
   placeholder,
   value,
@@ -53,6 +55,9 @@ const TextInput: React.FC<TextInputProps> = ({
           `bg-[${bgColor}] py-3 px-4 mt-1 outline-none border border-transparent focus:border-primary text-sm rounded-full`,
           {
             'w-full': fullWidth,
+            'h-9': size === 'sm',
+            'h-[44px]': size === 'md',
+            'h-[64px] px-6': size === 'lg',
           }
         )}
         placeholder={placeholder}
@@ -61,7 +66,9 @@ const TextInput: React.FC<TextInputProps> = ({
         disabled={disabled}
       />
       {trail ? (
-        <span className="absolute top-1/2 right-6 text-dark-20">{trail}</span>
+        <span className="absolute top-[38px] right-6 text-dark-20">
+          {trail}
+        </span>
       ) : null}
     </label>
   );

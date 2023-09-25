@@ -14,11 +14,9 @@ function TopNavigation() {
   const { data } = useAppSelector((state) => state.profile.notificationActions);
   const { title } = usePageTitle();
   const auth = useAuth();
-  const [toggledInfo, setToggledInfo] = useState<
-    'notification' | 'profile' | null
-  >(null);
+  const [isNotification, setNotification] = useState<boolean>(false);
   const ref = useDetectClickOutside({
-    onTriggered: () => setToggledInfo(null),
+    onTriggered: () => setNotification(false),
   });
 
   useEffect(() => {
@@ -32,7 +30,7 @@ function TopNavigation() {
           <h1>{title}</h1>
         </div>
         <div ref={ref} className="relative flex items-center gap-[15px]">
-          <div className="flex bg-light-blue rounded-[33px] items-center gap-3 p-[5px] px-[15px] ">
+          <div className="flex bg-light-blue rounded-[33px] items-center gap-3 py-2 px-6 ">
             <span className="text-[#1C1C1C]">
               <TruncatedAddress hash={auth?.address} />
             </span>
@@ -42,14 +40,12 @@ function TopNavigation() {
             className="bg-light-blue h-9 w-9 rounded-full flex justify-center items-center cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
             style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
             onClick={() => {
-              setToggledInfo(
-                toggledInfo === 'notification' ? null : 'notification'
-              );
+              setNotification(!isNotification);
             }}
           >
             <BellIcon />
           </div>
-          {toggledInfo === 'notification' ? (
+          {isNotification ? (
             <div
               className="absolute w-full bg-white top-12 min-h-72 px-5 rounded-[10px] z-[30000000] overflow-y-scroll"
               style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}

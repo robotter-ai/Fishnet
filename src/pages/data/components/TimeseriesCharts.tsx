@@ -26,12 +26,12 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
     handleDeleteChart,
     timeseries,
   } = useTimeseriesChart();
-  const { handleGetViews } = useDataDetails();
   const { id } = useParams<{ id: string }>();
   const [viewData, setViewData] = useState({ data: [], columnValue: [] });
   const [isViewValue, setViewValue] = useState(false);
 
   const { views } = useAppSelector((state) => state.datasets);
+
   function getData() {
     let data;
     let columnValue;
@@ -80,7 +80,7 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
               onClick={() => handleOpenChart('new')}
             >
               <PlusCircleIcon className="text-primary" height={35} width={35} />
-              <span>New chart</span>
+              <span className="text-lg font-bold">New chart</span>
             </div>
           ))}
         </div>

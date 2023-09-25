@@ -25,22 +25,22 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'DESCRIPTION',
     cell: (item) => '',
-    sortWith: '',
+    sortWith: 'item',
   },
   {
     header: 'Buyers WALLET',
     cell: (item) => '',
-    sortWith: '',
+    sortWith: 'item',
   },
   {
     header: 'DATE',
     cell: (item) => '',
-    sortWith: '',
+    sortWith: 'item',
   },
   {
     header: 'PRICE',
     cell: (item) => '',
-    sortWith: '',
+    sortWith: 'item',
   },
 ];
 

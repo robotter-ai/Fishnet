@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import algorithmService, { UploadAlgorithmProps } from './service';
 
 export const getAlgorithms = createAsyncThunk(

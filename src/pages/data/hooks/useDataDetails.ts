@@ -14,7 +14,6 @@ import {
 } from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
 import useAuth from '@shared/hooks/useAuth';
-import { DataType, ViewValues } from '@slices/dataSlice/dataService';
 import {
   initProductTree as initProductTreeTransaction,
   resetTransactionSlice,
@@ -86,16 +85,17 @@ export default () => {
         },
       };
       dispatch(initProductTreeTransaction(config));
-      handleGenerateViews(dataDetails?.item_hash);
+      // handleGenerateViews(dataDetails?.item_hash);
     } else if (typeof id === 'string' && id !== 'upload') {
       handleGetViews(id);
       // handleGenerateViews(dataDetails?.item_hash);
     }
-    localStorage.setItem('viewValues', views[0]);
+    // localStorage.setItem('viewValues', views[0]);
+    // console.log('views', views);
   }, [uploadDatasetActions.success]);
 
   useEffect(() => {
-    setTitle(dataDetails?.name || 'New data', dataDetails?.permission_status);
+    setTitle(dataDetails?.name || 'New data');
   }, [dataDetails?.name]);
 
   useEffect(() => {
@@ -138,9 +138,9 @@ export default () => {
     }, 500);
   };
 
-  const handleGenerateViews = (hashId: string) => {
-    dispatch(generateViews({ datasetId: hashId }));
-  };
+  // const handleGenerateViews = (hashId: string) => {
+  //   dispatch(generateViews({ datasetId: hashId }));
+  // };
 
   const handleGetViews = (hashId: string) => {
     dispatch(getViews(hashId));
@@ -154,28 +154,27 @@ export default () => {
     dispatch(changeDataDetails({ name, value }));
   };
 
-  function convertViewValuesToDataType(viewValues: ViewValues): DataType[][] {
-    const convertedData: DataType[][] = [];
+  // function convertViewValuesToDataType(viewValues: ViewValues): DataType[][] {
+  //   const convertedData: DataType[][] = [];
 
-    Object.entries(viewValues).forEach(([key, values]) => {
-      const keyData: DataType[] = [];
+  //   Object.entries(viewValues).forEach(([key, values]) => {
+  //     const keyData: DataType[] = [];
 
-      values.forEach(([name, date]) => {
-        keyData.push({ date, name });
-      });
+  //     values.forEach(([name, date]) => {
+  //       keyData.push({ date, name });
+  //     });
 
-      convertedData.push(keyData);
-    });
+  //     convertedData.push(keyData);
+  //   });
 
-    return convertedData;
+  //   return convertedData;
 
-    // Little side note, you'll use the index of the data of the column to fetch the data you currently want to display
-  }
+  //   // Little side note, you'll use the index of the data of the column to fetch the data you currently want to display
+  // }
 
   return {
     handleOnChange,
     handleUploadDataset,
-    handleGenerateViews,
     datasetByIDActions,
     isLoading: uploadDatasetActions.isLoading || generateViewActions.isLoading,
     isPublished,
@@ -184,7 +183,6 @@ export default () => {
     updateDatasetsActions,
     handleUpdateDataset,
     views,
-    handleGetViews,
     isOwner,
   };
 };

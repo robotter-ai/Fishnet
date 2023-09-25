@@ -19,16 +19,16 @@ const DataSummary: React.FC<SummaryProps> = ({
         <div
           key={i}
           className={classNames(
-            'flex justify-between font-normal text-sm gap-5 py-2 px-6',
+            'flex justify-between text-[#244141] items-center font-normal text-sm gap-5 py-2 px-6',
             {
               'bg-[#EDF2FA]': (i + 1) % 2 !== 0,
-              'flex-col !justify-start !gap-2 rounded-3xl h-full':
+              'flex-col !justify-start !items-start !gap-2 rounded-3xl h-full':
                 item.name === 'Description',
             }
           )}
         >
           <p>{item.name}:</p>
-          <span className="text-[#566164]">{item.value}</span>
+          <span>{item.value}</span>
         </div>
       ))}
     </div>

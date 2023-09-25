@@ -50,7 +50,7 @@ const ICONS: Record<IconTypes, JSX.Element> = {
   lock: <LockIcon width={19} height={19} />,
   settings: <SettingsIcon />,
   login: <LoginIcon width={19} height={19} />,
-  box: <BoxIcon width={19} height={19} />,
+  box: <BoxIcon width={20} height={20} />,
 };
 
 const CustomButton: React.FC<ButtonProps> = ({
@@ -69,7 +69,7 @@ const CustomButton: React.FC<ButtonProps> = ({
     'app-btn block px-5 text-white text-[14px] rounded-[150px] whitespace-nowrap',
     {
       'h-9 px-7': size === 'sm',
-      'h-[44px] font-bold  px-10': size === 'md',
+      'h-[44px] font-bold px-10': size === 'md',
       'h-[64px] text-[18px] font-bold': size === 'lg',
       'btn-outline-primary': btnStyle === 'outline-primary',
       'btn-outline-red': btnStyle === 'outline-red',
@@ -111,7 +111,7 @@ const CustomButton: React.FC<ButtonProps> = ({
           />
         </div>
       ) : (
-        <div className="flex gap-3 justify-center items-center">
+        <div className="flex gap-[11px] justify-center items-center">
           {icon ? ICONS[icon] : null}
           {text}
         </div>

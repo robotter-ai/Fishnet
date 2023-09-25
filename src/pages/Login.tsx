@@ -6,7 +6,7 @@ import { LoginForm } from '@features/auth';
 import useAuth from '@shared/hooks/useAuth';
 import useModal from '@shared/hooks/useModal';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import {
   getChallenge as getChallengeRequest,
   resetChallengeDetails,
@@ -69,7 +69,9 @@ const Login = () => {
     }
   }, [solveChallenge.success]);
 
-  return (
+  return auth.isAuth ? (
+    <Navigate to="/data" replace />
+  ) : (
     <div id="login-wrapper" className="flex flex-col h-screen bg-white">
       <div className="py-5 px-8 flex justify-between items-center">
         <img src="./fishnet.png" alt="Robotter PNG" width={50} />

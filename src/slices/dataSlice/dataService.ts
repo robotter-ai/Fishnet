@@ -59,6 +59,7 @@ const updateDatasetAvailability = async (
 ) => {
   await axios.put(
     `${FISHNET_API_URL}/datasets/${dataset_id}/available/${available}`,
+    undefined,
     getConfig()
   );
 };
