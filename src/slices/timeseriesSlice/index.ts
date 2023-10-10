@@ -96,13 +96,7 @@ export const timeseriesSlice = createSlice({
       .addCase(preprocessTimeseries.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = true;
-        state.timeseries = action.payload.map((item: any) => ({
-          // item_hash: item.item_hash,
-          name: item.name,
-          owner: item.owner,
-          desc: item.desc,
-          data: item.data,
-        }));
+        state.timeseries = action.payload;
       })
       .addCase(preprocessTimeseries.rejected, (state, action) => {
         state.isLoading = false;

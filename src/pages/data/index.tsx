@@ -17,20 +17,22 @@ const MyData = () => {
     tabs,
     data,
     handleCsvToJson,
-    isLoading,
-    isLoadingUploadTimeseries,
     filterParams,
     handleFilterTable,
-    publishedDatasets,
+    isLoadingBrowseData,
+    isLoadingPublishedData,
+    isLoadingPreprocessTimeseries,
   } = useDataTable();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
 
   const TableMapper: { [key: string]: ReactNode } = {
     published: (
-      <PublishedTable data={data} isLoading={publishedDatasets.isLoading} />
+      <PublishedTable data={data} isLoading={isLoadingPublishedData} />
     ),
-    'browse-data': <BrowseDataTable data={data} isLoading={isLoading} />,
+    'browse-data': (
+      <BrowseDataTable data={data} isLoading={isLoadingBrowseData} />
+    ),
   };
   const query: null | string = searchParams.get('tab') || 'browse-data';
   const TableComponent = TableMapper?.[query];
@@ -73,7 +75,7 @@ const MyData = () => {
       {TableComponent}
       <AppModal
         title={
-          isLoadingUploadTimeseries ? 'Uploading...' : 'Select file (.csv)'
+          isLoadingPreprocessTimeseries ? 'Uploading...' : 'Select file (.csv)'
         }
         isOpen={isOpen}
         handleClose={handleClose}
@@ -89,7 +91,7 @@ const MyData = () => {
           ref={inputFileRef}
           style={{ display: 'none' }}
           onChange={(e) => handleCsvToJson(e.target.files![0])}
-          disabled={isLoadingUploadTimeseries}
+          disabled={isLoadingPreprocessTimeseries}
         />
         <FileUploader
           name="file"
@@ -97,7 +99,7 @@ const MyData = () => {
           handleChange={(file: any) => handleCsvToJson(file)}
         >
           <div className="flex justify-center items-center h-[207px] bg-light-20 my-8 rounded-[32px]">
-            {isLoadingUploadTimeseries ? (
+            {isLoadingPreprocessTimeseries ? (
               <FadeLoader color="#1DC3CF" height={10} margin={-5} width={3} />
             ) : (
               <p className="text-primary text-2xl">Drag and Drop</p>
@@ -111,7 +113,7 @@ const MyData = () => {
             text="Choose data"
             icon="attach"
             onClick={() => inputFileRef.current?.click()}
-            disabled={isLoadingUploadTimeseries}
+            disabled={isLoadingPreprocessTimeseries}
           />
         </div>
       </AppModal>

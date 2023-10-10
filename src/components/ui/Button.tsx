@@ -9,6 +9,7 @@ import {
   LockIcon,
   LoginIcon,
   SettingsIcon,
+  ShieldTickIcon,
 } from '@assets/icons';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -24,7 +25,8 @@ type IconTypes =
   | 'lock'
   | 'settings'
   | 'login'
-  | 'box';
+  | 'box'
+  | 'shield';
 
 interface ButtonProps {
   text?: string;
@@ -51,6 +53,7 @@ const ICONS: Record<IconTypes, JSX.Element> = {
   settings: <SettingsIcon />,
   login: <LoginIcon width={19} height={19} />,
   box: <BoxIcon width={20} height={20} />,
+  shield: <ShieldTickIcon width={20} height={20} />,
 };
 
 const CustomButton: React.FC<ButtonProps> = ({

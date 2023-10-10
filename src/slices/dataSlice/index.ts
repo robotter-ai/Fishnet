@@ -1,43 +1,96 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'sonner';
 import type { RootState } from 'src/store';
+import { fishnetApi } from '..';
 import dataService from './dataService';
 
-export const getDatasets = createAsyncThunk(
-  'datasets/getDatasets',
-  async (address: string, thunkAPI) => {
-    try {
-      return await dataService.getDatasets(address);
-    } catch (err: any) {
-      const errMsg =
-        err.response && err.response.data.message
-          ? err.response.data.message
-          : err.message;
-      return thunkAPI.rejectWithValue(errMsg);
-    }
-  }
-);
+// START: New API Integration Method (RTK Query)
+// TODO: Implement for all Slices
+interface IGetDataset {
+  type: 'browse-data' | 'published';
+  address: string;
+}
+
+interface IGenerateViews {
+  dataset_id: string;
+  data: any;
+}
+
+export interface IUploadDataset {
+  item_hash?: string;
+  name: string;
+  desc: string;
+  owner: string;
+  price: string;
+  ownsAllTimeseries: boolean;
+  timeseriesIDs: string[];
+}
+
+type IDatasetTimeseries = { dataset: IUploadDataset; timeseries: any[] };
+
+const getDatasetUrlMap = (
+  address: string
+): Record<IGetDataset['type'], string> => ({
+  published: `?by=${address}`,
+  'browse-data': `?view_as=${address}`,
+});
+
+const dataApiSlice = fishnetApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getDatasets: builder.query<any, IGetDataset>({
+      query: ({ type, address }) =>
+        `/datasets${getDatasetUrlMap(address)[type]}`,
+      providesTags: ['Dataset'],
+    }),
+    getDataset: builder.query<any, { dataset_id: string; view_as: string }>({
+      query: ({ dataset_id, view_as }) =>
+        `/datasets/${dataset_id}?view_as=${view_as}`,
+      providesTags: ['Dataset'],
+    }),
+    uploadDataset: builder.mutation<any, IDatasetTimeseries>({
+      query: (inputs) => ({
+        method: 'POST',
+        url: '/datasets/upload/timeseries',
+        body: inputs,
+      }),
+      invalidatesTags: ['Dataset'],
+    }),
+    updateDataset: builder.mutation<any, IUploadDataset>({
+      query: (inputs) => ({
+        method: 'PUT',
+        url: '/datasets',
+        body: inputs,
+      }),
+      invalidatesTags: ['Dataset'],
+    }),
+    getViews: builder.query<any, string>({
+      query: (dataset_id) => `/datasets/${dataset_id}/views`,
+    }),
+    generateViews: builder.mutation<any, IGenerateViews>({
+      query: ({ dataset_id, data }) => ({
+        method: 'PUT',
+        url: `/datasets/${dataset_id}/views`,
+        body: data,
+      }),
+    }),
+  }),
+});
+
+export const {
+  useGetViewsQuery,
+  useGetDatasetsQuery,
+  useGetDatasetQuery,
+  useUploadDatasetMutation,
+  useGenerateViewsMutation,
+  useUpdateDatasetMutation,
+} = dataApiSlice;
+// END: New API Integration Method
 
 export const getPublishedDatasets = createAsyncThunk(
   'datasets/getPublishedDatasets',
   async (address: string, thunkAPI) => {
     try {
       return await dataService.getPublishedDatasets(address);
-    } catch (err: any) {
-      const errMsg =
-        err.response && err.response.data.message
-          ? err.response.data.message
-          : err.message;
-      return thunkAPI.rejectWithValue(errMsg);
-    }
-  }
-);
-
-export const getDatasetByID = createAsyncThunk(
-  'datasets/getDatasetByID',
-  async (params: { id: string; view_as: string }, thunkAPI) => {
-    try {
-      return await dataService.getDatasetByID(params.id, params.view_as);
     } catch (err: any) {
       const errMsg =
         err.response && err.response.data.message
@@ -130,15 +183,17 @@ export const generateViews = createAsyncThunk(
   ) => {
     try {
       const { datasetId, request } = params;
-      const { datasets } = thunkAPI.getState() as RootState;
-      const timeseries = datasets.dataDetails.timeseriesIDs;
+      const {
+        datasets: {
+          dataDetails: { timeseriesIDs },
+        },
+      } = thunkAPI.getState() as RootState;
       return await dataService.generateViews(datasetId, [
         {
-          timeseriesIDs: [...timeseries.map((item: any) => item)],
+          timeseriesIDs,
           startTime: 0,
           endTime: 1686263058,
           granularity: 'DAY',
-          // endTime: Date.now(),
         },
       ]);
     } catch (err: any) {
@@ -251,34 +306,12 @@ const dataSlice = createSlice({
       state.getViewActions.success = null;
       state.uploadDatasetActions.success = null;
     },
-    changeDataDetails: (
-      state,
-      action: PayloadAction<{ name: string; value: any }>
-    ) => {
-      state.dataDetails = {
-        ...state.dataDetails,
-        [action.payload.name]: action.payload.value,
-      };
-    },
     resetDataDetails: (state) => {
       state.dataDetails = null;
     },
   },
   extraReducers(builder) {
     builder
-      .addCase(getDatasets.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getDatasets.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.success = true;
-        state.datasets = action.payload;
-      })
-      .addCase(getDatasets.rejected, (state, action) => {
-        state.isLoading = false;
-        toast.error(action.payload as string);
-      })
-
       .addCase(getPublishedDatasets.pending, (state) => {
         state.publishedDatasets.isLoading = true;
       })
@@ -289,19 +322,6 @@ const dataSlice = createSlice({
       })
       .addCase(getPublishedDatasets.rejected, (state) => {
         state.publishedDatasets.isLoading = false;
-      })
-
-      .addCase(getDatasetByID.pending, (state) => {
-        state.datasetByIDActions.isLoading = true;
-      })
-      .addCase(getDatasetByID.fulfilled, (state, action) => {
-        state.datasetByIDActions.isLoading = false;
-        state.datasetByIDActions.success = true;
-        state.dataDetails = action.payload;
-      })
-      .addCase(getDatasetByID.rejected, (state, action) => {
-        state.datasetByIDActions.isLoading = false;
-        toast.error(action.payload as string);
       })
 
       .addCase(updateDatasetAvailability.pending, (state) => {
@@ -372,7 +392,6 @@ const dataSlice = createSlice({
   },
 });
 
-export const { resetDataSlice, resetDataDetails, changeDataDetails } =
-  dataSlice.actions;
+export const { resetDataSlice, resetDataDetails } = dataSlice.actions;
 
 export default dataSlice;

@@ -1,8 +1,4 @@
-import {
-  FISHNET_API_URL,
-  getConfig,
-  getFormConfig,
-} from '@slices/requestConfig';
+import { FISHNET_API_URL, getConfig } from '@slices/requestConfig';
 import axios from 'axios';
 
 export type DatasetProps = {
@@ -29,25 +25,9 @@ export type GetDatasetProps = {
   page_size?: number;
 };
 
-const getDatasets = async (view_as: string) => {
-  const { data } = await axios.get(
-    `${FISHNET_API_URL}/datasets?view_as=${view_as}`,
-    getConfig()
-  );
-  return data;
-};
-
 const getPublishedDatasets = async (by: string) => {
   const { data } = await axios.get(
     `${FISHNET_API_URL}/datasets?by=${by}`,
-    getConfig()
-  );
-  return data;
-};
-
-const getDatasetByID = async (id: string, view_as: string) => {
-  const { data } = await axios.get(
-    `${FISHNET_API_URL}/datasets/${id}?view_as=${view_as}`,
     getConfig()
   );
   return data;
@@ -106,9 +86,7 @@ const getViews = async (dataset_id: string) => {
   return data;
 };
 const dataService = {
-  getDatasets,
   getPublishedDatasets,
-  getDatasetByID,
   updateDatasetAvailability,
   updateDatasets,
   uploadDataset,

@@ -30,28 +30,29 @@ const DataDetails = () => {
     (state) => state.monitorAccess
   );
   const {
+    inputs,
     handleOnChange,
-    isPublished,
+    isUpload,
     handleUploadDataset,
+    handleUpdateDataset,
+    isLoadingUploadDataset,
+    isLoadingUpdateDataset,
     isLoading,
     publishedModalProps: { isOpen, handleClose },
-    dataDetails,
-    datasetByIDActions,
-    handleUpdateDataset,
-    updateDatasetsActions,
+    isLoadingGetDataset,
     isOwner,
   } = useDataDetails();
 
   const SUMMARY = [
     {
       name: 'Hash of the data',
-      value: <TruncatedAddress hash={dataDetails?.item_hash} copy />,
+      value: <TruncatedAddress hash={inputs?.item_hash} copy />,
     },
     ...(!isOwner
       ? [
           {
             name: 'Name',
-            value: dataDetails?.name,
+            value: inputs?.name,
           },
         ]
       : []),
@@ -60,7 +61,7 @@ const DataDetails = () => {
       value: (
         <p>
           {dayjs
-            .unix(dataDetails?.timestamp || Date.now() / 1000)
+            .unix(inputs?.timestamp || Date.now() / 1000)
             .format('DD/MM/YYYY')}
         </p>
       ),
@@ -77,48 +78,53 @@ const DataDetails = () => {
           },
           {
             name: 'Current Price',
-            value: <p>{dataDetails?.price} USDC</p>,
+            value: <p>{inputs?.price} USDC</p>,
           },
           {
             name: 'Owners address',
-            value: <TruncatedAddress hash={dataDetails?.owner} copy />,
+            value: <TruncatedAddress hash={inputs?.owner} copy />,
           },
         ]
       : [
           {
             name: 'Sellers wallet',
-            value: <TruncatedAddress hash={dataDetails?.owner} copy />,
+            value: <TruncatedAddress hash={inputs?.owner} copy />,
           },
           {
             name: 'Current Price',
-            value: <p>{dataDetails?.price} USDC</p>,
+            value: <p>{inputs?.price} USDC</p>,
           },
           {
             name: 'Description',
-            value: dataDetails?.desc,
+            value: inputs?.desc,
           },
         ]),
   ];
 
   const action = () => {
+    if (isUpload) {
+      return (
+        <Button
+          text="Publish"
+          icon="upload"
+          size="md"
+          isLoading={isLoadingUploadDataset as boolean}
+          onClick={handleUploadDataset}
+        />
+      );
+    }
     if (isOwner) {
       return (
         <Button
           text="Save"
           icon="box"
           size="md"
-          isLoading={isLoading}
-          onClick={() => {
-            handleUploadDataset();
-          }}
+          isLoading={isLoadingUpdateDataset}
+          onClick={handleUpdateDataset}
         />
       );
     }
-
-    if (
-      dataDetails?.available ||
-      dataDetails?.permission_status === 'GRANTED'
-    ) {
+    if (inputs?.available || inputs?.permission_status === 'GRANTED') {
       return (
         <Button
           text="Download"
@@ -126,15 +132,11 @@ const DataDetails = () => {
           icon="download"
           btnStyle="outline-primary"
           isLoading={isLoading}
-          onClick={() => handleDownload(dataDetails.timeseriesIDs)}
+          onClick={() => handleDownload(inputs.timeseriesIDs)}
         />
       );
     }
-
-    if (
-      !dataDetails?.available ||
-      !(dataDetails?.permission_status === 'GRANTED')
-    ) {
+    if (!inputs?.available || !(inputs?.permission_status === 'GRANTED')) {
       return (
         <Button
           text="Request access"
@@ -148,27 +150,16 @@ const DataDetails = () => {
                 value: auth.address,
               })
             );
-            dispatch(requestDatasetPermissions(dataDetails?.item_hash));
+            dispatch(requestDatasetPermissions(inputs?.item_hash));
           }}
           isLoading={
-            dataDetails?.permission_status === 'REQUESTED' ||
+            inputs?.permission_status === 'REQUESTED' ||
             requestDatasetPermissionActions.isLoading
           }
         />
       );
     }
-
-    return (
-      <Button
-        text="Publish"
-        icon="upload"
-        size="md"
-        isLoading={isLoading}
-        onClick={() => {
-          handleUploadDataset();
-        }}
-      />
-    );
+    return <>Test</>;
   };
 
   return (
@@ -187,21 +178,21 @@ const DataDetails = () => {
         <div>{action()}</div>
       </div>
       <div className="relative">
-        <ViewLoader isLoading={datasetByIDActions.isLoading} />
+        <ViewLoader isLoading={isLoadingGetDataset} />
         {isOwner ? (
           <div className="grid grid-cols-2 gap-5 mb-5">
             <div className="bg-form-bg flex flex-col gap-4 p-6 text-text-dark rounded-[32px]">
               <TextInput
                 label="Data name"
                 placeholder="Name the data"
-                value={dataDetails?.name || ''}
+                value={inputs?.name || ''}
                 onChange={(e) => handleOnChange('name', e.target.value)}
                 fullWidth
               />
               <TextInput
                 label="Set price in USDC"
                 placeholder="Enter the price"
-                value={dataDetails?.price || ''}
+                value={inputs?.price || ''}
                 onChange={(e) => handleOnChange('price', e.target.value)}
                 fullWidth
                 trail="USDC"
@@ -209,7 +200,7 @@ const DataDetails = () => {
               <TextInput
                 label="Description"
                 placeholder="What is the data about?"
-                value={dataDetails?.desc || ''}
+                value={inputs?.desc || ''}
                 onChange={(e) => handleOnChange('desc', e.target.value)}
                 fullWidth
               />
@@ -227,17 +218,14 @@ const DataDetails = () => {
         withHeader={false}
       >
         <div className="flex flex-col items-center gap-4">
-          <h1>Data {!isPublished ? 'published' : 'updated'}!</h1>
+          <h1>Data {isUpload ? 'published' : 'updated'}!</h1>
           <IoCheckbox className="text-primary" size={70} />
           <p>
-            {dataDetails?.name || ''} {!isPublished ? 'published' : 'updated'}
+            {inputs?.name || ''} {isUpload ? 'published' : 'updated'}
           </p>
           <div className="flex flex-col items-center gap-2">
-            <TruncatedAddress
-              hash={dataDetails?.item_hash || ''}
-              color="primary"
-            />
-            <ClickToCopy text={dataDetails?.item_hash || ''} color="#1DC3CF" />
+            <TruncatedAddress hash={inputs?.item_hash || ''} color="primary" />
+            <ClickToCopy text={inputs?.item_hash || ''} color="#1DC3CF" />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">
@@ -248,7 +236,7 @@ const DataDetails = () => {
             btnStyle="outline-primary"
             fullWidth
             onClick={() => {
-              navigate(`/data/${dataDetails?.item_hash}/details`);
+              navigate(`/data/${inputs?.item_hash}/details`);
               handleClose();
             }}
           />

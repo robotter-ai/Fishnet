@@ -15,6 +15,7 @@ import {
 import { useWallet } from '@solana/wallet-adapter-react';
 import Cookies from 'universal-cookie';
 import useLogin from '@features/auth/hooks/useLogin';
+import LoginWaveImg from '@assets/images/login-wave.png';
 
 const Login = () => {
   const cookies = new Cookies();
@@ -72,26 +73,43 @@ const Login = () => {
   return auth.isAuth ? (
     <Navigate to="/data" replace />
   ) : (
-    <div id="login-wrapper" className="flex flex-col h-screen bg-white">
-      <div className="py-5 px-8 flex justify-between items-center">
-        <img src="./fishnet.png" alt="Robotter PNG" width={50} />
-        <Button text="Connect a wallet" icon="login" onClick={handleOpen} />
+    <>
+      <div className="flex flex-col h-[80vh] bg-white">
+        <div className="py-5 px-8 flex justify-between items-center">
+          <img src="./fishnet.png" alt="Fishnet Logo" width={50} />
+          <Button
+            text="Connect Fishnet"
+            icon="login"
+            btnStyle="outline-primary"
+            onClick={handleOpen}
+          />
+        </div>
+        <div className="relative h-full mt-20 flex flex-col">
+          <img
+            src="./fishnet-logo.png"
+            alt="Fishnet Logo"
+            className="absolute top-[20%] left-1/2 -translate-x-1/2 w-1/2"
+          />
+          <img
+            src={LoginWaveImg}
+            alt="Fishnet Logo"
+            className="w-full h-full"
+          />
+        </div>
       </div>
-      <div className="my-auto flex flex-col gap-8 pl-10 w-1/2">
-        <h1 className="text-5xl text-[#172025]">
-          Decentralized Financial <br /> Signal Hosting Network
-        </h1>
-        <p className="text-2xl">
-          For Data Engineers, Traders
-          <br /> and Everyone in between
+      <div className="bg-[#F6FAFB] text-center flex flex-col justify-center gap-10 py-28 px-[25%]">
+        <p className="text-5xl">
+          Fishnet is currently in closed alpha and requires signing up on the
+          waitlist to get access
         </p>
-        <button
-          type="button"
-          className="self-start bg-gradient-to-r from-[#0055FF] to-primary text-white px-20 mt-6 h-14 border-b-[6px] border-solid border-[#00009c] rounded-xl"
-          onClick={handleOpen}
-        >
-          Connect
-        </button>
+        <div className="mx-auto">
+          <Button
+            text="Get on the Waitlist"
+            icon="shield"
+            size="md"
+            onClick={handleOpen}
+          />
+        </div>
       </div>
       <AppModal
         title="Connect a wallet"
@@ -100,7 +118,7 @@ const Login = () => {
       >
         <LoginForm />
       </AppModal>
-    </div>
+    </>
   );
 };
 

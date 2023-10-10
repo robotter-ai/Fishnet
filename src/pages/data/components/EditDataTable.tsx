@@ -38,6 +38,7 @@ const EditDataTable = ({
 }) => {
   const { selectedChart, handleDeleteChart, timeseries, dataDetails } =
     useTimeseriesChart();
+
   return (
     <CustomTable
       data={data}

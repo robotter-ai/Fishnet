@@ -3,14 +3,11 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import {
-  changeDataDetails,
-  generateViews,
-  getDatasetByID,
-  getViews,
-  resetDataDetails,
-  resetDataSlice,
-  updateDatasets,
-  uploadDataset,
+  IUploadDataset,
+  useGenerateViewsMutation,
+  useGetDatasetQuery,
+  useUpdateDatasetMutation,
+  useUploadDatasetMutation,
 } from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
 import useAuth from '@shared/hooks/useAuth';
@@ -32,71 +29,79 @@ export default () => {
   const { setTitle } = usePageTitle();
   const auth = useAuth();
   const dispatch = useAppDispatch();
-  const {
-    dataDetails,
-    views,
-    uploadDatasetActions,
-    datasetByIDActions,
-    updateDatasetsActions,
-    generateViewActions,
-  } = useAppSelector((app) => app.datasets);
+  const [inputs, setInputs] = useState<Record<string, any>>({});
+  const { uploadDatasetActions, updateDatasetsActions, generateViewActions } =
+    useAppSelector((app) => app.datasets);
   const { initProductTree } = useAppSelector((app) => app.transaction);
+  const { timeseries } = useAppSelector((state) => state.timeseries);
   const { sendTransaction } = useWallet();
-  const { requestDatasetPermissionActions } = useAppSelector(
-    (state) => state.monitorAccess
-  );
   const { isOpen, handleOpen, handleClose } = useModal();
-  const isPublished = id && id !== 'upload';
   const [signature, setSignature] = useState<string>('');
-  const { isOwner } = useOwner(dataDetails?.owner);
+  const { isOwner } = useOwner(inputs?.owner);
+
+  const isUpload = (id && id === 'upload') as boolean;
+
+  // START: RTK Query
+  const {
+    data,
+    isLoading: isLoadingGetDataset,
+    isSuccess: isGetDatasetSuccess,
+  } = useGetDatasetQuery(
+    { dataset_id: id as string, view_as: auth.address },
+    { skip: isUpload }
+  );
+  const [
+    uploadDataset,
+    {
+      data: uploadedData,
+      isLoading: isLoadingUploadDataset,
+      isSuccess: isSuccessUploadDataset,
+    },
+  ] = useUploadDatasetMutation();
+  const [generateViews, { isLoading: isLoadingGenerateViews }] =
+    useGenerateViewsMutation();
+  const [updateDataset, { isLoading: isLoadingUpdateDataset }] =
+    useUpdateDatasetMutation();
 
   useEffect(() => {
-    if (isPublished) {
-      dispatch(getDatasetByID({ id, view_as: auth.address }));
+    if (isGetDatasetSuccess) {
+      setInputs(data);
+      setTitle(data?.name);
     } else {
-      dispatch(resetDataDetails());
+      setTitle('New data');
+      handleOnChange('owner', auth?.address);
     }
-    dispatch(changeDataDetails({ name: 'owner', value: auth?.address }));
-    dispatch(changeDataDetails({ name: 'ownsAllTimeseries', value: true }));
-  }, [requestDatasetPermissionActions.success]);
+  }, [isGetDatasetSuccess]);
 
-  useEffect(() => {
-    if (
-      dataDetails?.item_hash !== (undefined || null) &&
-      uploadDatasetActions.success &&
-      initProductTree.transaction === null &&
-      signature === ''
-    ) {
-      const config = {
-        params: {
-          signer: auth.address,
-          marketplace: FISHNET_MARKETPLACE,
-          paymentMint: USDC_MINT,
-          params: {
-            id: dataDetails?.item_hash as string,
-            productPrice: Number(dataDetails?.price),
-            feeBasisPoints: 0,
-            height: 5,
-            buffer: 8,
-            canopy: 0,
-            name: String(dataDetails?.name),
-            metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${dataDetails?.item_hash}`,
-          },
-        },
-      };
-      dispatch(initProductTreeTransaction(config));
-      // handleGenerateViews(dataDetails?.item_hash);
-    } else if (typeof id === 'string' && id !== 'upload') {
-      handleGetViews(id);
-      // handleGenerateViews(dataDetails?.item_hash);
-    }
-    // localStorage.setItem('viewValues', views[0]);
-    // console.log('views', views);
-  }, [uploadDatasetActions.success]);
-
-  useEffect(() => {
-    setTitle(dataDetails?.name || 'New data');
-  }, [dataDetails?.name]);
+  // useEffect(() => {
+  //   if (
+  //     uploadedData?.dataset?.item_hash !== (undefined || null) &&
+  //     isSuccessUploadDataset &&
+  //     initProductTree.transaction === null &&
+  //     signature === ''
+  //   ) {
+  //     const config = {
+  //       params: {
+  //         signer: auth.address,
+  //         marketplace: FISHNET_MARKETPLACE,
+  //         paymentMint: USDC_MINT,
+  //         params: {
+  //           id: uploadedData?.dataset?.item_hash as string,
+  //           productPrice: Number(uploadedData?.dataset?.price),
+  //           feeBasisPoints: 0,
+  //           height: 5,
+  //           buffer: 8,
+  //           canopy: 0,
+  //           name: String(uploadedData?.dataset?.name),
+  //           metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${uploadedData?.dataset?.item_hash}`,
+  //         },
+  //       },
+  //     };
+  //     dispatch(initProductTreeTransaction(config));
+  //   } else if (typeof id === 'string' && id !== 'upload') {
+  //     // handleGetViews(id);
+  //   }
+  // }, [JSON.stringify(uploadedData), isSuccessUploadDataset]);
 
   useEffect(() => {
     if (initProductTree.transaction && initProductTree.success && !signature) {
@@ -115,74 +120,85 @@ export default () => {
       processTransaction();
       dispatch(resetTransactionSlice());
     }
-  }, [initProductTree.transaction]);
+  }, [initProductTree.transaction, initProductTree.success]);
 
-  useEffect(() => {
-    if (
-      uploadDatasetActions.success &&
-      initProductTree.success &&
-      signature !== ''
-    ) {
-      handleOpen();
-      dispatch(resetDataSlice());
-    }
-  }, [signature, uploadDatasetActions.success]);
-
-  const handleUploadDataset = () => {
-    dispatch(uploadDataset());
-    const checkDatasetId = setInterval(() => {
-      if (dataDetails?.item_hash) {
-        dispatch(generateViews({ datasetId: dataDetails?.item_hash }));
-        clearInterval(checkDatasetId);
-      }
-    }, 500);
+  const inputsToUpload: IUploadDataset = {
+    desc: inputs?.desc,
+    name: inputs?.name,
+    owner: inputs?.owner,
+    price: String(inputs?.price),
+    ...(inputs?.item_hash
+      ? {
+          item_hash: inputs?.item_hash,
+          timeseriesIDs: inputs?.timeseriesIDs,
+          ownsAllTimeseries: inputs?.ownsAllTimeseries,
+        }
+      : { timeseriesIDs: [], ownsAllTimeseries: true }),
   };
 
-  // const handleGenerateViews = (hashId: string) => {
-  //   dispatch(generateViews({ datasetId: hashId }));
-  // };
-
-  const handleGetViews = (hashId: string) => {
-    dispatch(getViews(hashId));
+  const handleUploadDataset = () => {
+    const timeseriesToUse = timeseries.map((item: any) => ({
+      name: item.name,
+      owner: item.owner,
+      desc: item.desc,
+      data: item.data,
+    }));
+    uploadDataset({
+      dataset: inputsToUpload,
+      timeseries: timeseriesToUse,
+    }).then((res: any) => {
+      setInputs(res?.data?.dataset);
+      handleGenerateViews(res?.data?.dataset);
+    });
   };
 
   const handleUpdateDataset = () => {
-    dispatch(updateDatasets());
+    updateDataset(inputsToUpload).then(() => {
+      handleOpen();
+    });
   };
 
-  const handleOnChange = (name: string, value: any) => {
-    dispatch(changeDataDetails({ name, value }));
+  const handleGenerateViews = (res: any) => {
+    const time: number[] = timeseries[0].data
+      .map((x: any[]) => x[0])
+      .sort((a: number, b: number) => a - b);
+    const timeseriesToUse = [
+      {
+        timeseriesIDs: res?.timeseriesIDs,
+        granularity: 'YEAR',
+        startTime: time[0],
+        endTime: time[time.length - 1],
+      },
+    ];
+    generateViews({ dataset_id: res?.item_hash, data: timeseriesToUse }).then(
+      () => {
+        handleOpen();
+      }
+    );
   };
 
-  // function convertViewValuesToDataType(viewValues: ViewValues): DataType[][] {
-  //   const convertedData: DataType[][] = [];
-
-  //   Object.entries(viewValues).forEach(([key, values]) => {
-  //     const keyData: DataType[] = [];
-
-  //     values.forEach(([name, date]) => {
-  //       keyData.push({ date, name });
-  //     });
-
-  //     convertedData.push(keyData);
-  //   });
-
-  //   return convertedData;
-
-  //   // Little side note, you'll use the index of the data of the column to fetch the data you currently want to display
-  // }
+  const handleOnChange = (input: string, value: any) => {
+    setInputs((prevState) => ({ ...prevState, [input]: value }));
+    if (input === 'name') {
+      setTitle(value);
+    }
+  };
 
   return {
+    inputs,
     handleOnChange,
     handleUploadDataset,
-    datasetByIDActions,
+    handleUpdateDataset,
+    isLoadingGetDataset,
+    isLoadingUploadDataset:
+      isLoadingUploadDataset ||
+      isLoadingGenerateViews ||
+      initProductTree.success,
+    isLoadingUpdateDataset,
     isLoading: uploadDatasetActions.isLoading || generateViewActions.isLoading,
-    isPublished,
-    dataDetails,
+    isUpload,
     publishedModalProps: { handleClose, isOpen, handleOpen },
     updateDatasetsActions,
-    handleUpdateDataset,
-    views,
     isOwner,
   };
 };

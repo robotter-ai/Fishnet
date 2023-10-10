@@ -1,5 +1,4 @@
 import { TrashIcon } from '@assets/icons';
-import { DataType, ViewValues } from '@slices/dataSlice/dataService';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -19,23 +18,18 @@ import { ChartProps } from '../hooks/useTimeseriesChart';
 const DataChart: React.FC<{
   data: any[];
   chart: ChartProps;
-  isViewValue?: boolean;
-  columns?: string[];
   withActions?: boolean;
   handleOpenChart?: () => void;
   handleDeleteChart?: () => void;
 }> = ({
-  data,
+  data = [],
   chart,
   withActions,
   handleOpenChart,
   handleDeleteChart,
-  columns,
-  isViewValue,
 }) => {
   const duration = ['D', 'W', '1M', '3M', 'Y', 'All'];
   const [activeDuration, setActiveDuration] = useState(2);
-  const [currentData, setCurrentData] = useState(data);
 
   const getChartData = (x: any): {} => {
     let keysWithValue = {};
@@ -48,33 +42,9 @@ const DataChart: React.FC<{
     return keysWithValue;
   };
 
-  function convertViewValuesToDataType(viewValues: ViewValues): DataType[][] {
-    const convertedData: DataType[][] = [];
-
-    Object.entries(viewValues).forEach(([key, values]) => {
-      const keyData: DataType[] = [];
-
-      values.forEach(([date, name]) => {
-        keyData.push({ name, date });
-      });
-
-      convertedData.push(keyData);
-    });
-    return convertedData;
-
-    // Little side note, you'll use the index of the data of the column to fetch the data you currently want to display
-  }
-  useEffect(() => {
-    if (isViewValue) {
-      // @ts-ignore
-      const convValue = convertViewValuesToDataType(data);
-      setCurrentData(convValue);
-    }
-  }, [isViewValue]);
-
   const dataDurationFilter = () => {
     const datedData: any = [];
-    data.forEach((item) => {
+    data?.forEach((item) => {
       let group = null;
       switch (activeDuration) {
         case 0:
@@ -117,6 +87,7 @@ const DataChart: React.FC<{
     });
     return datedData[0];
   };
+
   const dataToUse = dataDurationFilter()?.map((item: any) => ({
     date: dayjs(item.date)
       .toDate()
@@ -171,91 +142,48 @@ const DataChart: React.FC<{
         ) : null}
       </div>
       <ResponsiveContainer width="100%" height={250}>
-        {isViewValue ? (
-          <AreaChart data={currentData}>
-            <defs>
-              {chart.keys.map((item, idx: number) => (
-                <linearGradient
-                  key={idx}
-                  id={`color${item.name}`}
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
-                  <stop offset="5%" stopColor={item.color} stopOpacity={0.5} />
-                  <stop offset="95%" stopColor={item.color} stopOpacity={0} />
-                </linearGradient>
-              ))}
-            </defs>
-            <XAxis dataKey="graphData" axisLine={false} tickLine={false} />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tickFormatter={(number) => (number === 0 ? '' : number)}
-            />
-            <CartesianGrid opacity={0.5} vertical={false} />
-            <Tooltip />
+        <AreaChart data={dataToUse} margin={{ left: -2 }}>
+          <defs>
             {chart.keys.map((item, idx: number) => (
-              <Area
+              <linearGradient
                 key={idx}
-                type="linear"
-                dataKey={item.name}
-                stroke={item.color}
-                strokeWidth={1.5}
-                fillOpacity={1}
-                fill={`url(#color${item.name})`}
-              />
+                id={`color${item.name}`}
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop offset="5%" stopColor={item.color} stopOpacity={0.5} />
+                <stop offset="95%" stopColor={item.color} stopOpacity={0} />
+              </linearGradient>
             ))}
-          </AreaChart>
-        ) : (
-          <AreaChart data={dataToUse} margin={{ left: -2 }}>
-            <defs>
-              {chart.keys.map((item, idx: number) => (
-                <linearGradient
-                  key={idx}
-                  id={`color${item.name}`}
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
-                  <stop offset="5%" stopColor={item.color} stopOpacity={0.5} />
-                  <stop offset="95%" stopColor={item.color} stopOpacity={0} />
-                </linearGradient>
-              ))}
-            </defs>
-            <XAxis dataKey="date" axisLine={false} tickLine={false} />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tickFormatter={(number) => (number === 0 ? '' : number)}
+          </defs>
+          <XAxis dataKey="date" axisLine={false} tickLine={false} />
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            tickFormatter={(number) => (number === 0 ? '' : number)}
+          />
+          <CartesianGrid opacity={0.8} stroke="#C8CCCD" strokeDasharray="5 5" />
+          <Tooltip />
+          {chart.keys.map((item, idx: number) => (
+            <Area
+              key={idx}
+              type="linear"
+              dataKey={item.name}
+              stroke={item.color}
+              strokeWidth={1.5}
+              fillOpacity={1}
+              fill={`url(#color${item.name})`}
             />
-            <CartesianGrid
-              opacity={0.8}
-              stroke="#C8CCCD"
-              strokeDasharray="5 5"
-            />
-            <Tooltip />
-            {chart.keys.map((item, idx: number) => (
-              <Area
-                key={idx}
-                type="linear"
-                dataKey={item.name}
-                stroke={item.color}
-                strokeWidth={1.5}
-                fillOpacity={1}
-                fill={`url(#color${item.name})`}
-              />
-            ))}
-          </AreaChart>
-        )}
+          ))}
+        </AreaChart>
       </ResponsiveContainer>
-      <div className="flex gap-3 mt-5 overflow-x-auto ml-[54px]">
+      <div className="flex gap-4 mt-5 overflow-x-auto ml-[54px]">
         {chart.keys.map((item, idx: number) => (
-          <div key={idx} className="flex items-center gap-2">
+          <div key={idx} className="flex items-center gap-1">
             <AiOutlineLine color={item.color} />
-            <p className="text-xs">{item.name}</p>
+            <p className="text-xs whitespace-nowrap">{item.name}</p>
           </div>
         ))}
       </div>
