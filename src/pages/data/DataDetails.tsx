@@ -183,16 +183,17 @@ const DataDetails = () => {
           <div className="grid grid-cols-2 gap-5 mb-5">
             <div className="bg-form-bg flex flex-col gap-4 p-6 text-text-dark rounded-[32px]">
               <TextInput
-                label="Data name"
-                placeholder="Name the data"
+                label="Title"
+                placeholder="A short but descriptive title"
                 value={inputs?.name || ''}
                 onChange={(e) => handleOnChange('name', e.target.value)}
                 fullWidth
               />
               <TextInput
-                label="Set price in USDC"
-                placeholder="Enter the price"
-                value={inputs?.price || ''}
+                label="Price"
+                placeholder="Set a price for your data"
+                type="number"
+                value={inputs?.price || '0'}
                 onChange={(e) => handleOnChange('price', e.target.value)}
                 fullWidth
                 trail="USDC"
