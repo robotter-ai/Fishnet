@@ -136,6 +136,11 @@ export default () => {
   };
 
   const handleUploadDataset = () => {
+    // check if dataset name is set
+    if (!inputsToUpload?.name) {
+      // stop execution and outline the input field
+      return;
+    }
     const timeseriesToUse = timeseries.map((item: any) => ({
       name: item.name,
       owner: item.owner,

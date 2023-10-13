@@ -53,7 +53,7 @@ const Login = () => {
     if (getChallenge.challenge) {
       solveChallengeAsync();
     }
-  }, [getChallenge.success]);
+  }, [getChallenge.success, ]);
 
   useEffect(() => {
     if (
