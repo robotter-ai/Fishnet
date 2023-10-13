@@ -1,4 +1,4 @@
-import { ChangeEvent, HTMLInputTypeAttribute } from 'react';
+import { HTMLInputTypeAttribute } from 'react';
 import classNames from 'classnames';
 
 interface TextInputProps {
@@ -16,6 +16,7 @@ interface TextInputProps {
   ) => void;
   disabled?: boolean;
   trail?: string;
+  mandatory?: boolean;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -29,19 +30,8 @@ const TextInput: React.FC<TextInputProps> = ({
   onChange,
   disabled,
   trail,
+  mandatory,
 }) => {
-  const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
-    // Regular expression to match only numbers and decimal inputs
-    const regex = /^[0-9]*\.?[0-9]*$/;
-
-    const inputValue = event.target.value;
-
-    // Validate the input against the regular expression
-    if (!regex.test(inputValue)) {
-      event.preventDefault();
-    }
-  };
-
   return (
     <label
       className={classNames('relative', {
@@ -52,8 +42,10 @@ const TextInput: React.FC<TextInputProps> = ({
       <input
         type={type}
         className={classNames(
-          `bg-[${bgColor}] py-3 px-4 mt-1 outline-none border border-transparent focus:border-primary text-sm rounded-full`,
+          `bg-[${bgColor}] py-3 px-4 mt-1 outline-none border text-sm rounded-full`,
           {
+            'border-danger': mandatory && value === '',
+            'border-transparent focus:border-primary': !mandatory || value !== '',
             'w-full': fullWidth,
             'h-9': size === 'sm',
             'h-[44px]': size === 'md',
