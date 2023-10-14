@@ -82,10 +82,11 @@ export default () => {
       },
     });
     const formData = new FormData();
-    formData.append('owner', auth?.address);
     formData.append('data_file', file);
     dispatch(preprocessTimeseries(formData)).then(() => {
       navigate(`/data/${'upload'}/details`);
+      // set name of dataset
+      setTitle(file.name)
     });
   };
 

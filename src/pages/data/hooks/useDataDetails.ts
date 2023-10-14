@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { useEffect, useState } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
@@ -26,7 +27,7 @@ import useOwner from '@shared/hooks/useOwner';
 
 export default () => {
   const { id } = useParams();
-  const { setTitle } = usePageTitle();
+  const { setTitle, getTitle } = usePageTitle();
   const auth = useAuth();
   const dispatch = useAppDispatch();
   const [inputs, setInputs] = useState<Record<string, any>>({});
@@ -68,7 +69,9 @@ export default () => {
       setInputs(data);
       setTitle(data?.name);
     } else {
-      setTitle('New data');
+      setInputs({
+        name: getTitle(),
+      });
       handleOnChange('owner', auth?.address);
     }
   }, [isGetDatasetSuccess]);
