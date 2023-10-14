@@ -177,6 +177,10 @@ export default () => {
   };
 
   const handleOnChange = (input: string, value: any) => {
+    if (input === 'price') {
+      // should not be below 0 or empty
+      value = value < 0 ? 0 : value;
+    }
     setInputs((prevState) => ({ ...prevState, [input]: value }));
     if (input === 'name') {
       setTitle(value);
