@@ -107,7 +107,7 @@ const Login = () => {
             text="Get on the Waitlist"
             icon="shield"
             size="md"
-            onClick={handleOpen}
+            href="https://airtable.com/appSQLW6n1hHiOJGA/shrstF1WLukXhHZro"
           />
         </div>
       </div>

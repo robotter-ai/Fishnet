@@ -58,7 +58,7 @@ const COLUMNS: ITableColumns[] = [
     cell: (item) => (
       <div className="w-auto flex items-end justify-end">
         <Button
-          href={`/monitor-access/${item.item_hash}/settings`}
+          linkTo={`/monitor-access/${item.item_hash}/settings`}
           text="Settings"
           size="sm"
           icon="settings"

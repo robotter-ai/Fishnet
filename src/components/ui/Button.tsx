@@ -39,6 +39,7 @@ interface ButtonProps {
   type?: 'button' | 'submit';
   className?: string;
   href?: string;
+  linkTo?: string;
   fullWidth?: boolean;
 }
 
@@ -66,6 +67,7 @@ const CustomButton: React.FC<ButtonProps> = ({
   isLoading,
   disabled,
   href,
+  linkTo,
   icon,
 }) => {
   const btnClassnames = classNames(
@@ -83,8 +85,20 @@ const CustomButton: React.FC<ButtonProps> = ({
 
   if (href) {
     return (
+      <a
+        href={href}
+        className={`${btnClassnames} flex gap-2 justify-center items-center self-start`}
+      >
+        {icon ? ICONS[icon] : null}
+        {text}
+      </a>
+    );
+  }
+
+  if (linkTo) {
+    return (
       <Link
-        to={href}
+        to={linkTo}
         className={`${btnClassnames} flex gap-2 justify-center items-center self-start`}
       >
         {icon ? ICONS[icon] : null}

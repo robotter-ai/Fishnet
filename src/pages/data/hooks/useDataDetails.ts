@@ -73,35 +73,33 @@ export default () => {
     }
   }, [isGetDatasetSuccess]);
 
-  // useEffect(() => {
-  //   if (
-  //     uploadedData?.dataset?.item_hash !== (undefined || null) &&
-  //     isSuccessUploadDataset &&
-  //     initProductTree.transaction === null &&
-  //     signature === ''
-  //   ) {
-  //     const config = {
-  //       params: {
-  //         signer: auth.address,
-  //         marketplace: FISHNET_MARKETPLACE,
-  //         paymentMint: USDC_MINT,
-  //         params: {
-  //           id: uploadedData?.dataset?.item_hash as string,
-  //           productPrice: Number(uploadedData?.dataset?.price),
-  //           feeBasisPoints: 0,
-  //           height: 5,
-  //           buffer: 8,
-  //           canopy: 0,
-  //           name: String(uploadedData?.dataset?.name),
-  //           metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${uploadedData?.dataset?.item_hash}`,
-  //         },
-  //       },
-  //     };
-  //     dispatch(initProductTreeTransaction(config));
-  //   } else if (typeof id === 'string' && id !== 'upload') {
-  //     // handleGetViews(id);
-  //   }
-  // }, [JSON.stringify(uploadedData), isSuccessUploadDataset]);
+  useEffect(() => {
+    if (
+      uploadedData?.dataset?.item_hash !== (undefined || null) &&
+      isSuccessUploadDataset &&
+      initProductTree.transaction === null &&
+      signature === ''
+    ) {
+      const config = {
+        params: {
+          signer: auth.address,
+          marketplace: FISHNET_MARKETPLACE,
+          paymentMint: USDC_MINT,
+          params: {
+            id: uploadedData?.dataset?.item_hash as string,
+            productPrice: Number(uploadedData?.dataset?.price),
+            feeBasisPoints: 0,
+            height: 5,
+            buffer: 8,
+            canopy: 0,
+            name: String(uploadedData?.dataset?.name),
+            metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${uploadedData?.dataset?.item_hash}`,
+          },
+        },
+      };
+      dispatch(initProductTreeTransaction(config));
+    }
+  }, [JSON.stringify(uploadedData), isSuccessUploadDataset]);
 
   useEffect(() => {
     if (initProductTree.transaction && initProductTree.success && !signature) {
@@ -113,6 +111,7 @@ export default () => {
         try {
           setSignature(await sendTransaction(transaction, SOLANA_CONNECTION));
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.error('Error sending transaction:', error);
         }
       };

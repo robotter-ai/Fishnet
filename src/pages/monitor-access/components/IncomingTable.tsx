@@ -121,7 +121,7 @@ const COLUMNS = ({
       <div className="flex gap-2 justify-end">
         {item.status === 'GRANTED' ? (
           <CustomButton
-            href={`/monitor-access/${item.datasetID}/settings`}
+            linkTo={`/monitor-access/${item.datasetID}/settings`}
             text="Settings"
             btnStyle="outline-primary"
           />
