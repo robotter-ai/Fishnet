@@ -21,15 +21,17 @@ const DataChart: React.FC<{
   withActions?: boolean;
   handleOpenChart?: () => void;
   handleDeleteChart?: () => void;
+  isView?: boolean;
 }> = ({
   data = [],
   chart,
   withActions,
   handleOpenChart,
   handleDeleteChart,
+  isView= false,
 }) => {
   const duration = ['D', 'W', '1M', '3M', 'Y', 'All'];
-  const [activeDuration, setActiveDuration] = useState(2);
+  const [activeDuration, setActiveDuration] = useState(5);
 
   const getChartData = (x: any): {} => {
     let keysWithValue = {};
@@ -108,22 +110,24 @@ const DataChart: React.FC<{
   return (
     <div className="bg-form-bg rounded-[32px] py-5 px-6">
       <div className="flex justify-between mb-7">
-        <div className="bg-[#E6EEFF] w-[232px] h-8 flex items-center justify-between rounded-full ml-[54px] p-1 px-4">
-          {duration.map((item, i) => (
-            <p
-              key={i}
-              className={classNames(
-                'text-xs flex items-center justify-center rounded-full text-center h-6 w-6 cursor-pointer',
-                {
-                  'bg-white': i === activeDuration,
-                }
-              )}
-              onClick={() => setActiveDuration(i)}
-            >
-              {item}
-            </p>
-          ))}
-        </div>
+        {!isView ? (
+          <div className="bg-[#E6EEFF] w-[232px] h-8 flex items-center justify-between rounded-full ml-[54px] p-1 px-4">
+            {duration.map((item, i) => (
+              <p
+                key={i}
+                className={classNames(
+                  'text-xs flex items-center justify-center rounded-full text-center h-6 w-6 cursor-pointer',
+                  {
+                    'bg-white': i === activeDuration,
+                  }
+                )}
+                onClick={() => setActiveDuration(i)}
+              >
+                {item}
+              </p>
+            ))}
+          </div>
+        ): null}
         {withActions ? (
           <div className="flex gap-2">
             <div
@@ -158,14 +162,30 @@ const DataChart: React.FC<{
               </linearGradient>
             ))}
           </defs>
-          <XAxis dataKey="date" axisLine={false} tickLine={false} />
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tickFormatter={(number) => (number === 0 ? '' : number)}
-          />
+          {isView ? null : (
+            <XAxis axisLine={false} tickLine={false} dataKey="date" />
+          )}
+          {isView ? null : (
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(number) => (number === 0 ? '' : number)}
+            />
+          )}
           <CartesianGrid opacity={0.8} stroke="#C8CCCD" strokeDasharray="5 5" />
-          <Tooltip />
+          {!isView ? (
+            <Tooltip
+              contentStyle={{
+                background: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                padding: '10px',
+              }}
+              cursor={{ stroke: '#C8CCCD', strokeWidth: 1 }}
+              formatter={(value, name) => [value, name]}
+            />
+          ) : null}
           {chart.keys.map((item, idx: number) => (
             <Area
               key={idx}

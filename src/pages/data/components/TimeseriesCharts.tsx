@@ -35,6 +35,7 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
             withActions={isOwner}
             handleOpenChart={() => handleOpenChart(item.id as string)}
             handleDeleteChart={() => handleDeleteChart(item.id as string)}
+            isView={!isOwner}
           />
         ))}
       </div>
