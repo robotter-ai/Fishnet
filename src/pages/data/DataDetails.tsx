@@ -66,10 +66,6 @@ const DataDetails = () => {
         </p>
       ),
     },
-    {
-      name: 'Downloads',
-      value: <p>0</p>,
-    },
     ...(isOwner
       ? [
           {
