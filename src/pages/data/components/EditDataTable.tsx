@@ -3,30 +3,38 @@ import useTimeseriesChart from '../hooks/useTimeseriesChart';
 
 const COLUMNS: ITableColumns[] = [
   {
-    header: 'RECORD',
+    header: 'Timeseries',
     cell: (item) => <div className="w-[150px]">{item.name}</div>,
     sortWith: 'name',
   },
   {
-    header: 'MIN',
-    cell: () => '',
+    header: 'min',
+    cell: (item) => <div className="w-[120px]">{item.min}</div>,
   },
   {
-    header: 'MAX',
-    cell: () => '',
+    header: 'max',
+    cell: (item) => <div className="w-[120px]">{item.max}</div>,
   },
   {
-    header: 'AVG',
-    cell: () => '',
+    header: 'avg',
+    cell: (item) => <div className="w-[120px]">{item.avg}</div>,
   },
   {
-    header: 'STD',
-    cell: () => '',
+    header: 'std',
+    cell: (item) => <div className="w-[120px]">{item.std}</div>,
   },
   {
-    header: 'MEDIAN',
-    cell: () => '',
+    header: 'median',
+    cell: (item) => <div className="w-[120px]">{item.median}</div>,
   },
+  {
+    header: 'start',
+    cell: (item) => <div className="w-[120px]">{new Date(item.earliest * 1000).toLocaleString()}</div>,
+  },
+  {
+    header: 'end',
+    cell: (item) => <div className="w-[120px]">{new Date(item.latest * 1000).toLocaleString()}</div>,
+  }
 ];
 
 const EditDataTable = ({
@@ -38,7 +46,6 @@ const EditDataTable = ({
 }) => {
   const { selectedChart, handleDeleteChart, timeseries, dataDetails } =
     useTimeseriesChart();
-
   return (
     <CustomTable
       data={data}
