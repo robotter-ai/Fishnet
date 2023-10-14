@@ -110,6 +110,7 @@ const DataDetails = () => {
           size="md"
           isLoading={isLoadingUploadDataset as boolean}
           onClick={handleUploadDataset}
+          disabled={!inputs?.name || !inputs?.price}
         />
       );
     }
@@ -121,6 +122,7 @@ const DataDetails = () => {
           size="md"
           isLoading={isLoadingUpdateDataset}
           onClick={handleUpdateDataset}
+          disabled={!inputs?.name || !inputs?.price}
         />
       );
     }
