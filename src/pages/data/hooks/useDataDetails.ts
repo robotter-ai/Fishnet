@@ -30,7 +30,10 @@ export default () => {
   const { setTitle, getTitle } = usePageTitle();
   const auth = useAuth();
   const dispatch = useAppDispatch();
-  const [inputs, setInputs] = useState<Record<string, any>>({});
+  const [inputs, setInputs] = useState<Record<string, any>>({
+    name: '',
+    price: 0,
+  });
   const { uploadDatasetActions, updateDatasetsActions, generateViewActions } =
     useAppSelector((app) => app.datasets);
   const { initProductTree } = useAppSelector((app) => app.transaction);
@@ -71,6 +74,7 @@ export default () => {
     } else {
       setInputs({
         name: getTitle(),
+        price: 0,
       });
       handleOnChange('owner', auth?.address);
     }

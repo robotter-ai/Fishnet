@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import dayjs, {Dayjs, ManipulateType, OpUnitType} from 'dayjs';
+import dayjs, {ManipulateType, OpUnitType} from 'dayjs';
 import classNames from 'classnames';
 import { TrashIcon } from '@assets/icons';
 import { AiOutlineLine } from 'react-icons/ai';
@@ -9,32 +9,36 @@ import { ChartProps } from '../hooks/useTimeseriesChart';
 
 
 type DatedDataEntry = {
-  date: number;
+  date: string;
   [key: string]: number;
 }
 
 const DURATION_TYPE = ['D', 'W', '1M', '3M', 'Y', 'All'];
 
-const getDuration = (index: number): {
-    value: number;
-    type: ManipulateType;
-  } => {
-  const mapping: {
-    value: number;
-    type: ManipulateType;
-  }[] = [
-    { value: 1, type: 'day' },
-    { value: 1, type: 'week' },
-    { value: 1, type: 'month' },
-    { value: 3, type: 'month' },
-    { value: 1, type: 'year' },
-    { value: 100, type: 'year' },
-  ] as any as { value: number; type: ManipulateType }[];
+type DurationInfo = {
+  value: number;
+  type: ManipulateType;
+  granularity: OpUnitType;
+  granularityStep: number;
+};
+
+const getDuration = (index: number): DurationInfo => {
+  const mapping = [
+    { value: 1, type: 'day', granularity: 'minute', granularityStep: 5 },
+    { value: 1, type: 'week', granularity: 'minute', granularityStep: 15},
+    { value: 1, type: 'month', granularity: 'hour', granularityStep: 1 },
+    { value: 3, type: 'month', granularity: 'hour', granularityStep: 3 },
+    { value: 1, type: 'year', granularity: 'day', granularityStep: 1 },
+    { value: 100, type: 'year', granularity: 'day', granularityStep: 1 },
+  ] as any as DurationInfo[];
   return mapping[index];
 };
 
-const findGroupByDuration = (datedData: any[], item: any, duration: OpUnitType) => {
-  return datedData.find((g: any) => dayjs(item.date).isSame(g[0].date, duration));
+const findGroupByGranularity = (datedData: DatedDataEntry[][], item: any, durationInfo: DurationInfo) => {
+  return datedData.find((g: any) => {
+    const diff = dayjs(item.date).diff(dayjs(g[0].date), durationInfo.granularity);
+    return diff <= (durationInfo.granularityStep - 1);
+  });
 };
 
 const getEarlierDate = (date: any, activeDuration: number) => {
@@ -50,6 +54,7 @@ const DataChart: React.FC<{
   handleDeleteChart?: () => void;
   isView?: boolean;
 }> = ({ data, chart, withActions, handleOpenChart, handleDeleteChart, isView = false }) => {
+  console.log(data)
   const [activeDuration, setActiveDuration] = useState(5);
   const durationType = getDuration(activeDuration);
 
@@ -57,30 +62,24 @@ const DataChart: React.FC<{
     const datedData: DatedDataEntry[][] = [];
 
     data.forEach((item) => {
-      let group = findGroupByDuration(datedData, item, durationType.type);
+      let group = findGroupByGranularity(datedData, item, durationType);
       if (group) {
         group.push(item);
       } else {
-        datedData.push([group]);
+        datedData.push([item]);
       }
     });
 
     // Flatten the array and return
-    return datedData.map((item) => item[0]) as DatedDataEntry[];
+    return datedData.map((item) => item.flat()) as DatedDataEntry[];
   };
 
   function filterChartData(): DatedDataEntry[] {
-    let dataToUse = dataDurationFilter().map((item) => ({
-      date: item.date,
-      ...
-      chart.keys.reduce((acc, k) => ({...acc, [k.name]: item[k.name]}), {}),
-    }))
-
-    // filter
-    return dataToUse.filter((item) => {
+    const data = dataDurationFilter();
+    return data.filter((item) => {
       const diff = dayjs().diff(dayjs(item.date), durationType.type);
       return diff <= 1;
-    }).sort((a, b) => a.date - b.date);
+    }).sort((a, b) => dayjs(a.date).diff(dayjs(b.date))).reverse();
   }
 
   let dataToUse = filterChartData();
@@ -206,4 +205,4 @@ const DataChart: React.FC<{
   );
 };
 
-export default DataChart;
+export default React.memo(DataChart);

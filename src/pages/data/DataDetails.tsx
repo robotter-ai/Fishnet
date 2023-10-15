@@ -208,7 +208,7 @@ const DataDetails = () => {
             <DataSummary summary={SUMMARY} />
           </div>
         ) : null}
-        <TimeseriesCharts isOwner={isOwner} />
+        <TimeseriesCharts isOwner={isOwner} summary={SUMMARY} />
       </div>
 
       <AppModal
