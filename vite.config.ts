@@ -17,4 +17,11 @@ export default defineConfig({
       '@slices': path.resolve(__dirname, './src/slices'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: `[name].[hash].js`
+      }
+    }
+  }
 });

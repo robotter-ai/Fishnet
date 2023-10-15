@@ -10,7 +10,7 @@ import { ChartProps } from '../hooks/useTimeseriesChart';
 
 type DatedDataEntry = {
   date: string;
-  [key: string]: number;
+  [key: string]: number | string;
 }
 
 const DURATION_TYPE = ['D', 'W', '1M', '3M', 'Y', 'All'];
@@ -71,7 +71,7 @@ const DataChart: React.FC<{
     });
 
     // Flatten the array and return
-    return datedData.map((item) => item.flat()) as DatedDataEntry[];
+    return datedData.flat();
   };
 
   function filterChartData(): DatedDataEntry[] {
@@ -90,8 +90,22 @@ const DataChart: React.FC<{
   }, [activeDuration]);
 
   const domainSize = [
-    Math.min(...dataToUse.map((item) => item[chart.keys[0].name])),
-    Math.max(...dataToUse.map((item) => item[chart.keys[0].name])),
+    Math.min(...dataToUse.map((item) => {
+      const value = item[chart.keys[0].name];
+      if (typeof value === 'number') {
+        return value
+      } else {
+        return Number.MAX_SAFE_INTEGER;
+      }
+    })),
+    Math.max(...dataToUse.map((item) => {
+      const value = item[chart.keys[0].name];
+      if (typeof value === 'number') {
+        return value
+      } else {
+        return Number.MIN_SAFE_INTEGER;
+      }
+    })),
   ]
   const gridWidth = Math.round(dataToUse.length / 10);
   const gridHeight = Math.round(domainSize[1] - domainSize[0]) / 10;
