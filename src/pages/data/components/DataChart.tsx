@@ -61,11 +61,6 @@ const formatDateByGranularity = (date: any, durationInfo: DurationInfo) => {
   }
 }
 
-const getEarlierDate = (date: any, activeDuration: number) => {
-  const durationType = getDuration(activeDuration);
-  return dayjs(date).subtract(durationType.value, durationType.type);
-}
-
 const DataChart: React.FC<{
   data: DataEntry[];
   chart: ChartProps;
@@ -74,7 +69,6 @@ const DataChart: React.FC<{
   handleDeleteChart?: () => void;
   isView?: boolean;
 }> = ({ data, chart, withActions, handleOpenChart, handleDeleteChart, isView = false }) => {
-  console.log(data)
   const [activeDuration, setActiveDuration] = useState(5);
   const durationType = getDuration(activeDuration);
 
@@ -95,10 +89,9 @@ const DataChart: React.FC<{
   };
 
   function filterChartData(): FormattedDataEntry[] {
-    const data = dataDurationFilter();
+    const cutoffDate = dayjs(data[0].date).subtract(durationType.value, durationType.type);
     return data.filter((item) => {
-      const diff = dayjs().diff(dayjs(item.date), durationType.type);
-      return diff <= 1;
+      return dayjs(item.date).isAfter(cutoffDate);
     }).sort((a, b) => dayjs(a.date).diff(dayjs(b.date)))
       .map((item) => {
         const date = formatDateByGranularity(item.date, durationType);
@@ -110,11 +103,9 @@ const DataChart: React.FC<{
   }
 
   let dataToUse = filterChartData();
-  console.log(dataToUse)
 
   useEffect(() => {
     dataToUse = filterChartData();
-    console.log(dataToUse)
   }, [activeDuration]);
 
   const domainSize = [
@@ -137,7 +128,6 @@ const DataChart: React.FC<{
   ]
   const gridWidth = Math.round(dataToUse.length / 10);
   const gridHeight = Math.round(domainSize[1] - domainSize[0]) / 10;
-  console.log(gridWidth, gridHeight)
   return (
     <div className="bg-form-bg rounded-[32px] py-5 px-6">
       <div className="flex justify-between mb-7">
