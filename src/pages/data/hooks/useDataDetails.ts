@@ -112,7 +112,11 @@ export default () => {
 
       const processTransaction = async () => {
         try {
-          setSignature(await sendTransaction(transaction, SOLANA_CONNECTION));
+          const signature = await sendTransaction(transaction, SOLANA_CONNECTION, {
+            skipPreflight: true,
+          })
+          console.log('Signature:', signature);
+          setSignature(signature);
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error('Error sending transaction:', error);
