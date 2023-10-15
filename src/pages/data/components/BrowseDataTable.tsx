@@ -119,7 +119,7 @@ const BrowseDataTable = ({
       const url = URL.createObjectURL(blob);
       const downloadLink = document.createElement('a');
       downloadLink.href = url;
-      downloadLink.download = 'data.csv';
+      downloadLink.download = downloadTimeseries.timeseries;
       downloadLink.style.display = 'none';
 
       document.body.appendChild(downloadLink);
@@ -165,7 +165,7 @@ const BrowseDataTable = ({
     {
       header: 'PRICE',
       cell: ({ price }) =>
-        price === '0' ? (
+        price == 0 ? (
           <div className="flex gap-3 items-center">
             <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
               <FreeTagIcon />
@@ -191,7 +191,7 @@ const BrowseDataTable = ({
       }) => (
         <div className="w-auto flex items-end justify-end">
           {/* eslint-disable-next-line no-nested-ternary */}
-          {available && permission_status === 'GRANTED' ? (
+          {available && price == 0 || permission_status === 'GRANTED' ? (
             <CustomButton
               text="Download"
               btnStyle="outline-primary"
@@ -199,7 +199,7 @@ const BrowseDataTable = ({
               icon="download"
               onClick={() => handleDownload(timeseriesIDs)}
             />
-          ) : available &&
+          ) : !available &&
             permission_status === 'NOT GRANTED' &&
             price === '0' ? (
             <CustomButton
