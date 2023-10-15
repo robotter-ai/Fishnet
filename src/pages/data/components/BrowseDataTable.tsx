@@ -156,13 +156,6 @@ const BrowseDataTable = ({
       sortWith: 'owner',
     },
     {
-      header: 'DLS',
-      cell: (item) => (
-        <div className="flex w-[100px] gap-3">{item?.forgotten}</div>
-      ),
-      sortWith: '',
-    },
-    {
       header: 'PRICE',
       cell: ({ price }) =>
         price == 0 ? (
