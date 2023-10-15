@@ -8,8 +8,13 @@ import { RxDotsHorizontal } from 'react-icons/rx';
 import { ChartProps } from '../hooks/useTimeseriesChart';
 
 
-type DatedDataEntry = {
+type DataEntry = {
   date: number;
+  [key: string]: number;
+}
+
+type FormattedDataEntry = {
+  date: string;
   [key: string]: number;
 }
 
@@ -34,12 +39,27 @@ const getDuration = (index: number): DurationInfo => {
   return mapping[index];
 };
 
-const findGroupByGranularity = (datedData: DatedDataEntry[][], item: any, durationInfo: DurationInfo) => {
+const findGroupByGranularity = (datedData: DataEntry[][], item: any, durationInfo: DurationInfo) => {
   return datedData.find((g: any) => {
     const diff = dayjs(item.date).diff(dayjs(g[0].date), durationInfo.granularity);
     return diff <= (durationInfo.granularityStep - 1);
   });
 };
+
+const formatDateByGranularity = (date: any, durationInfo: DurationInfo) => {
+  switch (durationInfo.type) {
+    case 'day':
+      return dayjs(date).format('HH:mm');
+    case 'week':
+      return dayjs(date).format('D. HH:mm');
+    case 'month':
+      return dayjs(date).format('MMM D. HH:mm');
+    case 'year':
+      return dayjs(date).format('MMM D. YYYY');
+    default:
+      return dayjs(date).format('MMM D. YYYY');
+  }
+}
 
 const getEarlierDate = (date: any, activeDuration: number) => {
   const durationType = getDuration(activeDuration);
@@ -47,7 +67,7 @@ const getEarlierDate = (date: any, activeDuration: number) => {
 }
 
 const DataChart: React.FC<{
-  data: DatedDataEntry[];
+  data: DataEntry[];
   chart: ChartProps;
   withActions?: boolean;
   handleOpenChart?: () => void;
@@ -59,7 +79,7 @@ const DataChart: React.FC<{
   const durationType = getDuration(activeDuration);
 
   const dataDurationFilter = () => {
-    const datedData: DatedDataEntry[][] = [];
+    const datedData: DataEntry[][] = [];
 
     data.forEach((item) => {
       let group = findGroupByGranularity(datedData, item, durationType);
@@ -74,15 +94,23 @@ const DataChart: React.FC<{
     return datedData.flat();
   };
 
-  function filterChartData(): DatedDataEntry[] {
+  function filterChartData(): FormattedDataEntry[] {
     const data = dataDurationFilter();
     return data.filter((item) => {
       const diff = dayjs().diff(dayjs(item.date), durationType.type);
       return diff <= 1;
-    }).sort((a, b) => dayjs(a.date).diff(dayjs(b.date))).reverse();
+    }).sort((a, b) => dayjs(a.date).diff(dayjs(b.date)))
+      .map((item) => {
+        const date = formatDateByGranularity(item.date, durationType);
+        return {
+          ...item,
+          date,
+        };
+      });
   }
 
   let dataToUse = filterChartData();
+  console.log(dataToUse)
 
   useEffect(() => {
     dataToUse = filterChartData();
