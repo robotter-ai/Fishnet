@@ -15,7 +15,7 @@ type DataEntry = {
 
 type FormattedDataEntry = {
   date: string;
-  [key: string]: number;
+  [key: string]: number | string;
 }
 
 const DURATION_TYPE = ['D', 'W', '1M', '3M', 'Y', 'All'];
