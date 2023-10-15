@@ -7,8 +7,9 @@ import DataSummary from '@shared/components/Summary';
 import useTimeseriesChart, { ChartProps } from '../hooks/useTimeseriesChart';
 import DataChart from './DataChart';
 import EditDataTable from './EditDataTable';
+import React from "react";
 
-const TimeseriesCharts = ({ isOwner, summary }: any) => {
+const TimeseriesCharts = ({ isOwner }: any) => {
   const {
     charts,
     csvJson,
@@ -26,7 +27,6 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
   return (
     <div>
       <div className="grid grid-cols-2 gap-5 mb-5">
-        {!isOwner ? <DataSummary summary={summary} /> : null}
         {charts.map((item, idx) => (
           <DataChart
             key={idx}
@@ -89,4 +89,4 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
   );
 };
 
-export default TimeseriesCharts;
+export default React.memo(TimeseriesCharts);
