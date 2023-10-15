@@ -29,7 +29,12 @@ const Login = () => {
 
   useEffect(() => {
     localStorage.setItem('wallet.connected.status', auth.address);
-    if (auth.address) {
+    if (
+      auth.address &&
+      !auth.isAuth &&
+      !getChallenge.success
+    ) {
+      // added isAuth check prevent repeated challenge solving
       dispatch(getChallengeRequest(auth.address));
     }
   }, [auth.walletConnected]);
@@ -39,7 +44,8 @@ const Login = () => {
       signMessage &&
       getChallenge.success &&
       getChallenge.challenge &&
-      auth.address
+      auth.address &&
+      !auth.isAuth
     ) {
       const signature = await signChallenge(
         getChallenge.challenge,
