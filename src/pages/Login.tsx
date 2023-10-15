@@ -74,7 +74,7 @@ const Login = () => {
     <Navigate to="/data" replace />
   ) : (
     <>
-      <div className="flex flex-col h-[80vh] bg-white">
+      <div className="flex flex-col h-[100vh] bg-white">
         <div className="py-5 px-8 flex justify-between items-center">
           <img src="./fishnet.png" alt="Fishnet Logo" width={50} />
           <Button
@@ -95,20 +95,12 @@ const Login = () => {
             alt="Fishnet Logo"
             className="w-full h-full"
           />
-        </div>
-      </div>
-      <div className="bg-[#F6FAFB] text-center flex flex-col justify-center gap-10 py-28 px-[25%]">
-        <p className="text-5xl">
-          Fishnet is currently in closed alpha and requires signing up on the
-          waitlist to get access
-        </p>
-        <div className="mx-auto">
-          <Button
-            text="Get on the Waitlist"
-            icon="shield"
-            size="md"
-            href="https://airtable.com/appSQLW6n1hHiOJGA/shrstF1WLukXhHZro"
-          />
+          <div className="bg-[#F6FAFB] text-center flex flex-col justify-center py-[10px] px-[25%]">
+            <p className="text-2xl">
+              Fishnet is currently in alpha! <br/>
+              This app is only for demonstration purposes. Do not upload any sensitive data.
+            </p>
+          </div>
         </div>
       </div>
       <AppModal
