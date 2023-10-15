@@ -4,7 +4,7 @@ import dayjs, {ManipulateType, OpUnitType} from 'dayjs';
 import classNames from 'classnames';
 import { TrashIcon } from '@assets/icons';
 import { AiOutlineLine } from 'react-icons/ai';
-import { RxDotsHorizontal } from 'react-icons/rx';
+import { RxPencil1 } from 'react-icons/rx';
 import { ChartProps } from '../hooks/useTimeseriesChart';
 
 
@@ -136,7 +136,7 @@ const DataChart: React.FC<{
               className="bg-white p-2 flex items-center rounded-full cursor-pointer"
               onClick={handleOpenChart}
             >
-              <RxDotsHorizontal />
+              <RxPencil1 />
             </div>
           </div>
         ) : null}
