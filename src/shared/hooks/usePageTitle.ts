@@ -8,5 +8,7 @@ export default () => {
   const handleSetTitle = (title: string) =>
     dispatch(setPageDetails({ pageTitle: title }));
 
-  return { title: pageTitle, setTitle: handleSetTitle };
+  const handleGetTitle = () => pageTitle;
+
+  return { title: pageTitle, setTitle: handleSetTitle, getTitle: handleGetTitle };
 };

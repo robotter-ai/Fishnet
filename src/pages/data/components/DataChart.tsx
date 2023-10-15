@@ -1,129 +1,129 @@
-import { TrashIcon } from '@assets/icons';
+import React, { useEffect, useState } from 'react';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import dayjs, {ManipulateType, OpUnitType} from 'dayjs';
 import classNames from 'classnames';
-import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { TrashIcon } from '@assets/icons';
 import { AiOutlineLine } from 'react-icons/ai';
-import { RxDotsHorizontal } from 'react-icons/rx';
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { RxPencil1 } from 'react-icons/rx';
 import { ChartProps } from '../hooks/useTimeseriesChart';
 
+
+type DataEntry = {
+  date: number;
+  [key: string]: number;
+}
+
+type FormattedDataEntry = {
+  date: string;
+  [key: string]: number | string;
+}
+
+const DURATION_TYPE = ['D', 'W', '1M', '3M', 'Y', 'All'];
+
+type DurationInfo = {
+  value: number;
+  type: ManipulateType;
+  granularity: OpUnitType;
+  granularityStep: number;
+};
+
+const getDuration = (index: number): DurationInfo => {
+  const mapping = [
+    { value: 1, type: 'day', granularity: 'minute', granularityStep: 5 },
+    { value: 1, type: 'week', granularity: 'minute', granularityStep: 15},
+    { value: 1, type: 'month', granularity: 'hour', granularityStep: 1 },
+    { value: 3, type: 'month', granularity: 'hour', granularityStep: 3 },
+    { value: 1, type: 'year', granularity: 'day', granularityStep: 1 },
+    { value: 100, type: 'year', granularity: 'day', granularityStep: 1 },
+  ] as any as DurationInfo[];
+  return mapping[index];
+};
+
+const formatDateByGranularity = (date: any, durationInfo: DurationInfo) => {
+  switch (durationInfo.type) {
+    case 'day':
+      return dayjs(date).format('HH:mm');
+    case 'week':
+      return dayjs(date).format('D. HH:mm');
+    case 'month':
+      return dayjs(date).format('MMM D. HH:mm');
+    case 'year':
+      return dayjs(date).format('MMM D. YYYY');
+    default:
+      return dayjs(date).format('MMM D. YYYY');
+  }
+}
+
 const DataChart: React.FC<{
-  data: any[];
+  data: DataEntry[];
   chart: ChartProps;
   withActions?: boolean;
   handleOpenChart?: () => void;
   handleDeleteChart?: () => void;
-}> = ({
-  data = [],
-  chart,
-  withActions,
-  handleOpenChart,
-  handleDeleteChart,
-}) => {
-  const duration = ['D', 'W', '1M', '3M', 'Y', 'All'];
-  const [activeDuration, setActiveDuration] = useState(2);
+  isView?: boolean;
+}> = ({ data, chart, withActions, handleOpenChart, handleDeleteChart, isView = false }) => {
+  const [activeDuration, setActiveDuration] = useState(5);
+  const durationType = getDuration(activeDuration);
 
-  const getChartData = (x: any): {} => {
-    let keysWithValue = {};
-    for (let i = 0; i < chart.keys.length; i++) {
-      keysWithValue = {
-        ...keysWithValue,
-        [chart.keys[i].name]: x[chart.keys[i].name],
-      };
-    }
-    return keysWithValue;
-  };
+  function filterChartData(): FormattedDataEntry[] {
+    const cutoffDate = dayjs(data[0].date).subtract(durationType.value, durationType.type);
+    return data.filter((item) => {
+      return dayjs(item.date).isAfter(cutoffDate);
+    }).sort((a, b) => dayjs(a.date).diff(dayjs(b.date)))
+      .map((item) => {
+        const date = formatDateByGranularity(item.date, durationType);
+        return {
+          ...item,
+          date,
+        };
+      });
+  }
 
-  const dataDurationFilter = () => {
-    const datedData: any = [];
-    data?.forEach((item) => {
-      let group = null;
-      switch (activeDuration) {
-        case 0:
-          group = datedData.find((g: any) =>
-            dayjs(item.date).isSame(g[0].date, 'day')
-          );
-          break;
-        case 1:
-          group = datedData.find((g: any) =>
-            dayjs(item.date).isSame(g[0].date, 'week')
-          );
-          break;
-        case 2:
-          group = datedData.find((g: any) =>
-            dayjs(item.date).isSame(g[0].date, 'month')
-          );
-          break;
-        case 3:
-          group = datedData.find((g: any) =>
-            dayjs(item.date).isSame(g[0].date, 'months')
-          );
-          break;
-        case 4:
-          group = datedData.find((g: any) =>
-            dayjs(item.date).isSame(g[0].date, 'year')
-          );
-          break;
-        default:
-          group = datedData.find((g: any) =>
-            dayjs(item.date).isSame(g[0].date, 'year')
-          );
-          break;
-      }
-
-      if (group) {
-        group.push(item);
-      } else {
-        datedData.push([item]);
-      }
-    });
-    return datedData[0];
-  };
-
-  const dataToUse = dataDurationFilter()?.map((item: any) => ({
-    date: dayjs(item.date)
-      .toDate()
-      .toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-      .split(',')[0],
-    ...getChartData(item),
-  }));
+  let dataToUse = filterChartData();
 
   useEffect(() => {
-    dataDurationFilter();
+    dataToUse = filterChartData();
   }, [activeDuration]);
 
+  const domainSize = [
+    Math.min(...dataToUse.map((item) => {
+      const value = item[chart.keys[0].name];
+      if (typeof value === 'number') {
+        return value
+      } else {
+        return Number.MAX_SAFE_INTEGER;
+      }
+    })),
+    Math.max(...dataToUse.map((item) => {
+      const value = item[chart.keys[0].name];
+      if (typeof value === 'number') {
+        return value
+      } else {
+        return Number.MIN_SAFE_INTEGER;
+      }
+    })),
+  ]
   return (
     <div className="bg-form-bg rounded-[32px] py-5 px-6">
       <div className="flex justify-between mb-7">
-        <div className="bg-[#E6EEFF] w-[232px] h-8 flex items-center justify-between rounded-full ml-[54px] p-1 px-4">
-          {duration.map((item, i) => (
-            <p
-              key={i}
-              className={classNames(
-                'text-xs flex items-center justify-center rounded-full text-center h-6 w-6 cursor-pointer',
-                {
-                  'bg-white': i === activeDuration,
-                }
-              )}
-              onClick={() => setActiveDuration(i)}
-            >
-              {item}
-            </p>
-          ))}
-        </div>
+        {!isView ? (
+          <div className="bg-[#E6EEFF] w-[232px] h-8 flex items-center justify-between rounded-full ml-[54px] p-1 px-4">
+            {DURATION_TYPE.map((item, i) => (
+              <p
+                key={i}
+                className={classNames(
+                  'text-xs flex items-center justify-center rounded-full text-center h-6 w-6 cursor-pointer',
+                  {
+                    'bg-white': i === activeDuration,
+                  }
+                )}
+                onClick={() => setActiveDuration(i)}
+              >
+                {item}
+              </p>
+            ))}
+          </div>
+        ): null}
         {withActions ? (
           <div className="flex gap-2">
             <div
@@ -136,7 +136,7 @@ const DataChart: React.FC<{
               className="bg-white p-2 flex items-center rounded-full cursor-pointer"
               onClick={handleOpenChart}
             >
-              <RxDotsHorizontal />
+              <RxPencil1 />
             </div>
           </div>
         ) : null}
@@ -158,14 +158,35 @@ const DataChart: React.FC<{
               </linearGradient>
             ))}
           </defs>
-          <XAxis dataKey="date" axisLine={false} tickLine={false} />
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tickFormatter={(number) => (number === 0 ? '' : number)}
+          {isView ? null : (
+            <XAxis axisLine={false} tickLine={false} dataKey="date" />
+          )}
+          {isView ? null : (
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(number) => (number === 0 ? '' : number)}
+              domain={domainSize}
+            />
+          )}
+          <CartesianGrid opacity={0.8} stroke="#C8CCCD" strokeDasharray="3 3"
+          verticalCoordinatesGenerator={(props) =>
+            props.width > 450 ? [150, 300, 450] : [200, 400]
+          }
           />
-          <CartesianGrid opacity={0.8} stroke="#C8CCCD" strokeDasharray="5 5" />
-          <Tooltip />
+          {!isView ? (
+            <Tooltip
+              contentStyle={{
+                background: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                padding: '10px',
+              }}
+              cursor={{ stroke: '#C8CCCD', strokeWidth: 1 }}
+              formatter={(value, name) => [value, name]}
+            />
+          ) : null}
           {chart.keys.map((item, idx: number) => (
             <Area
               key={idx}
@@ -191,4 +212,4 @@ const DataChart: React.FC<{
   );
 };
 
-export default DataChart;
+export default React.memo(DataChart);

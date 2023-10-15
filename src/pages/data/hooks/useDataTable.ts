@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import Papa from 'papaparse';
 import { useGetDatasetsQuery } from '@slices/dataSlice';
-import { preprocessTimeseries, setCsvJson } from '@slices/timeseriesSlice';
+import { preprocessTimeseries, setTimeseries } from '@slices/timeseriesSlice';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useSelectData from '@shared/hooks/useSelectData';
 import useAuth from '@shared/hooks/useAuth';
@@ -74,18 +73,14 @@ export default () => {
   }, [dispatch, query]);
 
   const handleCsvToJson = (file: any) => {
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        dispatch(setCsvJson(results.data));
-      },
-    });
     const formData = new FormData();
-    formData.append('owner', auth?.address);
     formData.append('data_file', file);
-    dispatch(preprocessTimeseries(formData)).then(() => {
+    dispatch(preprocessTimeseries(formData)).then((results) => {
       navigate(`/data/${'upload'}/details`);
+      // set name of dataset
+      setTitle(file.name)
+      // transform results.payload with lists of timeseries
+      dispatch(setTimeseries(results.payload));
     });
   };
 

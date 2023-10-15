@@ -52,7 +52,7 @@ const DataDetails = () => {
       ? [
           {
             name: 'Name',
-            value: inputs?.name,
+            value: inputs?.name || 'unnamed dataset',
           },
         ]
       : []),
@@ -65,10 +65,6 @@ const DataDetails = () => {
             .format('DD/MM/YYYY')}
         </p>
       ),
-    },
-    {
-      name: 'Downloads',
-      value: <p>0</p>,
     },
     ...(isOwner
       ? [
@@ -110,6 +106,7 @@ const DataDetails = () => {
           size="md"
           isLoading={isLoadingUploadDataset as boolean}
           onClick={handleUploadDataset}
+          disabled={!inputs?.name || !inputs?.price}
         />
       );
     }
@@ -121,6 +118,7 @@ const DataDetails = () => {
           size="md"
           isLoading={isLoadingUpdateDataset}
           onClick={handleUpdateDataset}
+          disabled={!inputs?.name || !inputs?.price}
         />
       );
     }
@@ -184,10 +182,11 @@ const DataDetails = () => {
             <div className="bg-form-bg flex flex-col gap-4 p-6 text-text-dark rounded-[32px]">
               <TextInput
                 label="Title"
-                placeholder="A short but descriptive title"
+                placeholder="Please provide a title"
                 value={inputs?.name || ''}
                 onChange={(e) => handleOnChange('name', e.target.value)}
                 fullWidth
+                mandatory={isUpload || isOwner}
               />
               <TextInput
                 label="Price"
@@ -222,7 +221,7 @@ const DataDetails = () => {
           <h1>Data {isUpload ? 'published' : 'updated'}!</h1>
           <IoCheckbox className="text-primary" size={70} />
           <p>
-            {inputs?.name || ''} {isUpload ? 'published' : 'updated'}
+            {inputs?.name || 'unnamed dataset'} {isUpload ? 'published' : 'updated'}
           </p>
           <div className="flex flex-col items-center gap-2">
             <TruncatedAddress hash={inputs?.item_hash || ''} color="primary" />

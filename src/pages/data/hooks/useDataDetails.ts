@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { useEffect, useState } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
@@ -26,10 +27,13 @@ import useOwner from '@shared/hooks/useOwner';
 
 export default () => {
   const { id } = useParams();
-  const { setTitle } = usePageTitle();
+  const { setTitle, getTitle } = usePageTitle();
   const auth = useAuth();
   const dispatch = useAppDispatch();
-  const [inputs, setInputs] = useState<Record<string, any>>({});
+  const [inputs, setInputs] = useState<Record<string, any>>({
+    name: '',
+    price: 0,
+  });
   const { uploadDatasetActions, updateDatasetsActions, generateViewActions } =
     useAppSelector((app) => app.datasets);
   const { initProductTree } = useAppSelector((app) => app.transaction);
@@ -68,7 +72,10 @@ export default () => {
       setInputs(data);
       setTitle(data?.name);
     } else {
-      setTitle('New data');
+      setInputs({
+        name: getTitle(),
+        price: 0,
+      });
       handleOnChange('owner', auth?.address);
     }
   }, [isGetDatasetSuccess]);
@@ -109,7 +116,11 @@ export default () => {
 
       const processTransaction = async () => {
         try {
-          setSignature(await sendTransaction(transaction, SOLANA_CONNECTION));
+          const signature = await sendTransaction(transaction, SOLANA_CONNECTION, {
+            skipPreflight: true,
+          })
+          console.log('Signature:', signature);
+          setSignature(signature);
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error('Error sending transaction:', error);
@@ -136,6 +147,11 @@ export default () => {
   };
 
   const handleUploadDataset = () => {
+    // check if dataset name is set
+    if (!inputsToUpload?.name) {
+      // stop execution and outline the input field
+      return;
+    }
     const timeseriesToUse = timeseries.map((item: any) => ({
       name: item.name,
       owner: item.owner,

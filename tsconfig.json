@@ -17,6 +17,7 @@
     "jsx": "react-jsx",
     "types": ["node"],
     "baseUrl": "./",
+    "outDir": "./dist",
     "paths": {
       "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],

@@ -14,6 +14,7 @@ import {
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
+import React from "react";
 
 type IconTypes =
   | 'upload'
@@ -41,6 +42,7 @@ interface ButtonProps {
   href?: string;
   linkTo?: string;
   fullWidth?: boolean;
+  children?: React.ReactNode;
 }
 
 const ICONS: Record<IconTypes, JSX.Element> = {

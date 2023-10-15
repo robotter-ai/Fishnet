@@ -29,7 +29,12 @@ const Login = () => {
 
   useEffect(() => {
     localStorage.setItem('wallet.connected.status', auth.address);
-    if (auth.address) {
+    if (
+      auth.address &&
+      !auth.isAuth &&
+      !getChallenge.success
+    ) {
+      // added isAuth check prevent repeated challenge solving
       dispatch(getChallengeRequest(auth.address));
     }
   }, [auth.walletConnected]);
@@ -39,7 +44,8 @@ const Login = () => {
       signMessage &&
       getChallenge.success &&
       getChallenge.challenge &&
-      auth.address
+      auth.address &&
+      !auth.isAuth
     ) {
       const signature = await signChallenge(
         getChallenge.challenge,
@@ -53,7 +59,7 @@ const Login = () => {
     if (getChallenge.challenge) {
       solveChallengeAsync();
     }
-  }, [getChallenge.success]);
+  }, [getChallenge.success, ]);
 
   useEffect(() => {
     if (
@@ -64,6 +70,8 @@ const Login = () => {
       cookies.set('bearerToken', solveChallenge.token, {
         path: '/',
         maxAge: solveChallenge.valid_til,
+        expires: new Date(solveChallenge.valid_til),
+        secure: true,
       });
       dispatch(resetChallengeDetails());
       navigate('/data', { replace: true });
@@ -74,7 +82,7 @@ const Login = () => {
     <Navigate to="/data" replace />
   ) : (
     <>
-      <div className="flex flex-col h-[80vh] bg-white">
+      <div className="flex flex-col h-[100vh] bg-white">
         <div className="py-5 px-8 flex justify-between items-center">
           <img src="./fishnet.png" alt="Fishnet Logo" width={50} />
           <Button
@@ -86,7 +94,7 @@ const Login = () => {
         </div>
         <div className="relative h-full mt-20 flex flex-col">
           <img
-            src="./fishnet-logo.png"
+            src="./Logo_Fishnet_alpha.svg"
             alt="Fishnet Logo"
             className="absolute top-[20%] left-1/2 -translate-x-1/2 w-1/2"
           />
@@ -95,20 +103,12 @@ const Login = () => {
             alt="Fishnet Logo"
             className="w-full h-full"
           />
-        </div>
-      </div>
-      <div className="bg-[#F6FAFB] text-center flex flex-col justify-center gap-10 py-28 px-[25%]">
-        <p className="text-5xl">
-          Fishnet is currently in closed alpha and requires signing up on the
-          waitlist to get access
-        </p>
-        <div className="mx-auto">
-          <Button
-            text="Get on the Waitlist"
-            icon="shield"
-            size="md"
-            href="https://airtable.com/appSQLW6n1hHiOJGA/shrstF1WLukXhHZro"
-          />
+          <div className="bg-[#F6FAFB] text-center flex flex-col justify-center py-[10px] px-[25%]">
+            <p className="text-2xl">
+              This app is only for demonstration purposes. <br/>
+              Do not upload any sensitive data.
+            </p>
+          </div>
         </div>
       </div>
       <AppModal

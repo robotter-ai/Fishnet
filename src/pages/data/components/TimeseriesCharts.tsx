@@ -7,6 +7,7 @@ import DataSummary from '@shared/components/Summary';
 import useTimeseriesChart, { ChartProps } from '../hooks/useTimeseriesChart';
 import DataChart from './DataChart';
 import EditDataTable from './EditDataTable';
+import React from "react";
 
 const TimeseriesCharts = ({ isOwner, summary }: any) => {
   const {
@@ -35,6 +36,7 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
             withActions={isOwner}
             handleOpenChart={() => handleOpenChart(item.id as string)}
             handleDeleteChart={() => handleDeleteChart(item.id as string)}
+            isView={!isOwner}
           />
         ))}
       </div>
@@ -88,4 +90,4 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
   );
 };
 
-export default TimeseriesCharts;
+export default React.memo(TimeseriesCharts);
