@@ -39,13 +39,6 @@ const getDuration = (index: number): DurationInfo => {
   return mapping[index];
 };
 
-const findGroupByGranularity = (datedData: DataEntry[][], item: any, durationInfo: DurationInfo) => {
-  return datedData.find((g: any) => {
-    const diff = dayjs(item.date).diff(dayjs(g[0].date), durationInfo.granularity);
-    return diff <= (durationInfo.granularityStep - 1);
-  });
-};
-
 const formatDateByGranularity = (date: any, durationInfo: DurationInfo) => {
   switch (durationInfo.type) {
     case 'day':
@@ -71,22 +64,6 @@ const DataChart: React.FC<{
 }> = ({ data, chart, withActions, handleOpenChart, handleDeleteChart, isView = false }) => {
   const [activeDuration, setActiveDuration] = useState(5);
   const durationType = getDuration(activeDuration);
-
-  const dataDurationFilter = () => {
-    const datedData: DataEntry[][] = [];
-
-    data.forEach((item) => {
-      let group = findGroupByGranularity(datedData, item, durationType);
-      if (group) {
-        group.push(item);
-      } else {
-        datedData.push([item]);
-      }
-    });
-
-    // Flatten the array and return
-    return datedData.flat();
-  };
 
   function filterChartData(): FormattedDataEntry[] {
     const cutoffDate = dayjs(data[0].date).subtract(durationType.value, durationType.type);
@@ -126,8 +103,6 @@ const DataChart: React.FC<{
       }
     })),
   ]
-  const gridWidth = Math.round(dataToUse.length / 10);
-  const gridHeight = Math.round(domainSize[1] - domainSize[0]) / 10;
   return (
     <div className="bg-form-bg rounded-[32px] py-5 px-6">
       <div className="flex justify-between mb-7">
