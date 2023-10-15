@@ -8,6 +8,11 @@ import { RxDotsHorizontal } from 'react-icons/rx';
 import { ChartProps } from '../hooks/useTimeseriesChart';
 
 
+type DatedDataEntry = {
+  date: number;
+  [key: string]: number;
+}
+
 const DURATION_TYPE = ['D', 'W', '1M', '3M', 'Y', 'All'];
 
 const getDuration = (index: number): {
@@ -17,14 +22,14 @@ const getDuration = (index: number): {
   const mapping: {
     value: number;
     type: ManipulateType;
-  } = [
+  }[] = [
     { value: 1, type: 'day' },
     { value: 1, type: 'week' },
     { value: 1, type: 'month' },
     { value: 3, type: 'month' },
     { value: 1, type: 'year' },
     { value: 100, type: 'year' },
-  ] as any as { value: number; type: ManipulateType };
+  ] as any as { value: number; type: ManipulateType }[];
   return mapping[index];
 };
 
@@ -38,43 +43,44 @@ const getEarlierDate = (date: any, activeDuration: number) => {
 }
 
 const DataChart: React.FC<{
-  data: any[];
+  data: DatedDataEntry[];
   chart: ChartProps;
   withActions?: boolean;
   handleOpenChart?: () => void;
   handleDeleteChart?: () => void;
   isView?: boolean;
-}> = ({ data = [], chart, withActions, handleOpenChart, handleDeleteChart, isView = false }) => {
+}> = ({ data, chart, withActions, handleOpenChart, handleDeleteChart, isView = false }) => {
   const [activeDuration, setActiveDuration] = useState(5);
   const durationType = getDuration(activeDuration);
 
   const dataDurationFilter = () => {
-    const datedData: (Dayjs|number)[] = [];
+    const datedData: DatedDataEntry[][] = [];
 
     data.forEach((item) => {
       let group = findGroupByDuration(datedData, item, durationType.type);
       if (group) {
         group.push(item);
       } else {
-        datedData.push([item]);
+        datedData.push([group]);
       }
     });
 
     // Flatten the array and return
-    return datedData.flat();
+    return datedData.map((item) => item[0]) as DatedDataEntry[];
   };
 
-  function filterChartData() {
+  function filterChartData(): DatedDataEntry[] {
     let dataToUse = dataDurationFilter().map((item) => ({
-      date: dayjs(item.date),
-      ...chart.keys.reduce((acc, k) => ({...acc, [k.name]: item[k.name]}), {}),
+      date: item.date,
+      ...
+      chart.keys.reduce((acc, k) => ({...acc, [k.name]: item[k.name]}), {}),
     }))
 
     // filter
     return dataToUse.filter((item) => {
-      const diff = dayjs().diff(item.date, durationType.type);
+      const diff = dayjs().diff(dayjs(item.date), durationType.type);
       return diff <= 1;
-    }).sort((a, b) => a.date.diff(b.date)).reverse();
+    }).sort((a, b) => a.date - b.date);
   }
 
   let dataToUse = filterChartData();
