@@ -70,6 +70,7 @@ const Login = () => {
       cookies.set('bearerToken', solveChallenge.token, {
         path: '/',
         maxAge: solveChallenge.valid_til,
+        expires: new Date(solveChallenge.valid_til),
         secure: true,
       });
       dispatch(resetChallengeDetails());
@@ -104,8 +105,8 @@ const Login = () => {
           />
           <div className="bg-[#F6FAFB] text-center flex flex-col justify-center py-[10px] px-[25%]">
             <p className="text-2xl">
-              Fishnet is currently in alpha! <br/>
-              This app is only for demonstration purposes. Do not upload any sensitive data.
+              This app is only for demonstration purposes. <br/>
+              Do not upload any sensitive data.
             </p>
           </div>
         </div>
