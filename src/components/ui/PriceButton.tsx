@@ -9,7 +9,10 @@ import { toast } from 'sonner';
 import AppModal from './AppModal';
 import CustomButton from './Button';
 
-const PriceView = ({ price, handleOpen }) => {
+const PriceView = ({ price, handleOpen }: {
+  price: string;
+  handleOpen: () => void;
+}) => {
   return (
     <div className="flex gap-3 items-center" role="button" onClick={handleOpen}>
       <PriceTagIcon />

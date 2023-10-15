@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import dayjs, {ManipulateType, OpUnitType} from 'dayjs';
+import dayjs, {Dayjs, ManipulateType, OpUnitType} from 'dayjs';
 import classNames from 'classnames';
 import { TrashIcon } from '@assets/icons';
 import { AiOutlineLine } from 'react-icons/ai';
@@ -24,7 +24,7 @@ const getDuration = (index: number): {
     { value: 3, type: 'month' },
     { value: 1, type: 'year' },
     { value: 100, type: 'year' },
-  ] as any;
+  ] as any as { value: number; type: ManipulateType };
   return mapping[index];
 };
 
@@ -49,7 +49,7 @@ const DataChart: React.FC<{
   const durationType = getDuration(activeDuration);
 
   const dataDurationFilter = () => {
-    const datedData: any[] = [];
+    const datedData: (Dayjs|number)[] = [];
 
     data.forEach((item) => {
       let group = findGroupByDuration(datedData, item, durationType.type);
@@ -65,7 +65,7 @@ const DataChart: React.FC<{
   };
 
   function filterChartData() {
-    let dataToUse = dataDurationFilter().map((item: any) => ({
+    let dataToUse = dataDurationFilter().map((item) => ({
       date: dayjs(item.date),
       ...chart.keys.reduce((acc, k) => ({...acc, [k.name]: item[k.name]}), {}),
     }))
@@ -74,8 +74,7 @@ const DataChart: React.FC<{
     return dataToUse.filter((item) => {
       const diff = dayjs().diff(item.date, durationType.type);
       return diff <= 1;
-    })
-      .sort((a, b) => a.date.diff(b.date)).reverse();
+    }).sort((a, b) => a.date.diff(b.date)).reverse();
   }
 
   let dataToUse = filterChartData();
