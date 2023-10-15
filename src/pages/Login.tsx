@@ -93,7 +93,7 @@ const Login = () => {
         </div>
         <div className="relative h-full mt-20 flex flex-col">
           <img
-            src="./fishnet-logo.png"
+            src="./Logo_Fishnet_alpha.svg"
             alt="Fishnet Logo"
             className="absolute top-[20%] left-1/2 -translate-x-1/2 w-1/2"
           />
