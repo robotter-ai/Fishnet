@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import WalletIcon from '@assets/images/wallet-icon.png';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import useAuth from '@shared/hooks/useAuth';
 import { BellIcon } from '@assets/icons';
 import { useDetectClickOutside } from 'react-detect-click-outside';
-import { StatusIndicator } from '@shared/constant';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import { getNotifications } from '@slices/profileSlice';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
@@ -14,36 +12,25 @@ import TruncatedAddress from '@shared/components/TruncatedAddress';
 function TopNavigation() {
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.profile.notificationActions);
-  const { title, pageStatus } = usePageTitle();
+  const { title } = usePageTitle();
   const auth = useAuth();
-  const { pathname } = useLocation();
-  const [toggledInfo, setToggledInfo] = useState<
-    'notification' | 'profile' | null
-  >(null);
+  const [isNotification, setNotification] = useState<boolean>(false);
   const ref = useDetectClickOutside({
-    onTriggered: () => setToggledInfo(null),
+    onTriggered: () => setNotification(false),
   });
 
   useEffect(() => {
     dispatch(getNotifications(auth.address));
   }, []);
 
-  const isDataDetails =
-    pathname.startsWith('/data') &&
-    pathname.endsWith('details') &&
-    pathname.split('/')[2] !== 'upload';
-
   return (
     <div id="top-navigation">
       <div className="flex justify-between">
         <div className="flex items-center">
           <h1>{title}</h1>
-          {isDataDetails && pageStatus !== 'NOT REQUESTED' ? (
-            <StatusIndicator status={pageStatus || ''} />
-          ) : null}
         </div>
         <div ref={ref} className="relative flex items-center gap-[15px]">
-          <div className="flex bg-light-blue rounded-[33px] items-center gap-3 p-[5px] px-[15px] ">
+          <div className="flex bg-light-blue rounded-[33px] items-center gap-3 py-2 px-6 ">
             <span className="text-[#1C1C1C]">
               <TruncatedAddress hash={auth?.address} />
             </span>
@@ -53,14 +40,12 @@ function TopNavigation() {
             className="bg-light-blue h-9 w-9 rounded-full flex justify-center items-center cursor-pointer hover:bg-[#f3f3f3] transition-all duration-100"
             style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}
             onClick={() => {
-              setToggledInfo(
-                toggledInfo === 'notification' ? null : 'notification'
-              );
+              setNotification(!isNotification);
             }}
           >
             <BellIcon />
           </div>
-          {toggledInfo === 'notification' ? (
+          {isNotification ? (
             <div
               className="absolute w-full bg-white top-12 min-h-72 px-5 rounded-[10px] z-[30000000] overflow-y-scroll"
               style={{ boxShadow: '0px 12px 26px rgba(16, 30, 115, 0.06)' }}

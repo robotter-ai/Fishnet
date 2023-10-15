@@ -2,12 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AppState {
   pageTitle: string;
-  pageStatus: string;
 }
 
 const initialState: AppState = {
   pageTitle: '',
-  pageStatus: '',
 };
 
 export const appSlice = createSlice({
@@ -17,12 +15,8 @@ export const appSlice = createSlice({
     setPageTitle: (state, action: PayloadAction<string>) => {
       state.pageTitle = action.payload;
     },
-    setPageDetails: (
-      state,
-      action: PayloadAction<{ pageTitle: string; pageStatus?: string }>
-    ) => {
+    setPageDetails: (state, action: PayloadAction<{ pageTitle: string }>) => {
       state.pageTitle = action.payload.pageTitle;
-      state.pageStatus = action.payload.pageStatus || '';
     },
   },
 });

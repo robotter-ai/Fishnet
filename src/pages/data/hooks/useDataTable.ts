@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import Papa from 'papaparse';
-import { getDatasets, getPublishedDatasets } from '@slices/dataSlice';
-import { setCsvJson, preprocessTimeseries } from '@slices/timeseriesSlice';
+import { useGetDatasetsQuery } from '@slices/dataSlice';
+import { preprocessTimeseries, setCsvJson } from '@slices/timeseriesSlice';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useSelectData from '@shared/hooks/useSelectData';
 import useAuth from '@shared/hooks/useAuth';
+
+type DatasetTabs = 'published' | 'browse-data';
 
 export default () => {
   const auth = useAuth();
@@ -18,22 +20,36 @@ export default () => {
   const { isLoading, datasets, publishedDatasets } = useAppSelector(
     (state) => state.datasets
   );
-  const { isLoading: isLoadingUploadTimeseries } = useAppSelector(
+  const { isLoading: isLoadingPreprocessTimeseries } = useAppSelector(
     (state) => state.timeseries
   );
+
+  // START: RTK Query
+  const { data: browseData, isLoading: isLoadingBrowseData } =
+    useGetDatasetsQuery({
+      type: 'browse-data',
+      address: auth?.address,
+    });
+  const { data: publishedData, isLoading: isLoadingPublishedData } =
+    useGetDatasetsQuery({
+      type: 'published',
+      address: auth?.address,
+    });
+
+  const query: DatasetTabs =
+    (searchParams.get('tab') as DatasetTabs) || 'browse-data';
+
+  const DATA_MAP: Record<DatasetTabs, any> = {
+    published: publishedData,
+    'browse-data': browseData,
+  };
+
+  const dataToUse = DATA_MAP[query] || [];
+
   const [filterParams, setFilterParams] = useState({
     value: '',
-    data: datasets || [],
+    data: dataToUse,
   });
-
-  const query: 'published' | 'browse-data' =
-    (searchParams.get('tab') as 'published' | 'browse-data') || 'browse-data';
-
-  const dataMapper: Record<'published' | 'browse-data', any> = {
-    published: publishedDatasets.data,
-    'browse-data': datasets,
-  };
-  const dataToUse = dataMapper[query];
 
   const tabs = [
     { key: 'browse-data', name: 'Browse data' },
@@ -45,17 +61,16 @@ export default () => {
     published: 'Your data',
   };
 
-  useEffect(() => {
-    setFilterParams((prevState) => ({
-      ...prevState,
-      data: dataToUse,
-    }));
-  }, [query, datasets, publishedDatasets.data]);
+  // useEffect(() => {
+  //   setFilterParams((prevState) => ({
+  //     ...prevState,
+  //     data: dataToUse,
+  //   }));
+  //   console.log('first');
+  // }, [query]);
 
   useEffect(() => {
     setTitle(PAGE_TITLE[query]);
-    dispatch(getDatasets(auth?.address));
-    dispatch(getPublishedDatasets(auth?.address));
   }, [dispatch, query]);
 
   const handleCsvToJson = (file: any) => {
@@ -86,13 +101,15 @@ export default () => {
 
   return {
     tabs,
-    data: filterParams.data,
+    data: dataToUse,
     publishedDatasets,
+    isLoadingBrowseData,
+    isLoadingPublishedData,
     filterParams,
     handleFilterTable,
     isSelectData: isSelect,
     isLoading,
     handleCsvToJson,
-    isLoadingUploadTimeseries,
+    isLoadingPreprocessTimeseries,
   };
 };

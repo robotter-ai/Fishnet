@@ -27,6 +27,7 @@ import { ReactComponent as LogoutIcon } from '@assets/icons/logout.svg';
 import { ReactComponent as BoxIcon } from '@assets/icons/box.svg';
 import { ReactComponent as ArrowDownIcon } from '@assets/icons/arrow-down.svg';
 import { ReactComponent as ArrowUpIcon } from '@assets/icons/arrow-up.svg';
+import { ReactComponent as ShieldTickIcon } from '@assets/icons/shield-tick.svg';
 
 export {
   AlarmClockIcon,
@@ -58,4 +59,5 @@ export {
   BoxIcon,
   ArrowDownIcon,
   ArrowUpIcon,
+  ShieldTickIcon,
 };

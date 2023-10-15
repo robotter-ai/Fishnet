@@ -24,12 +24,12 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'DESCRIPTION',
     cell: (item) => '',
-    sortWith: '',
+    sortWith: 'item',
   },
   {
     header: 'SELLERS WALLET',
     cell: (item) => '',
-    sortWith: '',
+    sortWith: 'item',
   },
   {
     header: 'DATE',
@@ -43,14 +43,14 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'PRICE',
     cell: (item) => '',
-    sortWith: '',
+    sortWith: 'item',
   },
   {
     header: '',
     cell: (item) => <Starred starred={item.forgotten} />,
   },
   {
-    header: 'Filter',
+    header: '',
     cell: ({ item_hash, status }) => (
       <CustomButton
         text="Download"

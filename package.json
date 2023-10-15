@@ -40,9 +40,9 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.6.0",
     "react-spinners": "^0.13.8",
-    "react-toastify": "^9.1.1",
     "recharts": "^2.3.2",
     "sass": "^1.57.1",
+    "sonner": "^0.7.4",
     "universal-cookie": "^5.0.0",
     "viem": "1.0.7",
     "vite-plugin-svgr": "^2.4.0",
@@ -50,6 +50,7 @@
     "yarn": "^1.22.19"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^4.34.1",
     "@types/lodash.capitalize": "^4.2.7",
     "@types/node": "^18.11.18",
     "@types/papaparse": "^5.3.7",

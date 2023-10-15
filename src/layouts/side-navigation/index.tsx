@@ -1,4 +1,5 @@
 import { FolderIcon, LockIcon, LogoutIcon, ProfileIcon } from '@assets/icons';
+import useLogout from '@shared/hooks/useLogout';
 import classNames from 'classnames';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -8,10 +9,6 @@ function NavList() {
       to: '/data',
       icon: <FolderIcon />,
     },
-    // {
-    //   to: '/algorithms',
-    //   icon: <DeveloperIcon />,
-    // },
     {
       to: '/monitor-access',
       icon: <LockIcon />,
@@ -47,12 +44,14 @@ function NavList() {
 }
 
 function SideNavigation() {
+  const { handleLogout } = useLogout();
+
   return (
     <div
       id="side-navigation"
       className="flex flex-col justify-between pt-8 pb-14"
     >
-      <div>
+      <div className="flex flex-col items-center">
         <Link to="/data">
           <img src="./fishnet.png" alt="Robotter PNG" width={36} />
         </Link>
@@ -61,7 +60,11 @@ function SideNavigation() {
         </nav>
       </div>
       <div className="pt-8 border-t border-solid border-t-[#C8CCCD]">
-        <LogoutIcon color="#91999C" />
+        <LogoutIcon
+          color="#91999C"
+          className="cursor-pointer"
+          onClick={handleLogout}
+        />
       </div>
     </div>
   );

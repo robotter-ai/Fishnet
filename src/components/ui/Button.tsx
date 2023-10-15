@@ -9,6 +9,7 @@ import {
   LockIcon,
   LoginIcon,
   SettingsIcon,
+  ShieldTickIcon,
 } from '@assets/icons';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -24,7 +25,8 @@ type IconTypes =
   | 'lock'
   | 'settings'
   | 'login'
-  | 'box';
+  | 'box'
+  | 'shield';
 
 interface ButtonProps {
   text?: string;
@@ -37,6 +39,7 @@ interface ButtonProps {
   type?: 'button' | 'submit';
   className?: string;
   href?: string;
+  linkTo?: string;
   fullWidth?: boolean;
 }
 
@@ -50,7 +53,8 @@ const ICONS: Record<IconTypes, JSX.Element> = {
   lock: <LockIcon width={19} height={19} />,
   settings: <SettingsIcon />,
   login: <LoginIcon width={19} height={19} />,
-  box: <BoxIcon width={19} height={19} />,
+  box: <BoxIcon width={20} height={20} />,
+  shield: <ShieldTickIcon width={20} height={20} />,
 };
 
 const CustomButton: React.FC<ButtonProps> = ({
@@ -63,13 +67,14 @@ const CustomButton: React.FC<ButtonProps> = ({
   isLoading,
   disabled,
   href,
+  linkTo,
   icon,
 }) => {
   const btnClassnames = classNames(
     'app-btn block px-5 text-white text-[14px] rounded-[150px] whitespace-nowrap',
     {
       'h-9 px-7': size === 'sm',
-      'h-[44px] font-bold  px-10': size === 'md',
+      'h-[44px] font-bold px-10': size === 'md',
       'h-[64px] text-[18px] font-bold': size === 'lg',
       'btn-outline-primary': btnStyle === 'outline-primary',
       'btn-outline-red': btnStyle === 'outline-red',
@@ -80,8 +85,20 @@ const CustomButton: React.FC<ButtonProps> = ({
 
   if (href) {
     return (
+      <a
+        href={href}
+        className={`${btnClassnames} flex gap-2 justify-center items-center self-start`}
+      >
+        {icon ? ICONS[icon] : null}
+        {text}
+      </a>
+    );
+  }
+
+  if (linkTo) {
+    return (
       <Link
-        to={href}
+        to={linkTo}
         className={`${btnClassnames} flex gap-2 justify-center items-center self-start`}
       >
         {icon ? ICONS[icon] : null}
@@ -111,7 +128,7 @@ const CustomButton: React.FC<ButtonProps> = ({
           />
         </div>
       ) : (
-        <div className="flex gap-3 justify-center items-center">
+        <div className="flex gap-[11px] justify-center items-center">
           {icon ? ICONS[icon] : null}
           {text}
         </div>

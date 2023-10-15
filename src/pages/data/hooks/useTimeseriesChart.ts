@@ -1,7 +1,11 @@
 import useModal from '@shared/hooks/useModal';
 import { useAppSelector } from '@shared/hooks/useStore';
+import { getRandomColor } from '@shared/utils/getRandomColor';
+import { useGetViewsQuery } from '@slices/dataSlice';
+import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 export interface ChartProps {
   id: string;
@@ -10,34 +14,89 @@ export interface ChartProps {
     name: string;
     color: string;
   }[];
+  data?: Record<string, any>[];
 }
-
-const getRandomColor = () => {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
 
 const initialState: Partial<ChartProps>[] = [
   {
     id: nanoid(4),
     interval: '',
-    keys: [
-      // { name: 'volaBTC', color: '#1DC3CF' },
-      { name: 'returnsBTC', color: '#6affd2' },
-    ],
+    keys: [{ name: 'returnsBTC', color: '#6affd2' }],
   },
 ];
 
 export default () => {
+  const { id } = useParams();
+  const isUpload = (id === 'upload') as boolean;
+  const { data: views = [] } = useGetViewsQuery(id as string, {
+    skip: isUpload,
+  });
+
   const [charts, setCharts] = useState(initialState);
   const [selectedChart, setSelectedChart] = useState<Partial<ChartProps>>({});
   const { isOpen, handleOpen, handleClose } = useModal();
   const { csvJson, timeseries } = useAppSelector((state) => state.timeseries);
   const { dataDetails } = useAppSelector((state) => state.datasets);
+
+  const columns: any[] = isUpload
+    ? timeseries.map((item: any) => item.name)
+    : views[0]?.columns || [];
+
+  const getViewsData = (view: any): Record<string, any>[] => {
+    const values = Object.values(view.values) as [[]];
+    let viewsData = [] as Record<string, any>[];
+
+    for (let i = 0; i < view.columns.length; i++) {
+      const column = view.columns[i];
+      for (let k = 0; k < values[i].length; k++) {
+        const value = values[i][k];
+
+        if (i > 0) {
+          const cloneData = [...viewsData];
+          cloneData[k] = { ...cloneData[k], [column]: value[1] };
+          viewsData = cloneData;
+        } else {
+          viewsData.push({
+            date: dayjs.unix(value[0]).format('YYYY-MM-DD HH:MM'),
+            [column]: value[1],
+          });
+        }
+      }
+    }
+
+    return viewsData;
+  };
+
+  useEffect(() => {
+    if (isUpload) {
+      setCharts([
+        {
+          id: nanoid(4),
+          interval: 'YEAR',
+          keys: timeseries.slice(0, 3).map((item: any) => ({
+            name: item.name,
+            color: getRandomColor(),
+          })),
+        },
+      ]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (views.length) {
+      setCharts(
+        views.map((view: any) => ({
+          id: view.item_hash,
+          interval: view.granularity,
+          keys: view.columns.map((key: string) => ({
+            name: key,
+            color: getRandomColor(),
+          })),
+          data: getViewsData(view),
+        }))
+      );
+    }
+  }, [views]);
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const handleOpenChart = (id: string) => {
@@ -101,6 +160,7 @@ export default () => {
     csvJson,
     charts,
     isOpen,
+    columns,
     handleOpenChart,
     handleClose,
     handleOnchangeChart,

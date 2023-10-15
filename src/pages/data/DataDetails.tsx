@@ -5,7 +5,6 @@ import ClickToCopy from '@shared/components/ClickToCopy';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
 import useAuth from '@shared/hooks/useAuth';
-import useOwner from '@shared/hooks/useOwner';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import {
   changeDatasetPermissionInput,
@@ -31,61 +30,137 @@ const DataDetails = () => {
     (state) => state.monitorAccess
   );
   const {
+    inputs,
     handleOnChange,
-    isPublished,
+    isUpload,
     handleUploadDataset,
-    isLoading,
-    publishedModalProps,
-    dataDetails,
-    datasetByIDActions,
     handleUpdateDataset,
-    updateDatasetsActions,
-    disabled,
+    isLoadingUploadDataset,
+    isLoadingUpdateDataset,
+    isLoading,
+    publishedModalProps: { isOpen, handleClose },
+    isLoadingGetDataset,
+    isOwner,
   } = useDataDetails();
-  const { isOwner } = useOwner(dataDetails?.owner);
-  const { isOpen, handleClose } = publishedModalProps;
 
-  const summary = [
+  const SUMMARY = [
     {
       name: 'Hash of the data',
-      value: (
-        <div className="flex items-center gap-[11px]">
-          <p className="w-[200px] truncate">{dataDetails?.item_hash || ''}</p>
-          <ClickToCopy text={dataDetails?.item_hash} />
-        </div>
-      ),
+      value: <TruncatedAddress hash={inputs?.item_hash} copy />,
     },
+    ...(!isOwner
+      ? [
+          {
+            name: 'Name',
+            value: inputs?.name,
+          },
+        ]
+      : []),
     {
       name: 'Creation date',
       value: (
         <p>
           {dayjs
-            .unix(dataDetails?.timestamp || Date.now() / 1000)
+            .unix(inputs?.timestamp || Date.now() / 1000)
             .format('DD/MM/YYYY')}
         </p>
       ),
     },
     {
       name: 'Downloads',
-      value: <p> 0 </p>,
+      value: <p>0</p>,
     },
-    {
-      name: 'Total Sold',
-      value: <p> 0 USDC </p>,
-    },
-    {
-      name: 'Current Price',
-      value: <p> {dataDetails?.price} USDC </p>,
-    },
-    {
-      name: 'Owners address',
-      value: <TruncatedAddress hash={dataDetails?.owner} />,
-    },
-    // {
-    //   name: 'Usages',
-    //   value: dataDetails?.current_revision || 0,
-    // },
+    ...(isOwner
+      ? [
+          {
+            name: 'Total Sold',
+            value: <p>0 USDC</p>,
+          },
+          {
+            name: 'Current Price',
+            value: <p>{inputs?.price} USDC</p>,
+          },
+          {
+            name: 'Owners address',
+            value: <TruncatedAddress hash={inputs?.owner} copy />,
+          },
+        ]
+      : [
+          {
+            name: 'Sellers wallet',
+            value: <TruncatedAddress hash={inputs?.owner} copy />,
+          },
+          {
+            name: 'Current Price',
+            value: <p>{inputs?.price} USDC</p>,
+          },
+          {
+            name: 'Description',
+            value: inputs?.desc,
+          },
+        ]),
   ];
+
+  const action = () => {
+    if (isUpload) {
+      return (
+        <Button
+          text="Publish"
+          icon="upload"
+          size="md"
+          isLoading={isLoadingUploadDataset as boolean}
+          onClick={handleUploadDataset}
+        />
+      );
+    }
+    if (isOwner) {
+      return (
+        <Button
+          text="Save"
+          icon="box"
+          size="md"
+          isLoading={isLoadingUpdateDataset}
+          onClick={handleUpdateDataset}
+        />
+      );
+    }
+    if (inputs?.available || inputs?.permission_status === 'GRANTED') {
+      return (
+        <Button
+          text="Download"
+          size="md"
+          icon="download"
+          btnStyle="outline-primary"
+          isLoading={isLoading}
+          onClick={() => handleDownload(inputs.timeseriesIDs)}
+        />
+      );
+    }
+    if (!inputs?.available || !(inputs?.permission_status === 'GRANTED')) {
+      return (
+        <Button
+          text="Request access"
+          size="md"
+          icon="lock"
+          btnStyle="outline-primary"
+          onClick={() => {
+            dispatch(
+              changeDatasetPermissionInput({
+                input: 'requestor',
+                value: auth.address,
+              })
+            );
+            dispatch(requestDatasetPermissions(inputs?.item_hash));
+          }}
+          isLoading={
+            inputs?.permission_status === 'REQUESTED' ||
+            requestDatasetPermissionActions.isLoading
+          }
+        />
+      );
+    }
+    return <>Test</>;
+  };
 
   return (
     <div>
@@ -94,94 +169,49 @@ const DataDetails = () => {
           <Link
             to=".."
             onClick={() => navigate(-1)}
-            className="flex items-center text-blue"
+            className="flex items-center text-primary"
           >
             <RxCaretLeft size={30} />
             Back
           </Link>
         </div>
-        <div>
-          {/* eslint-disable-next-line no-nested-ternary */}
-          {isPublished ? (
-            isOwner ||
-            dataDetails?.available ||
-            dataDetails?.permission_status === 'GRANTED' ? (
-              <Button
-                text="Download"
-                size="md"
-                icon="download"
-                btnStyle="outline-primary"
-                isLoading={isLoading}
-                onClick={() => handleDownload(dataDetails.timeseriesIDs)}
-              />
-            ) : (
-              <Button
-                text="Request access"
-                size="md"
-                icon="lock"
-                btnStyle="outline-primary"
-                onClick={() => {
-                  dispatch(
-                    changeDatasetPermissionInput({
-                      input: 'requestor',
-                      value: auth.address,
-                    })
-                  );
-                  dispatch(requestDatasetPermissions(dataDetails?.item_hash));
-                }}
-                isLoading={
-                  dataDetails?.permission_status === 'REQUESTED' ||
-                  requestDatasetPermissionActions.isLoading
-                }
-              />
-            )
-          ) : (
-            <Button
-              text="Publish"
-              icon="upload"
-              size="md"
-              isLoading={isLoading}
-              onClick={() => {
-                handleUploadDataset();
-              }}
-            />
-          )}
-        </div>
+        <div>{action()}</div>
       </div>
       <div className="relative">
-        <ViewLoader isLoading={datasetByIDActions.isLoading} />
-        <div className="grid grid-cols-2 gap-5 mb-5">
-          <div className="bg-form-bg flex flex-col gap-4 p-6 text-text-dark rounded-[32px]">
-            <TextInput
-              label="Data name"
-              placeholder="Name the data"
-              value={dataDetails?.name || ''}
-              onChange={(e) => handleOnChange('name', e.target.value)}
-              fullWidth
-              disabled={disabled}
-            />
-            <TextInput
-              label="Set price in USDC"
-              placeholder="Enter the price"
-              value={dataDetails?.price || ''}
-              onChange={(e) => handleOnChange('price', e.target.value)}
-              fullWidth
-              trail="USDC"
-              disabled={disabled}
-            />
-            <TextInput
-              label="Description"
-              placeholder="What is the data about?"
-              value={dataDetails?.desc || ''}
-              onChange={(e) => handleOnChange('desc', e.target.value)}
-              fullWidth
-              disabled={disabled}
-            />
+        <ViewLoader isLoading={isLoadingGetDataset} />
+        {isOwner ? (
+          <div className="grid grid-cols-2 gap-5 mb-5">
+            <div className="bg-form-bg flex flex-col gap-4 p-6 text-text-dark rounded-[32px]">
+              <TextInput
+                label="Title"
+                placeholder="A short but descriptive title"
+                value={inputs?.name || ''}
+                onChange={(e) => handleOnChange('name', e.target.value)}
+                fullWidth
+              />
+              <TextInput
+                label="Price"
+                placeholder="Set a price for your data"
+                type="number"
+                value={inputs?.price || '0'}
+                onChange={(e) => handleOnChange('price', e.target.value)}
+                fullWidth
+                trail="USDC"
+              />
+              <TextInput
+                label="Description"
+                placeholder="What is the data about?"
+                value={inputs?.desc || ''}
+                onChange={(e) => handleOnChange('desc', e.target.value)}
+                fullWidth
+              />
+            </div>
+            <DataSummary summary={SUMMARY} />
           </div>
-          <DataSummary summary={summary} />
-        </div>
-        <TimeseriesCharts isOwner={isOwner} />
+        ) : null}
+        <TimeseriesCharts isOwner={isOwner} summary={SUMMARY} />
       </div>
+
       <AppModal
         isOpen={isOpen}
         handleClose={handleClose}
@@ -189,17 +219,14 @@ const DataDetails = () => {
         withHeader={false}
       >
         <div className="flex flex-col items-center gap-4">
-          <h1>Data {!isPublished ? 'published' : 'updated'}!</h1>
+          <h1>Data {isUpload ? 'published' : 'updated'}!</h1>
           <IoCheckbox className="text-primary" size={70} />
           <p>
-            {dataDetails?.name || ''} {!isPublished ? 'published' : 'updated'}
+            {inputs?.name || ''} {isUpload ? 'published' : 'updated'}
           </p>
           <div className="flex flex-col items-center gap-2">
-            <TruncatedAddress
-              hash={dataDetails?.item_hash || ''}
-              color="primary"
-            />
-            <ClickToCopy text={dataDetails?.item_hash || ''} color="#1DC3CF" />
+            <TruncatedAddress hash={inputs?.item_hash || ''} color="primary" />
+            <ClickToCopy text={inputs?.item_hash || ''} color="#1DC3CF" />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">
@@ -210,7 +237,7 @@ const DataDetails = () => {
             btnStyle="outline-primary"
             fullWidth
             onClick={() => {
-              navigate(`/data/${dataDetails?.item_hash}/details`);
+              navigate(`/data/${inputs?.item_hash}/details`);
               handleClose();
             }}
           />

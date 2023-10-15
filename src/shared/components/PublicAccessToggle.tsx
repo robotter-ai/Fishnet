@@ -9,7 +9,7 @@ import {
   resetDataSlice,
   updateDatasetAvailability,
 } from '@slices/dataSlice';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import useAuth from '@shared/hooks/useAuth';
 
 interface IPublicAccessToggleProps {

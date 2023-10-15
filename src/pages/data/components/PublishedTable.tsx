@@ -27,7 +27,7 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'SELLERS WALLET',
-    cell: (item) => <TruncatedAddress hash={item.item_hash} copy />,
+    cell: (item) => <TruncatedAddress hash={item.owner} copy />,
     sortWith: 'owner',
   },
   {

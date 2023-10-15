@@ -50,39 +50,27 @@ const SALES_COLUMNS = ({
     sortWith: 'requestor',
   },
   {
-    header: 'Usages left',
-    cell: ({ maxExecutionCount, executionCount }) => (
-      <div className="bg-[#E6EEFF] w-[84px] h-[34px] flex pl-4 items-center rounded-md border border-primary">
-        {Number(maxExecutionCount) - Number(executionCount)}
-      </div>
-    ),
+    header: 'BUY DATE',
+    cell: ({ maxExecutionCount, executionCount }) => '',
+    sortWith: 'requestor',
   },
   {
-    header: 'Usage limit',
-    cell: ({ maxExecutionCount }) => maxExecutionCount,
+    header: 'DLs',
+    cell: ({ maxExecutionCount }) => '',
     sortWith: 'maxExecutionCount',
   },
   {
-    header: '',
-    cell: ({ forgotten }) => (
-      <div className="flex gap-3">
-        <Starred starred={forgotten} />
-      </div>
-    ),
-  },
-  {
-    header: '',
-    cell: () => (
-      <RefuseAccess handleOpenRefuseAccess={handleOpenRefuseAccess} />
-    ),
+    header: 'Buy PRICE',
+    cell: ({ forgotten }) => '',
+    sortWith: 'maxExecutionCount',
   },
 ];
 
-const algorithmsColumns = ({
+const MANUAL_ACCESS_COLUMNS = ({
   handleOpenRefuseAccess,
 }: TableMapperColumns): ITableColumns[] => [
   {
-    header: 'Program name',
+    header: 'USERS WALLET',
     cell: ({ name }) => (
       <Link
         to={`/data/${'dataset-id'}/details`}
@@ -94,41 +82,29 @@ const algorithmsColumns = ({
     sortWith: 'name',
   },
   {
-    header: 'Hash of algorithm',
-    cell: ({ algorithmID }) => (
+    header: 'PROFILE BIO',
+    cell: ({ requestor }) => (
       <div className="flex gap-3">
-        <p className="w-[200px] truncate">{algorithmID}</p>
-        <ClickToCopy text={algorithmID} />
+        <p className="w-[200px] truncate">{requestor}</p>
+        <ClickToCopy text={requestor} />
       </div>
     ),
-    sortWith: 'algorithmID',
+    sortWith: 'requestor',
   },
   {
-    header: 'Usages left',
-    cell: ({ maxExecutionCount, executionCount }) => (
-      <div className="bg-[#E6EEFF] w-[84px] h-[34px] flex pl-4 items-center rounded-md border border-primary">
-        {Number(maxExecutionCount) - Number(executionCount)}
-      </div>
-    ),
+    header: 'ACCESS DATE',
+    cell: ({ maxExecutionCount, executionCount }) => '',
+    sortWith: 'requestor',
   },
   {
-    header: 'Usage limit',
-    cell: ({ maxExecutionCount }) => maxExecutionCount,
+    header: 'DLs',
+    cell: ({ maxExecutionCount }) => '',
     sortWith: 'maxExecutionCount',
   },
   {
-    header: '',
-    cell: ({ starred }) => (
-      <div className="flex gap-3">
-        <Starred starred={starred} />
-      </div>
-    ),
-  },
-  {
-    header: '',
-    cell: () => (
-      <RefuseAccess handleOpenRefuseAccess={handleOpenRefuseAccess} />
-    ),
+    header: 'Buy PRICE',
+    cell: ({ forgotten }) => '',
+    sortWith: 'maxExecutionCount',
   },
 ];
 
@@ -225,7 +201,7 @@ const TableMapper = ({
     },
     {
       title: 'Manual access',
-      columns: algorithmsColumns({ handleOpenRefuseAccess }),
+      columns: MANUAL_ACCESS_COLUMNS({ handleOpenRefuseAccess }),
       data: sharedByAlgorithm,
     },
     // {

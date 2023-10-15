@@ -54,7 +54,8 @@ const EditAccount: React.FC<IEditAccountProps> = ({
         />
         <CustomButton
           text="Save"
-          size="lg"
+          size="md"
+          icon="box"
           onClick={handleUpdateProfile}
           isLoading={isLoading}
           fullWidth

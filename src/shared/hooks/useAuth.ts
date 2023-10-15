@@ -22,5 +22,6 @@ export default (): AuthProps => {
     walletConnected,
     wallet: wallet?.adapter.name || '',
     isAuth: !!cookies.get('bearerToken') && walletConnected,
+    // isAuth: !!cookies.get('bearerToken'),
   };
 };

@@ -40,9 +40,12 @@ const COLUMNS = (address): ITableColumns[] => [
 ];
 
 const TransactionTable = ({ data, address }) => {
-  return <div>
-  <h2 className="pt-3">Transactions</h2><CustomTable data={data} columns={COLUMNS(address)} />
-</div>;
+  return (
+    <div>
+      <h2 className="pt-3">Transactions</h2>
+      <CustomTable data={data} columns={COLUMNS(address)} />
+    </div>
+  );
 };
 
 export default TransactionTable;

@@ -9,8 +9,6 @@ import {
 } from '@mui/material';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { GrCloudDownload } from 'react-icons/gr';
-import { TbMoodSad } from 'react-icons/tb';
 import { BarLoader } from 'react-spinners';
 
 export interface ITableColumns {
@@ -153,7 +151,6 @@ const CustomTable: React.FC<CustomTableProps> = ({
               >
                 <TableCell colSpan={columns.length}>
                   <div className="flex flex-col gap-3 items-center py-5">
-                    <GrCloudDownload size={60} color="#676767" />
                     <p>Fetching data...</p>
                   </div>
                 </TableCell>
@@ -165,7 +162,6 @@ const CustomTable: React.FC<CustomTableProps> = ({
               >
                 <TableCell colSpan={columns.length}>
                   <div className="flex flex-col gap-3 items-center py-5">
-                    <TbMoodSad size={60} color="#676767" />
                     <p>No data found!</p>
                   </div>
                 </TableCell>

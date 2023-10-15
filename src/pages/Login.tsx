@@ -6,9 +6,7 @@ import { LoginForm } from '@features/auth';
 import useAuth from '@shared/hooks/useAuth';
 import useModal from '@shared/hooks/useModal';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { useNavigate } from 'react-router-dom';
-import FishnetLogo from '/fishnet-logo.png';
-import { ReactComponent as WaveBg } from '@assets/images/wave.svg';
+import { Navigate, useNavigate } from 'react-router-dom';
 import {
   getChallenge as getChallengeRequest,
   resetChallengeDetails,
@@ -17,6 +15,7 @@ import {
 import { useWallet } from '@solana/wallet-adapter-react';
 import Cookies from 'universal-cookie';
 import useLogin from '@features/auth/hooks/useLogin';
+import LoginWaveImg from '@assets/images/login-wave.png';
 
 const Login = () => {
   const cookies = new Cookies();
@@ -71,16 +70,47 @@ const Login = () => {
     }
   }, [solveChallenge.success]);
 
-  return (
-    <div className="flex flex-col justify-between h-screen bg-white">
-      <div className="py-5 px-8 flex justify-between items-center">
-        <img src="./fishnet.png" alt="Robotter PNG" width={50} />
-        <Button text="Connect a wallet" icon="login" onClick={handleOpen} />
+  return auth.isAuth ? (
+    <Navigate to="/data" replace />
+  ) : (
+    <>
+      <div className="flex flex-col h-[80vh] bg-white">
+        <div className="py-5 px-8 flex justify-between items-center">
+          <img src="./fishnet.png" alt="Fishnet Logo" width={50} />
+          <Button
+            text="Connect Fishnet"
+            icon="login"
+            btnStyle="outline-primary"
+            onClick={handleOpen}
+          />
+        </div>
+        <div className="relative h-full mt-20 flex flex-col">
+          <img
+            src="./fishnet-logo.png"
+            alt="Fishnet Logo"
+            className="absolute top-[20%] left-1/2 -translate-x-1/2 w-1/2"
+          />
+          <img
+            src={LoginWaveImg}
+            alt="Fishnet Logo"
+            className="w-full h-full"
+          />
+        </div>
       </div>
-      <div className="h-full flex justify-center items-center">
-        <img src={FishnetLogo} alt="Robotter PNG" width={1063} />
+      <div className="bg-[#F6FAFB] text-center flex flex-col justify-center gap-10 py-28 px-[25%]">
+        <p className="text-5xl">
+          Fishnet is currently in closed alpha and requires signing up on the
+          waitlist to get access
+        </p>
+        <div className="mx-auto">
+          <Button
+            text="Get on the Waitlist"
+            icon="shield"
+            size="md"
+            href="https://airtable.com/appSQLW6n1hHiOJGA/shrstF1WLukXhHZro"
+          />
+        </div>
       </div>
-      <WaveBg className="w-full" preserveAspectRatio="none" />
       <AppModal
         title="Connect a wallet"
         isOpen={isOpen}
@@ -88,7 +118,7 @@ const Login = () => {
       >
         <LoginForm />
       </AppModal>
-    </div>
+    </>
   );
 };
 

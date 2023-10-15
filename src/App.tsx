@@ -1,5 +1,4 @@
 import { Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 
 import Login from '@pages/Login';
 import MyData from '@pages/data';
@@ -8,6 +7,7 @@ import Algorithms from '@pages/algorithms';
 import MonitorAccess from '@pages/monitor-access';
 import DataSettings from '@pages/monitor-access/DataSettings';
 import MyProfile from '@pages/my-profile';
+import { Toaster } from 'sonner';
 import Layout from './layouts';
 
 export default function App() {
@@ -28,7 +28,14 @@ export default function App() {
         </Route>
         <Route path="*" element={<h1>Not Found!</h1>} />
       </Routes>
-      <ToastContainer />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          className:
+            '!bg-[#F6FAFB] !w-fit !py-3 !whitespace-nowrap !px-8 right-1/2 -translate-x-1/2 !rounded-full',
+        }}
+        richColors
+      />
     </>
   );
 }

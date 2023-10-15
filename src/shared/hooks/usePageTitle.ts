@@ -3,10 +3,10 @@ import { useAppDispatch, useAppSelector } from './useStore';
 
 export default () => {
   const dispatch = useAppDispatch();
-  const { pageTitle, pageStatus } = useAppSelector((state) => state.app);
+  const { pageTitle } = useAppSelector((state) => state.app);
 
-  const handleSetTitle = (title: string, status?: string) =>
-    dispatch(setPageDetails({ pageTitle: title, pageStatus: status }));
+  const handleSetTitle = (title: string) =>
+    dispatch(setPageDetails({ pageTitle: title }));
 
-  return { title: pageTitle, pageStatus, setTitle: handleSetTitle };
+  return { title: pageTitle, setTitle: handleSetTitle };
 };

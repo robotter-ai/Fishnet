@@ -5,9 +5,18 @@ import useModal from '@shared/hooks/useModal';
 import useTransaction from '@shared/hooks/useTransaction';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Slide, toast } from 'react-toastify';
+import { toast } from 'sonner';
 import AppModal from './AppModal';
 import CustomButton from './Button';
+
+const PriceView = ({ price, handleOpen }) => {
+  return (
+    <div className="flex gap-3 items-center" role="button" onClick={handleOpen}>
+      <PriceTagIcon />
+      <p className="text-dark">{price} USDC</p>
+    </div>
+  );
+};
 
 export default function PriceButton({
   price,
@@ -36,28 +45,22 @@ export default function PriceButton({
     if (!regex.test(inputValue)) {
       event.preventDefault();
       setFieldPrice(0);
-      toast.error('Kindly enter a number', {
-        hideProgressBar: true,
-        autoClose: 2000,
-        theme: 'light',
-        transition: Slide,
-      });
+      toast.error('Kindly enter a number');
+      // toast.error('Kindly enter a number', {
+      //   hideProgressBar: true,
+      //   autoClose: 2000,
+      //   theme: 'light',
+      //   transition: Slide,
+      // });
     }
   };
-  return paymentTrigger ? (
+
+  return (
     <>
-      <div
-        className="flex gap-3 items-center"
-        role="button"
-        onClick={() => {
-          handleOpen();
-        }}
-      >
-        <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
-          <PriceTagIcon />
-        </div>
-        <p className="text-dark">{price} USDC </p>
-      </div>
+      <PriceView
+        price={price}
+        handleOpen={paymentTrigger ? handleOpen : () => {}}
+      />
       <AppModal
         title="Payment Settings"
         isOpen={isOpen}
@@ -69,7 +72,6 @@ export default function PriceButton({
           label="enter your price"
           fullWidth
           bgColor="#0093A714"
-          // inputType
           value={fieldPrice}
           onChange={(e) => handleInput(e)}
         />
@@ -86,12 +88,5 @@ export default function PriceButton({
         </div>
       </AppModal>
     </>
-  ) : (
-    <div className="flex gap-3" role="button" onClick={() => {}}>
-      <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
-        <PriceTagIcon />
-      </div>
-      <p className="text-dark">{price} USDC </p>
-    </div>
   );
 }
