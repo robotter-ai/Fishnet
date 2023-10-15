@@ -75,8 +75,8 @@ export const timeseriesSlice = createSlice({
     setTimeseries: (state, action) => {
       state.timeseries = action.payload;
 
+      state.csvJson = [];
       if (state.timeseries.length === 0) {
-        state.csvJson = [];
         return;
       }
       for (let i = 0; i < state.timeseries[0].data.length; i++) {
