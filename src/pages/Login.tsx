@@ -64,6 +64,7 @@ const Login = () => {
       cookies.set('bearerToken', solveChallenge.token, {
         path: '/',
         maxAge: solveChallenge.valid_til,
+        secure: true,
       });
       dispatch(resetChallengeDetails());
       navigate('/data', { replace: true });
