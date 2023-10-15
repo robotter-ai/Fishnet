@@ -80,10 +80,10 @@ export const timeseriesSlice = createSlice({
         return;
       }
       for (let i = 0; i < state.timeseries[0].data.length; i++) {
-        const date = state.timeseries[0].data[i].date;
+        const date = state.timeseries[0].data[i][0] * 1000; // convert to ms
         const data = state.timeseries.map((item: any) => {
           return {
-            [item.name]: item.data[i].value,
+            [item.name]: item.data[i][1],
           }
         }).reduce((acc: any, curr: any) => {
           return { ...acc, ...curr };

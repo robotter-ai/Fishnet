@@ -9,8 +9,8 @@ import { ChartProps } from '../hooks/useTimeseriesChart';
 
 
 type DatedDataEntry = {
-  date: string;
-  [key: string]: number | string;
+  date: number;
+  [key: string]: number;
 }
 
 const DURATION_TYPE = ['D', 'W', '1M', '3M', 'Y', 'All'];
