@@ -1,10 +1,13 @@
 import useModal from '@shared/hooks/useModal';
 import { useAppSelector } from '@shared/hooks/useStore';
 import { getRandomColor } from '@shared/utils/getRandomColor';
-import { useGetViewsQuery } from '@slices/dataSlice';
+import {
+  useGetDatasetTimeseriesQuery,
+  useGetViewsQuery,
+} from '@slices/dataSlice';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export interface ChartProps {
@@ -21,7 +24,7 @@ const initialState: Partial<ChartProps>[] = [
   {
     id: nanoid(4),
     interval: '',
-    keys: [{ name: 'loading...', color: '#6affd2' }],
+    keys: [{ name: 'returnsBTC', color: '#6affd2' }],
   },
 ];
 
@@ -35,12 +38,22 @@ export default () => {
   const [charts, setCharts] = useState(initialState);
   const [selectedChart, setSelectedChart] = useState<Partial<ChartProps>>({});
   const { isOpen, handleOpen, handleClose } = useModal();
-  const { csvJson, timeseries } = useAppSelector((state) => state.timeseries);
-  const { dataDetails } = useAppSelector((state) => state.datasets);
+  const { csvJson, timeseries: uploadDatasetTimeries } = useAppSelector(
+    (state) => state.timeseries
+  );
 
-  const columns: any[] = isUpload
-    ? timeseries.map((item: any) => item.name)
-    : views[0]?.columns || [];
+  const { data: publishedDatasetTimeries = [] } = useGetDatasetTimeseriesQuery(
+    id as string,
+    {
+      skip: isUpload,
+    }
+  );
+
+  const timeseriesToUse = useMemo(() => {
+    return isUpload ? uploadDatasetTimeries : publishedDatasetTimeries;
+  }, [uploadDatasetTimeries, publishedDatasetTimeries]);
+
+  const columns: any[] = timeseriesToUse.map((item: any) => item.name);
 
   const getViewsData = (view: any): Record<string, any>[] => {
     const values = Object.values(view.values) as [[]];
@@ -73,7 +86,7 @@ export default () => {
         {
           id: nanoid(4),
           interval: 'YEAR',
-          keys: timeseries.slice(0, 3).map((item: any) => ({
+          keys: uploadDatasetTimeries.slice(0, 3).map((item: any) => ({
             name: item.name,
             color: getRandomColor(),
           })),
@@ -83,7 +96,7 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    if (views.length) {
+    if (views && views.length) {
       setCharts(
         views.map((view: any) => ({
           id: view.item_hash,
@@ -157,6 +170,7 @@ export default () => {
   };
 
   return {
+    isUpload,
     csvJson,
     charts,
     isOpen,
@@ -167,7 +181,6 @@ export default () => {
     selectedChart,
     handleSaveChart,
     handleDeleteChart,
-    timeseries,
-    dataDetails,
+    timeseries: timeseriesToUse,
   };
 };

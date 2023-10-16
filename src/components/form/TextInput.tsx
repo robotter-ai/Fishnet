@@ -45,7 +45,8 @@ const TextInput: React.FC<TextInputProps> = ({
           `bg-[${bgColor}] py-3 px-4 mt-1 outline-none border text-sm rounded-full`,
           {
             'border-danger': mandatory && value === '',
-            'border-transparent focus:border-primary': !mandatory || value !== '',
+            'border-transparent focus:border-primary':
+              !mandatory || value !== '',
             'w-full': fullWidth,
             'h-9': size === 'sm',
             'h-[44px]': size === 'md',

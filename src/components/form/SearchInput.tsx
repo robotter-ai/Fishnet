@@ -1,9 +1,8 @@
 import { SearchIcon } from '@assets/icons';
-import React from "react";
 
 interface ISearchInputProps {
-  value?: string | number | undefined;
-  onChange?: (value: any) => void | undefined;
+  value: string;
+  onChange: (value: any) => void;
 }
 
 const SearchInput: React.FC<ISearchInputProps> = ({ value, onChange }) => {
@@ -14,7 +13,7 @@ const SearchInput: React.FC<ISearchInputProps> = ({ value, onChange }) => {
         type="text"
         placeholder="Search"
         value={value}
-        onChange={(e) => onChange ? onChange(e.target.value) : undefined}
+        onChange={(e) => onChange(e.target.value)}
       />
       <div className="flex items-center h-full w-fit absolute top-0 right-0 px-2 pr-5">
         <SearchIcon color="#172025" />

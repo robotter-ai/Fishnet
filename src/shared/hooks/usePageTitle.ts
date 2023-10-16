@@ -10,5 +10,9 @@ export default () => {
 
   const handleGetTitle = () => pageTitle;
 
-  return { title: pageTitle, setTitle: handleSetTitle, getTitle: handleGetTitle };
+  return {
+    title: pageTitle,
+    setTitle: handleSetTitle,
+    getTitle: handleGetTitle,
+  };
 };

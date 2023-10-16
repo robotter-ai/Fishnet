@@ -29,11 +29,7 @@ const Login = () => {
 
   useEffect(() => {
     localStorage.setItem('wallet.connected.status', auth.address);
-    if (
-      auth.address &&
-      !auth.isAuth &&
-      !getChallenge.success
-    ) {
+    if (auth.address && !auth.isAuth && !getChallenge.success) {
       // added isAuth check prevent repeated challenge solving
       dispatch(getChallengeRequest(auth.address));
     }
@@ -59,7 +55,7 @@ const Login = () => {
     if (getChallenge.challenge) {
       solveChallengeAsync();
     }
-  }, [getChallenge.success, ]);
+  }, [getChallenge.success]);
 
   useEffect(() => {
     if (
@@ -105,7 +101,7 @@ const Login = () => {
           />
           <div className="bg-[#F6FAFB] text-center flex flex-col justify-center py-[10px] px-[25%]">
             <p className="text-2xl">
-              This app is only for demonstration purposes. <br/>
+              This app is only for demonstration purposes. <br />
               Do not upload any sensitive data.
             </p>
           </div>
