@@ -56,11 +56,9 @@ const BrowseDataTable = ({
           paymentMint: USDC_MINT,
           seller: owner,
           marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
-          params: {
-            rewardsActive: false,
-            amount: 1,
-            name,
-          },
+          rewardsActive: false,
+          amount: 1,
+          name,
         },
       })
     );
