@@ -1,5 +1,4 @@
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import useTimeseriesChart from '../hooks/useTimeseriesChart';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -29,30 +28,24 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'start',
-    cell: (item) => <div className="w-[120px]">{new Date(item.earliest * 1000).toLocaleString()}</div>,
+    cell: (item) => (
+      <div className="w-[120px]">
+        {new Date(item.earliest * 1000).toLocaleString()}
+      </div>
+    ),
   },
   {
     header: 'end',
-    cell: (item) => <div className="w-[120px]">{new Date(item.latest * 1000).toLocaleString()}</div>,
-  }
+    cell: (item) => (
+      <div className="w-[120px]">
+        {new Date(item.latest * 1000).toLocaleString()}
+      </div>
+    ),
+  },
 ];
 
-const EditDataTable = ({
-  data,
-  isPublished,
-}: {
-  data: any[];
-  isPublished: any;
-}) => {
-  const { selectedChart, handleDeleteChart, timeseries, dataDetails } =
-    useTimeseriesChart();
-  return (
-    <CustomTable
-      data={data}
-      columns={COLUMNS}
-      // isLoading={isLoading}
-    />
-  );
+const EditDataTable = ({ data }: { data: any[] }) => {
+  return <CustomTable data={data} columns={COLUMNS} />;
 };
 
 export default EditDataTable;

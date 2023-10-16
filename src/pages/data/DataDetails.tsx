@@ -221,7 +221,8 @@ const DataDetails = () => {
           <h1>Data {isUpload ? 'published' : 'updated'}!</h1>
           <IoCheckbox className="text-primary" size={70} />
           <p>
-            {inputs?.name || 'unnamed dataset'} {isUpload ? 'published' : 'updated'}
+            {inputs?.name || 'unnamed dataset'}{' '}
+            {isUpload ? 'published' : 'updated'}
           </p>
           <div className="flex flex-col items-center gap-2">
             <TruncatedAddress hash={inputs?.item_hash || ''} color="primary" />

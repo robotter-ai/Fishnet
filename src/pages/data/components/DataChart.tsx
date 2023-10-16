@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import dayjs, {ManipulateType, OpUnitType} from 'dayjs';
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import dayjs, { ManipulateType, OpUnitType } from 'dayjs';
 import classNames from 'classnames';
 import { TrashIcon } from '@assets/icons';
 import { AiOutlineLine } from 'react-icons/ai';
 import { RxDotsHorizontal } from 'react-icons/rx';
 import { ChartProps } from '../hooks/useTimeseriesChart';
 
-
 type DatedDataEntry = {
   date: string;
   [key: string]: number | string;
-}
+};
 
 const DURATION_TYPE = ['D', 'W', '1M', '3M', 'Y', 'All'];
 
@@ -25,7 +32,7 @@ type DurationInfo = {
 const getDuration = (index: number): DurationInfo => {
   const mapping = [
     { value: 1, type: 'day', granularity: 'minute', granularityStep: 5 },
-    { value: 1, type: 'week', granularity: 'minute', granularityStep: 15},
+    { value: 1, type: 'week', granularity: 'minute', granularityStep: 15 },
     { value: 1, type: 'month', granularity: 'hour', granularityStep: 1 },
     { value: 3, type: 'month', granularity: 'hour', granularityStep: 3 },
     { value: 1, type: 'year', granularity: 'day', granularityStep: 1 },
@@ -34,17 +41,24 @@ const getDuration = (index: number): DurationInfo => {
   return mapping[index];
 };
 
-const findGroupByGranularity = (datedData: DatedDataEntry[][], item: any, durationInfo: DurationInfo) => {
+const findGroupByGranularity = (
+  datedData: DatedDataEntry[][],
+  item: any,
+  durationInfo: DurationInfo
+) => {
   return datedData.find((g: any) => {
-    const diff = dayjs(item.date).diff(dayjs(g[0].date), durationInfo.granularity);
-    return diff <= (durationInfo.granularityStep - 1);
+    const diff = dayjs(item.date).diff(
+      dayjs(g[0].date),
+      durationInfo.granularity
+    );
+    return diff <= durationInfo.granularityStep - 1;
   });
 };
 
 const getEarlierDate = (date: any, activeDuration: number) => {
   const durationType = getDuration(activeDuration);
   return dayjs(date).subtract(durationType.value, durationType.type);
-}
+};
 
 const DataChart: React.FC<{
   data: DatedDataEntry[];
@@ -53,8 +67,14 @@ const DataChart: React.FC<{
   handleOpenChart?: () => void;
   handleDeleteChart?: () => void;
   isView?: boolean;
-}> = ({ data, chart, withActions, handleOpenChart, handleDeleteChart, isView = false }) => {
-  console.log(data)
+}> = ({
+  data,
+  chart,
+  withActions,
+  handleOpenChart,
+  handleDeleteChart,
+  isView = false,
+}) => {
   const [activeDuration, setActiveDuration] = useState(5);
   const durationType = getDuration(activeDuration);
 
@@ -62,7 +82,7 @@ const DataChart: React.FC<{
     const datedData: DatedDataEntry[][] = [];
 
     data.forEach((item) => {
-      let group = findGroupByGranularity(datedData, item, durationType);
+      const group = findGroupByGranularity(datedData, item, durationType);
       if (group) {
         group.push(item);
       } else {
@@ -75,41 +95,44 @@ const DataChart: React.FC<{
   };
 
   function filterChartData(): DatedDataEntry[] {
-    const data = dataDurationFilter();
-    return data.filter((item) => {
-      const diff = dayjs().diff(dayjs(item.date), durationType.type);
-      return diff <= 1;
-    }).sort((a, b) => dayjs(a.date).diff(dayjs(b.date))).reverse();
+    return dataDurationFilter()
+      .filter((item) => {
+        const diff = dayjs().diff(dayjs(item.date), durationType.type);
+        return diff <= 1;
+      })
+      .sort((a, b) => dayjs(a.date).diff(dayjs(b.date)))
+      .reverse();
   }
 
   let dataToUse = filterChartData();
 
   useEffect(() => {
     dataToUse = filterChartData();
-    console.log(dataToUse)
   }, [activeDuration]);
 
   const domainSize = [
-    Math.min(...dataToUse.map((item) => {
-      const value = item[chart.keys[0].name];
-      if (typeof value === 'number') {
-        return value
-      } else {
+    Math.min(
+      ...dataToUse.map((item) => {
+        const value = item[chart.keys[0].name];
+        if (typeof value === 'number') {
+          return value;
+        }
         return Number.MAX_SAFE_INTEGER;
-      }
-    })),
-    Math.max(...dataToUse.map((item) => {
-      const value = item[chart.keys[0].name];
-      if (typeof value === 'number') {
-        return value
-      } else {
+      })
+    ),
+    Math.max(
+      ...dataToUse.map((item) => {
+        const value = item[chart.keys[0].name];
+        if (typeof value === 'number') {
+          return value;
+        }
         return Number.MIN_SAFE_INTEGER;
-      }
-    })),
-  ]
+      })
+    ),
+  ];
   const gridWidth = Math.round(dataToUse.length / 10);
   const gridHeight = Math.round(domainSize[1] - domainSize[0]) / 10;
-  console.log(gridWidth, gridHeight)
+
   return (
     <div className="bg-form-bg rounded-[32px] py-5 px-6">
       <div className="flex justify-between mb-7">
@@ -130,7 +153,7 @@ const DataChart: React.FC<{
               </p>
             ))}
           </div>
-        ): null}
+        ) : null}
         {withActions ? (
           <div className="flex gap-2">
             <div
@@ -176,10 +199,13 @@ const DataChart: React.FC<{
               domain={domainSize}
             />
           )}
-          <CartesianGrid opacity={0.8} stroke="#C8CCCD" strokeDasharray="3 3"
-          verticalCoordinatesGenerator={(props) =>
-            props.width > 450 ? [150, 300, 450] : [200, 400]
-          }
+          <CartesianGrid
+            opacity={0.8}
+            stroke="#C8CCCD"
+            strokeDasharray="3 3"
+            verticalCoordinatesGenerator={(props) =>
+              props.width > 450 ? [150, 300, 450] : [200, 400]
+            }
           />
           {!isView ? (
             <Tooltip

@@ -64,7 +64,7 @@ const MyProfile = () => {
             </div>
           ))}
         </div>
-        <SearchInput />
+        <SearchInput value="" onChange={() => null} />
       </div>
       {TableComponent}
     </div>

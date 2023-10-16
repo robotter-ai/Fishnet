@@ -2,7 +2,7 @@ import { ArrowDownIcon, ArrowUpIcon } from '@assets/icons';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import dayjs from 'dayjs';
 
-const COLUMNS = (address: string): ITableColumns[] => [
+const COLUMNS = (address): ITableColumns[] => [
   {
     header: 'DATA NAME',
     cell: (item) => (
@@ -39,10 +39,7 @@ const COLUMNS = (address: string): ITableColumns[] => [
   },
 ];
 
-const TransactionTable = ({ data, address }: {
-  data: any;
-  address: string;
-}) => {
+const TransactionTable = ({ data, address }) => {
   return (
     <div>
       <h2 className="pt-3">Transactions</h2>

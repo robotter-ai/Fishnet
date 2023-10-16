@@ -86,7 +86,7 @@ export default () => {
     dispatch(preprocessTimeseries(formData)).then(() => {
       navigate(`/data/${'upload'}/details`);
       // set name of dataset
-      setTitle(file.name)
+      setTitle(file.name);
     });
   };
 

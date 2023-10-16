@@ -73,6 +73,16 @@ const dataApiSlice = fishnetApi.injectEndpoints({
         body: data,
       }),
     }),
+    downloadTimeriesData: builder.mutation<any, string[]>({
+      query: (data) => ({
+        method: 'POST',
+        url: '/timeseries/data/download',
+        body: data,
+      }),
+    }),
+    getDatasetTimeseries: builder.query<any, string>({
+      query: (dataset_id) => `/datasets/${dataset_id}/timeseries`,
+    }),
   }),
 });
 
@@ -83,6 +93,8 @@ export const {
   useUploadDatasetMutation,
   useGenerateViewsMutation,
   useUpdateDatasetMutation,
+  useGetDatasetTimeseriesQuery,
+  useDownloadTimeriesDataMutation,
 } = dataApiSlice;
 // END: New API Integration Method
 

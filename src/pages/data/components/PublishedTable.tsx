@@ -51,7 +51,7 @@ const PublishedTable = ({
       cell: ({ price }) =>
         price === '0' ? (
           <div className="flex gap-3 items-center">
-            <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
+            <div className="h-[30px] w-[30px] flex items-center justify-center bg-[#E6FAFF] rounded-full">
               <FreeTagIcon />
             </div>
             <p className="w-[120px]">Free</p>
@@ -73,8 +73,7 @@ const PublishedTable = ({
             size="sm"
             onClick={() => {
               navigate(`/data/${item.item_hash}/details`);
-            }
-            }
+            }}
           />
         </div>
       ),

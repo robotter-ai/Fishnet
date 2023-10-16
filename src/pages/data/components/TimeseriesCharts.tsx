@@ -7,10 +7,10 @@ import DataSummary from '@shared/components/Summary';
 import useTimeseriesChart, { ChartProps } from '../hooks/useTimeseriesChart';
 import DataChart from './DataChart';
 import EditDataTable from './EditDataTable';
-import React from "react";
 
 const TimeseriesCharts = ({ isOwner, summary }: any) => {
   const {
+    isUpload,
     charts,
     csvJson,
     isOpen,
@@ -40,7 +40,7 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
           />
         ))}
       </div>
-      {isOwner ? (
+      {isUpload ? (
         <div className="flex gap-5">
           {[1, 2].map((_, idx) => (
             <div
@@ -56,7 +56,7 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
       ) : null}
       <div className="mt-8 flex flex-col gap-3">
         <h1>Datasets records</h1>
-        <EditDataTable data={timeseries} isPublished />
+        <EditDataTable data={timeseries} />
       </div>
       <AppModal
         title="Select values for the chart"
@@ -90,4 +90,4 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
   );
 };
 
-export default React.memo(TimeseriesCharts);
+export default TimeseriesCharts;

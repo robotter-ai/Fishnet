@@ -158,7 +158,7 @@ const BrowseDataTable = ({
     {
       header: 'PRICE',
       cell: ({ price }) =>
-        price == 0 ? (
+        price === 0 ? (
           <div className="flex gap-3 items-center">
             <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
               <FreeTagIcon />
@@ -184,7 +184,7 @@ const BrowseDataTable = ({
       }) => (
         <div className="w-auto flex items-end justify-end">
           {/* eslint-disable-next-line no-nested-ternary */}
-          {available && price == 0 || permission_status === 'GRANTED' ? (
+          {(available && price === 0) || permission_status === 'GRANTED' ? (
             <CustomButton
               text="Download"
               btnStyle="outline-primary"
