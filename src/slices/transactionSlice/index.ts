@@ -103,7 +103,7 @@ const transactionSlice = createSlice({
       .addCase(initProductTree.fulfilled, (state, action) => {
         state.initProductTree.isLoading = false;
         state.initProductTree.success = true;
-        state.initProductTree.transaction = action.payload.message;
+        state.initProductTree.transaction = action.payload.transaction;
       })
       .addCase(initProductTree.rejected, (state, action) => {
         state.initProductTree.isLoading = false;
@@ -116,7 +116,7 @@ const transactionSlice = createSlice({
       .addCase(registerBuy.fulfilled, (state, action) => {
         state.registerBuy.isLoading = false;
         state.registerBuy.success = true;
-        state.registerBuy.transaction = action.payload.message;
+        state.registerBuy.transaction = action.payload.transaction;
       })
       .addCase(registerBuy.rejected, (state, action) => {
         state.registerBuy.isLoading = false;

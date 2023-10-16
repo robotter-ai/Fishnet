@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { FreeTagIcon } from '@assets/icons';
 import CustomButton from '@components/ui/Button';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
@@ -56,9 +57,11 @@ const BrowseDataTable = ({
           paymentMint: USDC_MINT,
           seller: owner,
           marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
-          rewardsActive: false,
-          amount: 1,
-          name,
+          params: {
+            rewardsActive: false,
+            amount: 1,
+            name,
+          },
         },
       })
     );

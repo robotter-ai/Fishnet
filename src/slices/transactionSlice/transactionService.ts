@@ -6,14 +6,16 @@ export type InitProductConfig = {
     signer: string;
     marketplace: string;
     paymentMint: string;
-    id: string;
-    productPrice: number;
-    feeBasisPoints: number;
-    height: number;
-    buffer: number;
-    canopy: number;
-    name: string;
-    metadataUrl: string;
+    params: {
+      id: string;
+      productPrice: number;
+      feeBasisPoints: number;
+      height: number;
+      buffer: number;
+      canopy: number;
+      name: string;
+      metadataUrl: string;
+    };
   };
 };
 
@@ -34,9 +36,11 @@ export type PurchaseConfig = {
     paymentMint: string;
     seller: string;
     marketplaceAuth: string;
-    rewardsActive: boolean;
-    amount: number;
-    name: string;
+    params: {
+      rewardsActive: boolean;
+      amount: number;
+      name: string;
+    };
   };
 };
 

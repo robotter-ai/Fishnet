@@ -92,14 +92,16 @@ export default () => {
           signer: auth.address,
           marketplace: FISHNET_MARKETPLACE,
           paymentMint: USDC_MINT,
-          id: uploadedData?.dataset?.item_hash as string,
-          productPrice: Number(uploadedData?.dataset?.price),
-          feeBasisPoints: 0,
-          height: 5,
-          buffer: 8,
-          canopy: 0,
-          name: String(uploadedData?.dataset?.name),
-          metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${uploadedData?.dataset?.item_hash}`,
+          params: {
+            id: uploadedData?.dataset?.item_hash as string,
+            productPrice: Number(uploadedData?.dataset?.price),
+            feeBasisPoints: 0,
+            height: 5,
+            buffer: 8,
+            canopy: 0,
+            name: String(uploadedData?.dataset?.name),
+            metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${uploadedData?.dataset?.item_hash}`,
+          },
         },
       };
       dispatch(initProductTreeTransaction(config));
@@ -107,7 +109,6 @@ export default () => {
   }, [JSON.stringify(uploadedData), isSuccessUploadDataset]);
 
   useEffect(() => {
-    console.log('initProductTree', initProductTree)
     if (initProductTree.transaction && initProductTree.success && !signature) {
       const serializedBase64 = initProductTree.transaction;
       const serializedBuffer = Buffer.from(serializedBase64, 'base64');
