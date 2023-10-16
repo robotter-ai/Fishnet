@@ -62,10 +62,12 @@ const DataChart: React.FC<{
   handleDeleteChart?: () => void;
   isView?: boolean;
 }> = ({ data, chart, withActions, handleOpenChart, handleDeleteChart, isView = false }) => {
+  console.log('DataChart', data, chart)
   const [activeDuration, setActiveDuration] = useState(5);
   const durationType = getDuration(activeDuration);
 
   function filterChartData(): FormattedDataEntry[] {
+    if (data.length === 0) return [];
     const cutoffDate = dayjs(data[0].date).subtract(durationType.value, durationType.type);
     return data.filter((item) => {
       return dayjs(item.date).isAfter(cutoffDate);
