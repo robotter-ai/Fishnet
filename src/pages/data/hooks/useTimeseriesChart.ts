@@ -38,11 +38,11 @@ export default () => {
   const [charts, setCharts] = useState(initialState);
   const [selectedChart, setSelectedChart] = useState<Partial<ChartProps>>({});
   const { isOpen, handleOpen, handleClose } = useModal();
-  const { csvJson, timeseries: uploadDatasetTimeries } = useAppSelector(
+  const { csvJson, timeseries: uploadDatasetTimeseries } = useAppSelector(
     (state) => state.timeseries
   );
 
-  const { data: publishedDatasetTimeries = [] } = useGetDatasetTimeseriesQuery(
+  const { data: publishedDatasetTimeseries = [] } = useGetDatasetTimeseriesQuery(
     id as string,
     {
       skip: isUpload,
@@ -50,8 +50,8 @@ export default () => {
   );
 
   const timeseriesToUse = useMemo(() => {
-    return isUpload ? uploadDatasetTimeries : publishedDatasetTimeries;
-  }, [uploadDatasetTimeries, publishedDatasetTimeries]);
+    return isUpload ? uploadDatasetTimeseries : publishedDatasetTimeseries;
+  }, [uploadDatasetTimeseries, publishedDatasetTimeseries]);
 
   const columns: any[] = timeseriesToUse.map((item: any) => item.name);
 
@@ -86,7 +86,7 @@ export default () => {
         {
           id: nanoid(4),
           interval: 'YEAR',
-          keys: uploadDatasetTimeries.slice(0, 3).map((item: any) => ({
+          keys: uploadDatasetTimeseries.slice(0, 3).map((item: any) => ({
             name: item.name,
             color: getRandomColor(),
           })),
