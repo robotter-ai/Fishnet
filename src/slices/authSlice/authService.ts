@@ -25,19 +25,10 @@ const refresh = async (token: string) => {
   return data;
 };
 
-const logout = async (token: string) => {
-  const { data } = await axios.post(
-    `${FISHNET_API_URL}/authorization/logout?token=${token}`,
-    getConfig()
-  );
-  return data;
-};
-
 const auth = {
   challenge,
   solve,
   refresh,
-  logout,
 };
 
 export default auth;

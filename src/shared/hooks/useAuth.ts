@@ -11,6 +11,7 @@ import {
 import useLogin from "@features/auth/hooks/useLogin";
 import {useAppDispatch, useAppSelector} from "@shared/hooks/useStore";
 import {useNavigate} from "react-router-dom";
+import LogRocket from "logrocket";
 
 
 interface AuthProps {
@@ -108,6 +109,9 @@ export default (): AuthProps => {
             console.warn('Token expired. Please refresh.');
             console.log('decoded.exp', decoded.exp, 'Date.now()', Date.now());
           }
+
+          // Init logrocket session
+          LogRocket.identify(usedAddress);
         } else {
           console.warn('Invalid token. Please refresh.');
           cookies.remove('bearerToken');
