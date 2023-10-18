@@ -18,6 +18,7 @@ import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { downloadTimeseries as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
+import TruncatedItemHash from "@shared/components/TruncatedItemHash";
 
 const DataDetails = () => {
   const navigate = useNavigate();
@@ -45,8 +46,8 @@ const DataDetails = () => {
 
   const SUMMARY = [
     {
-      name: 'Hash of the data',
-      value: <TruncatedAddress hash={inputs?.item_hash} copy />,
+      name: 'Aleph Hash',
+      value: <TruncatedItemHash hash={inputs?.item_hash} copy link />,
     },
     ...(!isOwner
       ? [
@@ -77,14 +78,14 @@ const DataDetails = () => {
             value: <p>{inputs?.price} USDC</p>,
           },
           {
-            name: 'Owners address',
-            value: <TruncatedAddress hash={inputs?.owner} copy />,
+            name: 'Owner',
+            value: <TruncatedAddress address={inputs?.owner} copy link />,
           },
         ]
       : [
           {
-            name: 'Sellers wallet',
-            value: <TruncatedAddress hash={inputs?.owner} copy />,
+            name: 'Seller',
+            value: <TruncatedAddress address={inputs?.owner} copy link />,
           },
           {
             name: 'Current Price',
@@ -225,8 +226,7 @@ const DataDetails = () => {
             {isUpload ? 'published' : 'updated'}
           </p>
           <div className="flex flex-col items-center gap-2">
-            <TruncatedAddress hash={inputs?.item_hash || ''} color="primary" />
-            <ClickToCopy text={inputs?.item_hash || ''} color="#1DC3CF" />
+            <TruncatedItemHash hash={inputs?.item_hash || ''} color="primary" copy link />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">

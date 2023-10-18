@@ -32,7 +32,7 @@ function TopNavigation() {
         <div ref={ref} className="relative flex items-center gap-[15px]">
           <div className="flex bg-light-blue rounded-[33px] items-center gap-3 py-2 px-6 ">
             <span className="text-[#1C1C1C]">
-              <TruncatedAddress hash={auth?.address} />
+              <TruncatedAddress address={auth?.address} />
             </span>
             <img src={WalletIcon} alt="" />
           </div>

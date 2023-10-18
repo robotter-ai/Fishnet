@@ -152,8 +152,8 @@ const BrowseDataTable = ({
       sortWith: 'desc',
     },
     {
-      header: 'SELLERS WALLET',
-      cell: (item) => <TruncatedAddress hash={item.owner} copy />,
+      header: 'SELLER',
+      cell: (item) => <TruncatedAddress address={item.owner} copy link />,
       sortWith: 'owner',
     },
     {

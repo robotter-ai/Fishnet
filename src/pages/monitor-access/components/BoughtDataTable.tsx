@@ -27,7 +27,7 @@ const COLUMNS: ITableColumns[] = [
     sortWith: 'item',
   },
   {
-    header: 'SELLERS WALLET',
+    header: 'SELLER',
     cell: (item) => '',
     sortWith: 'item',
   },
@@ -43,15 +43,17 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'PRICE',
     cell: (item) => '',
+    //@todo
     sortWith: 'item',
   },
   {
     header: '',
+    //@todo
     cell: (item) => <Starred starred={item.forgotten} />,
   },
   {
     header: '',
-    cell: ({ item_hash, status }) => (
+    cell: () => (
       <CustomButton
         text="Download"
         icon="download"
