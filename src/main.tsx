@@ -9,6 +9,9 @@ import { publicProvider } from 'wagmi/providers/public';
 import { store } from './store';
 import App from './App';
 import { SolanaContextProvider } from './contexts';
+import LogRocket from 'logrocket';
+
+LogRocket.init('jf0bw9/fishnet');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { publicClient, webSocketPublicClient } = configureChains(
