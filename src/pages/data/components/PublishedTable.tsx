@@ -35,11 +35,6 @@ const PublishedTable = ({
       sortWith: 'desc',
     },
     {
-      header: 'SELLERS WALLET',
-      cell: (item) => <TruncatedAddress hash={item.owner} copy />,
-      sortWith: 'owner',
-    },
-    {
       header: 'DLS',
       cell: (item) => (
         <div className="flex w-[100px] gap-3">{item?.forgotten}</div>
