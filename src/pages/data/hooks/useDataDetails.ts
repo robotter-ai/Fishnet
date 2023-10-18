@@ -104,6 +104,7 @@ export default () => {
           },
         },
       };
+      //@todo: inform user about transaction in modal
       dispatch(initProductTreeTransaction(config));
     }
   }, [JSON.stringify(uploadedData), isSuccessUploadDataset]);
@@ -150,7 +151,6 @@ export default () => {
   };
 
   const handleUploadDataset = () => {
-    // check if dataset name is set
     if (!inputsToUpload?.name) {
       // stop execution and outline the input field
       return;
