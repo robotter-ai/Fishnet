@@ -14,7 +14,7 @@ import { IoCheckbox } from 'react-icons/io5';
 import { RxCaretLeft } from 'react-icons/rx';
 import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
-import { downloadTimeseriesCsv as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
+import { downloadDataset as downloadDatasetRequest } from '@slices/dataSlice';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
 import TruncatedItemHash from "@shared/components/TruncatedItemHash";
@@ -22,8 +22,8 @@ import TruncatedItemHash from "@shared/components/TruncatedItemHash";
 const DataDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const handleDownload = (timeseriesIDs: string[]) => {
-    dispatch(downloadTimeseriesRequest(timeseriesIDs));
+  const handleDownload = (datasetID: string) => {
+    dispatch(downloadDatasetRequest(datasetID));
   };
   const auth = useAuth();
   const { requestDatasetPermissionActions } = useAppSelector(
@@ -130,7 +130,7 @@ const DataDetails = () => {
           icon="download"
           btnStyle="outline-primary"
           isLoading={isLoading}
-          onClick={() => handleDownload(inputs.timeseriesIDs)}
+          onClick={() => handleDownload(inputs.item_hash)}
         />
       );
     }

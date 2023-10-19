@@ -5,7 +5,7 @@ import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { downloadTimeseriesCsv as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
+import {downloadDataset as downloadDatasetRequest, useGetDatasetsQuery} from '@slices/dataSlice';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Papa from 'papaparse';
@@ -22,7 +22,6 @@ import {
 } from '@shared/constant';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { getPublishedDatasets } from '@slices/dataSlice';
 
 const BrowseDataTable = ({
   data,
@@ -32,8 +31,8 @@ const BrowseDataTable = ({
   isLoading: boolean;
 }) => {
   const dispatch = useAppDispatch();
-  const handleDownload = (timeseriesIDs: string[]) => {
-    dispatch(downloadTimeseriesRequest(timeseriesIDs));
+  const handleDownload = (datasetID: string) => {
+    dispatch(downloadDatasetRequest(datasetID));
   };
   const { downloadTimeseries } = useAppSelector((state) => state.timeseries);
   const { registerBuy } = useAppSelector((state) => state.transaction);
@@ -94,7 +93,7 @@ const BrowseDataTable = ({
       };
 
       processTransaction();
-      dispatch(getPublishedDatasets(address));
+      const { data, isLoading, isError } = useGetDatasetsQuery({ type: 'published', address: auth?.address });
     }
   }, [registerBuy.transaction, registerBuy.success]);
 
@@ -195,7 +194,7 @@ const BrowseDataTable = ({
               btnStyle="outline-primary"
               size="sm"
               icon="download"
-              onClick={() => handleDownload(timeseriesIDs)}
+              onClick={() => handleDownload(item_hash)}
             />
           ) : !available &&
             permission_status === 'NOT GRANTED' &&
