@@ -20,6 +20,6 @@ export const fishnetApi = createApi({
     },
   }),
   refetchOnReconnect: true,
-  tagTypes: ['Dataset'],
+  tagTypes: ['Dataset', 'Timeseries', 'UserInfo', 'View'],
   endpoints: () => ({}),
 });
