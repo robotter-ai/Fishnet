@@ -18,7 +18,7 @@ const Overview: React.FC<IOverviewProps> = ({
   const ACCOUNT = [
     {
       name: 'Wallet address',
-      value: <TruncatedAddress address={inputs.address} copy link />,
+      value: <TruncatedAddress address={inputs.address} copy />,
     },
     {
       name: 'Username',

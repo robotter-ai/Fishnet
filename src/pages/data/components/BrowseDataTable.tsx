@@ -153,7 +153,7 @@ const BrowseDataTable = ({
     },
     {
       header: 'SELLER',
-      cell: (item) => <TruncatedAddress address={item.owner} copy link />,
+      cell: (item) => <TruncatedAddress address={item.owner} copy />,
       sortWith: 'owner',
     },
     {
@@ -171,6 +171,10 @@ const BrowseDataTable = ({
           <PriceButton price={price} />
         ),
       sortWith: 'price',
+    },
+    {
+      header: 'DOWNLOADS',
+      cell: (item) => <p>{item.downloads ? item.downloads : 0}</p>,
     },
     {
       header: '',

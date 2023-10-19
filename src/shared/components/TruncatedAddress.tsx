@@ -18,7 +18,6 @@ const TruncatedAddress: React.FC<ITruncatedAddress> = ({
   address,
   copy,
   color,
-  link,
 }) => {
   const getTruncatedAddress = () => {
     if (!address) return '';

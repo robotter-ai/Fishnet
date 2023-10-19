@@ -44,13 +44,13 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'Profit',
     accessor: 'desc',
-    cell: (item) => '',
+    cell: (item) => '-',
     sortWith: 'item',
   },
   {
     header: 'Price',
     accessor: 'desc',
-    cell: (item) => '',
+    cell: (item) => item.price != 0 ? item.price + ' USDC' : "Free",
     sortWith: 'item',
   },
   {

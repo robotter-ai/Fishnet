@@ -24,7 +24,7 @@ const initialState: Partial<ChartProps>[] = [
   {
     id: nanoid(4),
     interval: '',
-    keys: [{ name: 'returnsBTC', color: '#6affd2' }],
+    keys: [{ name: 'loading...', color: '#6a6a6a' }],
   },
 ];
 

@@ -31,7 +31,7 @@ type IDatasetTimeseries = { dataset: IUploadDataset; timeseries: any[] };
 const getDatasetUrlMap = (
   address: string
 ): Record<IGetDataset['type'], string> => ({
-  published: `?by=${address}`,
+  'published': `?by=${address}`,
   'browse-data': `?view_as=${address}`,
 });
 

@@ -46,8 +46,8 @@ const DataDetails = () => {
 
   const SUMMARY = [
     {
-      name: 'Aleph Hash',
-      value: <TruncatedItemHash hash={inputs?.item_hash} copy link />,
+      name: 'Aleph item hash',
+      value: <TruncatedItemHash hash={inputs?.item_hash} copy />,
     },
     ...(!isOwner
       ? [
@@ -79,13 +79,13 @@ const DataDetails = () => {
           },
           {
             name: 'Owner',
-            value: <TruncatedAddress address={inputs?.owner} copy link />,
+            value: <TruncatedAddress address={inputs?.owner} copy />,
           },
         ]
       : [
           {
             name: 'Seller',
-            value: <TruncatedAddress address={inputs?.owner} copy link />,
+            value: <TruncatedAddress address={inputs?.owner} copy />,
           },
           {
             name: 'Current Price',
@@ -226,7 +226,7 @@ const DataDetails = () => {
             {isUpload ? 'published' : 'updated'}
           </p>
           <div className="flex flex-col items-center gap-2">
-            <TruncatedItemHash hash={inputs?.item_hash || ''} color="primary" copy link />
+            <TruncatedItemHash hash={inputs?.item_hash || ''} color="primary" copy />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">
