@@ -3,6 +3,8 @@ import { toast } from 'sonner';
 import type { RootState } from 'src/store';
 import { fishnetApi } from '..';
 import dataService from './dataService';
+import getErrMsg from "@shared/utils/getErrMsg";
+import {TagDescription} from "@reduxjs/toolkit/query";
 
 // START: New API Integration Method (RTK Query)
 // TODO: Implement for all Slices
@@ -40,31 +42,43 @@ const dataApiSlice = fishnetApi.injectEndpoints({
     getDatasets: builder.query<any, IGetDataset>({
       query: ({ type, address }) =>
         `/datasets${getDatasetUrlMap(address)[type]}`,
-      providesTags: ['Dataset'],
+      providesTags: (result) => [
+        ...result?.map(({ item_hash }: any) => ({ type: 'Dataset', id: item_hash })),
+      ]
     }),
     getDataset: builder.query<any, { dataset_id: string; view_as: string }>({
       query: ({ dataset_id, view_as }) =>
         `/datasets/${dataset_id}?view_as=${view_as}`,
-      providesTags: ['Dataset'],
+      providesTags: (result, error, {dataset_id, view_as}) => [
+        { type: 'Dataset', id: dataset_id + '?view_as=' + view_as },
+      ]
     }),
     uploadDataset: builder.mutation<any, IDatasetTimeseries>({
-      query: (inputs) => ({
+      query: (req) => ({
         method: 'POST',
         url: '/datasets/upload/timeseries',
-        body: inputs,
+        body: req,
       }),
-      invalidatesTags: ['Dataset'],
+      invalidatesTags: (result, error, req) => [
+        { type: 'Dataset', id: result.dataset.item_hash },
+        ...req.timeseries.map((item: any) => ({ type: 'Timeseries', id: item.item_hash })) as TagDescription<"Timeseries">[],
+      ]
     }),
     updateDataset: builder.mutation<any, IUploadDataset>({
-      query: (inputs) => ({
+      query: (req) => ({
         method: 'PUT',
         url: '/datasets',
-        body: inputs,
+        body: req,
       }),
-      invalidatesTags: ['Dataset'],
+      invalidatesTags: (result, error, req) => [
+        { type: 'Dataset', id: req.item_hash },
+      ]
     }),
     getViews: builder.query<any, string>({
       query: (dataset_id) => `/datasets/${dataset_id}/views`,
+      providesTags: (result, error, dataset_id) => [
+        { type: 'Dataset', id: dataset_id },
+      ]
     }),
     generateViews: builder.mutation<any, IGenerateViews>({
       query: ({ dataset_id, data }) => ({
@@ -72,15 +86,20 @@ const dataApiSlice = fishnetApi.injectEndpoints({
         url: `/datasets/${dataset_id}/views`,
         body: data,
       }),
+      invalidatesTags: (result, error, { dataset_id }) => [
+        { type: 'Dataset', id: dataset_id },
+      ]
     }),
-    downloadTimeseriesData: builder.mutation<any, string[]>({
-      query: (data) => ({
-        method: 'POST',
-        url: '/timeseries/data/download',
-        body: data,
+    getDatasetData: builder.query<any, string>({
+      query: (dataset_id) => ({
+        method: 'GET',
+        url: `/datasets/${dataset_id}/timeseries/data`
       }),
+      providesTags: (result, error, dataset_id) => [
+        ...result?.map(({ item_hash }: any) => ({ type: 'Timeseries', id: item_hash })),
+      ]
     }),
-    downloadDatasetCsv: builder.mutation<any, string>({
+    downloadDatasetCsv: builder.query<any, string>({
       query: (dataset_id) => ({
         method: 'GET',
         url: `/datasets/${dataset_id}/timeseries/csv`,
@@ -100,8 +119,8 @@ export const {
   useGenerateViewsMutation,
   useUpdateDatasetMutation,
   useGetDatasetTimeseriesQuery,
-  useDownloadTimeseriesDataMutation,
-  useDownloadDatasetCsvMutation,
+  useGetDatasetDataQuery,
+  useDownloadDatasetCsvQuery,
 } = dataApiSlice;
 // END: New API Integration Method
 
@@ -239,6 +258,18 @@ export const getViews = createAsyncThunk(
     }
   }
 );
+
+export const downloadDataset = createAsyncThunk(
+  'datasets/downloadDataset',
+  async (datasetID: string, thunkAPI) => {
+    try {
+      return await dataService.downloadDatasetCsv(datasetId);
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(getErrMsg(err));
+    }
+  }
+);
+
 interface DataProps {
   isLoading: boolean;
   success: boolean | null;
