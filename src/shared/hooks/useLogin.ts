@@ -1,6 +1,16 @@
 import {useWallet} from '@solana/wallet-adapter-react';
 import bs58 from 'bs58';
 import {useNavigate} from 'react-router-dom';
+import {useEffect} from "react";
+import {
+  getChallenge as getChallengeRequest,
+  resetChallengeDetails,
+  solveChallenge as solveChallengeRequest
+} from "@slices/authSlice";
+import { setLoginStatus, LoginStatus } from '@slices/appSlice';
+import {useAppDispatch, useAppSelector} from "@shared/hooks/useStore";
+import useAuth from "@shared/hooks/useAuth";
+import Cookies from "universal-cookie";
 
 interface LoginProps {
   handleConnectWallet: () => void;
@@ -9,33 +19,17 @@ interface LoginProps {
     challenge: string,
     signMessage: (message: Uint8Array) => Promise<Uint8Array>
   ) => Promise<string>;
-  setLoginStatus: (status: LoginStatus) => void;
-  loginStatus: LoginStatus;
-  hasEntered: boolean;
-  setEntered: (value: boolean) => void;
-}
-
-enum LoginStatus {
-  IN = 'in',
-  OUT = 'out',
-  REQUESTED = 'requested',
-  PENDING = 'pending',
-  SIGNING = 'signing',
 }
 
 export default (): LoginProps => {
+  const cookies = new Cookies();
   const navigate = useNavigate();
-  const {connect, wallet, disconnect} = useWallet();
+  const dispatch = useAppDispatch();
+  const { getChallenge, solveChallenge } = useAppSelector((app) => app.auth);
+  const { loginStatus } = useAppSelector((app) => app.app);
 
-  const loginStatus = sessionStorage.getItem('fishnet.loginStatus') as LoginStatus || LoginStatus.OUT;
-  const setLoginStatus = (value: LoginStatus) => {
-    sessionStorage.setItem('fishnet.loginStatus', value);
-  }
-
-  const hasEntered = sessionStorage.getItem('fishnet.entered') === 'true' || false;
-  const setEntered = (value: boolean) => {
-    sessionStorage.setItem('fishnet.entered', value.toString());
-  }
+  const {connect, wallet, disconnect, signMessage} = useWallet();
+  const { walletConnected, hasValidToken, address } = useAuth();
 
   const getSerializedSignature = async (
     signMessage: (message: Uint8Array) => Promise<Uint8Array>,
@@ -64,7 +58,7 @@ export default (): LoginProps => {
         'wallet.connected.name',
         wallet?.adapter.name.toString() || 'Solana'
       );
-      setLoginStatus(LoginStatus.REQUESTED);
+      dispatch(setLoginStatus(LoginStatus.REQUESTED));
     }
   };
 
@@ -74,14 +68,76 @@ export default (): LoginProps => {
     sessionStorage.clear();
   };
 
+
+  useEffect(() => {
+    localStorage.setItem('wallet.connected.status', address);
+    console.log('getChallengeRequest', address, 'loginStatus', loginStatus, 'hasValidToken', hasValidToken, 'getChallenge.success', getChallenge.success)
+      if (
+      (loginStatus == LoginStatus.REQUESTED) &&
+      address &&
+      !hasValidToken &&
+      !getChallenge.success
+    ) {
+      dispatch(getChallengeRequest(address));
+      dispatch(setLoginStatus(LoginStatus.PENDING));
+      console.log('getChallengeRequest TRIGGERED')
+    }
+  }, [walletConnected, loginStatus]);
+
+  const solveChallengeAsync = async () => {
+    console.log('solveChallengeRequest', address, 'loginStatus', loginStatus, 'hasValidToken', hasValidToken, 'getChallenge.success', getChallenge.success)
+      if (
+      (loginStatus == LoginStatus.PENDING) &&
+      !hasValidToken &&
+      signMessage &&
+      getChallenge.success &&
+      getChallenge.challenge &&
+      address
+    ) {
+      console.log('solveChallengeRequest TRIGGERED');
+      setLoginStatus(LoginStatus.SIGNING);
+      try {
+        const signature = await signChallenge(
+          getChallenge.challenge,
+          signMessage
+        );
+        dispatch(solveChallengeRequest({ address: address, signature }));
+      } catch (e) {
+        console.log(e);
+        dispatch(setLoginStatus(LoginStatus.OUT));
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (getChallenge.challenge) {
+      solveChallengeAsync();
+    }
+  }, [walletConnected, getChallenge.success]);
+
+  useEffect(() => {
+    console.log('resetChallengeDetails')
+    if (
+      solveChallenge.success &&
+      solveChallenge.token &&
+      solveChallenge.valid_til
+    ) {
+      dispatch(setLoginStatus(LoginStatus.IN));
+      console.log('resetChallengeDetails TRIGGERED', solveChallenge.success, solveChallenge.token, solveChallenge.valid_til)
+      cookies.set('bearerToken', solveChallenge.token, {
+        path: '/',
+        maxAge: solveChallenge.valid_til,
+        expires: new Date(solveChallenge.valid_til),
+        secure: true,
+      });
+      dispatch(resetChallengeDetails());
+    }
+  }, [walletConnected, solveChallenge.success]);
+
   return {
     handleConnectWallet,
     handleDisconnectWallet,
     signChallenge,
-    loginStatus,
-    setLoginStatus,
-    hasEntered,
-    setEntered
   };
 };
 

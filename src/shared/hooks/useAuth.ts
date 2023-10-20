@@ -2,20 +2,12 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useAccount, useEnsName } from 'wagmi';
 import Cookies from 'universal-cookie';
 import {useEffect} from "react";
-import jwt_decode, {JwtPayload} from 'jwt-decode';
-import {
-  getChallenge as getChallengeRequest,
-  resetChallengeDetails,
-  solveChallenge as solveChallengeRequest
-} from "@slices/authSlice";
-import useLogin, {LoginStatus} from "@shared/hooks/useLogin";
-import {useAppDispatch, useAppSelector} from "@shared/hooks/useStore";
+import jwt_decode, {JwtPayload} from "jwt-decode";
 import LogRocket from "logrocket";
-import { useWhatChanged } from "@simbathesailor/use-what-changed"
+import {useNavigate} from "react-router-dom";
 
 interface AuthProps {
   address: string;
-  wallet: string;
   walletConnected: boolean;
   hasValidToken: boolean;
 }
@@ -27,86 +19,15 @@ function isJwtPayload(object: any): object is JwtPayload {
 
 export default (): AuthProps => {
   const cookies = new Cookies();
-  const dispatch = useAppDispatch();
-  const { address: ethAddress, isConnected, isReconnecting } = useAccount();
+  const { address: ethAddress, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address: ethAddress });
-  const { connected, publicKey: solAddress, wallet } = useWallet();
-  const { signChallenge, setLoginStatus, loginStatus, setEntered, hasEntered } = useLogin();
-  const { signMessage } = useWallet();
-  const { getChallenge, solveChallenge } = useAppSelector((app) => app.auth);
-
+  const { connected, publicKey: solAddress } = useWallet();
+  const navigate = useNavigate();
 
   const walletConnected = connected || isConnected;
-  const usedAddress = (solAddress?.toString() ?? ensName ?? ethAddress) as string
+  const address = (solAddress?.toString() ?? ensName ?? ethAddress) as string
   const hasValidToken = !!cookies.get('bearerToken')
 
-  useWhatChanged([loginStatus]);
-  useEffect(() => {
-    localStorage.setItem('wallet.connected.status', usedAddress);
-    if (
-      (!hasEntered || loginStatus === LoginStatus.REQUESTED) &&
-      usedAddress &&
-      !hasValidToken &&
-      !getChallenge.success
-    ) {
-      setLoginStatus(LoginStatus.PENDING);
-      console.log('getChallengeRequest', usedAddress, 'loginStatus', loginStatus, 'hasEntered', hasEntered, 'hasValidToken', hasValidToken, 'getChallenge.success', getChallenge.success)
-      dispatch(getChallengeRequest(usedAddress));
-    }
-  }, [loginStatus]);
-
-  useWhatChanged([getChallenge.success]);
-  const solveChallengeAsync = async () => {
-    if (
-      (!hasEntered || loginStatus === LoginStatus.PENDING) &&
-      !hasValidToken &&
-      signMessage &&
-      getChallenge.success &&
-      getChallenge.challenge &&
-      usedAddress
-    ) {
-      setLoginStatus(LoginStatus.SIGNING);
-      console.log('solveChallengeRequest', usedAddress, 'loginStatus', loginStatus, 'hasEntered', hasEntered, 'hasValidToken', hasValidToken, 'getChallenge.success', getChallenge.success)
-      try {
-        const signature = await signChallenge(
-          getChallenge.challenge,
-          signMessage
-        );
-        dispatch(solveChallengeRequest({ address: usedAddress, signature }));
-      } catch (e) {
-        console.log(e);
-        setLoginStatus(LoginStatus.OUT);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (getChallenge.challenge) {
-      solveChallengeAsync();
-    }
-  }, [getChallenge.success]);
-
-  useEffect(() => {
-    if (
-      solveChallenge.success &&
-      solveChallenge.token &&
-      solveChallenge.valid_til
-    ) {
-      setLoginStatus(LoginStatus.IN)
-      if (!hasEntered) {
-        setEntered(true);
-      }
-      console.log('resetChallengeDetails')
-      cookies.set('bearerToken', solveChallenge.token, {
-        path: '/',
-        maxAge: solveChallenge.valid_til,
-        expires: new Date(solveChallenge.valid_til),
-        secure: true,
-      });
-      dispatch(resetChallengeDetails());
-    }
-  }, [solveChallenge.success]);
-  
   useEffect(() => {
     const bearerToken = cookies.get('bearerToken');
     if (bearerToken) {
@@ -116,7 +37,7 @@ export default (): AuthProps => {
 
         if (decoded && isJwtPayload(decoded)) {
           // Check issuer
-          if (decoded.sub !== usedAddress) {
+          if (decoded.sub !== address) {
             cookies.remove('bearerToken');
           }
 
@@ -129,22 +50,22 @@ export default (): AuthProps => {
           }
 
           // Init logrocket session
-          LogRocket.identify(usedAddress);
+          LogRocket.identify(address);
         } else {
           console.warn('Invalid token. Please refresh.');
           cookies.remove('bearerToken');
+          navigate('/data', { replace: true });
         }
 
       } catch (error) {
         console.error('Error decoding token:', error);
       }
     }
-  }, [walletConnected, usedAddress]);
+  }, [walletConnected, address]);
 
   return {
-    address: usedAddress,
+    address,
     walletConnected,
-    wallet: wallet?.adapter.name || '',
     hasValidToken,
   };
 };
