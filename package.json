@@ -54,6 +54,7 @@
     "yarn": "^1.22.19"
   },
   "devDependencies": {
+    "@simbathesailor/use-what-changed": "^2.0.0",
     "@tanstack/eslint-plugin-query": "^4.34.1",
     "@types/lodash.capitalize": "^4.2.7",
     "@types/node": "^18.11.18",

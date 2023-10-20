@@ -1,6 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import {Routes, Route, Navigate} from 'react-router-dom';
 
-import Login from '@pages/Login';
 import MyData from '@pages/data';
 import DataDetails from '@pages/data/DataDetails';
 import MonitorAccess from '@pages/monitor-access';
@@ -13,7 +12,7 @@ export default function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Navigate to="/data" replace />} />
         <Route element={<Layout />}>
           <Route path="/data" element={<MyData />} />
           <Route path="/data/:id/details" element={<DataDetails />} />

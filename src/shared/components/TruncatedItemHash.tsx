@@ -14,7 +14,6 @@ const TruncatedItemHash: React.FC<ITruncatedItemHash> = ({
   hash,
   copy,
   color,
-  link,
 }) => {
   const getTruncatedItemHash = () => {
     if (!hash) return '';

@@ -2,21 +2,13 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useAccount, useEnsName } from 'wagmi';
 import Cookies from 'universal-cookie';
 import {useEffect} from "react";
-import jwt_decode, {JwtPayload} from 'jwt-decode';
-import {
-  getChallenge as getChallengeRequest,
-  resetChallengeDetails,
-  solveChallenge as solveChallengeRequest
-} from "@slices/authSlice";
-import useLogin from "@features/auth/hooks/useLogin";
-import {useAppDispatch, useAppSelector} from "@shared/hooks/useStore";
-import {useNavigate} from "react-router-dom";
+import jwt_decode, {JwtPayload} from "jwt-decode";
 import LogRocket from "logrocket";
-
+import { setLoginStatus, LoginStatus } from '@slices/appSlice';
+import {useAppDispatch} from "@shared/hooks/useStore";
 
 interface AuthProps {
   address: string;
-  wallet: string;
   walletConnected: boolean;
   hasValidToken: boolean;
 }
@@ -28,67 +20,15 @@ function isJwtPayload(object: any): object is JwtPayload {
 
 export default (): AuthProps => {
   const cookies = new Cookies();
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { address: ethAddress, isConnected, isReconnecting } = useAccount();
+  const { address: ethAddress, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address: ethAddress });
-  const { connected, publicKey: solAddress, wallet } = useWallet();
-  const { signChallenge } = useLogin();
-  const { signMessage } = useWallet();
-  const { getChallenge, solveChallenge } = useAppSelector((app) => app.auth);
+  const { connected, publicKey: solAddress } = useWallet();
 
   const walletConnected = connected || isConnected;
-  const usedAddress = (solAddress?.toString() ?? ensName ?? ethAddress) as string
-  const hasValidToken = !!cookies.get('bearerToken') && walletConnected
+  const address = (solAddress?.toString() ?? ensName ?? ethAddress) as string
+  const hasValidToken = !!cookies.get('bearerToken')
 
-  
-  useEffect(() => {
-    localStorage.setItem('wallet.connected.status', usedAddress);
-    if (usedAddress && !hasValidToken && !getChallenge.success) {
-      // added isAuth check prevent repeated challenge solving
-      dispatch(getChallengeRequest(usedAddress));
-    }
-  }, [walletConnected]);
-
-  const solveChallengeAsync = async () => {
-    if (
-      signMessage &&
-      getChallenge.success &&
-      getChallenge.challenge &&
-      usedAddress &&
-      !hasValidToken
-    ) {
-      const signature = await signChallenge(
-        getChallenge.challenge,
-        signMessage
-      );
-      dispatch(solveChallengeRequest({ address: usedAddress, signature }));
-    }
-  };
-
-  useEffect(() => {
-    if (getChallenge.challenge) {
-      solveChallengeAsync();
-    }
-  }, [getChallenge.success]);
-
-  useEffect(() => {
-    if (
-      solveChallenge.success &&
-      solveChallenge.token &&
-      solveChallenge.valid_til
-    ) {
-      cookies.set('bearerToken', solveChallenge.token, {
-        path: '/',
-        maxAge: solveChallenge.valid_til,
-        expires: new Date(solveChallenge.valid_til),
-        secure: true,
-      });
-      dispatch(resetChallengeDetails());
-      navigate('/data', { replace: true });
-    }
-  }, [solveChallenge.success]);
-  
   useEffect(() => {
     const bearerToken = cookies.get('bearerToken');
     if (bearerToken) {
@@ -98,35 +38,39 @@ export default (): AuthProps => {
 
         if (decoded && isJwtPayload(decoded)) {
           // Check issuer
-          if (decoded.sub !== usedAddress) {
+          if (decoded.sub !== address) {
             cookies.remove('bearerToken');
           }
 
-          // Refresh token if needed
+          // Expire token if needed
           if (decoded && decoded.exp && Date.now() >= decoded.exp * 1000) {
             // If the token is expired, you can refresh it here.
             // dispatch(refreshTokenAction()); // Example action to refresh the token
             console.warn('Token expired. Please refresh.');
-            console.log('decoded.exp', decoded.exp, 'Date.now()', Date.now());
+            cookies.remove('bearerToken');
+            dispatch(setLoginStatus(LoginStatus.OUT));
           }
 
           // Init logrocket session
-          LogRocket.identify(usedAddress);
+          LogRocket.identify(address);
         } else {
           console.warn('Invalid token. Please refresh.');
           cookies.remove('bearerToken');
+          dispatch(setLoginStatus(LoginStatus.OUT));
         }
 
       } catch (error) {
         console.error('Error decoding token:', error);
+        dispatch(setLoginStatus(LoginStatus.OUT));
       }
+    } else if (walletConnected && !!address) {
+      dispatch(setLoginStatus(LoginStatus.REQUESTED));
     }
-  }, [walletConnected, usedAddress, cookies]);
+  }, [walletConnected, address]);
 
   return {
-    address: usedAddress,
+    address,
     walletConnected,
-    wallet: wallet?.adapter.name || '',
     hasValidToken,
   };
 };

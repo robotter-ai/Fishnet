@@ -44,13 +44,13 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'Profit',
     accessor: 'desc',
-    cell: (item) => '',
+    cell: (item) => '-',
     sortWith: 'item',
   },
   {
     header: 'Price',
     accessor: 'desc',
-    cell: (item) => '',
+    cell: (item) => item.price != 0 ? item.price + ' USDC' : "Free",
     sortWith: 'item',
   },
   {
@@ -86,11 +86,11 @@ const STATISTICS = [
 
 const PublishedTable = () => {
   const dispatch = useAppDispatch();
-  const auth = useAuth();
+  const { address } = useAuth();
   const { publishedDatasets } = useAppSelector((state) => state.datasets);
 
   useEffect(() => {
-    dispatch(getPublishedDatasets(auth?.address));
+    dispatch(getPublishedDatasets(address));
   }, []);
 
   return (

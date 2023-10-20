@@ -1,47 +1,54 @@
 /* eslint-disable import/no-absolute-path */
 import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
-import { LoginForm } from '@features/auth';
-import useAuth from '@shared/hooks/useAuth';
+import LoginForm from '@shared/components/LoginForm';
 import useModal from '@shared/hooks/useModal';
-import { Navigate } from 'react-router-dom';
 import LoginWaveImg from '@assets/images/login-wave.png';
+import { useNavigate } from 'react-router-dom';
+import useLogin from '@shared/hooks/useLogin';
 
 const Login = () => {
-  const auth = useAuth();
   const { isOpen, handleOpen, handleClose } = useModal();
+  const { handleConnectWallet } = useLogin();
 
-  return auth.hasValidToken ? (
-    <Navigate to="/data" replace />
-  ) : (
+  const handleConnect = () => {
+    handleClose();
+    handleConnectWallet();
+  }
+  const navigate = useNavigate();
+
+  return (
     <>
       <div className="flex flex-col h-[100vh] bg-white">
         <div className="py-5 px-8 flex justify-between items-center">
           <a href="https://fishnet.tech">
-            <img src="./fishnet.png" alt="Fishnet Logo" width={50} />
+            <img src="./fishnet.png" alt="Fishnet Logo" width={50}/>
           </a>
           <Button
-            text="Connect Fishnet"
+            text="Connect Wallet"
             icon="login"
-            onClick={handleOpen}
-          />
+            onClick={handleOpen}/>
         </div>
         <div className="relative h-full mt-20 flex flex-col">
           <a href="https://fishnet.tech">
             <img
               src="./Logo_Fishnet_alpha.svg"
               alt="Fishnet Logo"
-              className="absolute top-[20%] left-1/2 -translate-x-1/2 w-1/2"
-            />
+              className="absolute top-[20%] left-1/2 -translate-x-1/2 w-1/2"/>
           </a>
           <img
             src={LoginWaveImg}
             alt="Fishnet Logo"
-            className="w-full h-full"
-          />
+            className="w-full h-full"/>
+          <Button
+            text="Enter Fishnet"
+            icon="home"
+            onClick={() => {
+              navigate('/data');
+            }}/>
           <div className="bg-[#F6FAFB] text-center flex flex-col justify-center py-[10px] px-[25%]">
             <p className="text-2xl">
-              This app is only for demonstration purposes. <br />
+              This app is only for demonstration purposes. <br/>
               Do not upload any sensitive data.
             </p>
           </div>
@@ -52,10 +59,9 @@ const Login = () => {
         isOpen={isOpen}
         handleClose={handleClose}
       >
-        <LoginForm />
-      </AppModal>
-    </>
-  );
+        <LoginForm handleConnect={handleConnect}/>
+      </AppModal></>
+  )
 };
 
 export default Login;

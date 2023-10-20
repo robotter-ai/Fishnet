@@ -25,7 +25,10 @@ export type GetDatasetProps = {
   page_size?: number;
 };
 
-const getPublishedDatasets = async (by: string) => {
+const getPublishedDatasets = async (by: string | undefined) => {
+  if (!by) {
+    return [];
+  }
   const { data } = await axios.get(
     `${FISHNET_API_URL}/datasets?by=${by}`,
     getConfig()

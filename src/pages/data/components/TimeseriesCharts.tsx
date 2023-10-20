@@ -55,7 +55,7 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
         </div>
       ) : null}
       <div className="mt-8 flex flex-col gap-3">
-        <h1>Datasets records</h1>
+        <h1>Columns</h1>
         <EditDataTable data={timeseries} />
       </div>
       <AppModal

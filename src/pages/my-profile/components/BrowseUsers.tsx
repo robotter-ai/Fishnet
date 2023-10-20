@@ -18,7 +18,7 @@ const columns = ({
   },
   {
     header: 'WALLET',
-    cell: ({ address }) => <TruncatedAddress address={address} copy link />,
+    cell: ({ address }) => <TruncatedAddress address={address} copy />,
     sortWith: 'link',
   },
   {

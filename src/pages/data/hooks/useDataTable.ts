@@ -52,7 +52,7 @@ export default () => {
 
   const tabs = [
     { key: 'browse-data', name: 'Browse data' },
-    { key: 'published', name: 'Published' },
+    //{ key: 'published', name: 'Published' },
   ];
 
   const PAGE_TITLE: Record<string, string> = {

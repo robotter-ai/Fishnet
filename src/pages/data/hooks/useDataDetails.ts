@@ -30,7 +30,7 @@ export default () => {
   const { setTitle, getTitle } = usePageTitle();
   const auth = useAuth();
   const dispatch = useAppDispatch();
-  const [inputs, setInputs] = useState<Record<string, any>>({
+  const [dataset, setDataset] = useState<Record<string, any>>({
     name: '',
     price: 0,
   });
@@ -41,7 +41,7 @@ export default () => {
   const { sendTransaction } = useWallet();
   const { isOpen, handleOpen, handleClose } = useModal();
   const [signature, setSignature] = useState<string>('');
-  const { isOwner } = useOwner(inputs?.owner);
+  const { isOwner } = useOwner(dataset?.owner);
 
   const isUpload = (id && id === 'upload') as boolean;
 
@@ -69,10 +69,10 @@ export default () => {
 
   useEffect(() => {
     if (isGetDatasetSuccess) {
-      setInputs(data);
+      setDataset(data);
       setTitle(data?.name);
     } else {
-      setInputs({
+      setDataset({
         name: getTitle(),
         price: 0,
       });
@@ -136,15 +136,15 @@ export default () => {
   }, [initProductTree.transaction, initProductTree.success]);
 
   const inputsToUpload: IUploadDataset = {
-    desc: inputs?.desc,
-    name: inputs?.name,
-    owner: inputs?.owner,
-    price: String(inputs?.price),
-    ...(inputs?.item_hash
+    desc: dataset?.desc,
+    name: dataset?.name,
+    owner: dataset?.owner,
+    price: String(dataset?.price),
+    ...(dataset?.item_hash
       ? {
-          item_hash: inputs?.item_hash,
-          timeseriesIDs: inputs?.timeseriesIDs,
-          ownsAllTimeseries: inputs?.ownsAllTimeseries,
+          item_hash: dataset?.item_hash,
+          timeseriesIDs: dataset?.timeseriesIDs,
+          ownsAllTimeseries: dataset?.ownsAllTimeseries,
         }
       : { timeseriesIDs: [], ownsAllTimeseries: true }),
   };
@@ -165,7 +165,7 @@ export default () => {
       dataset: inputsToUpload,
       timeseries: timeseriesToUse,
     }).then((res: any) => {
-      setInputs(res?.data?.dataset);
+      setDataset(res?.data?.dataset);
       handleGenerateViews(res?.data?.dataset);
     });
   };
@@ -176,19 +176,20 @@ export default () => {
     });
   };
 
-  const handleGenerateViews = (res: any) => {
+  const handleGenerateViews = (dataset: any) => {
+    //@todo: check state of view components
     const time: number[] = timeseries[0].data
       .map((x: any[]) => x[0])
       .sort((a: number, b: number) => a - b);
     const timeseriesToUse = [
       {
-        timeseriesIDs: res?.timeseriesIDs,
+        timeseriesIDs: dataset?.timeseriesIDs,
         granularity: 'YEAR',
         startTime: time[0],
         endTime: time[time.length - 1],
       },
     ];
-    generateViews({ dataset_id: res?.item_hash, data: timeseriesToUse }).then(
+    generateViews({ dataset_id: dataset?.item_hash, data: timeseriesToUse }).then(
       () => {
         handleOpen();
       }
@@ -200,14 +201,14 @@ export default () => {
       // should not be below 0 or empty
       value = value < 0 ? 0 : value;
     }
-    setInputs((prevState) => ({ ...prevState, [input]: value }));
+    setDataset((prevState) => ({ ...prevState, [input]: value }));
     if (input === 'name') {
       setTitle(value);
     }
   };
 
   return {
-    inputs,
+    inputs: dataset,
     handleOnChange,
     handleUploadDataset,
     handleUpdateDataset,
