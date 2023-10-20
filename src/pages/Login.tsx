@@ -5,9 +5,16 @@ import LoginForm from '@shared/components/LoginForm';
 import useModal from '@shared/hooks/useModal';
 import LoginWaveImg from '@assets/images/login-wave.png';
 import { useNavigate } from 'react-router-dom';
+import useLogin from '@shared/hooks/useLogin';
 
 const Login = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
+  const { handleConnectWallet } = useLogin();
+
+  const handleConnect = () => {
+    handleClose();
+    handleConnectWallet();
+  }
   const navigate = useNavigate();
 
   return (
@@ -52,7 +59,7 @@ const Login = () => {
         isOpen={isOpen}
         handleClose={handleClose}
       >
-        <LoginForm/>
+        <LoginForm handleConnect={handleConnect}/>
       </AppModal></>
   )
 };
