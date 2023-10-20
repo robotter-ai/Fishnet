@@ -1,11 +1,11 @@
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '@components/ui/Button';
-import useLogin from '@shared/hooks/useLogin';
 
-function LoginForm() {
+function LoginForm(
+  { handleConnect }: {handleConnect: () => void},
+) {
   const { wallets, select, wallet } = useWallet();
-  const { handleConnectWallet } = useLogin();
   const solanaWallets = wallets.map((x) => x.adapter);
 
   return (
@@ -39,7 +39,7 @@ function LoginForm() {
         size="lg"
         icon="login"
         fullWidth
-        onClick={() => handleConnectWallet()}
+        onClick={() => handleConnect()}
       />
     </div>
   );

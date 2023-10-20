@@ -60,6 +60,8 @@ export default (): AuthProps => {
       } catch (error) {
         console.error('Error decoding token:', error);
       }
+    } else if (walletConnected) {
+
     }
   }, [walletConnected, address]);
 

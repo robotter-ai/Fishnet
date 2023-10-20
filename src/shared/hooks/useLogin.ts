@@ -63,9 +63,13 @@ export default (): LoginProps => {
   };
 
   const handleDisconnectWallet = () => {
-    navigate(0);
-    disconnect();
-    sessionStorage.clear();
+    disconnect().then(() => {
+      localStorage.removeItem('wallet.connected.name');
+      localStorage.removeItem('wallet.connected.status');
+      sessionStorage.clear();
+      dispatch(setLoginStatus(LoginStatus.OUT));
+      navigate('/data', {replace: true});
+    });
   };
 
 
