@@ -15,10 +15,6 @@ import Cookies from "universal-cookie";
 interface LoginProps {
   handleConnectWallet: () => void;
   handleDisconnectWallet: () => void;
-  signChallenge: (
-    challenge: string,
-    signMessage: (message: Uint8Array) => Promise<Uint8Array>
-  ) => Promise<string>;
 }
 
 export default (): LoginProps => {
@@ -53,12 +49,18 @@ export default (): LoginProps => {
       connect();
     } catch (e) {
       console.log(e);
+      dispatch(setLoginStatus(LoginStatus.OUT));
     } finally {
       localStorage.setItem(
         'wallet.connected.name',
         wallet?.adapter.name.toString() || 'Solana'
       );
-      dispatch(setLoginStatus(LoginStatus.REQUESTED));
+      console.log('handleConnectWallet', address, 'loginStatus', loginStatus, 'hasValidToken', hasValidToken)
+      if (address && hasValidToken) {
+        dispatch(setLoginStatus(LoginStatus.IN));
+      } else {
+        dispatch(setLoginStatus(LoginStatus.REQUESTED));
+      }
     }
   };
 
@@ -82,16 +84,15 @@ export default (): LoginProps => {
       !hasValidToken &&
       !getChallenge.success
     ) {
-      dispatch(getChallengeRequest(address));
       dispatch(setLoginStatus(LoginStatus.PENDING));
+      dispatch(getChallengeRequest(address));
       console.log('getChallengeRequest TRIGGERED')
     }
   }, [walletConnected, loginStatus]);
 
   const solveChallengeAsync = async () => {
-    console.log('solveChallengeRequest', address, 'loginStatus', loginStatus, 'hasValidToken', hasValidToken, 'getChallenge.success', getChallenge.success)
+    console.log('solveChallengeRequest', address, 'loginStatus', loginStatus, 'hasValidToken', hasValidToken, 'getChallenge.success', getChallenge.success, 'getChallenge.challenge', !!getChallenge.challenge)
       if (
-      (loginStatus == LoginStatus.PENDING) &&
       !hasValidToken &&
       signMessage &&
       getChallenge.success &&
@@ -117,17 +118,16 @@ export default (): LoginProps => {
     if (getChallenge.challenge) {
       solveChallengeAsync();
     }
-  }, [walletConnected, getChallenge.success]);
+  }, [getChallenge.success, loginStatus]);
 
   useEffect(() => {
-    console.log('resetChallengeDetails')
     if (
       solveChallenge.success &&
       solveChallenge.token &&
       solveChallenge.valid_til
     ) {
       dispatch(setLoginStatus(LoginStatus.IN));
-      console.log('resetChallengeDetails TRIGGERED', solveChallenge.success, solveChallenge.token, solveChallenge.valid_til)
+      console.log('resetChallengeDetails TRIGGERED')
       cookies.set('bearerToken', solveChallenge.token, {
         path: '/',
         maxAge: solveChallenge.valid_til,
@@ -141,8 +141,5 @@ export default (): LoginProps => {
   return {
     handleConnectWallet,
     handleDisconnectWallet,
-    signChallenge,
   };
 };
-
-export {LoginStatus};
