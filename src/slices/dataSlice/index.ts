@@ -100,7 +100,7 @@ export const {
 
 export const getPublishedDatasets = createAsyncThunk(
   'datasets/getPublishedDatasets',
-  async (address: string, thunkAPI) => {
+  async (address: string | undefined, thunkAPI) => {
     try {
       return await dataService.getPublishedDatasets(address);
     } catch (err: any) {

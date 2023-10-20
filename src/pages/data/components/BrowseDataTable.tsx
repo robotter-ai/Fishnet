@@ -37,7 +37,7 @@ const BrowseDataTable = ({
   };
   const { downloadTimeseries } = useAppSelector((state) => state.timeseries);
   const { registerBuy } = useAppSelector((state) => state.transaction);
-  const auth = useAuth();
+  const { address } = useAuth();
   const { sendTransaction } = useWallet();
   const [signature, setSignature] = useState<string>('');
   const [selectedItemHash, setItemHash] = useState<string>('');
@@ -51,7 +51,7 @@ const BrowseDataTable = ({
     dispatch(
       registerBuyRequest({
         params: {
-          signer: auth.address,
+          signer: address,
           marketplace: FISHNET_MARKETPLACE,
           productId: itemHash,
           paymentMint: USDC_MINT,
@@ -94,7 +94,7 @@ const BrowseDataTable = ({
       };
 
       processTransaction();
-      dispatch(getPublishedDatasets(auth?.address));
+      dispatch(getPublishedDatasets(address));
     }
   }, [registerBuy.transaction, registerBuy.success]);
 

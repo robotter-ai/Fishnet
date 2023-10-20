@@ -1,13 +1,13 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import useAuth from '@shared/hooks/useAuth';
 import TopNavigation from './top-navigation';
 import SideNavigation from './side-navigation';
 import './layout.scss';
+import useLogin from "@shared/hooks/useLogin";
 
 const Layout = () => {
-  const auth = useAuth();
+  const { hasEntered } = useLogin();
 
-  return auth.hasValidToken ? (
+  return hasEntered ? (
     <div id="layout-wrapper">
       <SideNavigation />
       <TopNavigation />

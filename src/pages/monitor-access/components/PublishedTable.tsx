@@ -86,11 +86,11 @@ const STATISTICS = [
 
 const PublishedTable = () => {
   const dispatch = useAppDispatch();
-  const auth = useAuth();
+  const { address } = useAuth();
   const { publishedDatasets } = useAppSelector((state) => state.datasets);
 
   useEffect(() => {
-    dispatch(getPublishedDatasets(auth?.address));
+    dispatch(getPublishedDatasets(address));
   }, []);
 
   return (

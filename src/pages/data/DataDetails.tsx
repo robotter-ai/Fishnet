@@ -1,7 +1,6 @@
 import TextInput from '@components/form/TextInput';
 import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
-import ClickToCopy from '@shared/components/ClickToCopy';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
 import useAuth from '@shared/hooks/useAuth';
