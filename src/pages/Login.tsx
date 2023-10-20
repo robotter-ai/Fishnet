@@ -4,12 +4,10 @@ import Button from '@components/ui/Button';
 import LoginForm from '@shared/components/LoginForm';
 import useModal from '@shared/hooks/useModal';
 import LoginWaveImg from '@assets/images/login-wave.png';
-import useLogin from "@shared/hooks/useLogin";
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
-  const { setEntered } = useLogin()
   const navigate = useNavigate();
 
   return (
@@ -39,7 +37,6 @@ const Login = () => {
             text="Enter Fishnet"
             icon="home"
             onClick={() => {
-              setEntered(true);
               navigate('/data');
             }}/>
           <div className="bg-[#F6FAFB] text-center flex flex-col justify-center py-[10px] px-[25%]">

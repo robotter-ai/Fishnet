@@ -17,7 +17,7 @@ function TopNavigation() {
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.profile.notificationActions);
   const { title } = usePageTitle();
-  const { address, hasValidToken } = useAuth();
+  const { address, hasValidToken, walletConnected } = useAuth();
   const { isOpen, handleOpen, handleClose } = useModal();
   const [isNotification, setNotification] = useState<boolean>(false);
   const ref = useDetectClickOutside({
@@ -34,7 +34,7 @@ function TopNavigation() {
         <div className="flex items-center">
           <h1>{title}</h1>
         </div>
-        {!hasValidToken ? (
+        {!hasValidToken || !walletConnected ? (
           <>
             <Button
               text="Connect Wallet"

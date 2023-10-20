@@ -2,12 +2,10 @@ import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '@components/ui/Button';
 import useLogin from '@shared/hooks/useLogin';
-import useAuth from "@shared/hooks/useAuth";
 
 function LoginForm() {
   const { wallets, select, wallet } = useWallet();
   const { handleConnectWallet } = useLogin();
-  const auth = useAuth();
   const solanaWallets = wallets.map((x) => x.adapter);
 
   return (
