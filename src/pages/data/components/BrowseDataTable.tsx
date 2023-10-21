@@ -96,7 +96,7 @@ const BrowseDataTable = ({
       };
 
       processTransaction();
-      const { data, isLoading, isError } = useGetDatasetsQuery({ type: 'published', address: auth?.address });
+      const { data, isLoading, isError } = useGetDatasetsQuery({ type: 'published', address: address });
     }
   }, [registerBuy.transaction, registerBuy.success]);
 
