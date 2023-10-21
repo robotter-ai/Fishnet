@@ -29,13 +29,27 @@ export type DownloadTimeseries = {
   compression: boolean;
 };
 
-export const downloadTimeseries = createAsyncThunk(
+export const downloadTimeseriesCsv = createAsyncThunk(
   'timeseries/downloadTimeseries',
   async (timeseriesIDs: string[], thunkAPI) => {
     try {
-      const { data } = await axios.post(
-        `${FISHNET_API_URL}/timeseries/csv/download`,
-        timeseriesIDs,
+      const { data } = await axios.get(
+        `${FISHNET_API_URL}/timeseries/csv?timeseriesIDs=${timeseriesIDs.join(',')}`,
+        getConfig()
+      );
+      return data;
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(getErrMsg(err));
+    }
+  }
+);
+
+export const downloadTimeseriesJson = createAsyncThunk(
+  'timeseries/downloadTimeseriesJson',
+  async (timeseriesIDs: string[], thunkAPI) => {
+    try {
+      const { data } = await axios.get(
+        `${FISHNET_API_URL}/timeseries/json?timeseriesIDs=${timeseriesIDs.join(',')}`,
         getConfig()
       );
       return data;
@@ -55,6 +69,11 @@ interface TimeseriesProps {
     isLoading: boolean;
     success: boolean | null;
   };
+  downloadTimeseriesJson: {
+    timeseries: any | null;
+    isLoading: boolean;
+    success: boolean | null;
+  }
 }
 
 const initialState: TimeseriesProps = {
@@ -63,6 +82,7 @@ const initialState: TimeseriesProps = {
   timeseries: [],
   csvJson: [],
   downloadTimeseries: { timeseries: null, isLoading: false, success: null },
+  downloadTimeseriesJson: { timeseries: null, isLoading: false, success: null },
 };
 
 export const timeseriesSlice = createSlice({
@@ -100,15 +120,17 @@ export const timeseriesSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(downloadTimeseries.pending, (state) => {
+      .addCase(downloadTimeseriesCsv.pending, (state) => {
         state.downloadTimeseries.isLoading = true;
+        toast.loading('Downloading CSV...');
       })
-      .addCase(downloadTimeseries.fulfilled, (state, action) => {
+      .addCase(downloadTimeseriesCsv.fulfilled, (state, action) => {
         state.downloadTimeseries.isLoading = false;
         state.downloadTimeseries.success = true;
         state.downloadTimeseries.timeseries = action.payload;
+        toast.success('CSV ready!');
       })
-      .addCase(downloadTimeseries.rejected, (state, action) => {
+      .addCase(downloadTimeseriesCsv.rejected, (state, action) => {
         state.isLoading = false;
         toast.error(action.payload as string);
       })
