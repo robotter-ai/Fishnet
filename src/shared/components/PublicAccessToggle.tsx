@@ -1,16 +1,12 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { ToggleButton } from '@components/form';
 import AppModal from '@components/ui/AppModal';
 import CustomButton from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import {
-  getPublishedDatasets,
-  resetDataSlice,
-  updateDatasetAvailability,
+  useUpdateDatasetAvailabilityMutation,
 } from '@slices/dataSlice';
 import { toast } from 'sonner';
-import useAuth from '@shared/hooks/useAuth';
 
 interface IPublicAccessToggleProps {
   datasetId: string;
@@ -21,21 +17,17 @@ const PublicAccessToggle: React.FC<IPublicAccessToggleProps> = ({
   datasetId,
   available,
 }) => {
-  const dispatch = useAppDispatch();
-  const auth = useAuth();
-  const { isLoading, success } = useAppSelector(
-    (state) => state.datasets.updatePublicAccess
-  );
   const { isOpen, handleOpen, handleClose } = useModal();
 
+  const [updateDatasetAvailability, { isSuccess, isLoading }] =
+    useUpdateDatasetAvailabilityMutation();
+
   useEffect(() => {
-    if (success) {
+    if (isSuccess) {
       toast.success('Dataset have been updated!');
-      dispatch(getPublishedDatasets(auth?.address));
-      dispatch(resetDataSlice());
       handleClose();
     }
-  }, [success]);
+  }, [isSuccess]);
 
   return (
     <>
@@ -56,13 +48,11 @@ const PublicAccessToggle: React.FC<IPublicAccessToggleProps> = ({
             size="lg"
             fullWidth
             isLoading={isLoading}
-            onClick={() =>
-              dispatch(
-                updateDatasetAvailability({
-                  dataset_id: datasetId,
-                  available: !available,
-                })
-              )
+            onClick={async () =>
+              await updateDatasetAvailability({
+                datasetID: datasetId,
+                available: !available,
+              }).unwrap()
             }
           />
           <CustomButton

@@ -14,45 +14,43 @@ import { IoCheckbox } from 'react-icons/io5';
 import { RxCaretLeft } from 'react-icons/rx';
 import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
-import { downloadTimeseriesCsv as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
+import useDownloadDataset from "@pages/data/hooks/useDownloadDataset";
 import TruncatedItemHash from "@shared/components/TruncatedItemHash";
+import {IDataset} from "@slices/dataSlice";
 
 const DataDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const handleDownload = (timeseriesIDs: string[]) => {
-    dispatch(downloadTimeseriesRequest(timeseriesIDs));
-  };
   const auth = useAuth();
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
   );
   const {
-    inputs,
+    dataset,
     handleOnChange,
     isUpload,
     handleUploadDataset,
     handleUpdateDataset,
     isLoadingUploadDataset,
     isLoadingUpdateDataset,
-    isLoading,
     publishedModalProps: { isOpen, handleClose },
     isLoadingGetDataset,
     isOwner,
   } = useDataDetails();
+  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
 
   const SUMMARY = [
     {
       name: 'Aleph item hash',
-      value: <TruncatedItemHash hash={inputs?.item_hash} copy />,
+      value: <TruncatedItemHash hash={dataset?.item_hash} copy />,
     },
     ...(!isOwner
       ? [
           {
             name: 'Name',
-            value: inputs?.name || 'unnamed dataset',
+            value: dataset?.name || 'unnamed dataset',
           },
         ]
       : []),
@@ -61,7 +59,7 @@ const DataDetails = () => {
       value: (
         <p>
           {dayjs
-            .unix(inputs?.timestamp || Date.now() / 1000)
+            .unix(dataset?.timestamp || Date.now() / 1000)
             .format('DD/MM/YYYY')}
         </p>
       ),
@@ -74,25 +72,25 @@ const DataDetails = () => {
           },
           {
             name: 'Current Price',
-            value: <p>{inputs?.price} USDC</p>,
+            value: <p>{dataset?.price} USDC</p>,
           },
           {
             name: 'Owner',
-            value: <TruncatedAddress address={inputs?.owner} copy />,
+            value: <TruncatedAddress address={dataset?.owner} copy />,
           },
         ]
       : [
           {
             name: 'Seller',
-            value: <TruncatedAddress address={inputs?.owner} copy />,
+            value: <TruncatedAddress address={dataset?.owner} copy />,
           },
           {
             name: 'Current Price',
-            value: <p>{inputs?.price} USDC</p>,
+            value: <p>{dataset?.price} USDC</p>,
           },
           {
             name: 'Description',
-            value: inputs?.desc,
+            value: dataset?.desc,
           },
         ]),
   ];
@@ -106,7 +104,7 @@ const DataDetails = () => {
           size="md"
           isLoading={isLoadingUploadDataset as boolean}
           onClick={handleUploadDataset}
-          disabled={!inputs?.name || !inputs?.price}
+          disabled={!dataset?.name || !dataset?.price}
         />
       );
     }
@@ -118,23 +116,23 @@ const DataDetails = () => {
           size="md"
           isLoading={isLoadingUpdateDataset}
           onClick={handleUpdateDataset}
-          disabled={!inputs?.name || !inputs?.price}
+          disabled={!dataset?.name || !dataset?.price}
         />
       );
     }
-    if (inputs?.available || inputs?.permission_status === 'GRANTED') {
+    if (dataset?.available || dataset?.permission_status === 'GRANTED') {
       return (
         <Button
           text="Download"
           size="md"
           icon="download"
           btnStyle="outline-primary"
-          isLoading={isLoading}
-          onClick={() => handleDownload(inputs.timeseriesIDs)}
+          isLoading={isDownloading}
+          onClick={() => handleDownload(dataset as IDataset)}
         />
       );
     }
-    if (!inputs?.available || !(inputs?.permission_status === 'GRANTED')) {
+    if (!dataset?.available || !(dataset?.permission_status === 'GRANTED')) {
       return (
         <Button
           text="Request access"
@@ -148,10 +146,10 @@ const DataDetails = () => {
                 value: auth.address,
               })
             );
-            dispatch(requestDatasetPermissions(inputs?.item_hash));
+            dispatch(requestDatasetPermissions(dataset?.item_hash));
           }}
           isLoading={
-            inputs?.permission_status === 'REQUESTED' ||
+            dataset?.permission_status === 'REQUESTED' ||
             requestDatasetPermissionActions.isLoading
           }
         />
@@ -183,7 +181,7 @@ const DataDetails = () => {
               <TextInput
                 label="Title"
                 placeholder="Please provide a title"
-                value={inputs?.name || ''}
+                value={dataset?.name || ''}
                 onChange={(e) => handleOnChange('name', e.target.value)}
                 fullWidth
                 mandatory={isUpload || isOwner}
@@ -192,7 +190,7 @@ const DataDetails = () => {
                 label="Price"
                 placeholder="Set a price for your data"
                 type="number"
-                value={inputs?.price || '0'}
+                value={dataset?.price || '0'}
                 onChange={(e) => handleOnChange('price', e.target.value)}
                 fullWidth
                 trail="USDC"
@@ -200,7 +198,7 @@ const DataDetails = () => {
               <TextInput
                 label="Description"
                 placeholder="What is the data about?"
-                value={inputs?.desc || ''}
+                value={dataset?.desc || ''}
                 onChange={(e) => handleOnChange('desc', e.target.value)}
                 fullWidth
               />
@@ -221,11 +219,11 @@ const DataDetails = () => {
           <h1>Data {isUpload ? 'published' : 'updated'}!</h1>
           <IoCheckbox className="text-primary" size={70} />
           <p>
-            {inputs?.name || 'unnamed dataset'}{' '}
+            {dataset?.name || 'unnamed dataset'}{' '}
             {isUpload ? 'published' : 'updated'}
           </p>
           <div className="flex flex-col items-center gap-2">
-            <TruncatedItemHash hash={inputs?.item_hash || ''} color="primary" copy />
+            <TruncatedItemHash hash={dataset?.item_hash || ''} color="primary" copy />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">
@@ -236,7 +234,7 @@ const DataDetails = () => {
             btnStyle="outline-primary"
             fullWidth
             onClick={() => {
-              navigate(`/data/${inputs?.item_hash}/details`);
+              navigate(`/data/${dataset?.item_hash}/details`);
               handleClose();
             }}
           />

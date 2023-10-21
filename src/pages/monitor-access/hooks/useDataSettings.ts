@@ -22,7 +22,7 @@ export default () => {
   } = useModal();
   const {
     datasetPermission,
-    requestDatasetPermissionActions: { isLoading, success, inputs },
+    requestDatasetPermissionActions: { isLoading, success, dataset },
   } = useAppSelector((state) => state.monitorAccess);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export default () => {
   };
 
   return {
-    inputs,
+    dataset,
     isLoading,
     datasetPermission,
     handleAddAccess,

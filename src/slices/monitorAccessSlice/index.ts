@@ -43,12 +43,12 @@ export const requestDatasetPermissions = createAsyncThunk(
     try {
       const {
         monitorAccess: {
-          requestDatasetPermissionActions: { inputs },
+          requestDatasetPermissionActions: { dataset },
         },
       } = thunkAPI.getState() as RootState;
       return await monitorAccessService.requestDatasetPermissions(
         dataset_id,
-        inputs
+        dataset
       );
     } catch (err: any) {
       return thunkAPI.rejectWithValue(getErrMsg(err));
@@ -61,14 +61,14 @@ export const grantDatasetPermissions = createAsyncThunk(
   async (
     {
       dataset_id,
-      inputs,
-    }: { dataset_id: string; inputs: DatasetPermisionProps },
+      dataset,
+    }: { dataset_id: string; dataset: DatasetPermisionProps },
     thunkAPI
   ) => {
     try {
       return await monitorAccessService.grantDatasetPermissions(
         dataset_id,
-        inputs
+        dataset
       );
     } catch (err: any) {
       return thunkAPI.rejectWithValue(getErrMsg(err));
@@ -96,12 +96,12 @@ interface StateProps {
   requestDatasetPermissionActions: {
     isLoading: boolean;
     success: any;
-    inputs: DatasetPermisionProps;
+    dataset: DatasetPermisionProps;
   };
   grantDatasetPermissionActions: {
     isLoading: boolean;
     success: any;
-    inputs: DatasetPermisionProps;
+    dataset: DatasetPermisionProps;
   };
   denyPermissionsActions: {
     isLoading: boolean;
@@ -109,13 +109,13 @@ interface StateProps {
   };
 }
 
-const initialStateRequestInputs = {
+const initialStateRequestInputs: DatasetPermisionProps = {
   requestor: undefined,
   algorithmID: undefined,
   requestedExecutionCount: undefined,
 };
 
-const initialStateGrantInputs = {
+const initialStateGrantInputs: DatasetPermisionProps = {
   authorizer: '',
   requestor: '',
   algorithmID: '',
@@ -131,12 +131,12 @@ const initialState: StateProps = {
   requestDatasetPermissionActions: {
     isLoading: false,
     success: null,
-    inputs: initialStateRequestInputs,
+    dataset: initialStateRequestInputs,
   },
   grantDatasetPermissionActions: {
     isLoading: false,
     success: null,
-    inputs: initialStateGrantInputs,
+    dataset: initialStateGrantInputs,
   },
   denyPermissionsActions: {
     isLoading: false,
@@ -155,8 +155,8 @@ const monitorAccessSlice = createSlice({
         value: any;
       }>
     ) => {
-      state.requestDatasetPermissionActions.inputs = {
-        ...state.requestDatasetPermissionActions.inputs,
+      state.requestDatasetPermissionActions.dataset = {
+        ...state.requestDatasetPermissionActions.dataset,
         [action.payload.input]: action.payload.value,
       };
     },
@@ -164,8 +164,8 @@ const monitorAccessSlice = createSlice({
       state.requestDatasetPermissionActions.success = null;
       state.grantDatasetPermissionActions.success = null;
       state.denyPermissionsActions.success = null;
-      state.requestDatasetPermissionActions.inputs = initialStateRequestInputs;
-      state.grantDatasetPermissionActions.inputs = initialStateGrantInputs;
+      state.requestDatasetPermissionActions.dataset = initialStateRequestInputs;
+      state.grantDatasetPermissionActions.dataset = initialStateGrantInputs;
     },
   },
   extraReducers(builder) {

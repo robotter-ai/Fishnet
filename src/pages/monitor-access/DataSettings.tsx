@@ -41,7 +41,7 @@ const STATISTICS = [
 const DataSettings = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
   const {
-    inputs,
+    dataset,
     isLoading,
     datasetPermission,
     handleAddAccess,
@@ -115,7 +115,7 @@ const DataSettings = () => {
               bgColor="#F6F8FB"
               size="lg"
               fullWidth
-              value={inputs.requestor}
+              value={dataset.requestor}
               onChange={(e) => handleOnchangeInput('requestor', e.target.value)}
             />
           </div>

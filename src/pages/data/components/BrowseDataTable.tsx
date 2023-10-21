@@ -5,10 +5,10 @@ import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { downloadTimeseriesCsv as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
+import useDownloadDataset from '@pages/data/hooks/useDownloadDataset';
+import {IDataset, useDownloadDatasetCsvQuery, useGetDatasetsQuery} from '@slices/dataSlice';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Papa from 'papaparse';
 import {
   registerBuy as registerBuyRequest,
   validateSignature as validateTransaction,
@@ -22,7 +22,8 @@ import {
 } from '@shared/constant';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { getPublishedDatasets } from '@slices/dataSlice';
+import {toast} from "sonner";
+import {ariaHidden} from "@mui/material";
 
 const BrowseDataTable = ({
   data,
@@ -32,15 +33,16 @@ const BrowseDataTable = ({
   isLoading: boolean;
 }) => {
   const dispatch = useAppDispatch();
-  const handleDownload = (timeseriesIDs: string[]) => {
-    dispatch(downloadTimeseriesRequest(timeseriesIDs));
-  };
-  const { downloadTimeseries } = useAppSelector((state) => state.timeseries);
   const { registerBuy } = useAppSelector((state) => state.transaction);
   const { address } = useAuth();
   const { sendTransaction } = useWallet();
   const [signature, setSignature] = useState<string>('');
   const [selectedItemHash, setItemHash] = useState<string>('');
+  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
+
+  const findDataset = (itemHash: string) => {
+    return data.find((item) => item.item_hash === itemHash) as IDataset;
+  }
 
   const handlePurchase = async (
     itemHash: string,
@@ -94,7 +96,7 @@ const BrowseDataTable = ({
       };
 
       processTransaction();
-      dispatch(getPublishedDatasets(address));
+      const { data, isLoading, isError } = useGetDatasetsQuery({ type: 'published', address: address });
     }
   }, [registerBuy.transaction, registerBuy.success]);
 
@@ -107,29 +109,6 @@ const BrowseDataTable = ({
       );
     }
   }, [signature]);
-
-  useEffect(() => {
-    if (downloadTimeseries.timeseries) {
-      const lines = downloadTimeseries.timeseries.trim().split('\n');
-      const normalizedData = lines.map((row: any) => {
-        const [timestamp, ...values] = row.split(',');
-        return [timestamp, ...values];
-      });
-      const csvString = Papa.unparse(normalizedData);
-      const blob = new Blob([csvString], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const downloadLink = document.createElement('a');
-      downloadLink.href = url;
-      downloadLink.download = downloadTimeseries.timeseries;
-      downloadLink.style.display = 'none';
-
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-
-      URL.revokeObjectURL(url);
-      document.body.removeChild(downloadLink);
-    }
-  }, [downloadTimeseries.success]);
 
   const COLUMNS: ITableColumns[] = [
     {
@@ -183,7 +162,6 @@ const BrowseDataTable = ({
         item_hash,
         permission_status,
         price,
-        timeseriesIDs,
         owner,
         name,
       }) => (
@@ -195,7 +173,8 @@ const BrowseDataTable = ({
               btnStyle="outline-primary"
               size="sm"
               icon="download"
-              onClick={() => handleDownload(timeseriesIDs)}
+              isLoading={isDownloading}
+              onClick={() => handleDownload(findDataset(item_hash))}
             />
           ) : !available &&
             permission_status === 'NOT GRANTED' &&
