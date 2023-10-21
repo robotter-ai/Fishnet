@@ -4,7 +4,7 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import {
-  IUploadDataset,
+  IDataset, useDownloadDatasetCsvQuery,
   useGenerateViewsMutation,
   useGetDatasetQuery,
   useUpdateDatasetMutation,
@@ -34,8 +34,6 @@ export default () => {
     name: '',
     price: 0,
   });
-  const { uploadDatasetActions, updateDatasetsActions, generateViewActions } =
-    useAppSelector((app) => app.datasets);
   const { initProductTree } = useAppSelector((app) => app.transaction);
   const { timeseries } = useAppSelector((state) => state.timeseries);
   const { sendTransaction } = useWallet();
@@ -51,7 +49,7 @@ export default () => {
     isLoading: isLoadingGetDataset,
     isSuccess: isGetDatasetSuccess,
   } = useGetDatasetQuery(
-    { dataset_id: id as string, view_as: auth.address },
+    { datasetID: id as string, view_as: auth.address },
     { skip: isUpload }
   );
   const [
@@ -82,9 +80,7 @@ export default () => {
 
   useEffect(() => {
     if (
-      uploadedData?.dataset?.item_hash !== (undefined || null) &&
-      isSuccessUploadDataset &&
-      initProductTree.transaction === null &&
+      uploadedData?.dataset?.item_hash !== null && isSuccessUploadDataset && initProductTree.transaction === null &&
       signature === ''
     ) {
       const config = {
@@ -136,7 +132,7 @@ export default () => {
     }
   }, [initProductTree.transaction, initProductTree.success]);
 
-  const inputsToUpload: IUploadDataset = {
+  const inputsToUpload: IDataset = {
     desc: dataset?.desc,
     name: dataset?.name,
     owner: dataset?.owner,
@@ -189,7 +185,7 @@ export default () => {
         endTime: time[time.length - 1],
       },
     ];
-    generateViews({ dataset_id: dataset?.item_hash, data: timeseriesToUse }).then(
+    generateViews({ datasetID: dataset?.item_hash, data: timeseriesToUse }).then(
       () => {
         handleOpen();
       }
@@ -207,8 +203,10 @@ export default () => {
     }
   };
 
+  const isLoading = isLoadingUploadDataset || isLoadingGenerateViews;
+
   return {
-    inputs: dataset,
+    dataset,
     handleOnChange,
     handleUploadDataset,
     handleUpdateDataset,
@@ -218,10 +216,9 @@ export default () => {
       isLoadingGenerateViews ||
       initProductTree.success,
     isLoadingUpdateDataset,
-    isLoading: uploadDatasetActions.isLoading || generateViewActions.isLoading,
+    isLoading,
     isUpload,
     publishedModalProps: { handleClose, isOpen, handleOpen },
-    updateDatasetsActions,
     isOwner,
   };
 };

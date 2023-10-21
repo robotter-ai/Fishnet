@@ -66,7 +66,7 @@ const AllowComponent = ({ item }: any) => {
               dispatch(
                 grantDatasetPermissions({
                   dataset_id: item.datasetID,
-                  inputs: {
+                  dataset: {
                     maxExecutionCount,
                     authorizer: item.authorizer,
                     requestor: item.requestor,

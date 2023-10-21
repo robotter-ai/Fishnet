@@ -16,20 +16,16 @@ export default () => {
   const dispatch = useAppDispatch();
   const { isSelect } = useSelectData();
   const [searchParams] = useSearchParams();
-  const { isLoading, datasets, publishedDatasets } = useAppSelector(
-    (state) => state.datasets
-  );
   const { isLoading: isLoadingPreprocessTimeseries } = useAppSelector(
     (state) => state.timeseries
   );
 
-  // START: RTK Query
   const { data: browseData, isLoading: isLoadingBrowseData } =
     useGetDatasetsQuery({
       type: 'browse-data',
       address: auth?.address,
     });
-  const { data: publishedData, isLoading: isLoadingPublishedData } =
+  const { data: publishedDatasets, isLoading: isLoadingPublishedData } =
     useGetDatasetsQuery({
       type: 'published',
       address: auth?.address,
@@ -39,7 +35,7 @@ export default () => {
     (searchParams.get('tab') as DatasetTabs) || 'browse-data';
 
   const DATA_MAP: Record<DatasetTabs, any> = {
-    published: publishedData,
+    published: publishedDatasets,
     'browse-data': browseData,
   };
 
@@ -103,7 +99,6 @@ export default () => {
     filterParams,
     handleFilterTable,
     isSelectData: isSelect,
-    isLoading,
     handleCsvToJson,
     isLoadingPreprocessTimeseries,
   };

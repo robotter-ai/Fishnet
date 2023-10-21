@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
 import Button from '@components/ui/Button';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { getPublishedDatasets } from '@slices/dataSlice';
+import { useGetDatasetsQuery } from '@slices/dataSlice';
 import PublicAccessToggle from '@shared/components/PublicAccessToggle';
 import useAuth from '@shared/hooks/useAuth';
 import DataSummary from '@shared/components/Summary';
@@ -85,13 +83,12 @@ const STATISTICS = [
 ];
 
 const PublishedTable = () => {
-  const dispatch = useAppDispatch();
   const { address } = useAuth();
-  const { publishedDatasets } = useAppSelector((state) => state.datasets);
 
-  useEffect(() => {
-    dispatch(getPublishedDatasets(address));
-  }, []);
+  const publishedDatasets = useGetDatasetsQuery({
+    type: 'published',
+    address: address,
+  });
 
   return (
     <>

@@ -131,12 +131,12 @@ const initialState: StateProps = {
   requestDatasetPermissionActions: {
     isLoading: false,
     success: null,
-    inputs: initialStateRequestInputs,
+    dataset: initialStateRequestInputs,
   },
   grantDatasetPermissionActions: {
     isLoading: false,
     success: null,
-    inputs: initialStateGrantInputs,
+    dataset: initialStateGrantInputs,
   },
   denyPermissionsActions: {
     isLoading: false,

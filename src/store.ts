@@ -3,12 +3,11 @@ import appSlice from '@slices/appSlice';
 import authSlice from '@slices/authSlice';
 import indexerSlice from '@slices/indexerSlice';
 import transactionSlice from '@slices/transactionSlice';
-import dataSlice from '@slices/dataSlice';
 import monitorAccessSlice from '@slices/monitorAccessSlice';
 import profileSlice from '@slices/profileSlice';
 import timeseriesSlice from '@slices/timeseriesSlice';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
-import { fishnetApi } from './slices';
+import { fishnetApi } from '@slices/fishnetApi';
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +15,6 @@ export const store = configureStore({
     auth: authSlice.reducer,
     indexer: indexerSlice.reducer,
     transaction: transactionSlice.reducer,
-    datasets: dataSlice.reducer,
     timeseries: timeseriesSlice.reducer,
     monitorAccess: monitorAccessSlice.reducer,
     profile: profileSlice.reducer,
