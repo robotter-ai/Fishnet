@@ -14,7 +14,7 @@ import { IoCheckbox } from 'react-icons/io5';
 import { RxCaretLeft } from 'react-icons/rx';
 import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
-import { downloadTimeseries as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
+import { downloadTimeseriesCsv as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
 import TruncatedItemHash from "@shared/components/TruncatedItemHash";

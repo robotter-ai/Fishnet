@@ -5,7 +5,7 @@ import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { downloadTimeseries as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
+import { downloadTimeseriesCsv as downloadTimeseriesRequest } from '@slices/timeseriesSlice';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Papa from 'papaparse';
