@@ -205,6 +205,22 @@ export const uploadDataset = createAsyncThunk(
   }
 );
 
+export const downloadDatasetCsv = createAsyncThunk(
+  'datasets/downloadDatasetCsv',
+  async (datasetID: string, thunkAPI) => {
+    try {
+      return await dataService.downloadDatasetCsv(datasetID);
+    } catch (err: any) {
+      const errMsg =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      return thunkAPI.rejectWithValue(errMsg);
+    }
+  }
+);
+
+
 export const generateViews = createAsyncThunk(
   'datasets/generateViews',
   async (
@@ -263,7 +279,7 @@ export const downloadDataset = createAsyncThunk(
   'datasets/downloadDataset',
   async (datasetID: string, thunkAPI) => {
     try {
-      return await dataService.downloadDatasetCsv(datasetId);
+      return await dataService.downloadDatasetCsv(datasetID);
     } catch (err: any) {
       return thunkAPI.rejectWithValue(getErrMsg(err));
     }
@@ -284,6 +300,10 @@ interface DataProps {
     isLoading: boolean;
     success: boolean | null;
   };
+  downloadDatasetCsvActions: {
+    isLoading: boolean;
+    success: boolean | null;
+  }
   datasetByIDActions: {
     isLoading: boolean;
     success: boolean | null;
@@ -325,6 +345,10 @@ const initialState: DataProps = {
     isLoading: false,
     success: null,
   },
+  downloadDatasetCsvActions: {
+    isLoading: false,
+    success: null,
+  },
   datasetByIDActions: {
     isLoading: false,
     success: null,
@@ -355,6 +379,7 @@ const dataSlice = createSlice({
       state.generateViewActions.success = null;
       state.getViewActions.success = null;
       state.uploadDatasetActions.success = null;
+      state.downloadDatasetCsvActions.success = null;
     },
     resetDataDetails: (state) => {
       state.dataDetails = null;
@@ -398,7 +423,19 @@ const dataSlice = createSlice({
         state.updateDatasetsActions.isLoading = false;
         toast.error(action.payload as string);
       })
-
+      .addCase(downloadDatasetCsv.pending, (state) => {
+        state.downloadDatasetCsvActions.isLoading = true;
+        toast.loading('Downloading CSV...');
+      })
+      .addCase(downloadDatasetCsv.fulfilled, (state, action) => {
+        state.downloadDatasetCsvActions.isLoading = false;
+        state.downloadDatasetCsvActions.success = true;
+        toast.success('CSV Downloaded');
+      })
+      .addCase(downloadDatasetCsv.rejected, (state, action) => {
+        state.downloadDatasetCsvActions.isLoading = false;
+        toast.error(action.payload as string);
+      })
       .addCase(generateViews.pending, (state) => {
         state.generateViewActions.isLoading = true;
       })

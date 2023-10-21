@@ -65,6 +65,14 @@ const uploadDataset = async (dataset: any) => {
   return data;
 };
 
+const downloadDatasetCsv = async (dataset_id: string) => {
+  const { data } = await axios.get(
+    `${FISHNET_API_URL}/datasets/${dataset_id}/timeseries/csv`,
+    getConfig()
+  );
+  return data;
+}
+
 const generateViews = async (
   dataset_id: string,
   request: {
@@ -81,6 +89,7 @@ const generateViews = async (
   );
   return data;
 };
+
 const getViews = async (dataset_id: string) => {
   const { data } = await axios.get(
     `${FISHNET_API_URL}/datasets/${dataset_id}/views`,
@@ -88,11 +97,13 @@ const getViews = async (dataset_id: string) => {
   );
   return data;
 };
+
 const dataService = {
   getPublishedDatasets,
   updateDatasetAvailability,
   updateDatasets,
   uploadDataset,
+  downloadDatasetCsv,
   generateViews,
   getViews,
 };
