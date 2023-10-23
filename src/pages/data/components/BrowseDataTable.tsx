@@ -21,8 +21,6 @@ import {
 } from '@shared/constant';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
-import {toast} from "sonner";
-import {ariaHidden} from "@mui/material";
 import {DownloadButton} from "@pages/data/components/DownloadButton";
 
 const BrowseDataTable = ({
@@ -168,7 +166,15 @@ const BrowseDataTable = ({
           {/* eslint-disable-next-line no-nested-ternary */}
           {available && price == 0 || permission_status === 'GRANTED' ? (
             <DownloadButton dataset={findDataset(item_hash)} />
-          ) : !available &&
+          ) : address === undefined ?
+            <CustomButton
+              text="Wallet required"
+              size="sm"
+              icon="lock"
+              btnStyle="outline-primary"
+              disabled={true}
+            /> :
+            !available &&
             permission_status === 'NOT GRANTED' &&
             price === '0' ? (
             <CustomButton
