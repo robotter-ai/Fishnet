@@ -124,7 +124,7 @@ const DataDetails = () => {
         />
       );
     }
-    if (dataset?.available || dataset?.price == 0 || dataset?.permission_status === 'GRANTED') {
+    if (dataset?.available && dataset?.price == 0 || dataset?.permission_status === 'GRANTED') {
       return (
         <Button
           text="Download"
