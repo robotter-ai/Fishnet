@@ -24,6 +24,7 @@ import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import {toast} from "sonner";
 import {ariaHidden} from "@mui/material";
+import {DownloadButton} from "@pages/data/components/DownloadButton";
 
 const BrowseDataTable = ({
   data,
@@ -38,7 +39,6 @@ const BrowseDataTable = ({
   const { sendTransaction } = useWallet();
   const [signature, setSignature] = useState<string>('');
   const [selectedItemHash, setItemHash] = useState<string>('');
-  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
 
   const findDataset = (itemHash: string) => {
     return data.find((item) => item.item_hash === itemHash) as IDataset;
@@ -50,22 +50,22 @@ const BrowseDataTable = ({
     name: string
   ) => {
     setItemHash(itemHash);
+    const params = {
+      signer: address,
+      marketplace: FISHNET_MARKETPLACE,
+      productId: itemHash,
+      paymentMint: USDC_MINT,
+      seller: owner,
+      marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
+      params: {
+        rewardsActive: false,
+        amount: 1,
+        name,
+      },
+    };
+    console.log(params)
     dispatch(
-      registerBuyRequest({
-        params: {
-          signer: address,
-          marketplace: FISHNET_MARKETPLACE,
-          productId: itemHash,
-          paymentMint: USDC_MINT,
-          seller: owner,
-          marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
-          params: {
-            rewardsActive: false,
-            amount: 1,
-            name,
-          },
-        },
-      })
+      registerBuyRequest({params})
     );
   };
 
@@ -168,14 +168,7 @@ const BrowseDataTable = ({
         <div className="w-auto flex items-end justify-end">
           {/* eslint-disable-next-line no-nested-ternary */}
           {available && price == 0 || permission_status === 'GRANTED' ? (
-            <CustomButton
-              text="Download"
-              btnStyle="outline-primary"
-              size="sm"
-              icon="download"
-              isLoading={isDownloading}
-              onClick={() => handleDownload(findDataset(item_hash))}
-            />
+            <DownloadButton dataset={findDataset(item_hash)} />
           ) : !available &&
             permission_status === 'NOT GRANTED' &&
             price === '0' ? (
