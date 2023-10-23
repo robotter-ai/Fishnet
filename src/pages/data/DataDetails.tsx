@@ -4,18 +4,21 @@ import Button from '@components/ui/Button';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
 import useAuth from '@shared/hooks/useAuth';
-import {useAppDispatch, useAppSelector} from '@shared/hooks/useStore';
-import {changeDatasetPermissionInput, requestDatasetPermissions,} from '@slices/monitorAccessSlice';
+import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
+import {
+  changeDatasetPermissionInput,
+  requestDatasetPermissions,
+} from '@slices/monitorAccessSlice';
 import dayjs from 'dayjs';
-import {IoCheckbox} from 'react-icons/io5';
-import {RxCaretLeft} from 'react-icons/rx';
-import {Link, useNavigate} from 'react-router-dom';
+import { IoCheckbox } from 'react-icons/io5';
+import { RxCaretLeft } from 'react-icons/rx';
+import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
+import useDownloadDataset from "@pages/data/hooks/useDownloadDataset";
 import TruncatedItemHash from "@shared/components/TruncatedItemHash";
 import {IDataset} from "@slices/dataSlice";
-import {DownloadButton} from "@pages/data/components/DownloadButton";
 
 const DataDetails = () => {
   const navigate = useNavigate();
@@ -36,10 +39,7 @@ const DataDetails = () => {
     isLoadingGetDataset,
     isOwner,
   } = useDataDetails();
-
-  if (!!dataset && dataset.price === undefined) {
-    dataset.price = 0;
-  }
+  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
 
   if (!!dataset && dataset.price === undefined) {
     dataset.price = 0;
@@ -126,7 +126,14 @@ const DataDetails = () => {
     }
     if (dataset?.available || dataset?.price == 0 || dataset?.permission_status === 'GRANTED') {
       return (
-        <DownloadButton dataset={dataset as IDataset}/>
+        <Button
+          text="Download"
+          size="md"
+          icon="download"
+          btnStyle="outline-primary"
+          isLoading={isDownloading}
+          onClick={() => handleDownload(dataset as IDataset)}
+        />
       );
     }
     if (address === undefined) {

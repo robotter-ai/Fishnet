@@ -5,7 +5,8 @@ import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import {IDataset, useGetDatasetsQuery} from '@slices/dataSlice';
+import useDownloadDataset from '@pages/data/hooks/useDownloadDataset';
+import {IDataset, useDownloadDatasetCsvQuery, useGetDatasetsQuery} from '@slices/dataSlice';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -21,7 +22,8 @@ import {
 } from '@shared/constant';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
-import {DownloadButton} from "@pages/data/components/DownloadButton";
+import {toast} from "sonner";
+import {ariaHidden} from "@mui/material";
 
 const BrowseDataTable = ({
   data,
@@ -36,6 +38,7 @@ const BrowseDataTable = ({
   const { sendTransaction } = useWallet();
   const [signature, setSignature] = useState<string>('');
   const [selectedItemHash, setItemHash] = useState<string>('');
+  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
 
   const findDataset = (itemHash: string) => {
     return data.find((item) => item.item_hash === itemHash) as IDataset;
@@ -165,7 +168,14 @@ const BrowseDataTable = ({
         <div className="w-auto flex items-end justify-end">
           {/* eslint-disable-next-line no-nested-ternary */}
           {available && price == 0 || permission_status === 'GRANTED' ? (
-            <DownloadButton dataset={findDataset(item_hash)} />
+            <CustomButton
+              text="Download"
+              btnStyle="outline-primary"
+              size="sm"
+              icon="download"
+              isLoading={isDownloading}
+              onClick={() => handleDownload(findDataset(item_hash))}
+            />
           ) : address === undefined ?
             <CustomButton
               text="Wallet required"
@@ -173,8 +183,7 @@ const BrowseDataTable = ({
               icon="lock"
               btnStyle="outline-primary"
               disabled={true}
-            /> :
-            !available &&
+            /> : !available &&
             permission_status === 'NOT GRANTED' &&
             price === '0' ? (
             <CustomButton
