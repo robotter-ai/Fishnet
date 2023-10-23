@@ -28,7 +28,9 @@ const DataSummary: React.FC<SummaryProps> = ({
           )}
         >
           <p>{item.name}:</p>
-          <span>{item.value}</span>
+          {item.name === 'Description' ? !item.value ? (<span className="text-dark-20">No description</span>) :
+              <span className="text-dark-40">{item.value}</span> :
+            <span>{item.value}</span>}
         </div>
       ))}
     </div>

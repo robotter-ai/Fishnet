@@ -7,6 +7,7 @@ export type UserProps = {
   bio: string;
   email: string;
   link: string;
+  downloads?: number;
 };
 
 const getUserInfo = async (address: string) => {

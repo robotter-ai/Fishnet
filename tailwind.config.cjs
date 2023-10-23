@@ -11,6 +11,7 @@ module.exports = {
         danger: '#FF3B30',
         'light-20': '#F6F8FB',
         'dark-20': '#91989C',
+        'dark-40': '#5C6569',
         'light-blue': '#EDF2FA',
         'dark-50': '#223038',
         'text-dark': '#244141',

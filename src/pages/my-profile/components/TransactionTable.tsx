@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 
 const COLUMNS = (address: string): ITableColumns[] => [
   {
-    header: 'DATA NAME',
+    header: 'DATASET',
     cell: (item) => (
       <span className="text-primary">{item.info.params.name}</span>
     ),
@@ -16,11 +16,11 @@ const COLUMNS = (address: string): ITableColumns[] => [
       <span className="flex gap-2 items-center">
         {item.signer === address ? (
           <>
-            <ArrowDownIcon /> Incoming
+            <span className="text-danger">Bought</span>
           </>
         ) : (
           <>
-            <ArrowUpIcon /> Outgoing
+            <span className="text-success">Sold</span>
           </>
         )}
       </span>
@@ -28,13 +28,13 @@ const COLUMNS = (address: string): ITableColumns[] => [
     sortWith: 'typ',
   },
   {
-    header: 'DATE',
-    cell: (item) => dayjs(item.timestamp).format('DD.MM.YYYY'),
+    header: 'AMOUNT',
+    cell: (item) => `${item.info.params.amount} USDC`,
     sortWith: 'typ',
   },
   {
-    header: 'Price',
-    cell: (item) => `${item.info.params.amount} USDC`,
+    header: 'DATE',
+    cell: (item) => dayjs(item.timestamp).format('DD.MM.YYYY'),
     sortWith: 'typ',
   },
 ];

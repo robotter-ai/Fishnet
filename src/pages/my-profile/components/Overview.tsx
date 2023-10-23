@@ -34,7 +34,7 @@ const Overview: React.FC<IOverviewProps> = ({
     },
     {
       name: 'Total downloads',
-      value: 0,
+      value: inputs.downloads,
     },
     {
       name: 'Description',

@@ -20,12 +20,14 @@ export default () => {
     (app) => app.profile
   );
   const { getTransactions } = useAppSelector((app) => app.indexer);
+  const userInfoState = useAppSelector((app) => app.profile.userInfo);
   const { inputs, handleOnChange } = useOnChange({
-    username: userInfo?.username || '',
-    address: auth?.address,
-    bio: userInfo?.bio || '',
-    email: userInfo?.email || '',
-    link: userInfo?.link || '',
+    username: userInfoState?.username || '',
+    address: userInfoState?.address || '',
+    bio: userInfoState?.bio || '',
+    email: userInfoState?.email || '',
+    link: userInfoState?.link || '',
+    downloads: userInfoState?.downloads || 0,
   });
 
   const query: ITab = (searchParams.get('tab') as ITab) || 'overview';
@@ -50,9 +52,9 @@ export default () => {
     dispatch(getUserInfo(auth?.address));
     dispatch(getAllUsers());
     dispatch(
-      queryTransaction({ user: 'fisherH6SRzYVd2JE53Kgiax9R9MmtS95TC8ERPr3D7' })
+      queryTransaction({ user: auth?.address })
     );
-  }, [updateActions.success]);
+  }, [updateActions.success, auth?.address]);
 
   const handleUpdateProfile = () => {
     dispatch(updateUserInfo(inputs));
