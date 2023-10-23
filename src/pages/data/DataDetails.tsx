@@ -41,6 +41,10 @@ const DataDetails = () => {
     dataset.price = 0;
   }
 
+  if (!!dataset && dataset.price === undefined) {
+    dataset.price = 0;
+  }
+
   const SUMMARY = [
     {
       name: 'Aleph item hash',
