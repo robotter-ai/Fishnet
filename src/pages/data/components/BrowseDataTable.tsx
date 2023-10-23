@@ -6,12 +6,13 @@ import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useDownloadDataset from '@pages/data/hooks/useDownloadDataset';
-import {IDataset, useGetDatasetsQuery} from '@slices/dataSlice';
+import {IDataset} from '@slices/dataSlice';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {
   registerBuy as registerBuyRequest,
   validateSignature as validateTransaction,
+  resetTransactionSlice,
 } from '@slices/transactionSlice';
 import useAuth from '@shared/hooks/useAuth';
 import {
@@ -22,6 +23,7 @@ import {
 } from '@shared/constant';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { fishnetApi } from '@slices/fishnetApi';
 
 const BrowseDataTable = ({
   data,
@@ -37,6 +39,7 @@ const BrowseDataTable = ({
   const [signature, setSignature] = useState<string>('');
   const [selectedItemHash, setItemHash] = useState<string>('');
   const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
+  const navigate = useNavigate();
 
   const handlePurchase = async (
     dataset: IDataset
@@ -91,7 +94,10 @@ const BrowseDataTable = ({
       };
 
       processTransaction();
-      const { data, isLoading, isError } = useGetDatasetsQuery({ type: 'published', address: address });
+      // invalidate Dataset tag cache
+      dispatch(fishnetApi.util.invalidateTags(['Dataset']));  // does this work?
+      dispatch(resetTransactionSlice());
+      navigate(`/data/${selectedItemHash}/details`);
     }
   }, [registerBuy.transaction, registerBuy.success]);
 
