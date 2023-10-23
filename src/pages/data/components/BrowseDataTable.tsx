@@ -32,7 +32,7 @@ const BrowseDataTable = ({
 }) => {
   const dispatch = useAppDispatch();
   const { registerBuy } = useAppSelector((state) => state.transaction);
-  const { address } = useAuth();
+  const { address, hasValidToken } = useAuth();
   const { sendTransaction } = useWallet();
   const [signature, setSignature] = useState<string>('');
   const [selectedItemHash, setItemHash] = useState<string>('');
@@ -164,7 +164,7 @@ const BrowseDataTable = ({
               isLoading={isDownloading}
               onClick={() => handleDownload(dataset)}
             />
-          ) : address === undefined ?
+          ) : address === undefined || !hasValidToken ?
             <CustomButton
               text="Wallet required"
               size="sm"

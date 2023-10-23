@@ -23,7 +23,7 @@ import {IDataset} from "@slices/dataSlice";
 const DataDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { address } = useAuth();
+  const { address, hasValidToken } = useAuth();
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
   );
@@ -136,7 +136,7 @@ const DataDetails = () => {
         />
       );
     }
-    if (address === undefined) {
+    if (address === undefined || !hasValidToken) {
       return (
         <Button
           text="Wallet required"

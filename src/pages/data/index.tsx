@@ -10,6 +10,7 @@ import { FadeLoader } from 'react-spinners';
 import BrowseDataTable from './components/BrowseDataTable';
 import PublishedTable from './components/PublishedTable';
 import useDataTable from './hooks/useDataTable';
+import useAuth from "@shared/hooks/useAuth";
 
 const MyData = () => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);
@@ -25,6 +26,7 @@ const MyData = () => {
   } = useDataTable();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
+  const { hasValidToken, address } = useAuth();
 
   const TableMapper: { [key: string]: ReactNode } = {
     published: (
@@ -68,6 +70,7 @@ const MyData = () => {
             size="md"
             text="Upload data"
             icon="upload"
+            disabled={!hasValidToken || !address}
             onClick={handleOpen}
           />
         </div>
