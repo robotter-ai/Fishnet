@@ -4,12 +4,19 @@ export interface IGetDataset {
   address: string;
 }
 
+export enum PermissionStatus {
+  NOT_REQUESTED = 'NOT_REQUESTED',
+  REQUESTED = 'REQUESTED',
+  GRANTED = 'GRANTED',
+  DENIED = 'DENIED',
+}
+
 export interface IGenerateViews {
   datasetID: string;
   data: any;
 }
 
-export interface IDataset {
+export interface IDatasetRequest {
   item_hash?: string;
   name: string;
   desc: string;
@@ -19,12 +26,18 @@ export interface IDataset {
   timeseriesIDs: string[];
 }
 
+export interface IDataset extends IDatasetRequest {
+  available: boolean;
+  viewIDs: string[];
+  permission_status?: PermissionStatus;
+}
+
 export interface IUpdateDatasetAvailability {
   datasetID: string;
   available: boolean;
 }
 
-export interface IDatasetTimeseries { dataset: IDataset; timeseries: any[] }
+export interface IDatasetTimeseries { dataset: IDatasetRequest; timeseries: any[] }
 
 const getDatasetUrlMap = (
   address: string
@@ -60,7 +73,7 @@ const dataApiSlice = fishnetApi.injectEndpoints({
         { type: 'Timeseries' },
       ]
     }),
-    updateDataset: builder.mutation<any, IDataset>({
+    updateDataset: builder.mutation<any, IDatasetRequest>({
       query: (req) => ({
         method: 'PUT',
         url: '/datasets',

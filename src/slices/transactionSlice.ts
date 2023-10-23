@@ -59,6 +59,7 @@ const transactionApiSlice = fishnetApi.injectEndpoints({
       ] : [],
     }),
     validateSignature: builder.mutation<any, IValidateSignature | null>({
+      // @todo: deploy changed tx-builder and make hotfix on frontend before merging this
       query: (params) => `/tx-builder/validateSignature${toQueryString(params)}`,
       invalidatesTags: (result, error, arg, meta) =>
         arg ? [

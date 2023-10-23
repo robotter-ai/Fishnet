@@ -4,7 +4,7 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import {
-  IDataset,
+  IDatasetRequest,
   useGenerateViewsMutation,
   useGetDatasetQuery,
   useUpdateDatasetMutation,
@@ -127,7 +127,7 @@ export default () => {
     }
   }, [initProductTree.transaction, initProductTree.success]);
 
-  const inputsToUpload: IDataset = {
+  const inputsToUpload: IDatasetRequest = {
     desc: dataset?.desc,
     name: dataset?.name,
     owner: dataset?.owner,

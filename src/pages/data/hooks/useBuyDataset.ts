@@ -1,4 +1,4 @@
-import {IDataset, useGetDatasetsQuery} from "@slices/dataSlice";
+import {IDatasetRequest, useGetDatasetsQuery} from "@slices/dataSlice";
 import {IRegisterBuy, useRegisterBuyQuery, useValidateSignatureMutation} from "@slices/transactionSlice";
 import {FISHNET_MARKETPLACE, FISHNET_MARKETPLACE_AUTH, SOLANA_CONNECTION, USDC_MINT} from "@shared/constant";
 import {useEffect, useState} from "react";
@@ -25,7 +25,7 @@ export default () => {
     useValidateSignatureMutation();
 
   const handlePurchase = async (
-    dataset: IDataset
+    dataset: IDatasetRequest
   ) => {
     if (dataset.item_hash === undefined) {
       throw new Error('Item hash is undefined');

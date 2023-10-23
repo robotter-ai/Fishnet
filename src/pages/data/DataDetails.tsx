@@ -18,7 +18,7 @@ import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
 import useDownloadDataset from "@pages/data/hooks/useDownloadDataset";
 import TruncatedItemHash from "@shared/components/TruncatedItemHash";
-import {IDataset} from "@slices/dataSlice";
+import {IDatasetRequest} from "@slices/dataSlice";
 
 const DataDetails = () => {
   const navigate = useNavigate();
@@ -132,7 +132,7 @@ const DataDetails = () => {
           icon="download"
           btnStyle="outline-primary"
           isLoading={isDownloading}
-          onClick={() => handleDownload(dataset as IDataset)}
+          onClick={() => handleDownload(dataset as IDatasetRequest)}
         />
       );
     }
