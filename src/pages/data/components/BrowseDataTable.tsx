@@ -6,7 +6,7 @@ import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useDownloadDataset from '@pages/data/hooks/useDownloadDataset';
-import {IDataset, useDownloadDatasetCsvQuery, useGetDatasetsQuery} from '@slices/dataSlice';
+import {IDataset, useGetDatasetsQuery} from '@slices/dataSlice';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -22,8 +22,6 @@ import {
 } from '@shared/constant';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
-import {toast} from "sonner";
-import {ariaHidden} from "@mui/material";
 
 const BrowseDataTable = ({
   data,
@@ -40,27 +38,24 @@ const BrowseDataTable = ({
   const [selectedItemHash, setItemHash] = useState<string>('');
   const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
 
-  const findDataset = (itemHash: string) => {
-    return data.find((item) => item.item_hash === itemHash) as IDataset;
-  }
-
   const handlePurchase = async (
-    itemHash: string,
-    owner: string,
-    name: string
+    dataset: IDataset
   ) => {
-    setItemHash(itemHash);
+    if (dataset.item_hash === undefined) {
+      throw new Error('Item hash is undefined');
+    }
+    setItemHash(dataset.item_hash);
     const params = {
       signer: address,
       marketplace: FISHNET_MARKETPLACE,
-      productId: itemHash,
+      productId: dataset.item_hash,
       paymentMint: USDC_MINT,
-      seller: owner,
+      seller: dataset.owner,
       marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
       params: {
         rewardsActive: false,
         amount: 1,
-        name,
+        name: dataset.name,
       },
     };
     console.log(params)
@@ -157,24 +152,17 @@ const BrowseDataTable = ({
     },
     {
       header: '',
-      cell: ({
-        available,
-        item_hash,
-        permission_status,
-        price,
-        owner,
-        name,
-      }) => (
+      cell: (dataset) => (
         <div className="w-auto flex items-end justify-end">
           {/* eslint-disable-next-line no-nested-ternary */}
-          {available && price == 0 || permission_status === 'GRANTED' ? (
+          {dataset.available && dataset.price == 0 || dataset.permission_status === 'GRANTED' ? (
             <CustomButton
               text="Download"
               btnStyle="outline-primary"
               size="sm"
               icon="download"
               isLoading={isDownloading}
-              onClick={() => handleDownload(findDataset(item_hash))}
+              onClick={() => handleDownload(dataset)}
             />
           ) : address === undefined ?
             <CustomButton
@@ -183,9 +171,9 @@ const BrowseDataTable = ({
               icon="lock"
               btnStyle="outline-primary"
               disabled={true}
-            /> : !available &&
-            permission_status === 'NOT GRANTED' &&
-            price === '0' ? (
+            /> : !dataset.available &&
+            dataset.permission_status === 'NOT GRANTED' &&
+            dataset.price === '0' ? (
             <CustomButton
               text="Request"
               size="sm"
@@ -198,7 +186,7 @@ const BrowseDataTable = ({
               size="sm"
               icon="buy"
               btnStyle="solid-secondary"
-              onClick={() => handlePurchase(item_hash, owner, name)}
+              onClick={() => handlePurchase(dataset)}
             />
           )}
         </div>
