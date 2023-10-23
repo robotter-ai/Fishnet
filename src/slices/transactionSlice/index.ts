@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'sonner';
 import transactionService, {
-  InitProductConfig,
-  PurchaseConfig,
-  ValidateSignatureConfig,
-} from './transactionService';
+  IInitProductTree,
+  IRegisterBuy,
+  IValidateSignature,
+} from '../transactionSlice';
 
 export const initProductTree = createAsyncThunk(
   'transaction/initProductTree',
-  async (config: InitProductConfig, thunkAPI) => {
+  async (config: IInitProductTree, thunkAPI) => {
     try {
       return await transactionService.initProductTree(config);
     } catch (err: any) {
@@ -19,7 +19,7 @@ export const initProductTree = createAsyncThunk(
 
 export const registerBuy = createAsyncThunk(
   'transaction/registerBuy',
-  async (config: PurchaseConfig, thunkAPI) => {
+  async (config: IRegisterBuy, thunkAPI) => {
     try {
       return await transactionService.registerBuy(config);
     } catch (err: any) {
@@ -30,7 +30,7 @@ export const registerBuy = createAsyncThunk(
 
 export const validateSignature = createAsyncThunk(
   'transaction/validateSignature',
-  async (config: ValidateSignatureConfig, thunkAPI) => {
+  async (config: IValidateSignature, thunkAPI) => {
     try {
       return await transactionService.validateSignature(config);
     } catch (err: any) {

@@ -4,7 +4,7 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import {
-  IDataset, useDownloadDatasetCsvQuery,
+  IDataset,
   useGenerateViewsMutation,
   useGetDatasetQuery,
   useUpdateDatasetMutation,
@@ -12,10 +12,6 @@ import {
 } from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
 import useAuth from '@shared/hooks/useAuth';
-import {
-  initProductTree as initProductTreeTransaction,
-  resetTransactionSlice,
-} from '@slices/transactionSlice';
 import {
   FISHNET_MARKETPLACE,
   SOLANA_CONNECTION,
@@ -34,7 +30,6 @@ export default () => {
     name: '',
     price: 0,
   });
-  const { initProductTree } = useAppSelector((app) => app.transaction);
   const { timeseries } = useAppSelector((state) => state.timeseries);
   const { sendTransaction } = useWallet();
   const { isOpen, handleOpen, handleClose } = useModal();

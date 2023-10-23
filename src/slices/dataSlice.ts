@@ -1,10 +1,10 @@
 import { fishnetApi } from './fishnetApi';
-interface IGetDataset {
+export interface IGetDataset {
   type: 'browse-data' | 'published';
   address: string;
 }
 
-interface IGenerateViews {
+export interface IGenerateViews {
   datasetID: string;
   data: any;
 }
@@ -24,7 +24,7 @@ export interface IUpdateDatasetAvailability {
   available: boolean;
 }
 
-type IDatasetTimeseries = { dataset: IDataset; timeseries: any[] };
+export interface IDatasetTimeseries { dataset: IDataset; timeseries: any[] }
 
 const getDatasetUrlMap = (
   address: string
