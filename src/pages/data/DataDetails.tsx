@@ -23,7 +23,7 @@ import {IDataset} from "@slices/dataSlice";
 const DataDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const auth = useAuth();
+  const { address } = useAuth();
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
   );
@@ -40,6 +40,10 @@ const DataDetails = () => {
     isOwner,
   } = useDataDetails();
   const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
+
+  if (!!dataset && dataset.price === undefined) {
+    dataset.price = 0;
+  }
 
   const SUMMARY = [
     {
@@ -120,7 +124,7 @@ const DataDetails = () => {
         />
       );
     }
-    if (dataset?.available || dataset?.permission_status === 'GRANTED') {
+    if (dataset?.available && dataset?.price == 0 || dataset?.permission_status === 'GRANTED') {
       return (
         <Button
           text="Download"
@@ -129,6 +133,17 @@ const DataDetails = () => {
           btnStyle="outline-primary"
           isLoading={isDownloading}
           onClick={() => handleDownload(dataset as IDataset)}
+        />
+      );
+    }
+    if (address === undefined) {
+      return (
+        <Button
+          text="Wallet required"
+          size="md"
+          icon="lock"
+          btnStyle="outline-primary"
+          disabled={true}
         />
       );
     }
@@ -143,7 +158,7 @@ const DataDetails = () => {
             dispatch(
               changeDatasetPermissionInput({
                 input: 'requestor',
-                value: auth.address,
+                value: address,
               })
             );
             dispatch(requestDatasetPermissions(dataset?.item_hash));

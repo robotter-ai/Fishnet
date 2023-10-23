@@ -50,22 +50,22 @@ const BrowseDataTable = ({
     name: string
   ) => {
     setItemHash(itemHash);
+    const params = {
+      signer: address,
+      marketplace: FISHNET_MARKETPLACE,
+      productId: itemHash,
+      paymentMint: USDC_MINT,
+      seller: owner,
+      marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
+      params: {
+        rewardsActive: false,
+        amount: 1,
+        name,
+      },
+    };
+    console.log(params)
     dispatch(
-      registerBuyRequest({
-        params: {
-          signer: address,
-          marketplace: FISHNET_MARKETPLACE,
-          productId: itemHash,
-          paymentMint: USDC_MINT,
-          seller: owner,
-          marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
-          params: {
-            rewardsActive: false,
-            amount: 1,
-            name,
-          },
-        },
-      })
+      registerBuyRequest({params})
     );
   };
 
@@ -176,7 +176,14 @@ const BrowseDataTable = ({
               isLoading={isDownloading}
               onClick={() => handleDownload(findDataset(item_hash))}
             />
-          ) : !available &&
+          ) : address === undefined ?
+            <CustomButton
+              text="Wallet required"
+              size="sm"
+              icon="lock"
+              btnStyle="outline-primary"
+              disabled={true}
+            /> : !available &&
             permission_status === 'NOT GRANTED' &&
             price === '0' ? (
             <CustomButton
