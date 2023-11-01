@@ -2,7 +2,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import appSlice from '@slices/appSlice';
 import authSlice from '@slices/authSlice';
 import indexerSlice from '@slices/indexerSlice';
-import transactionSlice from '@slices/transactionSlice';
 import monitorAccessSlice from '@slices/monitorAccessSlice';
 import profileSlice from '@slices/profileSlice';
 import timeseriesSlice from '@slices/timeseriesSlice';
@@ -14,7 +13,6 @@ export const store = configureStore({
     app: appSlice.reducer,
     auth: authSlice.reducer,
     indexer: indexerSlice.reducer,
-    transaction: transactionSlice.reducer,
     timeseries: timeseriesSlice.reducer,
     monitorAccess: monitorAccessSlice.reducer,
     profile: profileSlice.reducer,
