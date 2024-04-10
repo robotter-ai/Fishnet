@@ -1,15 +1,13 @@
-import {IDatasetRequest, useGetDatasetsQuery} from "@slices/dataSlice";
+import {IDatasetRequest} from "@slices/dataSlice";
 import {IRegisterBuy, useRegisterBuyQuery, useValidateSignatureMutation} from "@slices/transactionSlice";
 import {FISHNET_MARKETPLACE, FISHNET_MARKETPLACE_AUTH, SOLANA_CONNECTION, USDC_MINT} from "@shared/constant";
 import {useEffect, useState} from "react";
 import {Buffer} from "buffer";
 import {VersionedTransaction} from "@solana/web3.js";
-import {useAppDispatch} from "@shared/hooks/useStore";
 import {useWallet} from "@solana/wallet-adapter-react";
 import useAuth from "@shared/hooks/useAuth";
 
 export default () => {
-  const dispatch = useAppDispatch();
   const { sendTransaction } = useWallet();
   const { address } = useAuth();
   const [signature, setSignature] = useState<string>('');
@@ -37,13 +35,11 @@ export default () => {
       paymentMint: USDC_MINT,
       seller: dataset.owner,
       marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
-      params: {
-        rewardsActive: false,
-        amount: 1,
-        name: dataset.name,
-      },
+      rewardsActive: false,
+      amount: 1,
+      name: dataset.name,
     };
-    setRegisterBuyParams({ params });
+    setRegisterBuyParams(params);
   };
 
   useEffect(() => {
@@ -80,10 +76,10 @@ export default () => {
     if (signature) {
       validateSignature({
         signature,
-        itemHash: registerBuyParams?.params.productId as string,
+        itemHash: registerBuyParams?.productId as string,
       });
     }
-  }
+  }, [signature]);
 
   return { handlePurchase };
 }

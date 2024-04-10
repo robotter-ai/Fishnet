@@ -10,6 +10,9 @@ import {
   useUpdateDatasetMutation,
   useUploadDatasetMutation,
 } from '@slices/dataSlice';
+import {
+  useInitProductTreeQuery,
+} from '@slices/transactionSlice';
 import { useParams } from 'react-router-dom';
 import useAuth from '@shared/hooks/useAuth';
 import {
@@ -20,6 +23,7 @@ import {
 import { useWallet } from '@solana/wallet-adapter-react';
 import { VersionedTransaction } from '@solana/web3.js';
 import useOwner from '@shared/hooks/useOwner';
+import {toast} from "sonner";
 
 export default () => {
   const { id } = useParams();
@@ -38,7 +42,6 @@ export default () => {
 
   const isUpload = (id && id === 'upload') as boolean;
 
-  // START: RTK Query
   const {
     data,
     isLoading: isLoadingGetDataset,
@@ -59,6 +62,27 @@ export default () => {
     useGenerateViewsMutation();
   const [updateDataset, { isLoading: isLoadingUpdateDataset }] =
     useUpdateDatasetMutation();
+  const {
+    data: initProductTree,
+    isSuccess: isSuccessInitProductTree,
+  } = useInitProductTreeQuery(
+    {
+      signer: auth.address,
+      marketplace: FISHNET_MARKETPLACE,
+      paymentMint: USDC_MINT,
+      id: uploadedData?.dataset?.item_hash as string,
+      productPrice: Number(uploadedData?.dataset?.price),
+      feeBasisPoints: 0,
+      height: 5,
+      buffer: 8,
+      canopy: 0,
+      name: String(uploadedData?.dataset?.name),
+      metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${uploadedData?.dataset?.item_hash}`,
+    },
+    { skip: !isUpload ||
+        uploadedData?.dataset?.item_hash !== null && isSuccessUploadDataset && signature === ''
+    }
+  );
 
   useEffect(() => {
     if (isGetDatasetSuccess) {
@@ -74,34 +98,7 @@ export default () => {
   }, [isGetDatasetSuccess]);
 
   useEffect(() => {
-    if (
-      uploadedData?.dataset?.item_hash !== null && isSuccessUploadDataset && initProductTree.transaction === null &&
-      signature === ''
-    ) {
-      const config = {
-        params: {
-          signer: auth.address,
-          marketplace: FISHNET_MARKETPLACE,
-          paymentMint: USDC_MINT,
-          params: {
-            id: uploadedData?.dataset?.item_hash as string,
-            productPrice: Number(uploadedData?.dataset?.price),
-            feeBasisPoints: 0,
-            height: 5,
-            buffer: 8,
-            canopy: 0,
-            name: String(uploadedData?.dataset?.name),
-            metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${uploadedData?.dataset?.item_hash}`,
-          },
-        },
-      };
-      //@todo: inform user about transaction in modal
-      dispatch(initProductTreeTransaction(config));
-    }
-  }, [JSON.stringify(uploadedData), isSuccessUploadDataset]);
-
-  useEffect(() => {
-    if (initProductTree.transaction && initProductTree.success && !signature) {
+    if (initProductTree.transaction && isSuccessInitProductTree && !signature) {
       const serializedBase64 = initProductTree.transaction;
       const serializedBuffer = Buffer.from(serializedBase64, 'base64');
       const transaction = VersionedTransaction.deserialize(serializedBuffer);
@@ -113,7 +110,7 @@ export default () => {
             SOLANA_CONNECTION,
             {
               skipPreflight: true,
-            }
+            },
           );
           setSignature(signatureToUse);
         } catch (error) {
@@ -122,10 +119,11 @@ export default () => {
         }
       };
 
-      processTransaction();
-      dispatch(resetTransactionSlice());
+      processTransaction().then(() => {
+        toast.success('Transaction sent');
+      });
     }
-  }, [initProductTree.transaction, initProductTree.success]);
+  }, [isSuccessInitProductTree]);
 
   const inputsToUpload: IDatasetRequest = {
     desc: dataset?.desc,

@@ -2,44 +2,34 @@ import {fishnetApi} from "@slices/fishnetApi";
 import {toQueryString} from "@slices/utils";
 
 export interface IInitProductTree {
-  params: {
-    signer: string;
-    marketplace: string;
-    paymentMint: string;
-    params: {
-      id: string;
-      productPrice: number;
-      feeBasisPoints: number;
-      height: number;
-      buffer: number;
-      canopy: number;
-      name: string;
-      metadataUrl: string;
-    }
-  }
+  signer: string;
+  marketplace: string;
+  paymentMint: string;
+  id: string;
+  productPrice: number;
+  feeBasisPoints: number;
+  height: number;
+  buffer: number;
+  canopy: number;
+  name: string;
+  metadataUrl: string;
 }
 
 export interface IRegisterBuy {
-  params: {
-    signer: string;
-    marketplace: string;
-    productId: string;
-    paymentMint: string;
-    seller: string;
-    marketplaceAuth: string;
-    params: {
-      rewardsActive: boolean;
-      amount: number;
-      name: string;
-    }
-  }
+  signer: string;
+  marketplace: string;
+  productId: string;
+  paymentMint: string;
+  seller: string;
+  marketplaceAuth: string;
+  rewardsActive: boolean;
+  amount: number;
+  name: string;
 }
 
 export interface IValidateSignature {
-  params: {
-    signature: string;
-    itemHash: string;
-  }
+  signature: string;
+  itemHash: string;
 }
 
 const transactionApiSlice = fishnetApi.injectEndpoints({
@@ -48,14 +38,14 @@ const transactionApiSlice = fishnetApi.injectEndpoints({
       query: (params) => `/tx-builder/initProductTree${toQueryString(params)}`,
       providesTags: (result, error, arg, meta) =>
         arg ? [
-        { type: 'InitProductTree', id: arg.params.signer + arg.params.marketplace + arg.params.paymentMint + arg.params.params.id },
+        { type: 'InitProductTree', id: arg.signer + arg.marketplace + arg.paymentMint + arg.id },
       ] : [],
     }),
     registerBuy: builder.query<any, IRegisterBuy | null>({
       query: (params) => `/tx-builder/registerBuy${toQueryString(params)}`,
       providesTags: (result, error, arg, meta) =>
         arg ? [
-        { type: 'RegisterBuy', id: arg.params.signer + arg.params.marketplace + arg.params.productId + arg.params.paymentMint + arg.params.seller + arg.params.marketplaceAuth },
+        { type: 'RegisterBuy', id: arg.signer + arg.marketplace + arg.productId + arg.paymentMint + arg.seller + arg.marketplaceAuth },
       ] : [],
     }),
     validateSignature: builder.mutation<any, IValidateSignature | null>({

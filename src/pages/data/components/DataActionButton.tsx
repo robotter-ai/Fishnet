@@ -2,10 +2,12 @@ import {IDataset, PermissionStatus} from "@slices/dataSlice";
 import CustomButton from "@components/ui/Button";
 import useAuth from "@shared/hooks/useAuth";
 import useDownloadDataset from "@pages/data/hooks/useDownloadDataset";
+import useBuyDataset from "@pages/data/hooks/useBuyDataset";
 
 export function DataActionButton({dataset} : {dataset: IDataset}) {
   const { address, hasValidToken } = useAuth();
   const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
+  const { handlePurchase } = useBuyDataset();
 
   if (!dataset.available)
     return <CustomButton
@@ -15,6 +17,7 @@ export function DataActionButton({dataset} : {dataset: IDataset}) {
         btnStyle="outline-primary"
         disabled={true}
       />
+  // @ts-ignore
   if (dataset.price == 0 || dataset.permission_status === PermissionStatus.GRANTED)
     return <CustomButton
         text="Download"
