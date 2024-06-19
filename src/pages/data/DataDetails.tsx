@@ -34,7 +34,6 @@ const DataDetails = () => {
     handleUploadDataset,
     handleUpdateDataset,
     isLoadingUploadDataset,
-    isLoadingUpdateDataset,
     publishedModalProps: { isOpen, handleClose },
     isLoadingGetDataset,
     isOwner,
@@ -118,7 +117,7 @@ const DataDetails = () => {
           text="Save"
           icon="box"
           size="md"
-          isLoading={isLoadingUpdateDataset}
+          isLoading={isLoadingUploadDataset}
           onClick={handleUpdateDataset}
           disabled={!dataset?.name || !dataset?.price}
         />
