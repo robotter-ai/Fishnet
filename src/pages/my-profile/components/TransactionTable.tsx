@@ -1,4 +1,3 @@
-import { ArrowDownIcon, ArrowUpIcon } from '@assets/icons';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import dayjs from 'dayjs';
 
@@ -6,7 +5,7 @@ const COLUMNS = (address: string): ITableColumns[] => [
   {
     header: 'DATASET',
     cell: (item) => (
-      <span className="text-primary">{item.info.params.name}</span>
+      <span className="text-primary">{item.name}</span>
     ),
     sortWith: 'typ',
   },
@@ -29,7 +28,7 @@ const COLUMNS = (address: string): ITableColumns[] => [
   },
   {
     header: 'AMOUNT',
-    cell: (item) => `${item.info.params.amount} USDC`,
+    cell: (item) => `${parseInt(item.amount, 16)} USDC`,
     sortWith: 'typ',
   },
   {
@@ -43,6 +42,7 @@ const TransactionTable = ({ data, address }: {
   data: any;
   address: string;
 }) => {
+  console.log(data)
   return (
     <div>
       <h2 className="pt-3">Transactions</h2>

@@ -4,13 +4,13 @@ import CustomButton from '@components/ui/Button';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
-import useDownloadDataset from '@pages/data/hooks/useDownloadDataset';
 import {IDataset} from '@slices/dataSlice';
 import {Link, useNavigate} from 'react-router-dom';
-import transactionService from '@slices/transactionService';
+import { createTransaction, sendTransaction } from '@slices/transactionsSlice';
 import useAuth from '@shared/hooks/useAuth';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
+import useDownloadDataset from '../hooks/useDownloadDataset';
 
 const BrowseDataTable = ({
   data,
@@ -21,8 +21,8 @@ const BrowseDataTable = ({
 }) => {
   const { address, hasValidToken } = useAuth();
   const { signTransaction } = useWallet();
-  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
   const navigate = useNavigate();
+  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
 
   const handlePurchase = async (
     dataset: IDataset
@@ -30,12 +30,9 @@ const BrowseDataTable = ({
     if (!dataset.item_hash) throw new Error('Item hash is undefined');
     if (!signTransaction) throw new Error('Wallet not connected');
 
-    const { createTransaction, sendTransaction } = transactionService
     const { transaction } = await createTransaction({
-      body: {
-        signer: address,
-        datasetId: dataset.item_hash,
-      }
+      signer: address,
+      datasetId: dataset.item_hash,
     })
 
     const serializedBuffer = Buffer.from(transaction, 'base64');
@@ -43,12 +40,12 @@ const BrowseDataTable = ({
     const signedTransaction = await signTransaction(unsignedTransaction);
     const signedSerializedBase64 = Buffer.from(signedTransaction.serialize()).toString('base64');
     const response = await sendTransaction({
-      body: {
         transaction: signedSerializedBase64,
         datasetId: dataset.item_hash,
-      }
-    })
-    console.log(response)
+    });
+
+    console.log(response);
+
     navigate(`/data/${dataset.item_hash}/details`);
   };
 

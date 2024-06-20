@@ -144,7 +144,7 @@ export default () => {
     isLoadingGetDataset,
     isLoadingUploadDataset:
       isLoadingUploadDataset ||
-      isLoadingGenerateViews ||
+      isLoadingGenerateViews,
     isLoadingUpdateDataset,
     isLoading,
     isUpload,
