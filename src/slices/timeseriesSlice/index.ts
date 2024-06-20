@@ -34,7 +34,9 @@ export const downloadTimeseriesCsv = createAsyncThunk(
   async (timeseriesIDs: string[], thunkAPI) => {
     try {
       const { data } = await axios.get(
-        `${FISHNET_API_URL}/timeseries/csv?timeseriesIDs=${timeseriesIDs.join(',')}`,
+        `${FISHNET_API_URL}/timeseries/csv?timeseriesIDs=${timeseriesIDs.join(
+          ','
+        )}`,
         getConfig()
       );
       return data;
@@ -49,7 +51,9 @@ export const downloadTimeseriesJson = createAsyncThunk(
   async (timeseriesIDs: string[], thunkAPI) => {
     try {
       const { data } = await axios.get(
-        `${FISHNET_API_URL}/timeseries/json?timeseriesIDs=${timeseriesIDs.join(',')}`,
+        `${FISHNET_API_URL}/timeseries/json?timeseriesIDs=${timeseriesIDs.join(
+          ','
+        )}`,
         getConfig()
       );
       return data;
@@ -73,7 +77,7 @@ interface TimeseriesProps {
     timeseries: any | null;
     isLoading: boolean;
     success: boolean | null;
-  }
+  };
 }
 
 const initialState: TimeseriesProps = {
@@ -101,13 +105,15 @@ export const timeseriesSlice = createSlice({
       }
       for (let i = 0; i < state.timeseries[0].data.length; i++) {
         const date = state.timeseries[0].data[i][0] * 1000; // convert to ms
-        const data = state.timeseries.map((item: any) => {
-          return {
-            [item.name]: item.data[i][1],
-          }
-        }).reduce((acc: any, curr: any) => {
-          return { ...acc, ...curr };
-        });
+        const data = state.timeseries
+          .map((item: any) => {
+            return {
+              [item.name]: item.data[i][1],
+            };
+          })
+          .reduce((acc: any, curr: any) => {
+            return { ...acc, ...curr };
+          });
         state.csvJson.push({
           date,
           ...data,
@@ -149,6 +155,7 @@ export const timeseriesSlice = createSlice({
   },
 });
 
-export const { resetTimeseriesActions, setCsvJson, setTimeseries } = timeseriesSlice.actions;
+export const { resetTimeseriesActions, setCsvJson, setTimeseries } =
+  timeseriesSlice.actions;
 
 export default timeseriesSlice;

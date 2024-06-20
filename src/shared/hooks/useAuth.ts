@@ -1,11 +1,10 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useAccount, useEnsName } from 'wagmi';
 import Cookies from 'universal-cookie';
-import {useEffect} from "react";
-import jwt_decode, {JwtPayload} from "jwt-decode";
-import LogRocket from "logrocket";
+import { useEffect, useMemo } from 'react';
+import jwt_decode, { JwtPayload } from 'jwt-decode';
+import LogRocket from 'logrocket';
 import { setLoginStatus, LoginStatus } from '@slices/appSlice';
-import {useAppDispatch} from "@shared/hooks/useStore";
+import { useAppDispatch } from '@shared/hooks/useStore';
 
 interface AuthProps {
   address: string;
@@ -15,30 +14,34 @@ interface AuthProps {
 
 // Custom type guard to verify JwtPayload type
 function isJwtPayload(object: any): object is JwtPayload {
-  return object && typeof object === 'object' && 'iss' in object && 'exp' in object;
+  return (
+    object && typeof object === 'object' && 'iss' in object && 'exp' in object
+  );
 }
 
 export default (): AuthProps => {
   const cookies = new Cookies();
   const dispatch = useAppDispatch();
-  const { address: ethAddress, isConnected } = useAccount();
-  const { data: ensName } = useEnsName({ address: ethAddress });
-  const { connected, publicKey: solAddress } = useWallet();
+  // const { address: ethAddress, isConnected } = useAccount();
+  const { connected, wallet, publicKey, connecting, connect, autoConnect } =
+    useWallet();
+  // const { data: ensName } = useEnsName({ address: solAddress });
 
-  const walletConnected = connected || isConnected;
-  const address = (solAddress?.toString() ?? ensName ?? ethAddress) as string
-  const hasValidToken = !!cookies.get('bearerToken')
+  const address = useMemo(() => publicKey?.toBase58() || '', [publicKey]);
+
+  const walletConnected = connected;
+  const token = cookies.get('bearerToken');
+  const hasValidToken = !!token;
 
   useEffect(() => {
-    const bearerToken = cookies.get('bearerToken');
-    if (bearerToken) {
+    if (token) {
       try {
         // Decode the token without verifying its signature
-        const decoded = jwt_decode(bearerToken);
+        const decoded = jwt_decode(token);
 
         if (decoded && isJwtPayload(decoded)) {
           // Check issuer
-          if (decoded.sub !== address) {
+          if (!connecting && decoded.sub !== address) {
             cookies.remove('bearerToken');
           }
 
@@ -58,7 +61,6 @@ export default (): AuthProps => {
           cookies.remove('bearerToken');
           dispatch(setLoginStatus(LoginStatus.OUT));
         }
-
       } catch (error) {
         console.error('Error decoding token:', error);
         dispatch(setLoginStatus(LoginStatus.OUT));

@@ -1,17 +1,18 @@
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '@components/ui/Button';
+import useAuthWallet from '@features/auth/hook';
 
-function LoginForm(
-  { handleConnect }: {handleConnect: () => void},
-) {
+const LoginForm = () => {
+  const { isLoading, handleConnect } = useAuthWallet();
+
   const { wallets, select, wallet } = useWallet();
-  const solanaWallets = wallets.map((x) => x.adapter);
+  const SOLANA_WALLETS = wallets.map((x) => x.adapter);
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4">
-        {solanaWallets.map((item, i) => (
+        {SOLANA_WALLETS.map((item, i) => (
           <div
             key={i}
             role="button"
@@ -39,10 +40,11 @@ function LoginForm(
         size="lg"
         icon="login"
         fullWidth
-        onClick={() => handleConnect()}
+        isLoading={isLoading}
+        onClick={handleConnect}
       />
     </div>
   );
-}
+};
 
 export default LoginForm;

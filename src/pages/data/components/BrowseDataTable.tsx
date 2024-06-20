@@ -6,9 +6,9 @@ import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useDownloadDataset from '@pages/data/hooks/useDownloadDataset';
-import {IDataset} from '@slices/dataSlice';
+import { IDataset } from '@slices/dataSlice';
 import { useEffect, useState } from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   registerBuy as registerBuyRequest,
   validateSignature as validateTransaction,
@@ -23,7 +23,7 @@ import {
 } from '@shared/constant';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { fishnetApi } from '@slices/fishnetApi';
+import { globalApi } from '@store/config';
 
 const BrowseDataTable = ({
   data,
@@ -38,12 +38,10 @@ const BrowseDataTable = ({
   const { sendTransaction } = useWallet();
   const [signature, setSignature] = useState<string>('');
   const [selectedItemHash, setItemHash] = useState<string>('');
-  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
+  const { handleDownload, isLoading: isDownloading } = useDownloadDataset();
   const navigate = useNavigate();
 
-  const handlePurchase = async (
-    dataset: IDataset
-  ) => {
+  const handlePurchase = async (dataset: IDataset) => {
     if (dataset.item_hash === undefined) {
       throw new Error('Item hash is undefined');
     }
@@ -61,10 +59,8 @@ const BrowseDataTable = ({
         name: dataset.name,
       },
     };
-    console.log(params)
-    dispatch(
-      registerBuyRequest({params})
-    );
+    console.log(params);
+    dispatch(registerBuyRequest({ params }));
   };
 
   useEffect(() => {
@@ -95,7 +91,7 @@ const BrowseDataTable = ({
 
       processTransaction();
       // invalidate Dataset tag cache
-      dispatch(fishnetApi.util.invalidateTags(['Dataset']));  // does this work?
+      dispatch(globalApi.util.invalidateTags(['Dataset'])); // does this work?
       dispatch(resetTransactionSlice());
       navigate(`/data/${selectedItemHash}/details`);
     }
@@ -139,7 +135,7 @@ const BrowseDataTable = ({
     {
       header: 'PRICE',
       cell: ({ price }) =>
-        price == 0 ? (
+        price === 0 ? (
           <div className="flex gap-3 items-center">
             <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
               <FreeTagIcon />
@@ -161,7 +157,8 @@ const BrowseDataTable = ({
       cell: (dataset) => (
         <div className="w-auto flex items-end justify-end">
           {/* eslint-disable-next-line no-nested-ternary */}
-          {dataset.available && dataset.price == 0 || dataset.permission_status === 'GRANTED' ? (
+          {(dataset.available && dataset.price == 0) ||
+          dataset.permission_status === 'GRANTED' ? (
             <CustomButton
               text="Download"
               btnStyle="outline-primary"
@@ -170,14 +167,15 @@ const BrowseDataTable = ({
               isLoading={isDownloading}
               onClick={() => handleDownload(dataset)}
             />
-          ) : address === undefined || !hasValidToken ?
+          ) : address === undefined || !hasValidToken ? (
             <CustomButton
               text="Wallet required"
               size="sm"
               icon="lock"
               btnStyle="outline-primary"
               disabled={true}
-            /> : !dataset.available &&
+            />
+          ) : !dataset.available &&
             dataset.permission_status === 'NOT GRANTED' &&
             dataset.price === '0' ? (
             <CustomButton

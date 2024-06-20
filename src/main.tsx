@@ -1,38 +1,24 @@
-import './config';
 import '@assets/styles/index.scss';
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import { WagmiConfig, configureChains, createConfig, mainnet } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
-import { store } from './store';
-import App from './App';
-import { SolanaContextProvider } from './contexts';
 import LogRocket from 'logrocket';
+import { RouterProvider } from 'react-router-dom';
+import { Toaster } from 'sonner';
+
+import { store } from './store';
+import { router } from './routes';
+import SolanaContextProvider from './contexts/solana-provider';
 
 LogRocket.init('jf0bw9/fishnet');
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { publicClient, webSocketPublicClient } = configureChains(
-  [mainnet],
-  [publicProvider()]
-);
-
-const wagmiConfig = createConfig({
-  publicClient,
-  webSocketPublicClient,
-});
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <SolanaContextProvider>
       <Provider store={store}>
-        <WagmiConfig config={wagmiConfig}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </WagmiConfig>
+        <RouterProvider router={router} />
+        <Toaster position="top-center" richColors />
       </Provider>
     </SolanaContextProvider>
   </React.StrictMode>

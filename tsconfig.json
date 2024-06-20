@@ -25,7 +25,8 @@
       "@layouts/*": ["src/layouts/*"],
       "@pages/*": ["src/pages/*"],
       "@shared/*": ["src/shared/*"],
-      "@slices/*": ["src/slices/*"]
+      "@slices/*": ["src/slices/*"],
+      "@store/*": ["src/store/*"]
     }
   },
   "include": [".eslintrc.json", "src"],

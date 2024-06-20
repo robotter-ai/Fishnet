@@ -48,13 +48,11 @@ export default () => {
     setTitle(PAGE_TITLE[query]);
   }, [query]);
 
-  useEffect(() => {
-    dispatch(getUserInfo(auth?.address));
-    dispatch(getAllUsers());
-    dispatch(
-      queryTransaction({ user: auth?.address })
-    );
-  }, [updateActions.success, auth?.address]);
+  // useEffect(() => {
+  //   dispatch(getUserInfo(auth?.address));
+  //   dispatch(getAllUsers());
+  //   dispatch(queryTransaction({ user: auth?.address }));
+  // }, [updateActions.success, auth?.address]);
 
   const handleUpdateProfile = () => {
     dispatch(updateUserInfo(inputs));

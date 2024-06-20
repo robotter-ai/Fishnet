@@ -52,7 +52,7 @@ const ICONS: Record<IconTypes, JSX.Element> = {
   buy: <BuyIcon />,
   lock: <LockIcon width={19} height={19} />,
   settings: <SettingsIcon />,
-  login: <LoginIcon width={19} height={19} />,
+  login: <LoginIcon width={20} height={20} />,
   box: <BoxIcon width={20} height={20} />,
   shield: <ShieldTickIcon width={20} height={20} />,
 };
