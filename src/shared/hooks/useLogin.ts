@@ -45,22 +45,14 @@ export default (): LoginProps => {
   };
 
   const handleConnectWallet = () => {
-    try {
-      connect();
-    } catch (e) {
-      console.log(e);
-      dispatch(setLoginStatus(LoginStatus.OUT));
-    } finally {
-      localStorage.setItem(
-        'wallet.connected.name',
-        wallet?.adapter.name.toString() || 'Solana'
-      );
-      console.log('handleConnectWallet', address, 'loginStatus', loginStatus, 'hasValidToken', hasValidToken)
-      if (address && hasValidToken) {
-        dispatch(setLoginStatus(LoginStatus.IN));
-      } else {
-        dispatch(setLoginStatus(LoginStatus.REQUESTED));
-      }
+    localStorage.setItem(
+      'wallet.connected.name',
+      wallet?.adapter.name || 'Solana'
+    );
+    if (address && hasValidToken) {
+      dispatch(setLoginStatus(LoginStatus.IN));
+    } else {
+      dispatch(setLoginStatus(LoginStatus.REQUESTED));
     }
   };
 

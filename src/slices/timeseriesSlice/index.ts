@@ -2,8 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import getErrMsg from '@shared/utils/getErrMsg';
 import {
   FISHNET_API_URL,
-  getConfig,
-  getFormConfig,
+  getHeaders,
 } from '@slices/requestConfig';
 import axios from 'axios';
 import { toast } from 'sonner';
@@ -15,7 +14,7 @@ export const preprocessTimeseries = createAsyncThunk(
       const { data } = await axios.post(
         `${FISHNET_API_URL}/timeseries/csv`,
         formData,
-        getFormConfig()
+        getHeaders(true, true)
       );
       return data;
     } catch (err: any) {
@@ -35,7 +34,7 @@ export const downloadTimeseriesCsv = createAsyncThunk(
     try {
       const { data } = await axios.get(
         `${FISHNET_API_URL}/timeseries/csv?timeseriesIDs=${timeseriesIDs.join(',')}`,
-        getConfig()
+        getHeaders()
       );
       return data;
     } catch (err: any) {
@@ -50,7 +49,7 @@ export const downloadTimeseriesJson = createAsyncThunk(
     try {
       const { data } = await axios.get(
         `${FISHNET_API_URL}/timeseries/json?timeseriesIDs=${timeseriesIDs.join(',')}`,
-        getConfig()
+        getHeaders()
       );
       return data;
     } catch (err: any) {
