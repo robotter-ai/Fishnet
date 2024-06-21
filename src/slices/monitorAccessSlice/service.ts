@@ -1,4 +1,4 @@
-import { FISHNET_API_URL, getHeaders } from '@slices/requestConfig';
+import { FISHNET_API_URL, getConfig } from '@slices/requestConfig';
 import axios from 'axios';
 
 export interface DatasetPermisionProps {
@@ -13,7 +13,7 @@ export interface DatasetPermisionProps {
 const getIncomingPermissions = async (user_id: string) => {
   const { data } = await axios.get(
     `${FISHNET_API_URL}/users/${user_id}/permissions/incoming`,
-    getHeaders()
+    getConfig()
   );
   return data;
 };
@@ -21,7 +21,7 @@ const getIncomingPermissions = async (user_id: string) => {
 const getOutgoingPermissions = async (user_id: string) => {
   const { data } = await axios.get(
     `${FISHNET_API_URL}/users/${user_id}/permissions/outgoing`,
-    getHeaders()
+    getConfig()
   );
   return data;
 };
@@ -29,7 +29,7 @@ const getOutgoingPermissions = async (user_id: string) => {
 const getDatasetPermissions = async (dataset_id: string) => {
   const { data } = await axios.get(
     `${FISHNET_API_URL}/datasets/${dataset_id}/permissions`,
-    getHeaders()
+    getConfig()
   );
   return data;
 };
@@ -41,7 +41,7 @@ const requestDatasetPermissions = async (
   const { data } = await axios.put(
     `${FISHNET_API_URL}/permissions/datasets/${dataset_id}/request`,
     undefined,
-    getHeaders()
+    getConfig()
   );
   return data;
 };
@@ -53,7 +53,7 @@ const grantDatasetPermissions = async (
   const { data } = await axios.put(
     `${FISHNET_API_URL}/permissions/datasets/${dataset_id}/grant`,
     inputs,
-    getHeaders()
+    getConfig()
   );
   return data;
 };
@@ -62,7 +62,7 @@ const denyPermissions = async (item_hashes: string[]) => {
   const { data } = await axios.put(
     `${FISHNET_API_URL}/permissions/deny`,
     item_hashes,
-    getHeaders()
+    getConfig()
   );
   return data;
 };
@@ -71,7 +71,7 @@ const approvePermissions = async (item_hashes: string[]) => {
   const { data } = await axios.put(
     `${FISHNET_API_URL}/permissions/approve`,
     item_hashes,
-    getHeaders()
+    getConfig()
   );
   return data;
 };

@@ -3,6 +3,7 @@ import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
+import useAuth from '@shared/hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import {
   changeDatasetPermissionInput,
@@ -15,10 +16,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
+import useDownloadDataset from "@pages/data/hooks/useDownloadDataset";
 import TruncatedItemHash from "@shared/components/TruncatedItemHash";
 import {IDataset} from "@slices/dataSlice";
-import useAuth from '@shared/hooks/useAuth';
-import useDownloadDataset from './hooks/useDownloadDataset';
 
 const DataDetails = () => {
   const navigate = useNavigate();
@@ -27,7 +27,6 @@ const DataDetails = () => {
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
   );
-
   const {
     dataset,
     handleOnChange,
@@ -125,7 +124,7 @@ const DataDetails = () => {
         />
       );
     }
-    if (dataset?.available || dataset?.permission_status === 'GRANTED') {
+    if (dataset?.available && dataset?.price == 0 || dataset?.permission_status === 'GRANTED') {
       return (
         <Button
           text="Download"

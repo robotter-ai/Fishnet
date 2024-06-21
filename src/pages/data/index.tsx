@@ -7,10 +7,10 @@ import { ReactNode, useRef } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
 import { useSearchParams } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
+import useAuth from '@shared/hooks/useAuth';
 import BrowseDataTable from './components/BrowseDataTable';
 import PublishedTable from './components/PublishedTable';
 import useDataTable from './hooks/useDataTable';
-import useAuth from "@shared/hooks/useAuth";
 
 const MyData = () => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);

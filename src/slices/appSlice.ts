@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 enum LoginStatus {
   IN = 'in',
@@ -30,11 +30,12 @@ export const appSlice = createSlice({
     },
     setLoginStatus: (state, action: PayloadAction<LoginStatus>) => {
       state.loginStatus = action.payload;
-    }
+    },
   },
 });
 
-export const {setPageTitle, setPageDetails, setLoginStatus} = appSlice.actions;
+export const { setPageTitle, setPageDetails, setLoginStatus } =
+  appSlice.actions;
 
 export default appSlice;
 

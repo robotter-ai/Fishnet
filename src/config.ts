@@ -1,4 +1,0 @@
-window.addEventListener('offline', () => {});
-window.addEventListener('online', () => {});
-
-export {};

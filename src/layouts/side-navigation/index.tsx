@@ -1,5 +1,5 @@
 import { FolderIcon, LockIcon, LogoutIcon, ProfileIcon } from '@assets/icons';
-import useLogout from '@shared/hooks/useLogout';
+import useAuthWallet from '@features/auth/hook';
 import classNames from 'classnames';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -44,7 +44,7 @@ function NavList() {
 }
 
 function SideNavigation() {
-  const { handleLogout } = useLogout();
+  const { handleDisconnect } = useAuthWallet();
 
   return (
     <div
@@ -63,7 +63,7 @@ function SideNavigation() {
         <LogoutIcon
           color="#91999C"
           className="cursor-pointer"
-          onClick={handleLogout}
+          onClick={handleDisconnect}
         />
       </div>
     </div>

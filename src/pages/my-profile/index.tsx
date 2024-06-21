@@ -1,10 +1,10 @@
 import { SearchInput } from '@components/form';
 import classNames from 'classnames';
+import React from 'react';
 import Overview from './components/Overview';
 import BrowseUsers from './components/BrowseUsers';
 import useProfile, { ITab } from './hooks/useProfile';
 import EditAccount from './components/EditAccount';
-import React from "react";
 
 const MyProfile = () => {
   const {
