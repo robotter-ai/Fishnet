@@ -1,12 +1,12 @@
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
-export const getHeaders = (includeAuth = true, form = false) => {
+export const getHeaders = (auth = true, form = false) => {
   const headers: Record<string, string> = {
     'Content-Type': form ? 'multipart/form-data' : 'application/json',
   };
 
-  if (includeAuth) {
+  if (auth) {
     const bearerToken = cookies.get('bearerToken');
     if (bearerToken) {
       headers.Authorization = `Bearer ${bearerToken}`;

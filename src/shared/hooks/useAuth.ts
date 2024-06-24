@@ -23,8 +23,7 @@ export default (): AuthProps => {
   const cookies = new Cookies();
   const dispatch = useAppDispatch();
   // const { address: ethAddress, isConnected } = useAccount();
-  const { connected, wallet, publicKey, connecting, connect, autoConnect } =
-    useWallet();
+  const { connected, publicKey, connecting } = useWallet();
   // const { data: ensName } = useEnsName({ address: solAddress });
 
   const address = useMemo(() => publicKey?.toBase58() || '', [publicKey]);
