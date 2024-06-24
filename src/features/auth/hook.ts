@@ -25,7 +25,6 @@ const useAuthWallet = () => {
   const handleConnect = async () => {
     try {
       setIsLoading(true);
-      await connect();
       if (address) {
         requestAuthChallenge({ address })
           .unwrap()
