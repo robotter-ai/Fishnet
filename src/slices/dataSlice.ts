@@ -49,9 +49,11 @@ const dataApiSlice = globalApi.injectEndpoints({
       ],
     }),
     getDataset: builder.query<any, { datasetID: string; view_as: string }>({
-      query: ({ datasetID, view_as }) =>
-        `/datasets/${datasetID}?view_as=${view_as}`,
-      providesTags: (result, error, { datasetID, view_as }) => [
+      query: ({ datasetID, view_as }) => ({
+        method: 'GET',
+        url: `/datasets/${datasetID}?view_as=${view_as}`,
+      }),
+      providesTags: (result, error, { datasetID }) => [
         { type: 'Dataset', id: datasetID },
       ],
     }),
