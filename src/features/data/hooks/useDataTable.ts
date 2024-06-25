@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import { useGetDatasetsQuery } from '@slices/dataSlice';
 import { preprocessTimeseries, setTimeseries } from '@slices/timeseriesSlice';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useSelectData from '@shared/hooks/useSelectData';
 import useAuth from '@shared/hooks/useAuth';
+import {
+  useGetDatasetsQuery,
+  usePreProcessTimeseriesMutation,
+} from '@store/data/api';
 
 type DatasetTabs = 'published' | 'browse-data';
 
@@ -31,6 +34,8 @@ export default () => {
       address: auth?.address,
     });
 
+  const [preProcess] = usePreProcessTimeseriesMutation();
+
   const query: DatasetTabs =
     (searchParams.get('tab') as DatasetTabs) || 'browse-data';
 
@@ -48,7 +53,7 @@ export default () => {
 
   const tabs = [
     { key: 'browse-data', name: 'Browse data' },
-    //{ key: 'published', name: 'Published' },
+    { key: 'published', name: 'Published' },
   ];
 
   const PAGE_TITLE: Record<string, string> = {
@@ -71,13 +76,20 @@ export default () => {
   const handleCsvToJson = (file: any) => {
     const formData = new FormData();
     formData.append('data_file', file);
-    dispatch(preprocessTimeseries(formData)).then((results) => {
-      navigate(`/data/${'upload'}/details`);
-      // set name of dataset
-      setTitle(file.name)
-      // transform results.payload with lists of timeseries
-      dispatch(setTimeseries(results.payload));
-    });
+    // dispatch(preprocessTimeseries(formData)).then((results) => {
+    //   setTitle(file.name);
+    //   dispatch(setTimeseries(results.payload));
+    //   navigate(`/data/${'upload'}/details`);
+    // });
+    preProcess(formData)
+      .unwrap()
+      .then((results) => {
+        // setTitle(file.name);
+        // dispatch(setTimeseries(results.payload));
+        // navigate(`/data/${'upload'}/details`);
+
+        console.log(results);
+      });
   };
 
   const handleFilterTable = (value: any) => {

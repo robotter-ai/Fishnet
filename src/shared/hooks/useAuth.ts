@@ -42,7 +42,7 @@ export default (): AuthProps => {
         if (decoded && isJwtPayload(decoded)) {
           // Check issuer
           if (!connecting && decoded.sub !== address) {
-            cookies.remove('bearerToken');
+            // cookies.remove('bearerToken');
           }
 
           // Expire token if needed

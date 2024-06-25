@@ -1,17 +1,11 @@
 import ClickToCopy from '@shared/components/ClickToCopy';
 import classNames from 'classnames';
-import React from "react";
-
-enum Type {
-  Solana = 'solana',
-  Ethereum = 'ethereum'
-}
+import React from 'react';
 
 interface ITruncatedAddress {
   address: string;
   color?: 'primary';
   copy?: boolean;
-  link?: boolean;
 }
 
 const TruncatedAddress: React.FC<ITruncatedAddress> = ({
@@ -28,7 +22,8 @@ const TruncatedAddress: React.FC<ITruncatedAddress> = ({
   };
 
   let url = '';
-  if(!!address) {
+
+  if (address) {
     if (address.startsWith('0x')) {
       url = `https://etherscan.io/address/${address}`;
     } else {
@@ -43,7 +38,12 @@ const TruncatedAddress: React.FC<ITruncatedAddress> = ({
           'text-primary': color === 'primary',
         })}
       >
-        <a className="text-primary hover:underline" href={url} target="_blank" rel="noreferrer">
+        <a
+          className="text-primary hover:underline"
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+        >
           {getTruncatedAddress()}
         </a>
       </p>

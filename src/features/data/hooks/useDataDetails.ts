@@ -1,29 +1,17 @@
-import { Buffer } from 'buffer';
 import { useEffect, useState } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
-import {
-  IDataset, useDownloadDatasetCsvQuery,
-  useGenerateViewsMutation,
-  useGetDatasetQuery,
-  useUpdateDatasetMutation,
-  useUploadDatasetMutation,
-} from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
 import useAuth from '@shared/hooks/useAuth';
-import {
-  initProductTree as initProductTreeTransaction,
-  resetTransactionSlice,
-} from '@slices/transactionSlice';
-import {
-  FISHNET_MARKETPLACE,
-  SOLANA_CONNECTION,
-  USDC_MINT,
-} from '@shared/constant';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { VersionedTransaction } from '@solana/web3.js';
 import useOwner from '@shared/hooks/useOwner';
+import {
+  useGenerateViewsMutation,
+  useGetDatasetByIdQuery,
+  useUpdateDatasetMutation,
+  useUploadDatasetMutation,
+} from '@store/data/api';
+import { IDataset } from '@store/data/types';
 
 export default () => {
   const { id } = useParams();
@@ -34,11 +22,8 @@ export default () => {
     name: '',
     price: 0,
   });
-  const { initProductTree } = useAppSelector((app) => app.transaction);
   const { timeseries } = useAppSelector((state) => state.timeseries);
-  const { sendTransaction } = useWallet();
   const { isOpen, handleOpen, handleClose } = useModal();
-  const [signature, setSignature] = useState<string>('');
   const { isOwner } = useOwner(dataset?.owner);
 
   const isUpload = (id && id === 'upload') as boolean;
@@ -48,7 +33,7 @@ export default () => {
     data,
     isLoading: isLoadingGetDataset,
     isSuccess: isGetDatasetSuccess,
-  } = useGetDatasetQuery(
+  } = useGetDatasetByIdQuery(
     { datasetID: id as string, view_as: auth.address },
     { skip: isUpload }
   );
@@ -77,60 +62,6 @@ export default () => {
       handleOnChange('owner', auth?.address);
     }
   }, [isGetDatasetSuccess]);
-
-  useEffect(() => {
-    if (
-      uploadedData?.dataset?.item_hash !== null && isSuccessUploadDataset && initProductTree.transaction === null &&
-      signature === ''
-    ) {
-      const config = {
-        params: {
-          signer: auth.address,
-          marketplace: FISHNET_MARKETPLACE,
-          paymentMint: USDC_MINT,
-          params: {
-            id: uploadedData?.dataset?.item_hash as string,
-            productPrice: Number(uploadedData?.dataset?.price),
-            feeBasisPoints: 0,
-            height: 5,
-            buffer: 8,
-            canopy: 0,
-            name: String(uploadedData?.dataset?.name),
-            metadataUrl: `https://api1.aleph.im/api/v0/messages.json?hashes=${uploadedData?.dataset?.item_hash}`,
-          },
-        },
-      };
-      //@todo: inform user about transaction in modal
-      dispatch(initProductTreeTransaction(config));
-    }
-  }, [JSON.stringify(uploadedData), isSuccessUploadDataset]);
-
-  useEffect(() => {
-    if (initProductTree.transaction && initProductTree.success && !signature) {
-      const serializedBase64 = initProductTree.transaction;
-      const serializedBuffer = Buffer.from(serializedBase64, 'base64');
-      const transaction = VersionedTransaction.deserialize(serializedBuffer);
-
-      const processTransaction = async () => {
-        try {
-          const signatureToUse = await sendTransaction(
-            transaction,
-            SOLANA_CONNECTION,
-            {
-              skipPreflight: true,
-            }
-          );
-          setSignature(signatureToUse);
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error sending transaction:', error);
-        }
-      };
-
-      processTransaction();
-      dispatch(resetTransactionSlice());
-    }
-  }, [initProductTree.transaction, initProductTree.success]);
 
   const inputsToUpload: IDataset = {
     desc: dataset?.desc,
@@ -173,7 +104,7 @@ export default () => {
   };
 
   const handleGenerateViews = (dataset: any) => {
-    //@todo: check state of view components
+    // TODO: check state of view components
     const time: number[] = timeseries[0].data
       .map((x: any[]) => x[0])
       .sort((a: number, b: number) => a - b);
@@ -185,11 +116,12 @@ export default () => {
         endTime: time[time.length - 1],
       },
     ];
-    generateViews({ datasetID: dataset?.item_hash, data: timeseriesToUse }).then(
-      () => {
-        handleOpen();
-      }
-    );
+    generateViews({
+      datasetID: dataset?.item_hash,
+      data: timeseriesToUse,
+    }).then(() => {
+      handleOpen();
+    });
   };
 
   const handleOnChange = (input: string, value: any) => {
@@ -211,10 +143,7 @@ export default () => {
     handleUploadDataset,
     handleUpdateDataset,
     isLoadingGetDataset,
-    isLoadingUploadDataset:
-      isLoadingUploadDataset ||
-      isLoadingGenerateViews ||
-      initProductTree.success,
+    isLoadingUploadDataset: isLoadingUploadDataset || isLoadingGenerateViews,
     isLoadingUpdateDataset,
     isLoading,
     isUpload,

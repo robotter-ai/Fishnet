@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useOnChange from '@shared/hooks/useOnChange';
 import { getAllUsers, getUserInfo, updateUserInfo } from '@slices/profileSlice';
 import useAuth from '@shared/hooks/useAuth';
-import { getTransactions as queryTransaction } from '@slices/indexerSlice';
+import { getTransactions as queryTransaction } from '@slices/transactionsSlice';
 
 export type ITab = 'overview' | 'edit-account' | 'browse-users';
 
@@ -19,7 +19,7 @@ export default () => {
   const { userInfo, updateActions, allUsers } = useAppSelector(
     (app) => app.profile
   );
-  const { getTransactions } = useAppSelector((app) => app.indexer);
+  const { getTransactions } = useAppSelector((app) => app.transactions);
   const userInfoState = useAppSelector((app) => app.profile.userInfo);
   const { inputs, handleOnChange } = useOnChange({
     username: userInfoState?.username || '',
@@ -48,11 +48,11 @@ export default () => {
     setTitle(PAGE_TITLE[query]);
   }, [query]);
 
-  // useEffect(() => {
-  //   dispatch(getUserInfo(auth?.address));
-  //   dispatch(getAllUsers());
-  //   dispatch(queryTransaction({ user: auth?.address }));
-  // }, [updateActions.success, auth?.address]);
+  useEffect(() => {
+    // dispatch(getUserInfo(auth?.address));
+    // dispatch(getAllUsers());
+    // dispatch(queryTransaction({ address: auth?.address }));
+  }, [updateActions.success, auth?.address]);
 
   const handleUpdateProfile = () => {
     dispatch(updateUserInfo(inputs));

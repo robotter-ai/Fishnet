@@ -5,9 +5,9 @@ import useModal from '@shared/hooks/useModal';
 import { RxCaretLeft } from 'react-icons/rx';
 import { createSearchParams, Link } from 'react-router-dom';
 import DataSummary from '@shared/components/Summary';
-import DataChart from '@pages/data/components/DataChart';
 import { nanoid } from 'nanoid';
 import { PriceTagIcon } from '@assets/icons';
+import DataChart from '@features/data/components/DataChart';
 import useDataSettings from './hooks/useDataSettings';
 import TableMapper from './components/SettingsTableMapper';
 

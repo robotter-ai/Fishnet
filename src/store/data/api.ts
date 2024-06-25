@@ -1,81 +1,63 @@
 import { globalApi } from '@store/config';
+import {
+  IDataset,
+  IDatasetTimeseries,
+  IGenerateViews,
+  IGetDataset,
+  IUpdateDatasetAvailability,
+} from './types';
 
-interface IGetDataset {
-  type: 'browse-data' | 'published';
-  address: string;
-}
-
-interface IGenerateViews {
-  datasetID: string;
-  data: any;
-}
-
-export interface IDataset {
-  item_hash?: string;
-  name: string;
-  desc: string;
-  owner: string;
-  price: string;
-  ownsAllTimeseries: boolean;
-  timeseriesIDs: string[];
-}
-
-export interface IUpdateDatasetAvailability {
-  datasetID: string;
-  available: boolean;
-}
-
-type IDatasetTimeseries = { dataset: IDataset; timeseries: any[] };
-
-const getDatasetUrlMap = (
+const GET_DATASET_PARAMS_MAPPER = (
   address: string
 ): Record<IGetDataset['type'], string> => ({
   published: `?by=${address}`,
   'browse-data': `?view_as=${address}`,
 });
 
-const dataApiSlice = globalApi.injectEndpoints({
+const dataApi = globalApi.injectEndpoints({
   endpoints: (builder) => ({
     getDatasets: builder.query<any, IGetDataset>({
       query: ({ type, address }) => ({
         method: 'GET',
-        url: `/datasets${getDatasetUrlMap(address)[type]}`,
+        url: `/datasets${GET_DATASET_PARAMS_MAPPER(address)[type]}`,
       }),
-      providesTags: (result) => [
-        ...result?.map(({ item_hash }: any) => ({
-          type: 'Dataset',
-          id: item_hash,
-        })),
-      ],
+      // providesTags: (result) => [
+      //   ...result?.map(({ item_hash }: any) => ({
+      //     type: 'Dataset',
+      //     id: item_hash,
+      //   })),
+      // ],
     }),
-    getDataset: builder.query<any, { datasetID: string; view_as: string }>({
-      query: ({ datasetID, view_as }) =>
-        `/datasets/${datasetID}?view_as=${view_as}`,
-      providesTags: (result, error, { datasetID, view_as }) => [
+
+    getDatasetById: builder.query<any, { datasetID: string; view_as: string }>({
+      query: ({ datasetID, ...params }) => ({
+        method: 'GET',
+        url: `/datasets/${datasetID}`,
+        params,
+      }),
+      providesTags: (_, __, { datasetID }) => [
         { type: 'Dataset', id: datasetID },
       ],
     }),
+
     uploadDataset: builder.mutation<any, IDatasetTimeseries>({
       query: (req) => ({
         method: 'POST',
         url: '/datasets/upload/timeseries',
         data: req,
       }),
-      invalidatesTags: (result, error, req) => [
-        { type: 'Dataset' },
-        { type: 'Timeseries' },
-      ],
+      invalidatesTags: () => [{ type: 'Dataset' }, { type: 'Timeseries' }],
     }),
+
     updateDataset: builder.mutation<any, IDataset>({
       query: (req) => ({
         method: 'PUT',
         url: '/datasets',
         data: req,
       }),
-      invalidatesTags: (result, error, req) => [
-        { type: 'Dataset', id: req.item_hash },
-      ],
+      invalidatesTags: (_, __, req) => [{ type: 'Dataset', id: req.item_hash }],
     }),
+
     updateDatasetAvailability: builder.mutation<
       any,
       IUpdateDatasetAvailability
@@ -88,6 +70,7 @@ const dataApiSlice = globalApi.injectEndpoints({
         { type: 'Dataset', id: req.datasetID },
       ],
     }),
+
     getViews: builder.query<any, string>({
       query: (datasetID) => ({
         method: 'GET',
@@ -97,6 +80,7 @@ const dataApiSlice = globalApi.injectEndpoints({
         { type: 'Dataset', id: datasetID },
       ],
     }),
+
     generateViews: builder.mutation<any, IGenerateViews>({
       query: ({ datasetID, data }) => ({
         method: 'PUT',
@@ -107,20 +91,11 @@ const dataApiSlice = globalApi.injectEndpoints({
         { type: 'Dataset', id: datasetID },
       ],
     }),
-    getDatasetData: builder.query<any, string>({
-      query: (datasetID) => ({
-        method: 'GET',
-        url: `/datasets/${datasetID}/timeseries/json`,
-      }),
-      providesTags: (result, error, datasetID) => [
-        { type: 'Dataset', id: datasetID },
-      ],
-    }),
-    downloadDatasetCsv: builder.query<any, string>({
+
+    downloadDatasetCSV: builder.query<any, string>({
       query: (datasetID) => ({
         method: 'GET',
         url: `/datasets/${datasetID}/timeseries/csv`,
-        // responseHandler: 'text',
       }),
       providesTags: (result, error, datasetID) => [
         { type: 'Dataset', id: datasetID },
@@ -128,10 +103,20 @@ const dataApiSlice = globalApi.injectEndpoints({
       transformResponse: (response) =>
         new Blob([response as string], { type: 'text/csv' }),
     }),
+
     getDatasetTimeseries: builder.query<any, string>({
       query: (datasetID) => ({
         method: 'GET',
         url: `/datasets/${datasetID}/timeseries`,
+      }),
+    }),
+
+    preProcessTimeseries: builder.mutation<void, FormData>({
+      query: (data) => ({
+        method: 'POST',
+        url: '/timeseries/csv',
+        headers: { 'Content-Type': 'multipart/form-data' },
+        data,
       }),
     }),
   }),
@@ -140,13 +125,13 @@ const dataApiSlice = globalApi.injectEndpoints({
 export const {
   useGetViewsQuery,
   useGetDatasetsQuery,
-  useGetDatasetQuery,
+  useGetDatasetByIdQuery,
   useUploadDatasetMutation,
   useGenerateViewsMutation,
   useUpdateDatasetMutation,
+  useDownloadDatasetCSVQuery,
   useGetDatasetTimeseriesQuery,
-  useGetDatasetDataQuery,
-  useDownloadDatasetCsvQuery,
+  useLazyDownloadDatasetCSVQuery,
+  usePreProcessTimeseriesMutation,
   useUpdateDatasetAvailabilityMutation,
-  useLazyDownloadDatasetCsvQuery,
-} = dataApiSlice;
+} = dataApi;

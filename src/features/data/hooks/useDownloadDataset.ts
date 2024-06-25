@@ -1,13 +1,21 @@
-import {useEffect, useState} from "react";
-import {IDataset, useDownloadDatasetCsvQuery} from "@slices/dataSlice";
-import {toast} from "sonner";
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { useDownloadDatasetCSVQuery } from '@store/data/api';
+import { IDataset } from '@store/data/types';
 
 export default () => {
-  const [datasetToDownload, setDatasetToDownload] = useState<IDataset | null>(null);
-  const { data: csvBlob, isLoading, isSuccess, isError, error } =
-    useDownloadDatasetCsvQuery(datasetToDownload?.item_hash || "", {
-      skip: !datasetToDownload?.item_hash,
-    });
+  const [datasetToDownload, setDatasetToDownload] = useState<IDataset | null>(
+    null
+  );
+  const {
+    data: csvBlob,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useDownloadDatasetCSVQuery(datasetToDownload?.item_hash || '', {
+    skip: !datasetToDownload?.item_hash,
+  });
 
   useEffect(() => {
     if (isSuccess && csvBlob) {
@@ -16,7 +24,7 @@ export default () => {
       downloadLink.href = url;
       downloadLink.style.display = 'none';
       if (!datasetToDownload) return;
-      const datasetName = datasetToDownload.name
+      const datasetName = datasetToDownload.name;
       downloadLink.download = `${datasetName}.csv`;
 
       document.body.appendChild(downloadLink);
@@ -37,4 +45,4 @@ export default () => {
   };
 
   return { handleDownload, isLoading };
-}
+};

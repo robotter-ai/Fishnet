@@ -2,7 +2,7 @@ import Cookies from 'universal-cookie';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
 import MyData from '@pages/data';
-import DataDetails from '@pages/data/DataDetails';
+import DataDetails from '@pages/data/data-details';
 import MonitorAccess from '@pages/monitor-access';
 import DataSettings from '@pages/monitor-access/DataSettings';
 import MyProfile from '@pages/my-profile';

@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import bs58 from 'bs58';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '@shared/hooks/useAuth';
 import Cookies from 'universal-cookie';
 import {
   useRequestChallengeMutation,
@@ -14,10 +13,11 @@ const useAuthWallet = () => {
 
   const navigate = useNavigate();
 
-  const { address } = useAuth();
-  const { connect, disconnect, signMessage } = useWallet();
-
   const [isLoading, setIsLoading] = useState(false);
+
+  const { connect, publicKey, disconnect, signMessage } = useWallet();
+
+  const address = useMemo(() => publicKey?.toBase58() || '', [publicKey]);
 
   const [solveAuthChallenge] = useSolveChallengeMutation();
   const [requestAuthChallenge] = useRequestChallengeMutation();

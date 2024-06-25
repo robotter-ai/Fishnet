@@ -3,10 +3,8 @@ import { ToggleButton } from '@components/form';
 import AppModal from '@components/ui/AppModal';
 import CustomButton from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
-import {
-  useUpdateDatasetAvailabilityMutation,
-} from '@slices/dataSlice';
 import { toast } from 'sonner';
+import { useUpdateDatasetAvailabilityMutation } from '@store/data/api';
 
 interface IPublicAccessToggleProps {
   datasetId: string;
@@ -48,8 +46,8 @@ const PublicAccessToggle: React.FC<IPublicAccessToggleProps> = ({
             size="lg"
             fullWidth
             isLoading={isLoading}
-            onClick={async () =>
-              await updateDatasetAvailability({
+            onClick={() =>
+              updateDatasetAvailability({
                 datasetID: datasetId,
                 available: !available,
               }).unwrap()

@@ -8,9 +8,9 @@ import { FileUploader } from 'react-drag-drop-files';
 import { useSearchParams } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
 import useAuth from '@shared/hooks/useAuth';
-import BrowseDataTable from './components/BrowseDataTable';
-import PublishedTable from './components/PublishedTable';
-import useDataTable from './hooks/useDataTable';
+import PublishedTable from '@features/data/components/PublishedTable';
+import BrowseDataTable from '@features/data/components/BrowseDataTable';
+import useDataTable from '@features/data/hooks/useDataTable';
 
 const MyData = () => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);
@@ -87,7 +87,6 @@ const MyData = () => {
           The data remains on your computer until you publish it. At this stage,
           the data is not published
         </p>
-
         <input
           type="file"
           accept=".csv"

@@ -38,10 +38,11 @@ const axiosBaseQuery =
       });
 
       return { data: result?.data ? result.data : null };
-    } catch (axiosError) {
-      const err = axiosError as AxiosError;
+    } catch (error) {
+      const err = error as AxiosError;
 
       if (err?.response?.status === 401) {
+        // OR 403
         toast.error('Session expired. Please connect again.');
       }
 

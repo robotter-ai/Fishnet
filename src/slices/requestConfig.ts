@@ -1,42 +1,21 @@
 import Cookies from 'universal-cookie';
 
-interface HeadersConfig {
-  headers: {
-    [key: string]: string;
-  };
-}
-
 const cookies = new Cookies();
-export const getConfig = (includeAuth = true) => {
-  const config: HeadersConfig = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
+
+export const getHeaders = (includeAuth = true, form = false) => {
+  const headers: Record<string, string> = {
+    'Content-Type': form ? 'multipart/form-data' : 'application/json',
   };
 
   if (includeAuth) {
     const bearerToken = cookies.get('bearerToken');
-    config.headers.Authorization = `Bearer ${bearerToken}`;
+    if (bearerToken) {
+      headers.Authorization = `Bearer ${bearerToken}`;
+    }
   }
 
-  return config;
-};
-
-export const getFormConfig = (includeAuth = true) => {
-  const config: HeadersConfig = {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  };
-
-  if (includeAuth) {
-    const bearerToken = cookies.get('bearerToken');
-    config.headers.Authorization = `Bearer ${bearerToken}`;
-  }
-
-  return config;
+  return headers;
 };
 
 export const FISHNET_API_URL = import.meta.env.VITE_FISHNET_API_URL;
-export const INDEXER_API_URL = import.meta.env.VITE_INDEXER_API_URL;
 export const TRANSACTIONS_API_URL = import.meta.env.VITE_TRANSACTIONS_API_URL;

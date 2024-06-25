@@ -1,6 +1,6 @@
 import { CopyIcon } from '@assets/icons';
-import { toast } from 'sonner';
-import React from "react";
+import React, { useState } from 'react';
+import { MdCheck } from 'react-icons/md';
 
 interface ClickToCopyProps {
   text: string;
@@ -11,18 +11,27 @@ const ClickToCopy: React.FC<ClickToCopyProps> = ({
   text,
   color = '#1DC3CF',
 }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
   const handleCopyText = () => {
+    setIsCopied(true);
     navigator.clipboard.writeText(text);
-    toast.success('Copied!');
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 1000);
   };
 
   return (
     <div
       role="button"
-      className="w-fit bg-primary/10 p-2 rounded-full"
+      className="w-fit bg-primary/10 p-2 flex rounded-full"
       onClick={handleCopyText}
     >
-      <CopyIcon color={color} />
+      {isCopied ? (
+        <MdCheck color={color} size={20} />
+      ) : (
+        <CopyIcon color={color} />
+      )}
     </div>
   );
 };

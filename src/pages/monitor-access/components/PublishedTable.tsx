@@ -1,12 +1,12 @@
 import Button from '@components/ui/Button';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { useGetDatasetsQuery } from '@slices/dataSlice';
 import PublicAccessToggle from '@shared/components/PublicAccessToggle';
 import useAuth from '@shared/hooks/useAuth';
 import DataSummary from '@shared/components/Summary';
-import DataChart from '@pages/data/components/DataChart';
 import { nanoid } from 'nanoid';
+import DataChart from '@features/data/components/DataChart';
+import { useGetDatasetsQuery } from '@store/data/api';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -36,19 +36,19 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'DLS',
     accessor: 'desc',
-    cell: (item) => '',
+    cell: () => '',
     sortWith: 'item',
   },
   {
     header: 'Profit',
     accessor: 'desc',
-    cell: (item) => '-',
+    cell: () => '-',
     sortWith: 'item',
   },
   {
     header: 'Price',
     accessor: 'desc',
-    cell: (item) => item.price != 0 ? item.price + ' USDC' : "Free",
+    cell: (item) => (item.price !== 0 ? `${item.price} USDC` : 'Free'),
     sortWith: 'item',
   },
   {
@@ -87,7 +87,7 @@ const PublishedTable = () => {
 
   const publishedDatasets = useGetDatasetsQuery({
     type: 'published',
-    address: address,
+    address,
   });
 
   return (

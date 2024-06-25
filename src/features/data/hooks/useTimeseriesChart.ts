@@ -4,7 +4,7 @@ import { getRandomColor } from '@shared/utils/getRandomColor';
 import {
   useGetDatasetTimeseriesQuery,
   useGetViewsQuery,
-} from '@slices/dataSlice';
+} from '@store/data/api';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { useEffect, useMemo, useState } from 'react';
@@ -42,12 +42,10 @@ export default () => {
     (state) => state.timeseries
   );
 
-  const { data: publishedDatasetTimeseries = [] } = useGetDatasetTimeseriesQuery(
-    id as string,
-    {
+  const { data: publishedDatasetTimeseries = [] } =
+    useGetDatasetTimeseriesQuery(id as string, {
       skip: isUpload,
-    }
-  );
+    });
 
   const timeseriesToUse = useMemo(() => {
     return isUpload ? uploadDatasetTimeseries : publishedDatasetTimeseries;

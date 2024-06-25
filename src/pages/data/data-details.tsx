@@ -3,7 +3,6 @@ import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
-import useAuth from '@shared/hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import {
   changeDatasetPermissionInput,
@@ -14,11 +13,12 @@ import { IoCheckbox } from 'react-icons/io5';
 import { RxCaretLeft } from 'react-icons/rx';
 import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
-import TimeseriesCharts from './components/TimeseriesCharts';
-import useDataDetails from './hooks/useDataDetails';
-import useDownloadDataset from "@pages/data/hooks/useDownloadDataset";
-import TruncatedItemHash from "@shared/components/TruncatedItemHash";
-import {IDataset} from "@slices/dataSlice";
+import TruncatedItemHash from '@shared/components/TruncatedItemHash';
+import useAuth from '@shared/hooks/useAuth';
+import TimeseriesCharts from '@features/data/components/TimeseriesCharts';
+import useDataDetails from '@features/data/hooks/useDataDetails';
+import useDownloadDataset from '@features/data/hooks/useDownloadDataset';
+import { IDataset } from '@store/data/types';
 
 const DataDetails = () => {
   const navigate = useNavigate();
@@ -27,6 +27,7 @@ const DataDetails = () => {
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
   );
+
   const {
     dataset,
     handleOnChange,
@@ -39,7 +40,7 @@ const DataDetails = () => {
     isLoadingGetDataset,
     isOwner,
   } = useDataDetails();
-  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
+  const { handleDownload, isLoading: isDownloading } = useDownloadDataset();
 
   if (!!dataset && dataset.price === undefined) {
     dataset.price = 0;
@@ -124,7 +125,7 @@ const DataDetails = () => {
         />
       );
     }
-    if (dataset?.available && dataset?.price == 0 || dataset?.permission_status === 'GRANTED') {
+    if (dataset?.available || dataset?.permission_status === 'GRANTED') {
       return (
         <Button
           text="Download"
@@ -143,7 +144,7 @@ const DataDetails = () => {
           size="md"
           icon="lock"
           btnStyle="outline-primary"
-          disabled={true}
+          disabled
         />
       );
     }
@@ -238,7 +239,11 @@ const DataDetails = () => {
             {isUpload ? 'published' : 'updated'}
           </p>
           <div className="flex flex-col items-center gap-2">
-            <TruncatedItemHash hash={dataset?.item_hash || ''} color="primary" copy />
+            <TruncatedItemHash
+              hash={dataset?.item_hash || ''}
+              color="primary"
+              copy
+            />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">
