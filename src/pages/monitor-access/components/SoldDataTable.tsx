@@ -1,10 +1,9 @@
 import { Starred } from '@components/form';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { useEffect } from 'react';
-import { getOutgoingPermissions } from '@slices/monitorAccessSlice';
+import { useAppSelector } from '@shared/hooks/useStore';
 import { useAuth } from '@contexts/auth-provider';
+import dayjs from 'dayjs';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -34,7 +33,7 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'DATE',
-    cell: (item) => '',
+    cell: (item) => dayjs(item.timestamp).format('DD.MM.YYYY'),
     sortWith: 'item',
   },
   {
@@ -45,21 +44,15 @@ const COLUMNS: ITableColumns[] = [
 ];
 
 const SoldDataTable = () => {
-  const dispatch = useAppDispatch();
   const auth = useAuth();
-  const { outgoingActions, outgoingPermissions } = useAppSelector(
-    (state) => state.monitorAccess
-  );
-
-  useEffect(() => {
-    dispatch(getOutgoingPermissions(auth.address));
-  }, []);
+  const { getTransactions } = useAppSelector((state) => state.transactions);
+  const soldData = getTransactions.transactions?.filter((tx) => tx.seller === auth.address)
 
   return (
     <CustomTable
-      data={outgoingPermissions}
+      data={soldData || []}
       columns={COLUMNS}
-      isLoading={outgoingActions.isLoading}
+      isLoading={getTransactions.isLoading}
     />
   );
 };
