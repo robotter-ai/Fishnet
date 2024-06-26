@@ -7,6 +7,7 @@ import { useAuth } from '@contexts/auth-provider';
 import DataSummary from '@shared/components/Summary';
 import DataChart from '@pages/data/components/DataChart';
 import { nanoid } from 'nanoid';
+import { useAppSelector } from '@store/hooks';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -67,21 +68,6 @@ const COLUMNS: ITableColumns[] = [
   },
 ];
 
-const STATISTICS = [
-  {
-    name: 'Total profit',
-    value: '7447 USDC',
-  },
-  {
-    name: 'Total downloads',
-    value: 2158,
-  },
-  {
-    name: 'Unique downloads',
-    value: 987,
-  },
-];
-
 const PublishedTable = () => {
   const { address } = useAuth();
 
@@ -89,6 +75,22 @@ const PublishedTable = () => {
     type: 'published',
     address: address,
   });
+  const { getTransactions } = useAppSelector((app) => app.transactions);
+
+  const STATISTICS = [
+    {
+      name: 'Total profit',
+      value: getTransactions.totalProfit,
+    },
+    {
+      name: 'Total downloads',
+      value: 2158,
+    },
+    {
+      name: 'Unique downloads',
+      value: 987,
+    },
+  ];  
 
   return (
     <>

@@ -1,9 +1,7 @@
 import { Starred } from '@components/form';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { useEffect } from 'react';
-import { getOutgoingPermissions } from '@slices/monitorAccessSlice';
+import { useAppSelector } from '@shared/hooks/useStore';
 import { useAuth } from '@contexts/auth-provider';
 import CustomButton from '@components/ui/Button';
 import dayjs from 'dayjs';
@@ -16,7 +14,7 @@ const COLUMNS: ITableColumns[] = [
         to={`/data/${item.item_hash}/details`}
         className="text-blue whitespace-nowrap"
       >
-        {item.name}
+        {item.datasetName}
       </Link>
     ),
     sortWith: 'name',
@@ -28,22 +26,17 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'SELLER',
-    cell: (item) => '',
+    cell: (item) => item.seller,
     sortWith: 'item',
   },
   {
     header: 'DATE',
-    cell: ({ timestamp }) => (
-      <p className="whitespace-nowrap">
-        {dayjs.unix(timestamp).format('YYYY-MM-DD HH:MM')}
-      </p>
-    ),
+    cell: (item) => dayjs(item.timestamp).format('DD.MM.YYYY'),
     sortWith: 'timestamp',
   },
   {
     header: 'PRICE',
-    cell: (item) => '',
-    //@todo
+    cell: (item) => item.amount,
     sortWith: 'item',
   },
   {
@@ -64,21 +57,15 @@ const COLUMNS: ITableColumns[] = [
 ];
 
 const BoughtDataTable = () => {
-  const dispatch = useAppDispatch();
   const auth = useAuth();
-  const { outgoingActions, outgoingPermissions } = useAppSelector(
-    (state) => state.monitorAccess
-  );
-
-  useEffect(() => {
-    dispatch(getOutgoingPermissions(auth.address));
-  }, []);
+  const { getTransactions } = useAppSelector((state) => state.transactions);
+  const boughtData = getTransactions.transactions?.filter((tx) => tx.signer === auth.address)
 
   return (
     <CustomTable
-      data={outgoingPermissions}
+      data={boughtData || []}
       columns={COLUMNS}
-      isLoading={outgoingActions.isLoading}
+      isLoading={getTransactions.isLoading}
     />
   );
 };

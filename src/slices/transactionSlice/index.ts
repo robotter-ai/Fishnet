@@ -39,6 +39,7 @@ interface TransactionsProps {
     isLoading: boolean;
     success: boolean | null;
     transactions: Transaction[] | null;
+    totalProfit: string | null;
   };
 }
 
@@ -57,6 +58,7 @@ const initialState: TransactionsProps = {
     isLoading: false,
     success: null,
     transactions: null,
+    totalProfit: null
   },
 };
 
@@ -78,7 +80,8 @@ const transactionsSlice = createSlice({
       .addCase(getTransactions.fulfilled, (state, action) => {
         state.getTransactions.isLoading = false;
         state.getTransactions.success = true;
-        state.getTransactions.transactions = action.payload;
+        state.getTransactions.transactions = action.payload.transactions;
+        state.getTransactions.totalProfit = action.payload.totalProfit;
       })
       .addCase(getTransactions.rejected, (state, action) => {
         state.getTransactions.isLoading = false;
