@@ -1,142 +1,92 @@
+import transactionsService, { UserTranasctions } from './transactionService';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'sonner';
-import transactionService, {
-  InitProductConfig,
-  PurchaseConfig,
-  ValidateSignatureConfig,
-} from './transactionService';
 
-export const initProductTree = createAsyncThunk(
-  'transaction/initProductTree',
-  async (config: InitProductConfig, thunkAPI) => {
+export const getTransactions = createAsyncThunk(
+  'transactions/getTransactions',
+  async (params: UserTranasctions, thunkAPI) => {
     try {
-      return await transactionService.initProductTree(config);
+      return await transactionsService.getTransactions(params);
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err);
     }
   }
 );
 
-export const registerBuy = createAsyncThunk(
-  'transaction/registerBuy',
-  async (config: PurchaseConfig, thunkAPI) => {
-    try {
-      return await transactionService.registerBuy(config);
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err);
-    }
-  }
-);
+export interface Transaction {
+  signature: string;
+  datasetId: string;
+  signer: string;
+  seller: string;
+  currency: string;
+  amount: string;
+  timestamp: string;
+  permissionHashes: string[];
+}
 
-export const validateSignature = createAsyncThunk(
-  'transaction/validateSignature',
-  async (config: ValidateSignatureConfig, thunkAPI) => {
-    try {
-      return await transactionService.validateSignature(config);
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err);
-    }
-  }
-);
-
-interface IndexerProps {
+interface TransactionsProps {
   isLoading: boolean;
   success: boolean | null;
-  dataDetails: any;
-  initProductTree: {
+  createTransaction: {
     isLoading: boolean;
     success: boolean | null;
-    transaction: string | null;
   };
-  registerBuy: {
+  sendTransaction: {
     isLoading: boolean;
     success: boolean | null;
-    transaction: string | null;
   };
-  validateSignature: {
+  getTransactions: {
     isLoading: boolean;
     success: boolean | null;
-    message: string | null;
+    transactions: Transaction[] | null;
   };
 }
 
-const initialState: IndexerProps = {
+const initialState: TransactionsProps = {
   isLoading: false,
   success: null,
-  dataDetails: null,
-  initProductTree: {
+  createTransaction: {
     isLoading: false,
     success: null,
-    transaction: null,
   },
-  registerBuy: {
+  sendTransaction: {
     isLoading: false,
     success: null,
-    transaction: null,
   },
-  validateSignature: {
+  getTransactions: {
     isLoading: false,
     success: null,
-    message: null,
+    transactions: null,
   },
 };
 
-const transactionSlice = createSlice({
-  name: 'transaction',
+const transactionsSlice = createSlice({
+  name: 'transactions',
   initialState,
   reducers: {
-    resetTransactionSlice: (state) => {
+    resetDataSlice: (state) => {
       state.success = null;
-      state.initProductTree.success = null;
-      state.initProductTree.transaction = null;
-      state.registerBuy.success = null;
-      state.registerBuy.transaction = null;
-      state.validateSignature.success = null;
-      state.validateSignature.message = null;
+      state.getTransactions.success = null;
+      state.getTransactions.transactions = null;
     },
   },
   extraReducers(builder) {
     builder
-      .addCase(initProductTree.pending, (state) => {
-        state.initProductTree.isLoading = true;
+      .addCase(getTransactions.pending, (state) => {
+        state.getTransactions.isLoading = true;
       })
-      .addCase(initProductTree.fulfilled, (state, action) => {
-        state.initProductTree.isLoading = false;
-        state.initProductTree.success = true;
-        state.initProductTree.transaction = action.payload.transaction;
+      .addCase(getTransactions.fulfilled, (state, action) => {
+        state.getTransactions.isLoading = false;
+        state.getTransactions.success = true;
+        state.getTransactions.transactions = action.payload;
       })
-      .addCase(initProductTree.rejected, (state, action) => {
-        state.initProductTree.isLoading = false;
-        toast.error(action.payload as string);
-      })
-
-      .addCase(registerBuy.pending, (state) => {
-        state.registerBuy.isLoading = true;
-      })
-      .addCase(registerBuy.fulfilled, (state, action) => {
-        state.registerBuy.isLoading = false;
-        state.registerBuy.success = true;
-        state.registerBuy.transaction = action.payload.transaction;
-      })
-      .addCase(registerBuy.rejected, (state, action) => {
-        state.registerBuy.isLoading = false;
-        toast.error(action.payload as string);
-      })
-
-      .addCase(validateSignature.pending, (state) => {
-        state.validateSignature.isLoading = true;
-      })
-      .addCase(validateSignature.fulfilled, (state, action) => {
-        state.validateSignature.isLoading = false;
-        state.validateSignature.success = true;
-        state.validateSignature.message = action.payload.message;
-      })
-      .addCase(validateSignature.rejected, (state, action) => {
-        state.validateSignature.isLoading = false;
+      .addCase(getTransactions.rejected, (state, action) => {
+        state.getTransactions.isLoading = false;
         toast.error(action.payload as string);
       });
   },
 });
 
-export const { resetTransactionSlice } = transactionSlice.actions;
-export default transactionSlice;
+export const { resetDataSlice } = transactionsSlice.actions;
+export const { createTransaction, sendTransaction } = transactionsService;
+export default transactionsSlice;

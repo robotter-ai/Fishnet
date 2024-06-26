@@ -4,26 +4,13 @@ import CustomButton from '@components/ui/Button';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import useDownloadDataset from '@pages/data/hooks/useDownloadDataset';
-import { IDataset } from '@slices/dataSlice';
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import {
-  registerBuy as registerBuyRequest,
-  validateSignature as validateTransaction,
-  resetTransactionSlice,
-} from '@slices/transactionSlice';
+import {IDataset} from '@slices/dataSlice';
+import {Link, useNavigate} from 'react-router-dom';
+import { createTransaction, sendTransaction } from '@slices/transactionSlice';
 import useAuth from '@shared/hooks/useAuth';
-import {
-  FISHNET_MARKETPLACE,
-  FISHNET_MARKETPLACE_AUTH,
-  SOLANA_CONNECTION,
-  USDC_MINT,
-} from '@shared/constant';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { globalApi } from '@store/config';
+import useDownloadDataset from '../hooks/useDownloadDataset';
 
 const BrowseDataTable = ({
   data,
@@ -32,80 +19,35 @@ const BrowseDataTable = ({
   data: Record<string, any>[];
   isLoading: boolean;
 }) => {
-  const dispatch = useAppDispatch();
-  const { registerBuy } = useAppSelector((state) => state.transaction);
   const { address, hasValidToken } = useAuth();
-  const { sendTransaction } = useWallet();
-  const [signature, setSignature] = useState<string>('');
-  const [selectedItemHash, setItemHash] = useState<string>('');
-  const { handleDownload, isLoading: isDownloading } = useDownloadDataset();
+  const { signTransaction } = useWallet();
   const navigate = useNavigate();
+  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
 
-  const handlePurchase = async (dataset: IDataset) => {
-    if (dataset.item_hash === undefined) {
-      throw new Error('Item hash is undefined');
-    }
-    setItemHash(dataset.item_hash);
-    const params = {
+  const handlePurchase = async (
+    dataset: IDataset
+  ) => {
+    if (!dataset.item_hash) throw new Error('Item hash is undefined');
+    if (!signTransaction) throw new Error('Wallet not connected');
+
+    const { transaction } = await createTransaction({
       signer: address,
-      marketplace: FISHNET_MARKETPLACE,
-      productId: dataset.item_hash,
-      paymentMint: USDC_MINT,
-      seller: dataset.owner,
-      marketplaceAuth: FISHNET_MARKETPLACE_AUTH,
-      params: {
-        rewardsActive: false,
-        amount: 1,
-        name: dataset.name,
-      },
-    };
-    console.log(params);
-    dispatch(registerBuyRequest({ params }));
+      datasetId: dataset.item_hash,
+    })
+
+    const serializedBuffer = Buffer.from(transaction, 'base64');
+    const unsignedTransaction = VersionedTransaction.deserialize(serializedBuffer);
+    const signedTransaction = await signTransaction(unsignedTransaction);
+    const signedSerializedBase64 = Buffer.from(signedTransaction.serialize()).toString('base64');
+    const response = await sendTransaction({
+        transaction: signedSerializedBase64,
+        datasetId: dataset.item_hash,
+    });
+
+    console.log(response);
+
+    navigate(`/data/${dataset.item_hash}/details`);
   };
-
-  useEffect(() => {
-    if (registerBuy.transaction && registerBuy.success) {
-      const serializedBase64 = registerBuy.transaction;
-      const serializedBuffer = Buffer.from(serializedBase64, 'base64');
-      const transaction = VersionedTransaction.deserialize(serializedBuffer);
-
-      const processTransaction = async () => {
-        try {
-          const sig = await sendTransaction(transaction, SOLANA_CONNECTION);
-          const blockhash = await SOLANA_CONNECTION.getLatestBlockhash(
-            'finalized'
-          );
-          await SOLANA_CONNECTION.confirmTransaction(
-            {
-              blockhash: blockhash.blockhash,
-              lastValidBlockHeight: blockhash.lastValidBlockHeight,
-              signature: sig,
-            },
-            'confirmed'
-          );
-          setSignature(sig);
-        } catch (error) {
-          console.error('Error sending transaction:', error);
-        }
-      };
-
-      processTransaction();
-      // invalidate Dataset tag cache
-      dispatch(globalApi.util.invalidateTags(['Dataset'])); // does this work?
-      dispatch(resetTransactionSlice());
-      navigate(`/data/${selectedItemHash}/details`);
-    }
-  }, [registerBuy.transaction, registerBuy.success]);
-
-  useEffect(() => {
-    if (signature !== '') {
-      dispatch(
-        validateTransaction({
-          params: { signature, itemHash: selectedItemHash },
-        })
-      );
-    }
-  }, [signature]);
 
   const COLUMNS: ITableColumns[] = [
     {
@@ -135,7 +77,7 @@ const BrowseDataTable = ({
     {
       header: 'PRICE',
       cell: ({ price }) =>
-        price === 0 ? (
+        price == 0 ? (
           <div className="flex gap-3 items-center">
             <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
               <FreeTagIcon />
@@ -157,8 +99,7 @@ const BrowseDataTable = ({
       cell: (dataset) => (
         <div className="w-auto flex items-end justify-end">
           {/* eslint-disable-next-line no-nested-ternary */}
-          {(dataset.available && dataset.price == 0) ||
-          dataset.permission_status === 'GRANTED' ? (
+          {dataset.available && dataset.price == 0 || dataset.permission_status === 'GRANTED' ? (
             <CustomButton
               text="Download"
               btnStyle="outline-primary"
@@ -167,15 +108,14 @@ const BrowseDataTable = ({
               isLoading={isDownloading}
               onClick={() => handleDownload(dataset)}
             />
-          ) : address === undefined || !hasValidToken ? (
+          ) : address === undefined || !hasValidToken ?
             <CustomButton
               text="Wallet required"
               size="sm"
               icon="lock"
               btnStyle="outline-primary"
               disabled={true}
-            />
-          ) : !dataset.available &&
+            /> : !dataset.available &&
             dataset.permission_status === 'NOT GRANTED' &&
             dataset.price === '0' ? (
             <CustomButton

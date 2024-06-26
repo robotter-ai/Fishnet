@@ -4,7 +4,6 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { toast } from 'sonner';
 
 export const FISHNET_API_URL = import.meta.env.VITE_FISHNET_API_URL;
-export const INDEXER_API_URL = import.meta.env.VITE_INDEXER_API_URL;
 export const TRANSACTIONS_API_URL = import.meta.env.VITE_TRANSACTIONS_API_URL;
 
 export const cookies = new Cookies();

@@ -1,78 +1,57 @@
-import { TRANSACTIONS_API_URL, getConfig } from '@slices/requestConfig';
-import axios from 'axios';
+import { TRANSACTIONS_API_URL, getHeaders } from "@slices/requestConfig";
+import axios from "axios";
 
-export type InitProductConfig = {
-  params: {
+export type CreateTransaction = {
+    datasetId: string;
     signer: string;
-    marketplace: string;
-    paymentMint: string;
-    params: {
-      id: string;
-      productPrice: number;
-      feeBasisPoints: number;
-      height: number;
-      buffer: number;
-      canopy: number;
-      name: string;
-      metadataUrl: string;
-    };
-  };
 };
 
-const initProductTree = async (config: InitProductConfig) => {
-  const mergedConfig = { ...config, ...getConfig(false) };
-  const { data } = await axios.get(
-    `${TRANSACTIONS_API_URL}/initProductTree`,
-    mergedConfig
-  );
-  return data;
+const createTransaction = async (params: CreateTransaction) => {
+    const headers = getHeaders(false);
+    const { data } = await axios.get(
+        `${TRANSACTIONS_API_URL}/solana/createTransaction`,
+        { headers, params }
+    );
+    return data;
 };
 
-export type PurchaseConfig = {
-  params: {
-    signer: string;
-    marketplace: string;
-    productId: string;
-    paymentMint: string;
-    seller: string;
-    marketplaceAuth: string;
-    params: {
-      rewardsActive: boolean;
-      amount: number;
-      name: string;
-    };
-  };
+export type SendTransaction = {
+    datasetId: string;
+    transaction: string;
 };
 
-const registerBuy = async (config: PurchaseConfig) => {
-  const mergedConfig = { ...config, ...getConfig(false) };
-  const { data } = await axios.get(
-    `${TRANSACTIONS_API_URL}/registerBuy`,
-    mergedConfig
-  );
-  return data;
+const sendTransaction = async (body: SendTransaction) => {
+    const headers = getHeaders(false);
+    const { data } = await axios.post(
+        `${TRANSACTIONS_API_URL}/solana/sendTransaction`,
+        body,
+        { headers }
+    );
+    return data;
 };
 
-export type ValidateSignatureConfig = {
-  params: {
-    signature: string;
-    itemHash: string;
-  };
+export type UserTranasctions = {
+    address: string;
+    startDate?: number | undefined;
+    endDate?: number | undefined;
+    limit?: number | undefined;
+    skip?: number | undefined;
+    reverse?: boolean | undefined;
+}
+
+const getTransactions = async (params: UserTranasctions) => {
+    const headers = getHeaders(false);
+    const { data } = await axios.get(
+        `${TRANSACTIONS_API_URL}/solana/getTransactions`,
+        { headers, params }
+    );
+    return data;
 };
 
-const validateSignature = async (config: ValidateSignatureConfig) => {
-  const mergedConfig = { ...config, ...getConfig(false) };
-  const { data } = await axios.get(
-    `${TRANSACTIONS_API_URL}/validateSignature`,
-    mergedConfig
-  );
-  return data;
+const transactionsService = {
+    createTransaction,
+    sendTransaction,
+    getTransactions,
 };
 
-const transactionService = {
-  initProductTree,
-  registerBuy,
-  validateSignature,
-};
-
-export default transactionService;
+export default transactionsService;

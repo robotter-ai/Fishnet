@@ -2,8 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import getErrMsg from '@shared/utils/getErrMsg';
 import {
   FISHNET_API_URL,
-  getConfig,
-  getFormConfig,
+  getHeaders,
 } from '@slices/requestConfig';
 import axios from 'axios';
 import { toast } from 'sonner';
@@ -15,7 +14,7 @@ export const preprocessTimeseries = createAsyncThunk(
       const { data } = await axios.post(
         `${FISHNET_API_URL}/timeseries/csv`,
         formData,
-        getFormConfig()
+        getHeaders(true, true)
       );
       return data;
     } catch (err: any) {
@@ -34,10 +33,8 @@ export const downloadTimeseriesCsv = createAsyncThunk(
   async (timeseriesIDs: string[], thunkAPI) => {
     try {
       const { data } = await axios.get(
-        `${FISHNET_API_URL}/timeseries/csv?timeseriesIDs=${timeseriesIDs.join(
-          ','
-        )}`,
-        getConfig()
+        `${FISHNET_API_URL}/timeseries/csv?timeseriesIDs=${timeseriesIDs.join(',')}`,
+        getHeaders()
       );
       return data;
     } catch (err: any) {
@@ -51,10 +48,8 @@ export const downloadTimeseriesJson = createAsyncThunk(
   async (timeseriesIDs: string[], thunkAPI) => {
     try {
       const { data } = await axios.get(
-        `${FISHNET_API_URL}/timeseries/json?timeseriesIDs=${timeseriesIDs.join(
-          ','
-        )}`,
-        getConfig()
+        `${FISHNET_API_URL}/timeseries/json?timeseriesIDs=${timeseriesIDs.join(',')}`,
+        getHeaders()
       );
       return data;
     } catch (err: any) {
@@ -77,7 +72,7 @@ interface TimeseriesProps {
     timeseries: any | null;
     isLoading: boolean;
     success: boolean | null;
-  };
+  }
 }
 
 const initialState: TimeseriesProps = {
@@ -105,15 +100,13 @@ export const timeseriesSlice = createSlice({
       }
       for (let i = 0; i < state.timeseries[0].data.length; i++) {
         const date = state.timeseries[0].data[i][0] * 1000; // convert to ms
-        const data = state.timeseries
-          .map((item: any) => {
-            return {
-              [item.name]: item.data[i][1],
-            };
-          })
-          .reduce((acc: any, curr: any) => {
-            return { ...acc, ...curr };
-          });
+        const data = state.timeseries.map((item: any) => {
+          return {
+            [item.name]: item.data[i][1],
+          }
+        }).reduce((acc: any, curr: any) => {
+          return { ...acc, ...curr };
+        });
         state.csvJson.push({
           date,
           ...data,
@@ -155,7 +148,6 @@ export const timeseriesSlice = createSlice({
   },
 });
 
-export const { resetTimeseriesActions, setCsvJson, setTimeseries } =
-  timeseriesSlice.actions;
+export const { resetTimeseriesActions, setCsvJson, setTimeseries } = timeseriesSlice.actions;
 
 export default timeseriesSlice;

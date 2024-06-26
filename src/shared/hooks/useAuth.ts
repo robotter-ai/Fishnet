@@ -22,19 +22,14 @@ function isJwtPayload(object: any): object is JwtPayload {
 export default (): AuthProps => {
   const cookies = new Cookies();
   const dispatch = useAppDispatch();
-  // const { address: ethAddress, isConnected } = useAccount();
-  const { connected, wallet, publicKey, connecting, connect, autoConnect } =
-    useWallet();
-  // const { data: ensName } = useEnsName({ address: solAddress });
-
+  const { connected, publicKey, connecting } = useWallet();
   const address = useMemo(() => publicKey?.toBase58() || '', [publicKey]);
-
   const walletConnected = connected;
   const token = cookies.get('bearerToken');
   const hasValidToken = !!token;
 
   useEffect(() => {
-    if (token) {
+    if (address && token) {
       try {
         // Decode the token without verifying its signature
         const decoded = jwt_decode(token);
@@ -68,7 +63,7 @@ export default (): AuthProps => {
     } else if (walletConnected && !!address) {
       dispatch(setLoginStatus(LoginStatus.REQUESTED));
     }
-  }, [walletConnected, address]);
+  }, [address]);
 
   return {
     address,

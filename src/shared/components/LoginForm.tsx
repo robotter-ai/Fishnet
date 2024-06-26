@@ -2,17 +2,24 @@ import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '@components/ui/Button';
 import useAuthWallet from '@features/auth/hook';
+import { WalletReadyState } from '@solana/wallet-adapter-base';
+import { useMemo } from 'react';
 
 const LoginForm = () => {
   const { isLoading, handleConnect } = useAuthWallet();
 
   const { wallets, select, wallet } = useWallet();
-  const SOLANA_WALLETS = wallets.map((x) => x.adapter);
+  const solanaWallets = useMemo(() => {
+    return wallets.filter((wallet) =>
+      wallet.readyState === WalletReadyState.Installed 
+      && wallet.adapter.name !== 'Brave Wallet'
+    ).map((x) => x.adapter)
+  }, [wallets]);
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4">
-        {SOLANA_WALLETS.map((item, i) => (
+        {solanaWallets.map((item, i) => (
           <div
             key={i}
             role="button"
