@@ -116,7 +116,7 @@ const BrowseDataTable = ({
               size="sm"
               icon="lock"
               btnStyle="outline-primary"
-              disabled={true}
+              disabled
             />
           ) : !dataset.available &&
             dataset.permission_status === 'NOT GRANTED' &&
