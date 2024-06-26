@@ -10,7 +10,7 @@ import {
   useUploadDatasetMutation,
 } from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 import useOwner from '@shared/hooks/useOwner';
 
 export default () => {

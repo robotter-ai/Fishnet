@@ -1,4 +1,4 @@
-import useAuth from './useAuth';
+import { useAuth } from '@contexts/auth-provider';
 
 export default (owner: string) => {
   const auth = useAuth();

@@ -10,6 +10,7 @@ import { Toaster } from 'sonner';
 import { store } from './store';
 import { router } from './routes';
 import SolanaContextProvider from './contexts/solana-provider';
+import { AuthProvider } from '@contexts/auth-provider';
 
 LogRocket.init('jf0bw9/fishnet');
 
@@ -17,8 +18,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <SolanaContextProvider>
       <Provider store={store}>
-        <RouterProvider router={router} />
-        <Toaster position="top-center" richColors />
+        <AuthProvider>
+          <RouterProvider router={router} />
+          <Toaster position="top-center" richColors />
+        </AuthProvider>
       </Provider>
     </SolanaContextProvider>
   </React.StrictMode>

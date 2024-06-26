@@ -4,7 +4,7 @@ import useSelectData from '@shared/hooks/useSelectData';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useOnChange from '@shared/hooks/useOnChange';
 import { getAllUsers, getUserInfo, updateUserInfo } from '@slices/profileSlice';
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 
 export default () => {
   const dispatch = useAppDispatch();

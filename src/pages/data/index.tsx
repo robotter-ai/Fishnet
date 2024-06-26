@@ -7,7 +7,7 @@ import { ReactNode, useRef } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
 import { useSearchParams } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 import BrowseDataTable from './components/BrowseDataTable';
 import PublishedTable from './components/PublishedTable';
 import useDataTable from './hooks/useDataTable';
@@ -26,7 +26,7 @@ const MyData = () => {
   } = useDataTable();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
-  const { hasValidToken, address } = useAuth();
+  const { address } = useAuth();
 
   const TableMapper: { [key: string]: ReactNode } = {
     published: (
@@ -70,7 +70,7 @@ const MyData = () => {
             size="md"
             text="Upload data"
             icon="upload"
-            disabled={!hasValidToken || !address}
+            disabled={address === ''}
             onClick={handleOpen}
           />
         </div>

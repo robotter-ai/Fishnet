@@ -5,7 +5,7 @@ import { useGetDatasetsQuery } from '@slices/dataSlice';
 import { preprocessTimeseries, setTimeseries } from '@slices/timeseriesSlice';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useSelectData from '@shared/hooks/useSelectData';
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 
 type DatasetTabs = 'published' | 'browse-data';
 

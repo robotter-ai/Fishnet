@@ -17,13 +17,13 @@ import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
 import TruncatedItemHash from "@shared/components/TruncatedItemHash";
 import {IDataset} from "@slices/dataSlice";
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 import useDownloadDataset from './hooks/useDownloadDataset';
 
 const DataDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { address, hasValidToken } = useAuth();
+  const { address } = useAuth();
   const { requestDatasetPermissionActions } = useAppSelector(
     (state) => state.monitorAccess
   );
@@ -137,7 +137,7 @@ const DataDetails = () => {
         />
       );
     }
-    if (address === undefined || !hasValidToken) {
+    if (address === '') {
       return (
         <Button
           text="Wallet required"
