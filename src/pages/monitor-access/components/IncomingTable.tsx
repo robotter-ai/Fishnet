@@ -8,7 +8,7 @@ import {
   grantDatasetPermissions,
   resetPermissions,
 } from '@slices/monitorAccessSlice';
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 import { DeletePrompt } from '@shared/components/Prompts';
 import AppModal from '@components/ui/AppModal';
 import TextInput from '@components/form/TextInput';

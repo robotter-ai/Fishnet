@@ -9,7 +9,7 @@ import {
 } from '@slices/monitorAccessSlice';
 import useModal from '@shared/hooks/useModal';
 import { getNotifications } from '@slices/profileSlice';
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 
 export default () => {
   const { id } = useParams();

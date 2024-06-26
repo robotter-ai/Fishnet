@@ -4,7 +4,7 @@ import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import { useEffect } from 'react';
 import { getOutgoingPermissions } from '@slices/monitorAccessSlice';
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 import CustomButton from '@components/ui/Button';
 import dayjs from 'dayjs';
 
