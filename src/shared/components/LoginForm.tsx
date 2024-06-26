@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '@components/ui/Button';
-import { useMemo } from 'react';
-import { WalletReadyState } from '@solana/wallet-adapter-base';
 import useAuthWallet from '@features/auth/hook';
+import { WalletReadyState } from '@solana/wallet-adapter-base';
+import { useMemo } from 'react';
 
 const LoginForm = () => {
   const { wallets, select, wallet } = useWallet();

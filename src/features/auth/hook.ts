@@ -10,13 +10,11 @@ import {
 
 const useAuthWallet = () => {
   const cookies = new Cookies();
-
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
 
   const { connect, publicKey, disconnect, signMessage } = useWallet();
-
   const address = useMemo(() => publicKey?.toBase58() || '', [publicKey]);
 
   const [solveAuthChallenge] = useSolveChallengeMutation();

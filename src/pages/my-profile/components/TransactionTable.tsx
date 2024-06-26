@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 const COLUMNS = (address: string): ITableColumns[] => [
   {
     header: 'DATASET',
-    cell: (item) => <span className="text-primary">{item.name}</span>,
+    cell: (item) => <span className="text-primary">{item.datasetName}</span>,
     sortWith: 'typ',
   },
   {
@@ -22,7 +22,7 @@ const COLUMNS = (address: string): ITableColumns[] => [
   },
   {
     header: 'AMOUNT',
-    cell: (item) => `${parseInt(item.amount, 16)} USDC`,
+    cell: (item) => `${item.amount} USDC`,
     sortWith: 'typ',
   },
   {

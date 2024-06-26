@@ -78,7 +78,7 @@ const BrowseDataTable = ({
     {
       header: 'PRICE',
       cell: ({ price }) =>
-        price === 0 ? (
+        price == 0 ? (
           <div className="flex gap-3 items-center">
             <div className="h-[30px] w-[30px] flex items-center justify-center bg-{#E6FAFF} rounded-full">
               <FreeTagIcon />

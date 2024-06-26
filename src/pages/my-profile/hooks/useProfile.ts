@@ -49,9 +49,9 @@ export default () => {
   }, [query]);
 
   useEffect(() => {
-    // dispatch(getUserInfo(auth?.address));
-    // dispatch(getAllUsers());
-    // dispatch(queryTransaction({ address: auth?.address }));
+    dispatch(getUserInfo(auth?.address));
+    dispatch(getAllUsers());
+    dispatch(queryTransaction({ address: auth?.address }));
   }, [updateActions.success, auth?.address]);
 
   const handleUpdateProfile = () => {

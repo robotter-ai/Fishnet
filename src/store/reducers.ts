@@ -1,9 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import appSlice from '@slices/appSlice';
+import transactionsSlice from '@slices/transactionsSlice';
 import monitorAccessSlice from '@slices/monitorAccessSlice';
 import profileSlice from '@slices/profileSlice';
 import timeseriesSlice from '@slices/timeseriesSlice';
-import transactionsSlice from '@slices/transactionsSlice';
 import { globalApi } from './config';
 
 export const rootReducer = combineReducers({
