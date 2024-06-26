@@ -1,8 +1,11 @@
 import React, { createContext, useContext, useMemo, useEffect, ReactNode, useCallback, useState } from 'react';
 import { useSolveChallengeMutation, useRequestChallengeMutation } from '@store/auth/api';
 import { setLoginStatus, LoginStatus } from '@slices/appSlice';
+import { getTransactions } from '@slices/transactionSlice';
+import { getNotifications } from '@slices/profileSlice';
 import { useAppDispatch } from '@shared/hooks/useStore';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { getAllUsers, getUserInfo } from '@slices/profileSlice';
 import Cookies from 'universal-cookie';
 import jwt_decode from 'jwt-decode';
 import LogRocket from 'logrocket';
@@ -43,10 +46,19 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
 
     requestAuthChallenge({ address })
       .unwrap()
-      .then((res) => handleSolveAuthChallenge(res.challenge));
+      .then((res) => handleSolveAuthChallenge(res.challenge, address));
   }, [address, token]);
 
-  const handleSolveAuthChallenge = useCallback(async (challenge: string) => {
+  useEffect(() => {
+    if (!address) return
+
+    dispatch(getUserInfo(address));
+    dispatch(getAllUsers());
+    dispatch(getTransactions({ address }));
+    dispatch(getNotifications(address));
+  }, [address]);
+
+  const handleSolveAuthChallenge = useCallback(async (challenge: string, address: string) => {
     try {
       if (!signMessage) return;
 

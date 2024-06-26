@@ -6,7 +6,6 @@ import { useAuth } from '@contexts/auth-provider';
 import { BellIcon } from '@assets/icons';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { getNotifications } from '@slices/profileSlice';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 
 function TopNavigation() {
@@ -19,10 +18,6 @@ function TopNavigation() {
   const notificationRef = useDetectClickOutside({
     onTriggered: () => setNotification(false),
   });
-
-  useEffect(() => {
-    dispatch(getNotifications(address));
-  }, []);
 
   return (
     <div id="top-navigation">

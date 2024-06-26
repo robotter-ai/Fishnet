@@ -9,21 +9,10 @@ import PublishedTable from './components/PublishedTable';
 import useMonitorAccessTable, { ITab } from './hooks/useMonitorAccessTable';
 import BoughtDataTable from './components/BoughtDataTable';
 import SoldDataTable from './components/SoldDataTable';
-import { useAuth } from '@contexts/auth-provider';
-import { useAppDispatch } from '@store/hooks';
-import { getTransactions as queryTransaction } from '@slices/transactionSlice';
 
 const MonitorAccess = () => {
   const { tabs, query, setSearchParams } = useMonitorAccessTable();
   const { isOpen, handleClose } = useModal();
-  const dispatch = useAppDispatch();
-  const auth = useAuth();
-
-  useEffect(() => {
-    dispatch(
-      queryTransaction({ address: auth?.address })
-    );
-  }, [auth?.address]);
 
   const TableMapper: Record<ITab, ReactNode> = {
     published: <PublishedTable />,
