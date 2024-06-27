@@ -1,44 +1,26 @@
-import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import {
-  changeDatasetPermissionInput,
-  getDatasetPermissions,
-  requestDatasetPermissions,
-  resetPermissions,
-} from '@slices/monitorAccessSlice';
 import useModal from '@shared/hooks/useModal';
-import { getNotifications } from '@slices/profileSlice';
-import useAuth from '@shared/hooks/useAuth';
+import { useRequestDatasetPermissionsMutation } from '@store/monitor-access/api';
+import { onChangePermissionsInput } from '@store/monitor-access/slice';
 
 export default () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const auth = useAuth();
   const {
     isOpen: isOpenAccessSettings,
     handleOpen: handleOpenAccessSettings,
     handleClose: handleCloseAccessSettings,
   } = useModal();
-  const {
-    datasetPermission,
-    requestDatasetPermissionActions: { isLoading, success, dataset },
-  } = useAppSelector((state) => state.monitorAccess);
+  const { permissions } = useAppSelector((state) => state.monitorAccess);
 
-  useEffect(() => {
-    dispatch(getDatasetPermissions(id as string));
-  }, []);
-
-  useEffect(() => {
-    if (success) {
-      handleCloseAccessSettings();
-      resetPermissions();
-      dispatch(getNotifications(auth.address));
-    }
-  }, [success]);
+  const [requestPermissions, { isLoading }] =
+    useRequestDatasetPermissionsMutation();
 
   const handleAddAccess = () => {
-    dispatch(requestDatasetPermissions(id as string));
+    requestPermissions({ dataset_id: id as string })
+      .unwrap()
+      .then(() => handleCloseAccessSettings());
   };
 
   const handleOnchangeInput = (
@@ -46,7 +28,7 @@ export default () => {
     value: any
   ) => {
     dispatch(
-      changeDatasetPermissionInput({
+      onChangePermissionsInput({
         input,
         value,
       })
@@ -54,9 +36,8 @@ export default () => {
   };
 
   return {
-    dataset,
+    dataset: permissions,
     isLoading,
-    datasetPermission,
     handleAddAccess,
     handleOnchangeInput,
     isOpenAccessSettings,

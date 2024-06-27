@@ -3,11 +3,7 @@ import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import {
-  changeDatasetPermissionInput,
-  requestDatasetPermissions,
-} from '@slices/monitorAccessSlice';
+import { useAppDispatch } from '@shared/hooks/useStore';
 import dayjs from 'dayjs';
 import { IoCheckbox } from 'react-icons/io5';
 import { RxCaretLeft } from 'react-icons/rx';
@@ -15,18 +11,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
-import TruncatedItemHash from "@shared/components/TruncatedItemHash";
-import {IDataset} from "@slices/dataSlice";
+import TruncatedItemHash from '@shared/components/TruncatedItemHash';
 import useAuth from '@shared/hooks/useAuth';
 import useDownloadDataset from './hooks/useDownloadDataset';
+import { IDataset } from '@store/data/types';
+import { useRequestDatasetPermissionsMutation } from '@store/monitor-access/api';
+import { onChangePermissionsInput } from '@store/monitor-access/slice';
 
 const DataDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { address, hasValidToken } = useAuth();
-  const { requestDatasetPermissionActions } = useAppSelector(
-    (state) => state.monitorAccess
-  );
 
   const {
     dataset,
@@ -40,7 +35,10 @@ const DataDetails = () => {
     isLoadingGetDataset,
     isOwner,
   } = useDataDetails();
-  const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
+  const { handleDownload, isLoading: isDownloading } = useDownloadDataset();
+
+  const [requestPermissions, { isLoading: isLoadingRequestPermissions }] =
+    useRequestDatasetPermissionsMutation();
 
   if (!!dataset && dataset.price === undefined) {
     dataset.price = 0;
@@ -157,16 +155,16 @@ const DataDetails = () => {
           btnStyle="outline-primary"
           onClick={() => {
             dispatch(
-              changeDatasetPermissionInput({
+              onChangePermissionsInput({
                 input: 'requestor',
                 value: address,
               })
             );
-            dispatch(requestDatasetPermissions(dataset?.item_hash));
+            requestPermissions({ dataset_id: dataset?.item_hash });
           }}
           isLoading={
             dataset?.permission_status === 'REQUESTED' ||
-            requestDatasetPermissionActions.isLoading
+            isLoadingRequestPermissions
           }
         />
       );
@@ -239,7 +237,11 @@ const DataDetails = () => {
             {isUpload ? 'published' : 'updated'}
           </p>
           <div className="flex flex-col items-center gap-2">
-            <TruncatedItemHash hash={dataset?.item_hash || ''} color="primary" copy />
+            <TruncatedItemHash
+              hash={dataset?.item_hash || ''}
+              color="primary"
+              copy
+            />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">

@@ -1,38 +1,24 @@
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { useEffect, useState } from 'react';
-import {
-  denyPermissions,
-  getIncomingPermissions,
-  grantDatasetPermissions,
-  resetPermissions,
-} from '@slices/monitorAccessSlice';
+import { useState } from 'react';
 import useAuth from '@shared/hooks/useAuth';
 import { DeletePrompt } from '@shared/components/Prompts';
 import AppModal from '@components/ui/AppModal';
 import TextInput from '@components/form/TextInput';
 import CustomButton from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
-import { getNotifications } from '@slices/profileSlice';
+import {
+  useDenyPermissionsMutation,
+  useGetIncomingPermissionsQuery,
+  useGrantDatasetPermissionsMutation,
+} from '@store/monitor-access/api';
 
 const AllowComponent = ({ item }: any) => {
-  const auth = useAuth();
-  const dispatch = useAppDispatch();
   const { isOpen, handleOpen, handleClose } = useModal();
   const [maxExecutionCount, setMaxExecutionCount] = useState(32);
-  const {
-    grantDatasetPermissionActions: { isLoading, success },
-  } = useAppSelector((state) => state.monitorAccess);
 
-  useEffect(() => {
-    if (success) {
-      dispatch(getIncomingPermissions(auth?.address));
-      handleClose();
-      resetPermissions();
-      dispatch(getNotifications(auth.address));
-    }
-  }, [success]);
+  const [grantPermissions, { isLoading }] =
+    useGrantDatasetPermissionsMutation();
 
   return (
     <>
@@ -63,17 +49,11 @@ const AllowComponent = ({ item }: any) => {
             fullWidth
             isLoading={isLoading}
             onClick={() =>
-              dispatch(
-                grantDatasetPermissions({
-                  dataset_id: item.datasetID,
-                  dataset: {
-                    maxExecutionCount,
-                    authorizer: item.authorizer,
-                    requestor: item.requestor,
-                    algorithmID: item.algorithmID,
-                  },
-                })
-              )
+              grantPermissions({
+                dataset_id: item.datasetID,
+                requestor: item.requestor,
+                maxExecutionCount,
+              })
             }
           />
         </div>
@@ -84,9 +64,11 @@ const AllowComponent = ({ item }: any) => {
 
 const COLUMNS = ({
   handleRefusePermision,
-  denyPermissionsActions,
+  isSuccessDenyPermission,
+  isLoadingDenyPermissions,
 }: {
-  denyPermissionsActions: any;
+  isSuccessDenyPermission: boolean;
+  isLoadingDenyPermissions: boolean;
   handleRefusePermision: (id: string[]) => void;
 }): ITableColumns[] => [
   {
@@ -139,8 +121,8 @@ const COLUMNS = ({
             />
           )}
           message="You want to refuse access. Are you sure?"
-          isLoading={denyPermissionsActions.isLoading}
-          completed={denyPermissionsActions.success}
+          isLoading={isLoadingDenyPermissions}
+          completed={isSuccessDenyPermission}
           onConfirm={() => handleRefusePermision([item.item_hash])}
         />
       </div>
@@ -149,31 +131,30 @@ const COLUMNS = ({
 ];
 
 const IncomingTable = () => {
-  const dispatch = useAppDispatch();
   const auth = useAuth();
-  const { incomingActions, incomingPermissions, denyPermissionsActions } =
-    useAppSelector((state) => state.monitorAccess);
 
-  useEffect(() => {
-    dispatch(getIncomingPermissions(auth?.address));
-    if (denyPermissionsActions.success) {
-      resetPermissions();
-      dispatch(getNotifications(auth.address));
-    }
-  }, [denyPermissionsActions.success]);
+  const { data, isLoading } = useGetIncomingPermissionsQuery({
+    address: auth?.address,
+  });
+
+  const [
+    denyPermissions,
+    { isLoading: isLoadingDenyPermissions, isSuccess: isSuccessDenyPermission },
+  ] = useDenyPermissionsMutation();
 
   const handleRefusePermision = (item_hashes: string[]) => {
-    dispatch(denyPermissions(item_hashes));
+    denyPermissions({ item_hashes });
   };
 
   return (
     <CustomTable
-      data={incomingPermissions}
+      data={data}
       columns={COLUMNS({
         handleRefusePermision,
-        denyPermissionsActions,
+        isSuccessDenyPermission,
+        isLoadingDenyPermissions,
       })}
-      isLoading={incomingActions.isLoading}
+      isLoading={isLoading}
     />
   );
 };

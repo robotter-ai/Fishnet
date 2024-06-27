@@ -4,13 +4,13 @@ import CustomButton from '@components/ui/Button';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
-import {IDataset} from '@slices/dataSlice';
 import {Link, useNavigate} from 'react-router-dom';
 import { createTransaction, sendTransaction } from '@slices/transactionSlice';
 import useAuth from '@shared/hooks/useAuth';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import useDownloadDataset from '../hooks/useDownloadDataset';
+import { IDataset } from '@store/data/types';
 
 const BrowseDataTable = ({
   data,

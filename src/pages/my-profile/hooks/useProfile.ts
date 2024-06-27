@@ -48,13 +48,14 @@ export default () => {
     setTitle(PAGE_TITLE[query]);
   }, [query]);
 
-  useEffect(() => {
-    dispatch(getUserInfo(auth?.address));
-    dispatch(getAllUsers());
-    dispatch(
-      queryTransaction({ address: auth?.address })
-    );
-  }, [updateActions.success, auth?.address]);
+  // TODO: FIX CRASHING ERROR
+  // useEffect(() => {
+  //   dispatch(getUserInfo(auth?.address));
+  //   dispatch(getAllUsers());
+  //   dispatch(
+  //     queryTransaction({ address: auth?.address })
+  //   );
+  // }, [updateActions.success, auth?.address]);
 
   const handleUpdateProfile = () => {
     dispatch(updateUserInfo(inputs));

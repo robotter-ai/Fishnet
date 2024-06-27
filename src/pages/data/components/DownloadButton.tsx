@@ -1,7 +1,7 @@
 import {Component} from "react";
 import Button from "@components/ui/Button";
 import useDownloadDataset from "@pages/data/hooks/useDownloadDataset";
-import {IDataset} from "@slices/dataSlice";
+import { IDataset } from "@store/data/types";
 
 export class DownloadButton extends Component<{dataset: IDataset}> {
   render() {

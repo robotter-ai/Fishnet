@@ -2,16 +2,15 @@ import { useEffect, useState } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
-import {
-  IDataset,
-  useGenerateViewsMutation,
-  useGetDatasetQuery,
-  useUpdateDatasetMutation,
-  useUploadDatasetMutation,
-} from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
 import useAuth from '@shared/hooks/useAuth';
 import useOwner from '@shared/hooks/useOwner';
+import {
+  useGenerateViewsMutation,
+  useGetDatasetByIdQuery,
+  useUpdateDatasetMutation,
+  useUploadDatasetMutation,
+} from '@store/data/api';
 
 export default () => {
   const { id } = useParams();
@@ -33,7 +32,7 @@ export default () => {
     data,
     isLoading: isLoadingGetDataset,
     isSuccess: isGetDatasetSuccess,
-  } = useGetDatasetQuery(
+  } = useGetDatasetByIdQuery(
     { datasetID: id as string, view_as: auth.address },
     { skip: isUpload }
   );

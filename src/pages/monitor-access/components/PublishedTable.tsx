@@ -1,12 +1,12 @@
 import Button from '@components/ui/Button';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { useGetDatasetsQuery } from '@slices/dataSlice';
 import PublicAccessToggle from '@shared/components/PublicAccessToggle';
 import useAuth from '@shared/hooks/useAuth';
 import DataSummary from '@shared/components/Summary';
 import DataChart from '@pages/data/components/DataChart';
 import { nanoid } from 'nanoid';
+import { useGetDatasetsQuery } from '@store/data/api';
 
 const COLUMNS: ITableColumns[] = [
   {

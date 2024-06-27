@@ -43,7 +43,6 @@ const DataSettings = () => {
   const {
     dataset,
     isLoading,
-    datasetPermission,
     handleAddAccess,
     handleOnchangeInput,
     isOpenAccessSettings,
@@ -83,10 +82,7 @@ const DataSettings = () => {
           }}
         />
       </div>
-      <TableMapper
-        datasetPermission={datasetPermission}
-        handleOpenRefuseAccess={handleOpen}
-      />
+      <TableMapper handleOpenRefuseAccess={handleOpen} />
       <AppModal
         title="Access Settings"
         withInfo

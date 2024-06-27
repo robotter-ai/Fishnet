@@ -1,12 +1,10 @@
 import { Starred } from '@components/form';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import { useEffect } from 'react';
-import { getOutgoingPermissions } from '@slices/monitorAccessSlice';
 import useAuth from '@shared/hooks/useAuth';
 import CustomButton from '@components/ui/Button';
 import dayjs from 'dayjs';
+import { useGetOutgoingPermissionsQuery } from '@store/monitor-access/api';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -64,23 +62,13 @@ const COLUMNS: ITableColumns[] = [
 ];
 
 const BoughtDataTable = () => {
-  const dispatch = useAppDispatch();
   const auth = useAuth();
-  const { outgoingActions, outgoingPermissions } = useAppSelector(
-    (state) => state.monitorAccess
-  );
 
-  useEffect(() => {
-    dispatch(getOutgoingPermissions(auth.address));
-  }, []);
+  const { data, isLoading } = useGetOutgoingPermissionsQuery({
+    address: auth?.address,
+  });
 
-  return (
-    <CustomTable
-      data={outgoingPermissions}
-      columns={COLUMNS}
-      isLoading={outgoingActions.isLoading}
-    />
-  );
+  return <CustomTable data={data} columns={COLUMNS} isLoading={isLoading} />;
 };
 
 export default BoughtDataTable;
