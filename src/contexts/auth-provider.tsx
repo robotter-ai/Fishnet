@@ -50,13 +50,13 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   }, [address, token]);
 
   useEffect(() => {
-    if (!address) return
+    if (!address || !token) return
 
     dispatch(getUserInfo(address));
     dispatch(getAllUsers());
     dispatch(getTransactions({ address }));
     dispatch(getNotifications(address));
-  }, [address]);
+  }, [address, token]);
 
   const handleSolveAuthChallenge = useCallback(async (challenge: string, address: string) => {
     try {

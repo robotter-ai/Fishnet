@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
+import { useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import {
   IDataset,
@@ -17,7 +17,6 @@ export default () => {
   const { id } = useParams();
   const { setTitle, getTitle } = usePageTitle();
   const auth = useAuth();
-  const dispatch = useAppDispatch();
   const [dataset, setDataset] = useState<Record<string, any>>({
     name: '',
     price: 0,

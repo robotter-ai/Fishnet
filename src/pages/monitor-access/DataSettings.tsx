@@ -16,6 +16,7 @@ const DataSettings = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
   const {
     dataset,
+    datasetInfo,
     isLoading,
     datasetPermission,
     handleAddAccess,
@@ -24,26 +25,27 @@ const DataSettings = () => {
     handleOpenAccessSettings,
     handleCloseAccessSettings,
   } = useDataSettings();
-  const { id } = useParams();
   const { getTransactions } = useAppSelector((app) => app.transactions);
+  const datasetSales = getTransactions.sales.filter(x => x.datasetId === datasetInfo.item_hash);
+  
   const STATISTICS = [
     {
       name: 'Total profit',
-      value: getTransactions.datasetSales[id!].profit,
+      value: getTransactions.datasetSales[datasetInfo.item_hash]?.profit || 0,
     },
     {
       name: 'Total sales',
-      value: getTransactions.datasetSales[id!].sales,
+      value: getTransactions.datasetSales[datasetInfo.item_hash]?.sales || 0,
     },
     {
       name: 'Total downloads',
-      value: 2158,
+      value: datasetInfo?.downloads || 0,
     },
     {
       name: 'Price',
       value: (
         <div className="flex gap-2 items-center" role="button">
-          19 USDC <PriceTagIcon width={24} height={24} />
+          {datasetInfo.price} USDC <PriceTagIcon width={24} height={24} />
         </div>
       ),
     },
@@ -82,6 +84,7 @@ const DataSettings = () => {
         />
       </div>
       <TableMapper
+        sales={datasetSales}
         datasetPermission={datasetPermission}
         handleOpenRefuseAccess={handleOpen}
       />
