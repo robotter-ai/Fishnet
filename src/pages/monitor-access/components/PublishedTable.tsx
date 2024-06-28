@@ -1,7 +1,7 @@
 import Button from '@components/ui/Button';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { useGetDatasetsQuery } from '@slices/dataSlice';
+import { IDataset, useGetDatasetsQuery } from '@slices/dataSlice';
 import PublicAccessToggle from '@shared/components/PublicAccessToggle';
 import { useAuth } from '@contexts/auth-provider';
 import DataSummary from '@shared/components/Summary';
@@ -76,19 +76,23 @@ const PublishedTable = () => {
     address: address,
   });
   const { getTransactions } = useAppSelector((app) => app.transactions);
-
+  console.log('publishedDatasets', publishedDatasets.data)
+  const totalDownloads = publishedDatasets.data
+    .map((dataset: IDataset) => dataset.downloads)
+    .reduce((acc: number, downloads: number) => acc + downloads, 0);
+  
   const STATISTICS = [
     {
       name: 'Total profit',
       value: getTransactions.totalProfit,
     },
     {
-      name: 'Total downloads',
-      value: 2158,
+      name: 'Total sales',
+      value: getTransactions.totalSales,
     },
     {
-      name: 'Unique downloads',
-      value: 987,
+      name: 'Total downloads',
+      value: totalDownloads,
     },
   ];  
 
