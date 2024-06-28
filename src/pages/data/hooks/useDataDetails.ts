@@ -11,6 +11,7 @@ import {
   useUpdateDatasetMutation,
   useUploadDatasetMutation,
 } from '@store/data/api';
+import { IDataset } from '@store/data/types';
 
 export default () => {
   const { id } = useParams();

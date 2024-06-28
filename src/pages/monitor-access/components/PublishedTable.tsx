@@ -8,6 +8,7 @@ import DataChart from '@pages/data/components/DataChart';
 import { nanoid } from 'nanoid';
 import { useGetDatasetsQuery } from '@store/data/api';
 import { useAppSelector } from '@store/hooks';
+import { IDataset } from '@store/data/types';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -78,7 +79,12 @@ const PublishedTable = () => {
   const { getTransactions } = useAppSelector((app) => app.transactions);
   const totalDownloads = publishedDatasets.data
     ?.map((dataset: IDataset) => dataset.downloads)
-    .reduce((acc: number, downloads: number) => acc + downloads, 0);
+    .reduce((acc: number, downloads) => {
+      if (downloads) {
+        return acc + Number(downloads);
+      }
+      return 0;
+    }, 0);
   
   const STATISTICS = [
     {
@@ -112,7 +118,7 @@ const PublishedTable = () => {
         />
       </div>
       <CustomTable
-        data={publishedDatasets.data}
+        data={publishedDatasets.data as IDataset[]}
         columns={COLUMNS}
         isLoading={publishedDatasets.isLoading}
       />

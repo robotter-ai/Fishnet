@@ -16,6 +16,7 @@ export interface IDataset {
   price: string;
   ownsAllTimeseries: boolean;
   timeseriesIDs: string[];
+  downloads?: number | string;
 }
 
 export interface IUpdateDatasetAvailability {

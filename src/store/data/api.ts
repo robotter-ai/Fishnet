@@ -21,12 +21,13 @@ const dataApi = globalApi.injectEndpoints({
         method: 'GET',
         url: `/datasets${GET_DATASET_PARAMS_MAPPER(address)[type]}`,
       }),
-      providesTags: (result) => [
-        ...result?.map(({ item_hash }: any) => ({
-          type: 'Dataset',
-          id: item_hash,
-        })),
-      ],
+      // providesTags: (result) => [
+      //   ...result?.map(({ item_hash }: any) => ({
+      //     type: 'Dataset',
+      //     id: item_hash,
+      //   })),
+      // ],
+      providesTags: ['Dataset'],
     }),
 
     getDatasetById: builder.query<any, { datasetID: string; view_as: string }>({
