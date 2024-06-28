@@ -57,13 +57,11 @@ const COLUMNS: ITableColumns[] = [
 ];
 
 const BoughtDataTable = () => {
-  const auth = useAuth();
   const { getTransactions } = useAppSelector((state) => state.transactions);
-  const boughtData = getTransactions.transactions?.filter((tx) => tx.signer === auth.address)
 
   return (
     <CustomTable
-      data={boughtData || []}
+      data={getTransactions.purchases}
       columns={COLUMNS}
       isLoading={getTransactions.isLoading}
     />
