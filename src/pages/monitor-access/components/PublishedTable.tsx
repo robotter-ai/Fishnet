@@ -9,65 +9,6 @@ import DataChart from '@pages/data/components/DataChart';
 import { nanoid } from 'nanoid';
 import { useAppSelector } from '@store/hooks';
 
-const COLUMNS: ITableColumns[] = [
-  {
-    header: 'Name',
-    accessor: 'name',
-    cell: (item) => (
-      <Link
-        to={`/data/${item.item_hash}/details`}
-        className="text-primary whitespace-nowrap"
-      >
-        {item.name}
-      </Link>
-    ),
-    sortWith: 'name',
-  },
-  {
-    header: 'Public access',
-    accessor: 'available',
-    cell: (item) => (
-      <PublicAccessToggle
-        available={item.available}
-        datasetId={item.item_hash}
-      />
-    ),
-    sortWith: 'available',
-  },
-  {
-    header: 'DLS',
-    accessor: 'desc',
-    cell: (item) => '',
-    sortWith: 'item',
-  },
-  {
-    header: 'Profit',
-    accessor: 'desc',
-    cell: (item) => '-',
-    sortWith: 'item',
-  },
-  {
-    header: 'Price',
-    accessor: 'desc',
-    cell: (item) => item.price != 0 ? item.price + ' USDC' : "Free",
-    sortWith: 'item',
-  },
-  {
-    header: '',
-    cell: (item) => (
-      <div className="w-auto flex items-end justify-end">
-        <Button
-          linkTo={`/monitor-access/${item.item_hash}/settings`}
-          text="Settings"
-          size="sm"
-          icon="settings"
-          btnStyle="outline-primary"
-        />
-      </div>
-    ),
-  },
-];
-
 const PublishedTable = () => {
   const { address } = useAuth();
 
@@ -93,7 +34,66 @@ const PublishedTable = () => {
       name: 'Total downloads',
       value: totalDownloads,
     },
-  ];  
+  ];
+  
+  const COLUMNS: ITableColumns[] = [
+    {
+      header: 'Name',
+      accessor: 'name',
+      cell: (item) => (
+        <Link
+          to={`/data/${item.item_hash}/details`}
+          className="text-primary whitespace-nowrap"
+        >
+          {item.name}
+        </Link>
+      ),
+      sortWith: 'name',
+    },
+    {
+      header: 'Public access',
+      accessor: 'available',
+      cell: (item) => (
+        <PublicAccessToggle
+          available={item.available}
+          datasetId={item.item_hash}
+        />
+      ),
+      sortWith: 'available',
+    },
+    {
+      header: 'DLS',
+      accessor: 'desc',
+      cell: (item) => '',
+      sortWith: 'item',
+    },
+    {
+      header: 'Profit',
+      accessor: 'desc',
+      cell: (item) => getTransactions.datasetSales[item.item_hash]?.profit || 0,
+      sortWith: 'item',
+    },
+    {
+      header: 'Price',
+      accessor: 'desc',
+      cell: (item) => item.price != 0 ? item.price + ' USDC' : "Free",
+      sortWith: 'item',
+    },
+    {
+      header: '',
+      cell: (item) => (
+        <div className="w-auto flex items-end justify-end">
+          <Button
+            linkTo={`/monitor-access/${item.item_hash}/settings`}
+            text="Settings"
+            size="sm"
+            icon="settings"
+            btnStyle="outline-primary"
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
