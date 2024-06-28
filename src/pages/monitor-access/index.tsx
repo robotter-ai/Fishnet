@@ -3,7 +3,7 @@ import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
 import classNames from 'classnames';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import IncomingTable from './components/IncomingTable';
 import PublishedTable from './components/PublishedTable';
 import useMonitorAccessTable, { ITab } from './hooks/useMonitorAccessTable';

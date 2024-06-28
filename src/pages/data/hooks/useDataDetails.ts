@@ -3,7 +3,7 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import { useParams } from 'react-router-dom';
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 import useOwner from '@shared/hooks/useOwner';
 import {
   useGenerateViewsMutation,

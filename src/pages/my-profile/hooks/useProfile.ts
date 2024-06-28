@@ -4,9 +4,8 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import useSelectData from '@shared/hooks/useSelectData';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useOnChange from '@shared/hooks/useOnChange';
-import { getAllUsers, getUserInfo, updateUserInfo } from '@slices/profileSlice';
-import useAuth from '@shared/hooks/useAuth';
-import { getTransactions as queryTransaction } from '@slices/transactionSlice';
+import { updateUserInfo } from '@slices/profileSlice';
+import { useAuth } from '@contexts/auth-provider';
 
 export type ITab = 'overview' | 'edit-account' | 'browse-users';
 
@@ -47,15 +46,6 @@ export default () => {
   useEffect(() => {
     setTitle(PAGE_TITLE[query]);
   }, [query]);
-
-  // TODO: FIX CRASHING ERROR
-  // useEffect(() => {
-  //   dispatch(getUserInfo(auth?.address));
-  //   dispatch(getAllUsers());
-  //   dispatch(
-  //     queryTransaction({ address: auth?.address })
-  //   );
-  // }, [updateActions.success, auth?.address]);
 
   const handleUpdateProfile = () => {
     dispatch(updateUserInfo(inputs));

@@ -1,8 +1,10 @@
 import { Starred } from '@components/form';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import useAuth from '@shared/hooks/useAuth';
 import { useGetOutgoingPermissionsQuery } from '@store/monitor-access/api';
+import { useAppSelector } from '@shared/hooks/useStore';
+import { useAuth } from '@contexts/auth-provider';
+import dayjs from 'dayjs';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -13,43 +15,39 @@ const COLUMNS: ITableColumns[] = [
           to={`/data/${item.item_hash}/details`}
           className="text-primary whitespace-nowrap"
         >
-          {item.name}
+          {item.datasetName}
         </Link>
-        <Starred starred={item.forgotten} />
       </>
     ),
     sortWith: 'name',
   },
   {
-    header: 'DESCRIPTION',
-    cell: (item) => '',
-    sortWith: 'item',
-  },
-  {
     header: 'Buyers WALLET',
-    cell: (item) => '',
+    cell: (item) => item.signer,
     sortWith: 'item',
   },
   {
     header: 'DATE',
-    cell: (item) => '',
+    cell: (item) => dayjs(item.timestamp).format('DD.MM.YYYY'),
     sortWith: 'item',
   },
   {
     header: 'PRICE',
-    cell: (item) => '',
+    cell: (item) => item.amount,
     sortWith: 'item',
   },
 ];
 
 const SoldDataTable = () => {
-  const auth = useAuth();
+  const { getTransactions } = useAppSelector((state) => state.transactions);
 
-  const { data, isLoading } = useGetOutgoingPermissionsQuery({
-    address: auth?.address,
-  });
-
-  return <CustomTable data={data} columns={COLUMNS} isLoading={isLoading} />;
+  return (
+    <CustomTable
+      data={getTransactions.sales}
+      columns={COLUMNS}
+      isLoading={getTransactions.isLoading}
+    />
+  );
 };
 
 export default SoldDataTable;

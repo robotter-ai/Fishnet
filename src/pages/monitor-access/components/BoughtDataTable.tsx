@@ -1,7 +1,8 @@
 import { Starred } from '@components/form';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import useAuth from '@shared/hooks/useAuth';
+import { useAppSelector } from '@shared/hooks/useStore';
+import { useAuth } from '@contexts/auth-provider';
 import CustomButton from '@components/ui/Button';
 import dayjs from 'dayjs';
 import { useGetOutgoingPermissionsQuery } from '@store/monitor-access/api';
@@ -14,7 +15,7 @@ const COLUMNS: ITableColumns[] = [
         to={`/data/${item.item_hash}/details`}
         className="text-blue whitespace-nowrap"
       >
-        {item.name}
+        {item.datasetName}
       </Link>
     ),
     sortWith: 'name',
@@ -26,22 +27,17 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'SELLER',
-    cell: (item) => '',
+    cell: (item) => item.seller,
     sortWith: 'item',
   },
   {
     header: 'DATE',
-    cell: ({ timestamp }) => (
-      <p className="whitespace-nowrap">
-        {dayjs.unix(timestamp).format('YYYY-MM-DD HH:MM')}
-      </p>
-    ),
+    cell: (item) => dayjs(item.timestamp).format('DD.MM.YYYY'),
     sortWith: 'timestamp',
   },
   {
     header: 'PRICE',
-    cell: (item) => '',
-    //@todo
+    cell: (item) => item.amount,
     sortWith: 'item',
   },
   {
@@ -62,13 +58,15 @@ const COLUMNS: ITableColumns[] = [
 ];
 
 const BoughtDataTable = () => {
-  const auth = useAuth();
+  const { getTransactions } = useAppSelector((state) => state.transactions);
 
-  const { data, isLoading } = useGetOutgoingPermissionsQuery({
-    address: auth?.address,
-  });
-
-  return <CustomTable data={data} columns={COLUMNS} isLoading={isLoading} />;
+  return (
+    <CustomTable
+      data={getTransactions.purchases}
+      columns={COLUMNS}
+      isLoading={getTransactions.isLoading}
+    />
+  );
 };
 
 export default BoughtDataTable;

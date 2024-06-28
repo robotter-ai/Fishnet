@@ -24,6 +24,11 @@ export interface Transaction {
   permissionHashes: string[];
 }
 
+export type DatasetSales = {
+  sales: number
+  profit: string
+}
+
 interface TransactionsProps {
   isLoading: boolean;
   success: boolean | null;
@@ -38,7 +43,12 @@ interface TransactionsProps {
   getTransactions: {
     isLoading: boolean;
     success: boolean | null;
-    transactions: Transaction[] | null;
+    transactions: Transaction[];
+    purchases: Transaction[];
+    sales: Transaction[];
+    datasetSales: Record<string, DatasetSales>;
+    totalProfit: string | null;
+    totalSales: string | null;
   };
 }
 
@@ -56,7 +66,12 @@ const initialState: TransactionsProps = {
   getTransactions: {
     isLoading: false,
     success: null,
-    transactions: null,
+    transactions: [],
+    purchases: [],
+    sales: [],
+    datasetSales: {},
+    totalProfit: null,
+    totalSales: null,
   },
 };
 
@@ -67,7 +82,12 @@ const transactionsSlice = createSlice({
     resetDataSlice: (state) => {
       state.success = null;
       state.getTransactions.success = null;
-      state.getTransactions.transactions = null;
+      state.getTransactions.transactions = [];
+      state.getTransactions.purchases = [];
+      state.getTransactions.sales = [];
+      state.getTransactions.datasetSales = {};
+      state.getTransactions.totalProfit = null;
+      state.getTransactions.totalSales = null;
     },
   },
   extraReducers(builder) {
@@ -78,7 +98,12 @@ const transactionsSlice = createSlice({
       .addCase(getTransactions.fulfilled, (state, action) => {
         state.getTransactions.isLoading = false;
         state.getTransactions.success = true;
-        state.getTransactions.transactions = action.payload;
+        state.getTransactions.transactions = [...action.payload.purchases, ...action.payload.sales];
+        state.getTransactions.purchases = action.payload.purchases;
+        state.getTransactions.sales = action.payload.sales;
+        state.getTransactions.datasetSales = action.payload.datasetSales;
+        state.getTransactions.totalProfit = action.payload.totalProfit;
+        state.getTransactions.totalSales = action.payload.totalSales;
       })
       .addCase(getTransactions.rejected, (state, action) => {
         state.getTransactions.isLoading = false;

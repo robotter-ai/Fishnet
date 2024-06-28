@@ -11,8 +11,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import TimeseriesCharts from './components/TimeseriesCharts';
 import useDataDetails from './hooks/useDataDetails';
-import TruncatedItemHash from '@shared/components/TruncatedItemHash';
-import useAuth from '@shared/hooks/useAuth';
+import TruncatedItemHash from "@shared/components/TruncatedItemHash";
+import { useAuth } from '@contexts/auth-provider';
 import useDownloadDataset from './hooks/useDownloadDataset';
 import { IDataset } from '@store/data/types';
 import { useRequestDatasetPermissionsMutation } from '@store/monitor-access/api';
@@ -21,7 +21,7 @@ import { onChangePermissionsInput } from '@store/monitor-access/slice';
 const DataDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { address, hasValidToken } = useAuth();
+  const { address } = useAuth();
 
   const {
     dataset,
@@ -135,7 +135,7 @@ const DataDetails = () => {
         />
       );
     }
-    if (address === undefined || !hasValidToken) {
+    if (address === '') {
       return (
         <Button
           text="Wallet required"

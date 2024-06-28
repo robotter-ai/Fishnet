@@ -2,11 +2,12 @@ import Button from '@components/ui/Button';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PublicAccessToggle from '@shared/components/PublicAccessToggle';
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 import DataSummary from '@shared/components/Summary';
 import DataChart from '@pages/data/components/DataChart';
 import { nanoid } from 'nanoid';
 import { useGetDatasetsQuery } from '@store/data/api';
+import { useAppSelector } from '@store/hooks';
 
 const COLUMNS: ITableColumns[] = [
   {
@@ -67,21 +68,6 @@ const COLUMNS: ITableColumns[] = [
   },
 ];
 
-const STATISTICS = [
-  {
-    name: 'Total profit',
-    value: '7447 USDC',
-  },
-  {
-    name: 'Total downloads',
-    value: 2158,
-  },
-  {
-    name: 'Unique downloads',
-    value: 987,
-  },
-];
-
 const PublishedTable = () => {
   const { address } = useAuth();
 
@@ -89,6 +75,25 @@ const PublishedTable = () => {
     type: 'published',
     address: address,
   });
+  const { getTransactions } = useAppSelector((app) => app.transactions);
+  const totalDownloads = publishedDatasets.data
+    ?.map((dataset: IDataset) => dataset.downloads)
+    .reduce((acc: number, downloads: number) => acc + downloads, 0);
+  
+  const STATISTICS = [
+    {
+      name: 'Total profit',
+      value: getTransactions.totalProfit,
+    },
+    {
+      name: 'Total sales',
+      value: getTransactions.totalSales,
+    },
+    {
+      name: 'Total downloads',
+      value: totalDownloads,
+    },
+  ];  
 
   return (
     <>

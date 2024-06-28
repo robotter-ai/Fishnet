@@ -1,5 +1,5 @@
 import { FolderIcon, LockIcon, LogoutIcon, ProfileIcon } from '@assets/icons';
-import useAuthWallet from '@features/auth/hook';
+import useWalletAuth from '@shared/hooks/useAuth';
 import classNames from 'classnames';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -44,7 +44,7 @@ function NavList() {
 }
 
 function SideNavigation() {
-  const { handleDisconnect } = useAuthWallet();
+  const { handleDisconnect } = useWalletAuth();
 
   return (
     <div

@@ -1,14 +1,14 @@
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '@components/ui/Button';
-import useAuthWallet from '@features/auth/hook';
-import { WalletReadyState } from '@solana/wallet-adapter-base';
-import { useMemo } from 'react';
+import useWalletAuth from '@shared/hooks/useAuth';
+import { WalletName, WalletReadyState } from '@solana/wallet-adapter-base';
+import { useMemo, useState } from 'react';
 
 const LoginForm = () => {
-  const { isLoading, handleConnect } = useAuthWallet();
-
-  const { wallets, select, wallet } = useWallet();
+  const { isLoading, handleConnect } = useWalletAuth();
+  const { wallets } = useWallet();
+  const [selectedWallet, setSelectedWallet] = useState<WalletName | null>(null);
   const solanaWallets = useMemo(() => {
     return wallets.filter((wallet) =>
       wallet.readyState === WalletReadyState.Installed 
@@ -26,10 +26,10 @@ const LoginForm = () => {
             className={classNames(
               'flex justify-between items-center bg-[#F6F8FB] border-2 border-[#F6F8FB] rounded-full py-4 px-5',
               {
-                '!border-primary': wallet?.adapter.name === item.name,
+                '!border-primary': selectedWallet === item.name,
               }
             )}
-            onClick={() => select(item.name)}
+            onClick={() => setSelectedWallet(item.name)}
           >
             <p
               className={classNames('text-dark/50 text-base', {
@@ -48,7 +48,7 @@ const LoginForm = () => {
         icon="login"
         fullWidth
         isLoading={isLoading}
-        onClick={handleConnect}
+        onClick={() => handleConnect(selectedWallet)}
       />
     </div>
   );

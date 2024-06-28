@@ -4,8 +4,8 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import { preprocessTimeseries, setTimeseries } from '@slices/timeseriesSlice';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useSelectData from '@shared/hooks/useSelectData';
-import useAuth from '@shared/hooks/useAuth';
 import { useGetDatasetsQuery } from '@store/data/api';
+import { useAuth } from '@contexts/auth-provider';
 
 type DatasetTabs = 'published' | 'browse-data';
 

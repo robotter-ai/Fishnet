@@ -6,7 +6,7 @@ import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import {Link, useNavigate} from 'react-router-dom';
 import { createTransaction, sendTransaction } from '@slices/transactionSlice';
-import useAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import useDownloadDataset from '../hooks/useDownloadDataset';
@@ -19,7 +19,7 @@ const BrowseDataTable = ({
   data: Record<string, any>[];
   isLoading: boolean;
 }) => {
-  const { address, hasValidToken } = useAuth();
+  const { address } = useAuth();
   const { signTransaction } = useWallet();
   const navigate = useNavigate();
   const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
@@ -108,7 +108,7 @@ const BrowseDataTable = ({
               isLoading={isDownloading}
               onClick={() => handleDownload(dataset)}
             />
-          ) : address === undefined || !hasValidToken ?
+          ) : address === '' ?
             <CustomButton
               text="Wallet required"
               size="sm"
