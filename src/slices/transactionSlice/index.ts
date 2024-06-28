@@ -24,6 +24,11 @@ export interface Transaction {
   permissionHashes: string[];
 }
 
+export type DatasetSales = {
+  sales: number
+  profit: string
+}
+
 interface TransactionsProps {
   isLoading: boolean;
   success: boolean | null;
@@ -41,7 +46,7 @@ interface TransactionsProps {
     transactions: Transaction[];
     purchases: Transaction[];
     sales: Transaction[];
-    datasetSales: Record<string, number>;
+    datasetSales: Record<string, DatasetSales>;
     totalProfit: string | null;
     totalSales: string | null;
   };

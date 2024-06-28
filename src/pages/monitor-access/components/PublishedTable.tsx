@@ -76,9 +76,8 @@ const PublishedTable = () => {
     address: address,
   });
   const { getTransactions } = useAppSelector((app) => app.transactions);
-  console.log('publishedDatasets', publishedDatasets.data)
   const totalDownloads = publishedDatasets.data
-    .map((dataset: IDataset) => dataset.downloads)
+    ?.map((dataset: IDataset) => dataset.downloads)
     .reduce((acc: number, downloads: number) => acc + downloads, 0);
   
   const STATISTICS = [
