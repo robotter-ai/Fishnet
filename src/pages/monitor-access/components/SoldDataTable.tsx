@@ -14,21 +14,15 @@ const COLUMNS: ITableColumns[] = [
           to={`/data/${item.item_hash}/details`}
           className="text-primary whitespace-nowrap"
         >
-          {item.name}
+          {item.datasetName}
         </Link>
-        <Starred starred={item.forgotten} />
       </>
     ),
     sortWith: 'name',
   },
   {
-    header: 'DESCRIPTION',
-    cell: (item) => '',
-    sortWith: 'item',
-  },
-  {
     header: 'Buyers WALLET',
-    cell: (item) => '',
+    cell: (item) => item.signer,
     sortWith: 'item',
   },
   {
@@ -38,7 +32,7 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: 'PRICE',
-    cell: (item) => '',
+    cell: (item) => item.amount,
     sortWith: 'item',
   },
 ];

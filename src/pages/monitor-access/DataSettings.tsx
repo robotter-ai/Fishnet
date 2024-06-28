@@ -3,40 +3,14 @@ import AppModal from '@components/ui/AppModal';
 import CustomButton from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
 import { RxCaretLeft } from 'react-icons/rx';
-import { createSearchParams, Link } from 'react-router-dom';
+import { createSearchParams, Link, useParams } from 'react-router-dom';
 import DataSummary from '@shared/components/Summary';
 import DataChart from '@pages/data/components/DataChart';
 import { nanoid } from 'nanoid';
-import { PriceTagIcon } from '@assets/icons';
 import useDataSettings from './hooks/useDataSettings';
 import TableMapper from './components/SettingsTableMapper';
-
-const STATISTICS = [
-  {
-    name: 'Total profit',
-    value: '7447 USDC',
-  },
-  {
-    name: 'Total downloads',
-    value: 2158,
-  },
-  {
-    name: 'Unique downloads',
-    value: 987,
-  },
-  {
-    name: 'Average price',
-    value: 58,
-  },
-  {
-    name: 'Current Price',
-    value: (
-      <div className="flex gap-2 items-center" role="button">
-        19 USDC <PriceTagIcon width={24} height={24} />
-      </div>
-    ),
-  },
-];
+import { PriceTagIcon } from '@assets/icons';
+import { useAppSelector } from '@store/hooks';
 
 const DataSettings = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
@@ -50,6 +24,30 @@ const DataSettings = () => {
     handleOpenAccessSettings,
     handleCloseAccessSettings,
   } = useDataSettings();
+  const { id } = useParams();
+  const { getTransactions } = useAppSelector((app) => app.transactions);
+  const STATISTICS = [
+    {
+      name: 'Total profit',
+      value: getTransactions.datasetSales[id!].profit,
+    },
+    {
+      name: 'Total sales',
+      value: getTransactions.datasetSales[id!].sales,
+    },
+    {
+      name: 'Total downloads',
+      value: 2158,
+    },
+    {
+      name: 'Price',
+      value: (
+        <div className="flex gap-2 items-center" role="button">
+          19 USDC <PriceTagIcon width={24} height={24} />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div id="data-settings">
