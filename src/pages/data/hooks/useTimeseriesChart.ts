@@ -1,10 +1,7 @@
 import useModal from '@shared/hooks/useModal';
 import { useAppSelector } from '@shared/hooks/useStore';
 import { getRandomColor } from '@shared/utils/getRandomColor';
-import {
-  useGetDatasetTimeseriesQuery,
-  useGetViewsQuery,
-} from '@slices/dataSlice';
+import { useGetDatasetTimeseriesQuery, useGetViewsQuery } from '@store/data/api';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { useEffect, useMemo, useState } from 'react';

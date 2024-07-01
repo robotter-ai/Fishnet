@@ -2,7 +2,6 @@ import { FreeTagIcon } from '@assets/icons';
 import CustomButton from '@components/ui/Button';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
-import TruncatedAddress from '@shared/components/TruncatedAddress';
 import { Link, useNavigate } from 'react-router-dom';
 
 const PublishedTable = ({

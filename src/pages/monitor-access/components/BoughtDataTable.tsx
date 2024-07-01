@@ -2,7 +2,6 @@ import { Starred } from '@components/form';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useAppSelector } from '@shared/hooks/useStore';
-import { useAuth } from '@contexts/auth-provider';
 import CustomButton from '@components/ui/Button';
 import dayjs from 'dayjs';
 

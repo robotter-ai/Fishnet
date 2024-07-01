@@ -4,9 +4,8 @@ import usePageTitle from '@shared/hooks/usePageTitle';
 import useSelectData from '@shared/hooks/useSelectData';
 import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import useOnChange from '@shared/hooks/useOnChange';
-import { getAllUsers, getUserInfo, updateUserInfo } from '@slices/profileSlice';
+import { updateUserInfo } from '@slices/profileSlice';
 import { useAuth } from '@contexts/auth-provider';
-import { getTransactions as queryTransaction } from '@slices/transactionSlice';
 
 export type ITab = 'overview' | 'edit-account' | 'browse-users';
 

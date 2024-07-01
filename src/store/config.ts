@@ -59,6 +59,6 @@ export const globalApi = createApi({
     baseUrl: FISHNET_API_URL,
   }),
   refetchOnReconnect: true,
-  tagTypes: ['Dataset', 'Timeseries', 'UserInfo', 'View'],
+  tagTypes: ['Dataset', 'Permissions', 'Timeseries', 'UserInfo', 'View'],
   endpoints: () => ({}),
 });
