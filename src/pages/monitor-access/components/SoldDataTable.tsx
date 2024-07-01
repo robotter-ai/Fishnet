@@ -1,9 +1,6 @@
-import { Starred } from '@components/form';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { useGetOutgoingPermissionsQuery } from '@store/monitor-access/api';
 import { useAppSelector } from '@shared/hooks/useStore';
-import { useAuth } from '@contexts/auth-provider';
 import dayjs from 'dayjs';
 
 const COLUMNS: ITableColumns[] = [

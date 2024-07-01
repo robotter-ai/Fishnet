@@ -9,14 +9,14 @@ import { IoCheckbox } from 'react-icons/io5';
 import { RxCaretLeft } from 'react-icons/rx';
 import { Link, useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
-import TimeseriesCharts from './components/TimeseriesCharts';
-import useDataDetails from './hooks/useDataDetails';
-import TruncatedItemHash from "@shared/components/TruncatedItemHash";
+import TruncatedItemHash from '@shared/components/TruncatedItemHash';
 import { useAuth } from '@contexts/auth-provider';
-import useDownloadDataset from './hooks/useDownloadDataset';
 import { IDataset } from '@store/data/types';
 import { useRequestDatasetPermissionsMutation } from '@store/monitor-access/api';
 import { onChangePermissionsInput } from '@store/monitor-access/slice';
+import useDownloadDataset from './hooks/useDownloadDataset';
+import useDataDetails from './hooks/useDataDetails';
+import TimeseriesCharts from './components/TimeseriesCharts';
 
 const DataDetails = () => {
   const navigate = useNavigate();
