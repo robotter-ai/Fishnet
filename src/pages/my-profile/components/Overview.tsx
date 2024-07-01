@@ -1,44 +1,44 @@
 import React from 'react';
-import { UserProps } from '@slices/profileSlice/profileService';
+import { IUserInfo } from '@store/profile/types';
 import DataSummary from '@shared/components/Summary';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import TransactionTable from './TransactionTable';
 
 interface IOverviewProps {
-  inputs: UserProps;
+  user: IUserInfo;
   transactions: any;
-  address: any;
+  address: string;
 }
 
 const Overview: React.FC<IOverviewProps> = ({
-  inputs,
+  user,
   transactions,
   address,
 }) => {
   const ACCOUNT = [
     {
       name: 'Wallet address',
-      value: <TruncatedAddress address={inputs.address} copy />,
+      value: <TruncatedAddress address={address} copy />,
     },
     {
       name: 'Username',
-      value: inputs.username,
+      value: user?.username,
     },
     {
       name: 'Email',
-      value: inputs.email,
+      value: user?.email,
     },
     {
       name: 'Link',
-      value: inputs.link,
+      value: user?.link,
     },
     {
       name: 'Total downloads',
-      value: inputs.downloads,
+      value: user?.downloads,
     },
     {
       name: 'Description',
-      value: inputs.bio,
+      value: user?.bio,
     },
   ];
 

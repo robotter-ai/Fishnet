@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
+import { useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '@contexts/auth-provider';
@@ -17,10 +17,10 @@ export default () => {
   const { id } = useParams();
   const { setTitle, getTitle } = usePageTitle();
   const auth = useAuth();
-  const dispatch = useAppDispatch();
   const [dataset, setDataset] = useState<Record<string, any>>({
     name: '',
     price: 0,
+    desc: '',
   });
   const { timeseries } = useAppSelector((state) => state.timeseries);
   const { isOpen, handleOpen, handleClose } = useModal();
@@ -91,7 +91,7 @@ export default () => {
     uploadDataset({
       dataset: inputsToUpload,
       timeseries: timeseriesToUse,
-    }).then((res: any) => {
+    }).unwrap().then((res: any) => {
       setDataset(res?.data?.dataset);
       handleGenerateViews(res?.data?.dataset);
     });
