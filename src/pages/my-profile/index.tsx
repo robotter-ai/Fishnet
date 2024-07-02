@@ -9,36 +9,20 @@ import EditAccount from './components/EditAccount';
 const MyProfile = () => {
   const {
     tabs,
+    user,
     query,
-    isSelectUser,
-    inputs,
-    handleOnChange,
-    handleUpdateProfile,
-    isLoading,
-    allUsers,
+    address,
+    transactions,
     searchParams,
     setSearchParams,
-    transactions,
-    address,
   } = useProfile();
 
   const TableMapper: Record<ITab, React.ReactNode> = {
     overview: (
-      <Overview inputs={inputs} address={address} transactions={transactions} />
+      <Overview user={user} address={address} transactions={transactions} />
     ),
-    'edit-account': (
-      <EditAccount
-        inputs={inputs}
-        handleOnChange={handleOnChange}
-        isLoading={isLoading}
-        address={address}
-        transactions={transactions}
-        handleUpdateProfile={handleUpdateProfile}
-      />
-    ),
-    'browse-users': (
-      <BrowseUsers allUsers={allUsers} isSelectUser={isSelectUser} />
-    ),
+    'edit-account': <EditAccount user={user} transactions={transactions} />,
+    'browse-users': <BrowseUsers />,
   };
 
   const TableComponent = TableMapper[query];

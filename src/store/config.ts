@@ -40,8 +40,9 @@ const axiosBaseQuery =
     } catch (axiosError) {
       const err = axiosError as AxiosError;
 
-      if (err?.response?.status === 401) {
+      if (err.response?.status === 401) {
         toast.error('Session expired. Please connect again.');
+        cookies.remove('bearerToken'); // Remove token when it has expired
       }
 
       return {
@@ -59,6 +60,6 @@ export const globalApi = createApi({
     baseUrl: FISHNET_API_URL,
   }),
   refetchOnReconnect: true,
-  tagTypes: ['Dataset', 'Permissions', 'Timeseries', 'UserInfo', 'View'],
+  tagTypes: ['Dataset', 'Permissions', 'Timeseries', 'Profile', 'View'],
   endpoints: () => ({}),
 });

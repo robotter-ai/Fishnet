@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import WalletIcon from '@assets/images/wallet-icon.png';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import classNames from 'classnames';
 import { useAuth } from '@contexts/auth-provider';
 import { BellIcon } from '@assets/icons';
 import { useDetectClickOutside } from 'react-detect-click-outside';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
+import { useGetNotificationsQuery } from '@store/profile/api';
 
 function TopNavigation() {
-  const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.profile.notificationActions);
-  const { title } = usePageTitle();
   const { address } = useAuth();
+  const { title } = usePageTitle();
+
+  const { data } = useGetNotificationsQuery({ address });
 
   const [isNotification, setNotification] = useState(false);
   const notificationRef = useDetectClickOutside({

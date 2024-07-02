@@ -1,11 +1,10 @@
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
+import useSelectData from '@shared/hooks/useSelectData';
+import { useGetAllUsersQuery } from '@store/profile/api';
+import { IUserInfo } from '@store/profile/types';
 
-const columns = ({
-  isSelectUser,
-}: {
-  isSelectUser: boolean;
-}): ITableColumns[] => [
+const columns = ({ isSelect }: { isSelect: boolean }): ITableColumns[] => [
   {
     header: 'USERNAME',
     cell: ({ username }) => <p className="whitespace-nowrap">{username}</p>,
@@ -30,7 +29,7 @@ const columns = ({
     header: 'Link',
     cell: ({ link }) => (
       <>
-        {/* {isSelectUser ? (
+        {/* {isSelect ? (
           <CustomButton text="Select" btnStyle="outline-primary" />
         ) : null} */}
         <a
@@ -47,18 +46,15 @@ const columns = ({
   },
 ];
 
-const BrowseUsers = ({
-  isSelectUser,
-  allUsers,
-}: {
-  isSelectUser: boolean;
-  allUsers: any;
-}) => {
+const BrowseUsers = () => {
+  const { isSelect } = useSelectData();
+  const { data, isLoading } = useGetAllUsersQuery();
+
   return (
     <CustomTable
-      data={allUsers.data}
-      columns={columns({ isSelectUser })}
-      isLoading={allUsers.isLoading}
+      data={data as IUserInfo[]}
+      columns={columns({ isSelect })}
+      isLoading={isLoading}
     />
   );
 };

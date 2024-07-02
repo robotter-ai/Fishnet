@@ -142,7 +142,7 @@ const DataDetails = () => {
           size="md"
           icon="lock"
           btnStyle="outline-primary"
-          disabled={true}
+          disabled
         />
       );
     }
@@ -204,7 +204,7 @@ const DataDetails = () => {
                 label="Price"
                 placeholder="Set a price for your data"
                 type="number"
-                value={dataset?.price || '0'}
+                value={dataset?.price}
                 onChange={(e) => handleOnChange('price', e.target.value)}
                 fullWidth
                 trail="USDC"
