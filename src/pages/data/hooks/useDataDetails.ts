@@ -92,8 +92,8 @@ export default () => {
       dataset: inputsToUpload,
       timeseries: timeseriesToUse,
     }).unwrap().then((res: any) => {
-      setDataset(res?.data?.dataset);
-      handleGenerateViews(res?.data?.dataset);
+      setDataset(res?.dataset);
+      handleGenerateViews(res?.dataset);
     });
   };
 
