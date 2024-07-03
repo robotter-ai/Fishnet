@@ -1,34 +1,23 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import useSelectData from '@shared/hooks/useSelectData';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
-import useOnChange from '@shared/hooks/useOnChange';
-import { getAllUsers, getUserInfo, updateUserInfo } from '@slices/profileSlice';
+import { useAppSelector } from '@shared/hooks/useStore';
 import { useAuth } from '@contexts/auth-provider';
-import { getTransactions as queryTransaction } from '@slices/transactionSlice';
+import { useGetUserInfoQuery } from '@store/profile/api';
+import { IUserInfo } from '@store/profile/types';
 
 export type ITab = 'overview' | 'edit-account' | 'browse-users';
 
 export default () => {
+  const session = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const dispatch = useAppDispatch();
   const { setTitle } = usePageTitle();
-  const { isSelect } = useSelectData();
-  const auth = useAuth();
-  const { userInfo, updateActions, allUsers } = useAppSelector(
-    (app) => app.profile
-  );
+
+  const { data } = useGetUserInfoQuery({ address: session?.address });
+
+  const user = data as IUserInfo;
+
   const { getTransactions } = useAppSelector((app) => app.transactions);
-  const userInfoState = useAppSelector((app) => app.profile.userInfo);
-  const { inputs, handleOnChange } = useOnChange({
-    username: userInfoState?.username || '',
-    address: userInfoState?.address || '',
-    bio: userInfoState?.bio || '',
-    email: userInfoState?.email || '',
-    link: userInfoState?.link || '',
-    downloads: userInfoState?.downloads || 0,
-  });
 
   const query: ITab = (searchParams.get('tab') as ITab) || 'overview';
 
@@ -48,22 +37,13 @@ export default () => {
     setTitle(PAGE_TITLE[query]);
   }, [query]);
 
-  const handleUpdateProfile = () => {
-    dispatch(updateUserInfo(inputs));
-  };
-
   return {
-    query,
     tabs,
-    address: auth?.address,
-    isSelectUser: isSelect,
-    inputs,
-    handleOnChange,
-    handleUpdateProfile,
-    isLoading: updateActions.isLoading,
-    allUsers,
+    user,
+    query,
     searchParams,
     setSearchParams,
+    address: session?.address,
     transactions: getTransactions.transactions,
   };
 };

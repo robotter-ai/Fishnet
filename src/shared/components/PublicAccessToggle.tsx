@@ -3,9 +3,7 @@ import { ToggleButton } from '@components/form';
 import AppModal from '@components/ui/AppModal';
 import CustomButton from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
-import {
-  useUpdateDatasetAvailabilityMutation,
-} from '@slices/dataSlice';
+import { useUpdateDatasetAvailabilityMutation } from '@store/data/api';
 import { toast } from 'sonner';
 
 interface IPublicAccessToggleProps {

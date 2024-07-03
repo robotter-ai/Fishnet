@@ -2,9 +2,12 @@ import { Starred } from '@components/form';
 import Button from '@components/ui/Button';
 import ClickToCopy from '@shared/components/ClickToCopy';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { Link } from 'react-router-dom';
-import { Transaction } from '@slices/transactionSlice'
+import { Link, useParams } from 'react-router-dom';
+import { useGetDatasetPermissionsQuery } from '@store/monitor-access/api';
+import { DatasetPermisionProps } from '@store/monitor-access/types';
+import { Transaction } from '@slices/transactionSlice';
 import dayjs from 'dayjs';
+
 interface TableMapperColumns {
   handleOpenRefuseAccess: () => void;
 }
@@ -167,14 +170,18 @@ const accountAndAlgorithmColumns = ({
 
 const TableMapper = ({
   sales,
+  permissions,
   handleOpenRefuseAccess,
-  datasetPermission,
 }: {
   sales: Transaction[]
+  permissions: DatasetPermisionProps
   handleOpenRefuseAccess: () => void;
-  datasetPermission: any;
 }) => {
-  const { data, isLoading } = datasetPermission;
+  const { id } = useParams();
+
+  const { data, isLoading } = useGetDatasetPermissionsQuery({
+    dataset_id: id as string,
+  });
 
   const sharedByAcoount = data?.filter(
     (item: any) => !!item.requestor && !item.algorithmID

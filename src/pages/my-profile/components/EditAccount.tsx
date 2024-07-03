@@ -1,25 +1,35 @@
 import TextInput from '@components/form/TextInput';
 import CustomButton from '@components/ui/Button';
-import { UserProps } from '@slices/profileSlice/profileService';
+import { IUserInfo } from '@store/profile/types';
+import useOnChange from '@shared/hooks/useOnChange';
+import { toast } from 'sonner';
+import { useUpdateUserInfoMutation } from '@store/profile/api';
+import { useAuth } from '@contexts/auth-provider';
 import TransactionTable from './TransactionTable';
 
 interface IEditAccountProps {
-  inputs: UserProps;
+  user: IUserInfo;
   transactions: any;
-  address: any;
-  isLoading: boolean;
-  handleOnChange: (input: string, value: any) => void;
-  handleUpdateProfile: () => void;
 }
 
-const EditAccount: React.FC<IEditAccountProps> = ({
-  inputs,
-  isLoading,
-  transactions,
-  address,
-  handleOnChange,
-  handleUpdateProfile,
-}) => {
+const EditAccount: React.FC<IEditAccountProps> = ({ user, transactions }) => {
+  const session = useAuth();
+  const [updateUserInfo, { isLoading }] = useUpdateUserInfoMutation();
+
+  const { inputs, handleOnChange } = useOnChange({
+    username: user?.username || '',
+    bio: user?.bio || '',
+    email: user?.email || '',
+    link: user?.link || '',
+    downloads: user?.downloads || 0,
+  });
+
+  const handleUpdateProfile = () => {
+    updateUserInfo({ ...inputs, address: session?.address })
+      .unwrap()
+      .then(() => toast.success('Profile updated successfully'));
+  };
+
   return (
     <div className="grid grid-cols-2 gap-5 mt-8">
       <div className="flex flex-col gap-6 w-3/4 bg-[#FAFAFA] rounded-lg p-8">
@@ -61,7 +71,7 @@ const EditAccount: React.FC<IEditAccountProps> = ({
           fullWidth
         />
       </div>
-      <TransactionTable address={address} data={transactions} />
+      <TransactionTable address={session?.address} data={transactions} />
     </div>
   );
 };

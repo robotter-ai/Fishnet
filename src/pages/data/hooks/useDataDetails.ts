@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
-import {
-  IDataset,
-  useGenerateViewsMutation,
-  useGetDatasetQuery,
-  useUpdateDatasetMutation,
-  useUploadDatasetMutation,
-} from '@slices/dataSlice';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '@contexts/auth-provider';
 import useOwner from '@shared/hooks/useOwner';
+import {
+  useGenerateViewsMutation,
+  useGetDatasetByIdQuery,
+  useUpdateDatasetMutation,
+  useUploadDatasetMutation,
+} from '@store/data/api';
+import { IDataset } from '@store/data/types';
 
 export default () => {
   const { id } = useParams();
@@ -20,6 +20,7 @@ export default () => {
   const [dataset, setDataset] = useState<Record<string, any>>({
     name: '',
     price: 0,
+    desc: '',
   });
   const { timeseries } = useAppSelector((state) => state.timeseries);
   const { isOpen, handleOpen, handleClose } = useModal();
@@ -32,7 +33,7 @@ export default () => {
     data,
     isLoading: isLoadingGetDataset,
     isSuccess: isGetDatasetSuccess,
-  } = useGetDatasetQuery(
+  } = useGetDatasetByIdQuery(
     { datasetID: id as string, view_as: auth.address },
     { skip: isUpload }
   );
@@ -90,7 +91,7 @@ export default () => {
     uploadDataset({
       dataset: inputsToUpload,
       timeseries: timeseriesToUse,
-    }).then((res: any) => {
+    }).unwrap().then((res: any) => {
       setDataset(res?.data?.dataset);
       handleGenerateViews(res?.data?.dataset);
     });
