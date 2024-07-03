@@ -12,7 +12,6 @@ export const getHeaders = (auth = true, form = false) => {
       headers.Authorization = `Bearer ${bearerToken}`;
     }
   }
-  console.log("Headers being sent:", headers);
 
   return headers;
 };
