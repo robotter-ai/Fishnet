@@ -1,12 +1,12 @@
 import { FolderIcon, LockIcon, LogoutIcon, ProfileIcon } from '@assets/icons';
-import useWalletAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
 import classNames from 'classnames';
 import { Link, NavLink } from 'react-router-dom';
 
 function NavList() {
   const links = [
     {
-      to: '/data',
+      to: '/',
       icon: <FolderIcon />,
     },
     {
@@ -44,7 +44,7 @@ function NavList() {
 }
 
 function SideNavigation() {
-  const { handleDisconnect } = useWalletAuth();
+  const { resetAuth } = useAuth();
 
   return (
     <div
@@ -52,7 +52,7 @@ function SideNavigation() {
       className="flex flex-col justify-between pt-8 pb-14"
     >
       <div className="flex flex-col items-center">
-        <Link to="/data">
+        <Link to="">
           <img src="./fishnet.png" alt="Robotter PNG" width={36} />
         </Link>
         <nav className="mt-[56px]">
@@ -63,7 +63,7 @@ function SideNavigation() {
         <LogoutIcon
           color="#91999C"
           className="cursor-pointer"
-          onClick={handleDisconnect}
+          onClick={resetAuth}
         />
       </div>
     </div>

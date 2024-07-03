@@ -46,7 +46,7 @@ const BrowseDataTable = ({
 
     console.log(response);
 
-    navigate(`/data/${dataset.item_hash}/details`);
+    navigate(`/${dataset.item_hash}/details`);
   };
 
   const COLUMNS: ITableColumns[] = [
@@ -55,7 +55,7 @@ const BrowseDataTable = ({
       cell: (item) => (
         <div className="min-w-[210px]">
           <Link
-            to={`/data/${item.item_hash}/details`}
+            to={`/${item.item_hash}/details`}
             className="text-primary text-sm whitespace-nowrap"
           >
             {item.name}

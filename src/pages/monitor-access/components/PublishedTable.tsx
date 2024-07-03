@@ -16,7 +16,7 @@ const COLUMNS: ITableColumns[] = [
     accessor: 'name',
     cell: (item) => (
       <Link
-        to={`/data/${item.item_hash}/details`}
+        to={`/${item.item_hash}/details`}
         className="text-primary whitespace-nowrap"
       >
         {item.name}

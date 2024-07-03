@@ -11,8 +11,7 @@ import bs58 from 'bs58';
 
 interface AuthContextType {
   address: string;
-  tokenValidated: boolean;
-  removeToken: () => void;
+  resetAuth: () => void;
 }
 
 interface JwtPayload {
@@ -21,72 +20,40 @@ interface JwtPayload {
   sub?: string;
 }
 
+interface ChallengeResponse {
+  address: string;
+  chain: string;
+  valid_til: number;
+  token: string;
+}
+
 const defaultContextValue: AuthContextType = {
   address: '',
-  tokenValidated: false,
-  removeToken: () => {}
+  resetAuth: () => {}
 };
 
 const AuthContext = createContext<AuthContextType>(defaultContextValue);
 
 const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const cookies = new Cookies();
-  const { publicKey, signMessage } = useWallet();
-  const address = useMemo(() => publicKey?.toBase58() || '', [publicKey]);
   const dispatch = useAppDispatch();
   const [solveAuthChallenge] = useSolveChallengeMutation();
   const [requestAuthChallenge] = useRequestChallengeMutation();
   const token = cookies.get("bearerToken");
-  const [tokenValidated, setTokenValidated] = useState(!!token);
+  const { publicKey, signMessage, disconnect } = useWallet();
+  const [address, setAddress] = useState('');
 
-  useEffect(() => {
-    if (!address || token) return;
+  const validateToken = useCallback((challengeResponse: ChallengeResponse) => {
+    if (!publicKey) return;
 
-    requestAuthChallenge({ address })
-      .unwrap()
-      .then((res) => handleSolveAuthChallenge(res.challenge, address));
-  }, [address, token]);
-
-  useEffect(() => {
-    if (!address) return
-
-    dispatch(getTransactions({ address }));
-  }, [address, token]);
-
-  const handleSolveAuthChallenge = useCallback(async (challenge: string, address: string) => {
-    try {
-      if (!signMessage) return;
-
-      const message = new TextEncoder().encode(challenge);
-      const signedMessage = await signMessage(message);
-      const signature = bs58.encode(signedMessage);
-      solveAuthChallenge({ address, signature })
-        .unwrap()
-        .then((res) => {
-          const decoded = jwt_decode<JwtPayload>(res.token);
-          validateToken(decoded);
-
-          cookies.set('bearerToken', res.token, {
-            path: '/',
-            maxAge: res.valid_til,
-            expires: new Date(res.valid_til),
-            secure: true,
-          });
-        });
-    } catch (e) {
-      console.error(e);
-    }
-  }, [signMessage, address, solveAuthChallenge, cookies, dispatch]);
-
-  const validateToken = useCallback((decoded: JwtPayload) => {
-    if (!address) return;
-
+    const decoded = jwt_decode<JwtPayload>(challengeResponse.token);
+    const address = publicKey.toBase58();
     if (decoded.sub !== address) {
       cookies.remove('bearerToken');
       dispatch(setLoginStatus(LoginStatus.OUT));
       return;
     }
-  
+
     if (decoded.exp && Date.now() >= decoded.exp * 1000) {
       console.warn('Token expired. Please refresh.');
       cookies.remove('bearerToken');
@@ -94,20 +61,64 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
       return;
     }
 
-    setTokenValidated(true);
+    cookies.set('bearerToken', challengeResponse.token, {
+      path: '/',
+      maxAge: challengeResponse.valid_til,
+      expires: new Date(challengeResponse.valid_til),
+      secure: true,
+    });
+    setAddress(address);
+    dispatch(getTransactions({ address }));
     LogRocket.identify(address);
-  }, [address, cookies, dispatch]);
+  }, [publicKey, cookies, dispatch]);
 
-  const removeToken = () => {
-    setTokenValidated(false);
+  const handleChallenge = useCallback(async (challenge: string, address: string) => {
+    try {
+      if (!signMessage) return;
+
+      const message = new TextEncoder().encode(challenge);
+      const signedMessage = await signMessage(message);
+      const signature = bs58.encode(signedMessage);
+
+      const challengeResponse = await solveAuthChallenge({ address, signature }).unwrap();
+      validateToken(challengeResponse);
+    } catch (e) {
+      console.error("Failed to solve authentication challenge", e);
+    }
+  }, [signMessage, validateToken]);
+
+  const handleAuth = useCallback(async (address: string) => {
+    if (token) {
+      setAddress(address);
+      return;
+    }
+
+    try {
+      const { challenge } = await requestAuthChallenge({ address }).unwrap();
+      await handleChallenge(challenge, address);
+    } catch (error) {
+      console.error("Failed to handle authentication challenge", error);
+    }
+  }, [token, handleChallenge]);
+
+  useEffect(() => {
+    const address = publicKey?.toBase58();
+    if (!address) return;
+
+    handleAuth(address);
+  }, [publicKey]);
+
+  const resetAuth = useCallback(async () => {
+    await disconnect();
+    setAddress('');
     cookies.remove('bearerToken');
-  }
+    dispatch(setLoginStatus(LoginStatus.OUT));
+  }, [disconnect, cookies, dispatch]);
 
   const contextValue = useMemo(() => ({
     address,
-    tokenValidated,
-    removeToken
-  }), [address, tokenValidated]);
+    resetAuth
+  }), [address, resetAuth]);
 
   return (
     <AuthContext.Provider value={contextValue}>

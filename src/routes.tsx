@@ -11,25 +11,25 @@ import Login from '@pages/Login';
 import Layout from './layouts';
 
 export const router = createBrowserRouter([
-  {
+  /*{
     path: '/',
     element: <Login />,
-  },
+  },*/
   {
     element: <Layout />,
     loader: () => {
       const cookies = new Cookies();
       const token = cookies.get('bearerToken');
 
-      if (!token) {
+      /*if (!token) {
         return redirect('/');
-      }
+      }*/
 
       return { token };
     },
     children: [
       {
-        path: 'data',
+        path: '/',
         element: <MyData />,
       },
       {

@@ -75,7 +75,7 @@ export default () => {
     const formData = new FormData();
     formData.append('data_file', file);
     dispatch(preprocessTimeseries(formData)).then((results) => {
-      navigate(`/data/${'upload'}/details`);
+      navigate(`/${'upload'}/details`);
       // set name of dataset
       setTitle(file.name);
       // transform results.payload with lists of timeseries
