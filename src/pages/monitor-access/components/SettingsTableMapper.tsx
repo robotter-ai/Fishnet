@@ -4,6 +4,9 @@ import ClickToCopy from '@shared/components/ClickToCopy';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { Link, useParams } from 'react-router-dom';
 import { useGetDatasetPermissionsQuery } from '@store/monitor-access/api';
+import { DatasetPermisionProps } from '@store/monitor-access/types';
+import { Transaction } from '@slices/transactionSlice';
+import dayjs from 'dayjs';
 
 interface TableMapperColumns {
   handleOpenRefuseAccess: () => void;
@@ -30,39 +33,29 @@ const SALES_COLUMNS = ({
 }: TableMapperColumns): ITableColumns[] => [
   {
     header: 'USERS WALLET',
-    cell: ({ name }) => (
+    cell: ({ signer }) => (
       <Link
-        to={`/data/${'dataset-id'}/details`}
+        to={`/${'dataset-id'}/details`}
         className="text-primary whitespace-nowrap"
       >
-        {name}
+        {signer}
       </Link>
     ),
-    sortWith: 'name',
-  },
-  {
-    header: 'PROFILE BIO',
-    cell: ({ requestor }) => (
-      <div className="flex gap-3">
-        <p className="w-[200px] truncate">{requestor}</p>
-        <ClickToCopy text={requestor} />
-      </div>
-    ),
     sortWith: 'requestor',
   },
   {
-    header: 'BUY DATE',
-    cell: ({ maxExecutionCount, executionCount }) => '',
-    sortWith: 'requestor',
+    header: 'DATE',
+    cell: (item) => dayjs(item.timestamp).format('DD.MM.YYYY'),
+    sortWith: 'timestamp',
+  },
+  {
+    header: 'PRICE',
+    cell: (item) => item.amount,
+    sortWith: 'item',
   },
   {
     header: 'DLs',
     cell: ({ maxExecutionCount }) => '',
-    sortWith: 'maxExecutionCount',
-  },
-  {
-    header: 'Buy PRICE',
-    cell: ({ forgotten }) => '',
     sortWith: 'maxExecutionCount',
   },
 ];
@@ -74,7 +67,7 @@ const MANUAL_ACCESS_COLUMNS = ({
     header: 'USERS WALLET',
     cell: ({ name }) => (
       <Link
-        to={`/data/${'dataset-id'}/details`}
+        to={`/${'dataset-id'}/details`}
         className="text-primary whitespace-nowrap"
       >
         {name}
@@ -116,7 +109,7 @@ const accountAndAlgorithmColumns = ({
     header: 'Program name',
     cell: ({ name }) => (
       <Link
-        to={`/data/${'dataset-id'}/details`}
+        to={`/${'dataset-id'}/details`}
         className="text-primary whitespace-nowrap"
       >
         {name}
@@ -176,8 +169,12 @@ const accountAndAlgorithmColumns = ({
 ];
 
 const TableMapper = ({
+  sales,
+  permissions,
   handleOpenRefuseAccess,
 }: {
+  sales: Transaction[]
+  permissions: DatasetPermisionProps
   handleOpenRefuseAccess: () => void;
 }) => {
   const { id } = useParams();
@@ -200,7 +197,7 @@ const TableMapper = ({
     {
       title: 'Sales',
       columns: SALES_COLUMNS({ handleOpenRefuseAccess }),
-      data: sharedByAcoount,
+      data: sales,
     },
     {
       title: 'Manual access',

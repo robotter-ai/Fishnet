@@ -252,7 +252,7 @@ const DataDetails = () => {
             btnStyle="outline-primary"
             fullWidth
             onClick={() => {
-              navigate(`/data/${dataset?.item_hash}/details`);
+              navigate(`/${dataset?.item_hash}/details`);
               handleClose();
             }}
           />
@@ -261,7 +261,7 @@ const DataDetails = () => {
             size="lg"
             fullWidth
             icon="home"
-            onClick={() => navigate('/data')}
+            onClick={() => navigate('/')}
           />
         </div>
       </AppModal>

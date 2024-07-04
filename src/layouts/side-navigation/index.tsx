@@ -1,21 +1,30 @@
 import { FolderIcon, LockIcon, LogoutIcon, ProfileIcon } from '@assets/icons';
-import useWalletAuth from '@shared/hooks/useAuth';
+import { useAuth } from '@contexts/auth-provider';
+import { Tooltip } from '@mui/material';
 import classNames from 'classnames';
 import { Link, NavLink } from 'react-router-dom';
 
 function NavList() {
+  const { address } = useAuth();
+
   const links = [
     {
-      to: '/data',
+      to: '/',
       icon: <FolderIcon />,
+      label: 'Home',
+      requiresAuth: false,
     },
     {
       to: '/monitor-access',
       icon: <LockIcon />,
+      label: 'Monitor Access',
+      requiresAuth: true,
     },
     {
       to: '/profile',
       icon: <ProfileIcon />,
+      label: 'Profile',
+      requiresAuth: true,
     },
   ];
 
@@ -23,20 +32,28 @@ function NavList() {
     <ul className="flex flex-col gap-[40px]">
       {links.map((item, i) => (
         <li key={i}>
-          <NavLink to={item.to}>
-            {({ isActive }) => (
-              <div
-                className={classNames(
-                  'text-[#7B8290] text-[16px] hover:text-primary',
-                  {
-                    '!text-primary': isActive,
-                  }
-                )}
-              >
+          {item.requiresAuth && address === '' ? (
+            <Tooltip title="Login required" placement="right">
+              <div className="text-[#7B8290] text-[16px] cursor-not-allowed">
                 <div className="h-[24px]">{item.icon}</div>
               </div>
-            )}
-          </NavLink>
+            </Tooltip>
+          ) : (
+            <NavLink to={item.to}>
+              {({ isActive }) => (
+                <div
+                  className={classNames(
+                    'text-[#7B8290] text-[16px] hover:text-primary',
+                    {
+                      '!text-primary': isActive,
+                    }
+                  )}
+                >
+                  <div className="h-[24px]">{item.icon}</div>
+                </div>
+              )}
+            </NavLink>
+          )}
         </li>
       ))}
     </ul>
@@ -44,7 +61,7 @@ function NavList() {
 }
 
 function SideNavigation() {
-  const { handleDisconnect } = useWalletAuth();
+  const { resetAuth } = useAuth();
 
   return (
     <div
@@ -52,7 +69,7 @@ function SideNavigation() {
       className="flex flex-col justify-between pt-8 pb-14"
     >
       <div className="flex flex-col items-center">
-        <Link to="/data">
+        <Link to="">
           <img src="./fishnet.png" alt="Robotter PNG" width={36} />
         </Link>
         <nav className="mt-[56px]">
@@ -63,7 +80,7 @@ function SideNavigation() {
         <LogoutIcon
           color="#91999C"
           className="cursor-pointer"
-          onClick={handleDisconnect}
+          onClick={resetAuth}
         />
       </div>
     </div>

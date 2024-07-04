@@ -4,8 +4,8 @@ import { IUserInfo } from '@store/profile/types';
 import useOnChange from '@shared/hooks/useOnChange';
 import { toast } from 'sonner';
 import { useUpdateUserInfoMutation } from '@store/profile/api';
-import { useAuth } from '@contexts/auth-provider';
 import TransactionTable from './TransactionTable';
+import { useAuth } from '@contexts/auth-provider';
 
 interface IEditAccountProps {
   user: IUserInfo;

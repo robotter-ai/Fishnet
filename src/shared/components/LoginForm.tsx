@@ -1,13 +1,11 @@
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '@components/ui/Button';
-import useWalletAuth from '@shared/hooks/useAuth';
 import { WalletName, WalletReadyState } from '@solana/wallet-adapter-base';
 import { useMemo, useState } from 'react';
 
 const LoginForm = () => {
-  const { isLoading, handleConnect } = useWalletAuth();
-  const { wallets } = useWallet();
+  const { wallets, select } = useWallet();
   const [selectedWallet, setSelectedWallet] = useState<WalletName | null>(null);
   const solanaWallets = useMemo(() => {
     return wallets.filter((wallet) =>
@@ -47,8 +45,7 @@ const LoginForm = () => {
         size="lg"
         icon="login"
         fullWidth
-        isLoading={isLoading}
-        onClick={() => handleConnect(selectedWallet)}
+        onClick={() => select(selectedWallet)}
       />
     </div>
   );

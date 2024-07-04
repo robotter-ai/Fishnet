@@ -78,7 +78,7 @@ export const PublishedModal: React.FC<{
   publishedName: string;
   isOpen: boolean;
   handleClose: () => void;
-  backTo: '/data' | '/algorithms';
+  backTo: '/' | '/algorithms';
 }> = ({ title, hash, publishedName, isOpen, handleClose, backTo }) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();

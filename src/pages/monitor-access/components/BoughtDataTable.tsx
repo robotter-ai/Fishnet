@@ -10,18 +10,13 @@ const COLUMNS: ITableColumns[] = [
     header: 'Name',
     cell: (item) => (
       <Link
-        to={`/data/${item.item_hash}/details`}
-        className="text-blue whitespace-nowrap"
+        to={`/${item.item_hash}/details`}
+        className="text-primary whitespace-nowrap"
       >
         {item.datasetName}
       </Link>
     ),
     sortWith: 'name',
-  },
-  {
-    header: 'DESCRIPTION',
-    cell: (item) => '',
-    sortWith: 'item',
   },
   {
     header: 'SELLER',

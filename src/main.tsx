@@ -6,11 +6,10 @@ import { Provider } from 'react-redux';
 import LogRocket from 'logrocket';
 import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'sonner';
-
-import { AuthProvider } from '@contexts/auth-provider';
 import { store } from './store';
 import { router } from './routes';
 import SolanaContextProvider from './contexts/solana-provider';
+import { AuthProvider } from '@contexts/auth-provider';
 
 LogRocket.init('jf0bw9/fishnet');
 

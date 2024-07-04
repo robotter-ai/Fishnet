@@ -79,7 +79,7 @@ const transactionsSlice = createSlice({
   name: 'transactions',
   initialState,
   reducers: {
-    resetDataSlice: (state) => {
+    resetTransactionsSlice: (state) => {
       state.success = null;
       state.getTransactions.success = null;
       state.getTransactions.transactions = [];
@@ -112,6 +112,6 @@ const transactionsSlice = createSlice({
   },
 });
 
-export const { resetDataSlice } = transactionsSlice.actions;
+export const { resetTransactionsSlice } = transactionsSlice.actions;
 export const { createTransaction, sendTransaction } = transactionsService;
 export default transactionsSlice;

@@ -85,7 +85,7 @@ export default function PriceButton({
             text="Save"
             onClick={() => {
               handleClose();
-              navigate('/data?tab=published');
+              navigate('/?tab=published');
             }}
           />
         </div>

@@ -3,7 +3,7 @@ import AppModal from '@components/ui/AppModal';
 import CustomButton from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
 import { RxCaretLeft } from 'react-icons/rx';
-import { createSearchParams, Link, useParams } from 'react-router-dom';
+import { createSearchParams, Link } from 'react-router-dom';
 import DataSummary from '@shared/components/Summary';
 import DataChart from '@pages/data/components/DataChart';
 import { nanoid } from 'nanoid';
@@ -15,6 +15,7 @@ import { useAppSelector } from '@store/hooks';
 const DataSettings = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
   const {
+    permissions,
     dataset,
     isLoading,
     handleAddAccess,
@@ -23,26 +24,27 @@ const DataSettings = () => {
     handleOpenAccessSettings,
     handleCloseAccessSettings,
   } = useDataSettings();
-  const { id } = useParams();
   const { getTransactions } = useAppSelector((app) => app.transactions);
+  const datasetSales = getTransactions.sales.filter(x => x.datasetId === dataset.item_hash);
+  
   const STATISTICS = [
     {
       name: 'Total profit',
-      value: getTransactions.datasetSales[id!].profit,
+      value: getTransactions.datasetSales[dataset.item_hash]?.profit || 0,
     },
     {
       name: 'Total sales',
-      value: getTransactions.datasetSales[id!].sales,
+      value: getTransactions.datasetSales[dataset.item_hash]?.sales || 0,
     },
     {
       name: 'Total downloads',
-      value: 2158,
+      value: dataset?.downloads || 0,
     },
     {
       name: 'Price',
       value: (
         <div className="flex gap-2 items-center" role="button">
-          19 USDC <PriceTagIcon width={24} height={24} />
+          {dataset.price} USDC <PriceTagIcon width={24} height={24} />
         </div>
       ),
     },
@@ -80,7 +82,11 @@ const DataSettings = () => {
           }}
         />
       </div>
-      <TableMapper handleOpenRefuseAccess={handleOpen} />
+      <TableMapper
+        sales={datasetSales}
+        permissions={permissions}
+        handleOpenRefuseAccess={handleOpen}
+      />
       <AppModal
         title="Access Settings"
         withInfo
@@ -109,7 +115,7 @@ const DataSettings = () => {
               bgColor="#F6F8FB"
               size="lg"
               fullWidth
-              value={dataset.requestor}
+              value={permissions.requestor}
               onChange={(e) => handleOnchangeInput('requestor', e.target.value)}
             />
           </div>
