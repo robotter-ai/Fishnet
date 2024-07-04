@@ -4,7 +4,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-type PathProps = '' | '/algorithms' | '/monitor-access' | '/profile';
+type PathProps = '/' | '/algorithms' | '/monitor-access' | '/profile';
 
 export default () => {
   const navigate = useNavigate();

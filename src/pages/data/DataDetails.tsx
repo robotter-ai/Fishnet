@@ -261,7 +261,7 @@ const DataDetails = () => {
             size="lg"
             fullWidth
             icon="home"
-            onClick={() => navigate('')}
+            onClick={() => navigate('/')}
           />
         </div>
       </AppModal>
