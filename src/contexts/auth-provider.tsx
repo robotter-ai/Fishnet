@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo, useEffect, ReactNode, useCallback, useState } from 'react';
 import { useSolveChallengeMutation, useRequestChallengeMutation } from '@store/auth/api';
 import { setLoginStatus, LoginStatus } from '@slices/appSlice';
-import { getTransactions } from '@slices/transactionSlice';
+import { getTransactions, resetTransactionsSlice } from '@slices/transactionSlice';
 import { useAppDispatch } from '@shared/hooks/useStore';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Cookies from 'universal-cookie';
@@ -112,6 +112,7 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     await disconnect();
     setAddress('');
     cookies.remove('bearerToken');
+    dispatch(resetTransactionsSlice);
     dispatch(setLoginStatus(LoginStatus.OUT));
   }, [disconnect, cookies, dispatch]);
 

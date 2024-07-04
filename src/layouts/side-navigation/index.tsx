@@ -1,21 +1,30 @@
 import { FolderIcon, LockIcon, LogoutIcon, ProfileIcon } from '@assets/icons';
 import { useAuth } from '@contexts/auth-provider';
+import { Tooltip } from '@mui/material';
 import classNames from 'classnames';
 import { Link, NavLink } from 'react-router-dom';
 
 function NavList() {
+  const { address } = useAuth();
+
   const links = [
     {
       to: '/',
       icon: <FolderIcon />,
+      label: 'Home',
+      requiresAuth: false,
     },
     {
       to: '/monitor-access',
       icon: <LockIcon />,
+      label: 'Monitor Access',
+      requiresAuth: true,
     },
     {
       to: '/profile',
       icon: <ProfileIcon />,
+      label: 'Profile',
+      requiresAuth: true,
     },
   ];
 
@@ -23,20 +32,28 @@ function NavList() {
     <ul className="flex flex-col gap-[40px]">
       {links.map((item, i) => (
         <li key={i}>
-          <NavLink to={item.to}>
-            {({ isActive }) => (
-              <div
-                className={classNames(
-                  'text-[#7B8290] text-[16px] hover:text-primary',
-                  {
-                    '!text-primary': isActive,
-                  }
-                )}
-              >
+          {item.requiresAuth && address === '' ? (
+            <Tooltip title="Login required" placement="right">
+              <div className="text-[#7B8290] text-[16px] cursor-not-allowed">
                 <div className="h-[24px]">{item.icon}</div>
               </div>
-            )}
-          </NavLink>
+            </Tooltip>
+          ) : (
+            <NavLink to={item.to}>
+              {({ isActive }) => (
+                <div
+                  className={classNames(
+                    'text-[#7B8290] text-[16px] hover:text-primary',
+                    {
+                      '!text-primary': isActive,
+                    }
+                  )}
+                >
+                  <div className="h-[24px]">{item.icon}</div>
+                </div>
+              )}
+            </NavLink>
+          )}
         </li>
       ))}
     </ul>
