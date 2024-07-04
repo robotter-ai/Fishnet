@@ -99,7 +99,7 @@ const MyData = () => {
         <FileUploader
           name="file"
           types={['CSV']}
-          handleChange={(file: any) => handleCsvToJson(file)}
+          handleChange={(file: File) => handleCsvToJson(file)}
         >
           <div className="flex justify-center items-center h-[207px] bg-light-20 my-8 rounded-[32px]">
             {isLoadingPreprocessTimeseries ? (

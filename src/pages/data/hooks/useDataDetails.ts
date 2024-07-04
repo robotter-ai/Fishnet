@@ -22,7 +22,7 @@ export default () => {
     price: 0,
     desc: '',
   });
-  const { timeseries } = useAppSelector((state) => state.timeseries);
+  const { timeseries } = useAppSelector((state) => state.data);
   const { isOpen, handleOpen, handleClose } = useModal();
   const { isOwner } = useOwner(dataset?.owner);
 

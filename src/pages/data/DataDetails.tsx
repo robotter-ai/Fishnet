@@ -252,7 +252,7 @@ const DataDetails = () => {
             btnStyle="outline-primary"
             fullWidth
             onClick={() => {
-              navigate(`/${dataset?.item_hash}/details`);
+              navigate(`/data/${dataset?.item_hash}`);
               handleClose();
             }}
           />

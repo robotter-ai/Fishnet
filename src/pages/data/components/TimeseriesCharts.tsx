@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import { PlusCircleIcon } from '@assets/icons';
 import { CheckBox } from '@components/form';
 import AppModal from '@components/ui/AppModal';
@@ -12,7 +11,6 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
   const {
     isUpload,
     charts,
-    csvJson,
     isOpen,
     columns,
     handleOpenChart,
@@ -31,7 +29,12 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
         {charts.map((item, idx) => (
           <DataChart
             key={idx}
-            data={item.data || csvJson}
+            data={
+              item.data as {
+                date: number;
+                [key: string]: number;
+              }[]
+            }
             chart={item as ChartProps}
             withActions={isOwner}
             handleOpenChart={() => handleOpenChart(item.id as string)}

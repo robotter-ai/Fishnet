@@ -44,7 +44,9 @@ const Overview: React.FC<IOverviewProps> = ({
 
   return (
     <div className="grid grid-cols-2 gap-5 mt-8">
-      <DataSummary title="Your account" summary={ACCOUNT} />
+      <div className="max-w-[75%]">
+        <DataSummary title="Your account" summary={ACCOUNT} />
+      </div>
       <TransactionTable address={address} data={transactions} />
     </div>
   );

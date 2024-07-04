@@ -1,11 +1,15 @@
 import useModal from '@shared/hooks/useModal';
 import { useAppSelector } from '@shared/hooks/useStore';
 import { getRandomColor } from '@shared/utils/getRandomColor';
-import { useGetDatasetTimeseriesQuery, useGetViewsQuery } from '@store/data/api';
+import {
+  useGetDatasetTimeseriesQuery,
+  useGetViewsQuery,
+} from '@store/data/api';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { convertToChartData } from '@shared/utils/convertToChartData';
 
 export interface ChartProps {
   id: string;
@@ -14,16 +18,8 @@ export interface ChartProps {
     name: string;
     color: string;
   }[];
-  data?: Record<string, any>[];
+  data: Record<string, any>[];
 }
-
-const initialState: Partial<ChartProps>[] = [
-  {
-    id: nanoid(4),
-    interval: '',
-    keys: [{ name: 'loading...', color: '#6a6a6a' }],
-  },
-];
 
 export default () => {
   const { id } = useParams();
@@ -32,23 +28,30 @@ export default () => {
     skip: isUpload,
   });
 
-  const [charts, setCharts] = useState(initialState);
-  const [selectedChart, setSelectedChart] = useState<Partial<ChartProps>>({});
   const { isOpen, handleOpen, handleClose } = useModal();
-  const { csvJson, timeseries: uploadDatasetTimeseries } = useAppSelector(
-    (state) => state.timeseries
-  );
+  const { timeseries } = useAppSelector((state) => state.data);
 
-  const { data: publishedDatasetTimeseries = [] } = useGetDatasetTimeseriesQuery(
-    id as string,
-    {
+  const { data: publishedDatasetTimeseries = [] } =
+    useGetDatasetTimeseriesQuery(id as string, {
       skip: isUpload,
-    }
-  );
+    });
 
   const timeseriesToUse = useMemo(() => {
-    return isUpload ? uploadDatasetTimeseries : publishedDatasetTimeseries;
-  }, [uploadDatasetTimeseries, publishedDatasetTimeseries]);
+    return isUpload ? timeseries : publishedDatasetTimeseries;
+  }, [timeseries, publishedDatasetTimeseries]);
+
+  const [charts, setCharts] = useState<ChartProps[]>([
+    {
+      id: nanoid(4),
+      interval: 'DAY',
+      keys: timeseries?.slice(0, 3)?.map((item: any) => ({
+        name: item.name,
+        color: getRandomColor(),
+      })),
+      data: convertToChartData(timeseries, 'upload'),
+    },
+  ]);
+  const [selectedChart, setSelectedChart] = useState<Partial<ChartProps>>({});
 
   const columns: any[] = timeseriesToUse.map((item: any) => item.name);
 
@@ -78,28 +81,13 @@ export default () => {
   };
 
   useEffect(() => {
-    if (isUpload) {
-      setCharts([
-        {
-          id: nanoid(4),
-          interval: 'YEAR',
-          keys: uploadDatasetTimeseries.slice(0, 3).map((item: any) => ({
-            name: item.name,
-            color: getRandomColor(),
-          })),
-        },
-      ]);
-    }
-  }, []);
-
-  useEffect(() => {
     if (views && views.length) {
       setCharts(
         views.map((view: any) => ({
           id: view.item_hash,
           interval: view.granularity,
-          keys: view.columns.map((key: string) => ({
-            name: key,
+          keys: view.columns.map((name: string) => ({
+            name,
             color: getRandomColor(),
           })),
           data: getViewsData(view),
@@ -113,6 +101,7 @@ export default () => {
     if (id === 'new') {
       setSelectedChart({
         id: nanoid(4),
+        data: convertToChartData(timeseries, 'upload'),
       });
     } else {
       const index = charts.findIndex((item) => item.id === id);
@@ -148,13 +137,16 @@ export default () => {
   const handleSaveChart = () => {
     setCharts((prevState) => {
       const isNew = ![...prevState].filter(
-        (item) => item.id === selectedChart?.id
+        (item) => item.id === selectedChart.id
       ).length;
-      if (isNew) return [...prevState, selectedChart];
-      const newData = [...prevState];
-      const index = newData.findIndex((item) => item.id === selectedChart?.id);
-      newData[index] = selectedChart;
-      return newData;
+      if (isNew) return [...prevState, selectedChart as ChartProps];
+
+      const chartsClone = [...prevState];
+      const index = chartsClone.findIndex(
+        (item) => item.id === selectedChart.id
+      );
+      chartsClone[index] = selectedChart as ChartProps;
+      return chartsClone;
     });
     handleClose();
   };
@@ -168,7 +160,6 @@ export default () => {
 
   return {
     isUpload,
-    csvJson,
     charts,
     isOpen,
     columns,

@@ -43,6 +43,9 @@ const axiosBaseQuery =
       if (err.response?.status === 401) {
         toast.error('Session expired. Please connect again.');
         cookies.remove('bearerToken'); // Remove token when it has expired
+        // window.location.assign(`${window.location.origin}/`); // TODO: Redirect to the connect wallet page or open the sign challenge modal
+      } else {
+        toast.error(err.message);
       }
 
       return {

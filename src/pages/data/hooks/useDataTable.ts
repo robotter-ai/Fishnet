@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@shared/hooks/useStore';
+import { useAppDispatch } from '@shared/hooks/useStore';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import { preprocessTimeseries, setTimeseries } from '@slices/timeseriesSlice';
+import { setTimeseries } from '@store/data/slice';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useGetDatasetsQuery } from '@store/data/api';
+import {
+  useGetDatasetsQuery,
+  usePreProcessTimeseriesMutation,
+} from '@store/data/api';
 import { useAuth } from '@contexts/auth-provider';
 
 type DatasetTabs = 'published' | 'browse-data';
@@ -14,9 +17,6 @@ export default () => {
   const { setTitle } = usePageTitle();
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
-  const { isLoading: isLoadingPreprocessTimeseries } = useAppSelector(
-    (state) => state.timeseries
-  );
 
   const query: DatasetTabs =
     (searchParams.get('tab') as DatasetTabs) || 'browse-data';
@@ -37,6 +37,9 @@ export default () => {
       { skip: query !== 'published' }
     );
 
+  const [preProcessTimeseries, { isLoading: isLoadingPreprocessTimeseries }] =
+    usePreProcessTimeseriesMutation();
+
   const DATA_MAP: Record<DatasetTabs, any> = {
     published,
     'browse-data': all,
@@ -51,7 +54,7 @@ export default () => {
 
   const tabs = [
     { key: 'browse-data', name: 'Browse data' },
-    { key: 'published', name: 'Published' },
+    ...(auth?.address ? [{ key: 'published', name: 'Published' }] : []),
   ];
 
   const PAGE_TITLE: Record<string, string> = {
@@ -59,28 +62,20 @@ export default () => {
     published: 'Your data',
   };
 
-  // useEffect(() => {
-  //   setFilterParams((prevState) => ({
-  //     ...prevState,
-  //     data: dataToUse,
-  //   }));
-  //   console.log('first');
-  // }, [query]);
-
   useEffect(() => {
     setTitle(PAGE_TITLE[query]);
   }, [dispatch, query]);
 
-  const handleCsvToJson = (file: any) => {
+  const handleCsvToJson = (file: File) => {
     const formData = new FormData();
     formData.append('data_file', file);
-    dispatch(preprocessTimeseries(formData)).then((results) => {
-      navigate(`/${'upload'}/details`);
-      // set name of dataset
-      setTitle(file.name);
-      // transform results.payload with lists of timeseries
-      dispatch(setTimeseries(results.payload));
-    });
+    preProcessTimeseries(formData)
+      .unwrap()
+      .then((res) => {
+        dispatch(setTimeseries(res));
+        setTitle(file.name);
+        navigate(`/data/${'upload'}`);
+      });
   };
 
   const handleFilterTable = (value: any) => {

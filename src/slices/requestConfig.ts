@@ -1,4 +1,5 @@
 import Cookies from 'universal-cookie';
+
 const cookies = new Cookies();
 
 export const getHeaders = (auth = true, form = false) => {
@@ -12,7 +13,6 @@ export const getHeaders = (auth = true, form = false) => {
       headers.Authorization = `Bearer ${bearerToken}`;
     }
   }
-  console.log("Headers being sent:", headers);
 
   return headers;
 };
