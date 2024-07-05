@@ -105,7 +105,7 @@ const PublishedTable = () => {
     <>
       <div className="grid grid-cols-2 gap-5 mb-8">
         <DataSummary title="Comprehensive statistics" summary={STATISTICS} />
-        <DataChart
+        {/* <DataChart
           data={[]}
           chart={{
             id: nanoid(4),
@@ -115,7 +115,7 @@ const PublishedTable = () => {
               { name: 'Downloads', color: '#0055FF' },
             ],
           }}
-        />
+        /> */}
       </div>
       <CustomTable
         data={publishedDatasets.data as IDataset[]}
