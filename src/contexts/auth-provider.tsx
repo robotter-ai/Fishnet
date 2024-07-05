@@ -109,9 +109,9 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   }, [publicKey]);
 
   const resetAuth = useCallback(async () => {
+    cookies.remove('bearerToken');
     await disconnect();
     setAddress('');
-    cookies.remove('bearerToken');
     dispatch(resetTransactionsSlice);
     dispatch(setLoginStatus(LoginStatus.OUT));
   }, [disconnect, cookies, dispatch]);
