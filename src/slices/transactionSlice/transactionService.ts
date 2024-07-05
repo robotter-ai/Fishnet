@@ -1,4 +1,4 @@
-import { TRANSACTIONS_API_URL, getHeaders } from "@slices/requestConfig";
+import { TRANSACTIONS_API_URL } from "@store/config";
 import axios from "axios";
 
 export type CreateTransaction = {
@@ -7,7 +7,9 @@ export type CreateTransaction = {
 };
 
 const createTransaction = async (params: CreateTransaction) => {
-    const headers = getHeaders(false);
+    const headers = {
+        'Content-Type': 'application/json',
+    };
     const { data } = await axios.get(
         `${TRANSACTIONS_API_URL}/solana/createTransaction`,
         { headers, params }
@@ -21,7 +23,9 @@ export type SendTransaction = {
 };
 
 const sendTransaction = async (body: SendTransaction) => {
-    const headers = getHeaders(false);
+    const headers = {
+        'Content-Type': 'application/json',
+    };
     const { data } = await axios.post(
         `${TRANSACTIONS_API_URL}/solana/sendTransaction`,
         body,
@@ -40,7 +44,9 @@ export type UserTranasctions = {
 }
 
 const getTransactions = async (params: UserTranasctions) => {
-    const headers = getHeaders(false);
+    const headers = {
+        'Content-Type': 'application/json',
+    };
     const { data } = await axios.get(
         `${TRANSACTIONS_API_URL}/solana/getTransactions`,
         { headers, params }

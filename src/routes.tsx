@@ -23,12 +23,12 @@ export const router = createBrowserRouter([
         element: <MyData />,
       },
       {
+        path: 'data/:id',
+        element: <DataDetails />,
+      },
+      {
         element: <ProtectedRoutes />,
         children: [
-          {
-            path: 'data/:id',
-            element: <DataDetails />,
-          },
           {
             path: 'monitor-access',
             element: <MonitorAccess />,
