@@ -35,7 +35,7 @@ const SALES_COLUMNS = ({
     header: 'USERS WALLET',
     cell: ({ signer }) => (
       <Link
-        to={`/${'dataset-id'}/details`}
+        to={`/data/${'dataset-id'}`}
         className="text-primary whitespace-nowrap"
       >
         {signer}
@@ -67,7 +67,7 @@ const MANUAL_ACCESS_COLUMNS = ({
     header: 'USERS WALLET',
     cell: ({ name }) => (
       <Link
-        to={`/${'dataset-id'}/details`}
+        to={`/data/${'dataset-id'}`}
         className="text-primary whitespace-nowrap"
       >
         {name}
@@ -109,7 +109,7 @@ const accountAndAlgorithmColumns = ({
     header: 'Program name',
     cell: ({ name }) => (
       <Link
-        to={`/${'dataset-id'}/details`}
+        to={`/data/${'dataset-id'}`}
         className="text-primary whitespace-nowrap"
       >
         {name}

@@ -19,7 +19,7 @@ const PublishedTable = ({
       cell: (item) => (
         <div className="min-w-[210px]">
           <Link
-            to={`/${item.item_hash}/details`}
+            to={`/data/${item.item_hash}`}
             className="text-primary whitespace-nowrap"
           >
             {item.name}
@@ -66,7 +66,7 @@ const PublishedTable = ({
             btnStyle="outline-primary"
             size="sm"
             onClick={() => {
-              navigate(`/${item.item_hash}/details`);
+              navigate(`/data/${item.item_hash}`);
             }}
           />
         </div>

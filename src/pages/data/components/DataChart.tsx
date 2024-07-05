@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { TrashIcon } from '@assets/icons';
 import { AiOutlineLine } from 'react-icons/ai';
 import { RxPencil1 } from 'react-icons/rx';
-import { ChartProps } from '../hooks/useTimeseriesChart';
+import { IChartProps } from '@store/data/types';
 
 
 type DataEntry = {
@@ -56,7 +56,7 @@ const formatDateByGranularity = (date: any, durationInfo: DurationInfo) => {
 
 const DataChart: React.FC<{
   data: DataEntry[];
-  chart: ChartProps;
+  chart: IChartProps;
   withActions?: boolean;
   handleOpenChart?: () => void;
   handleDeleteChart?: () => void;

@@ -1,10 +1,10 @@
-/* eslint-disable no-nested-ternary */
 import { PlusCircleIcon } from '@assets/icons';
 import { CheckBox } from '@components/form';
 import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
 import DataSummary from '@shared/components/Summary';
-import useTimeseriesChart, { ChartProps } from '../hooks/useTimeseriesChart';
+import { IChartProps } from '@store/data/types';
+import useTimeseriesChart from '../hooks/useTimeseriesChart';
 import DataChart from './DataChart';
 import EditDataTable from './EditDataTable';
 
@@ -12,7 +12,6 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
   const {
     isUpload,
     charts,
-    csvJson,
     isOpen,
     columns,
     handleOpenChart,
@@ -31,8 +30,13 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
         {charts.map((item, idx) => (
           <DataChart
             key={idx}
-            data={item.data || csvJson}
-            chart={item as ChartProps}
+            data={
+              item.data as {
+                date: number;
+                [key: string]: number;
+              }[]
+            }
+            chart={item as IChartProps}
             withActions={isOwner}
             handleOpenChart={() => handleOpenChart(item.id as string)}
             handleDeleteChart={() => handleDeleteChart(item.id as string)}

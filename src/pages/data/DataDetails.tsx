@@ -99,6 +99,17 @@ const DataDetails = () => {
   ];
 
   const action = () => {
+    if (address === '') {
+      return (
+        <Button
+          text="Wallet required"
+          size="md"
+          icon="lock"
+          btnStyle="outline-primary"
+          disabled
+        />
+      );
+    }
     if (isUpload) {
       return (
         <Button
@@ -135,17 +146,6 @@ const DataDetails = () => {
         />
       );
     }
-    if (address === '') {
-      return (
-        <Button
-          text="Wallet required"
-          size="md"
-          icon="lock"
-          btnStyle="outline-primary"
-          disabled
-        />
-      );
-    }
     if (!dataset?.available || !(dataset?.permission_status === 'GRANTED')) {
       return (
         <Button
@@ -169,7 +169,7 @@ const DataDetails = () => {
         />
       );
     }
-    return <>Test</>;
+    return null;
   };
 
   return (
@@ -195,7 +195,7 @@ const DataDetails = () => {
               <TextInput
                 label="Title"
                 placeholder="Please provide a title"
-                value={dataset?.name || ''}
+                value={dataset?.name}
                 onChange={(e) => handleOnChange('name', e.target.value)}
                 fullWidth
                 mandatory={isUpload || isOwner}
@@ -212,7 +212,7 @@ const DataDetails = () => {
               <TextInput
                 label="Description"
                 placeholder="What is the data about?"
-                value={dataset?.desc || ''}
+                value={dataset?.desc}
                 onChange={(e) => handleOnChange('desc', e.target.value)}
                 fullWidth
               />
@@ -252,7 +252,7 @@ const DataDetails = () => {
             btnStyle="outline-primary"
             fullWidth
             onClick={() => {
-              navigate(`/${dataset?.item_hash}/details`);
+              navigate(`/data/${dataset?.item_hash}`);
               handleClose();
             }}
           />

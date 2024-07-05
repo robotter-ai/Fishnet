@@ -61,7 +61,7 @@ function NavList() {
 }
 
 function SideNavigation() {
-  const { resetAuth } = useAuth();
+  const { address, resetAuth } = useAuth();
 
   return (
     <div
@@ -69,20 +69,22 @@ function SideNavigation() {
       className="flex flex-col justify-between pt-8 pb-14"
     >
       <div className="flex flex-col items-center">
-        <Link to="">
+        <Link to="/">
           <img src="./fishnet.png" alt="Robotter PNG" width={36} />
         </Link>
         <nav className="mt-[56px]">
           <NavList />
         </nav>
       </div>
-      <div className="pt-8 border-t border-solid border-t-[#C8CCCD]">
-        <LogoutIcon
-          color="#91999C"
-          className="cursor-pointer"
-          onClick={resetAuth}
-        />
-      </div>
+      {address ? (
+        <div className="pt-8 border-t border-solid border-t-[#C8CCCD]">
+          <LogoutIcon
+            color="#91999C"
+            className="cursor-pointer"
+            onClick={resetAuth}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -70,7 +70,7 @@ const DataSettings = () => {
       </div>
       <div className="grid grid-cols-2 gap-5 mb-8">
         <DataSummary title="Comprehensive statistics" summary={STATISTICS} />
-        <DataChart
+        {/* <DataChart
           data={[]}
           chart={{
             id: nanoid(4),
@@ -80,7 +80,7 @@ const DataSettings = () => {
               { name: 'Downloads', color: '#0055FF' },
             ],
           }}
-        />
+        /> */}
       </div>
       <TableMapper
         sales={datasetSales}

@@ -75,7 +75,7 @@ const COLUMNS = ({
     header: 'Name',
     cell: (item) => (
       <Link
-        to={`/${item.item_hash}/details`}
+        to={`/data/${item.item_hash}`}
         className="text-primary whitespace-nowrap"
       >
         {item.name}
