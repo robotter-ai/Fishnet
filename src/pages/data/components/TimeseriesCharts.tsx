@@ -3,7 +3,8 @@ import { CheckBox } from '@components/form';
 import AppModal from '@components/ui/AppModal';
 import Button from '@components/ui/Button';
 import DataSummary from '@shared/components/Summary';
-import useTimeseriesChart, { ChartProps } from '../hooks/useTimeseriesChart';
+import { IChartProps } from '@store/data/types';
+import useTimeseriesChart from '../hooks/useTimeseriesChart';
 import DataChart from './DataChart';
 import EditDataTable from './EditDataTable';
 
@@ -35,7 +36,7 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
                 [key: string]: number;
               }[]
             }
-            chart={item as ChartProps}
+            chart={item as IChartProps}
             withActions={isOwner}
             handleOpenChart={() => handleOpenChart(item.id as string)}
             handleDeleteChart={() => handleDeleteChart(item.id as string)}

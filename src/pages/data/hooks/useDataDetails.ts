@@ -19,16 +19,15 @@ export default () => {
   const auth = useAuth();
   const [dataset, setDataset] = useState<Record<string, any>>({
     name: '',
-    price: 0,
+    price: '',
     desc: '',
   });
-  const { timeseries } = useAppSelector((state) => state.data);
+  const { timeseries, charts } = useAppSelector((state) => state.data);
   const { isOpen, handleOpen, handleClose } = useModal();
   const { isOwner } = useOwner(dataset?.owner);
 
   const isUpload = (id && id === 'upload') as boolean;
 
-  // START: RTK Query
   const {
     data,
     isLoading: isLoadingGetDataset,
@@ -37,14 +36,8 @@ export default () => {
     { datasetID: id as string, view_as: auth.address },
     { skip: isUpload }
   );
-  const [
-    uploadDataset,
-    {
-      data: uploadedData,
-      isLoading: isLoadingUploadDataset,
-      isSuccess: isSuccessUploadDataset,
-    },
-  ] = useUploadDatasetMutation();
+  const [uploadDataset, { isLoading: isLoadingUploadDataset }] =
+    useUploadDatasetMutation();
   const [generateViews, { isLoading: isLoadingGenerateViews }] =
     useGenerateViewsMutation();
   const [updateDataset, { isLoading: isLoadingUpdateDataset }] =
@@ -57,7 +50,7 @@ export default () => {
     } else {
       setDataset({
         name: getTitle(),
-        price: 0,
+        price: '',
       });
       handleOnChange('owner', auth?.address);
     }
@@ -82,19 +75,21 @@ export default () => {
       // stop execution and outline the input field
       return;
     }
-    const timeseriesToUse = timeseries.map((item: any) => ({
-      name: item.name,
-      owner: item.owner,
-      desc: item.desc,
-      data: item.data,
-    }));
+
     uploadDataset({
       dataset: inputsToUpload,
-      timeseries: timeseriesToUse,
-    }).unwrap().then((res: any) => {
-      setDataset(res?.dataset);
-      handleGenerateViews(res?.dataset);
-    });
+      timeseries: timeseries.map((item: any) => ({
+        name: item.name,
+        owner: item.owner,
+        desc: item.desc,
+        data: item.data,
+      })),
+    })
+      .unwrap()
+      .then((res: any) => {
+        setDataset(res?.dataset);
+        handleGenerateViews(res);
+      });
   };
 
   const handleUpdateDataset = () => {
@@ -103,24 +98,44 @@ export default () => {
     });
   };
 
-  const handleGenerateViews = (dataset: any) => {
-    //@todo: check state of view components
-    const time: number[] = timeseries[0].data
-      .map((x: any[]) => x[0])
-      .sort((a: number, b: number) => a - b);
-    const timeseriesToUse = [
-      {
-        timeseriesIDs: dataset?.timeseriesIDs,
-        granularity: 'YEAR',
-        startTime: time[0],
-        endTime: time[time.length - 1],
-      },
-    ];
-    generateViews({ datasetID: dataset?.item_hash, data: timeseriesToUse }).then(
-      () => {
-        handleOpen();
+  const handleGenerateViews = (res: any) => {
+    const views: any[] = [];
+
+    for (let i = 0; i < charts.length; i++) {
+      const chart = charts[i]; // Get a single chart item
+      const columns = chart.keys.map((item) => item.name); // Chart columns
+
+      const timeseriesIDs: string[] = [];
+      let startTime;
+      let endTime;
+
+      // For loop for the chart columns to get the timeseries ID
+      for (let k = 0; k < columns.length; k++) {
+        const coulumn = columns[k];
+        const timesery = res?.timeseries?.find(
+          (item: any) => item.name === coulumn
+        );
+        endTime = timesery.latest;
+        startTime = timesery.earliest;
+        timeseriesIDs.push(timesery.item_hash);
       }
-    );
+
+      views.push({
+        timeseriesIDs,
+        granularity: chart.interval,
+        startTime,
+        endTime,
+      });
+    }
+
+    generateViews({
+      datasetID: res?.dataset?.item_hash,
+      data: views,
+    })
+      .unwrap()
+      .then(() => {
+        handleOpen();
+      });
   };
 
   const handleOnChange = (input: string, value: any) => {
@@ -134,19 +149,14 @@ export default () => {
     }
   };
 
-  const isLoading = isLoadingUploadDataset || isLoadingGenerateViews;
-
   return {
     dataset,
     handleOnChange,
     handleUploadDataset,
     handleUpdateDataset,
     isLoadingGetDataset,
-    isLoadingUploadDataset:
-      isLoadingUploadDataset ||
-      isLoadingGenerateViews,
+    isLoadingUploadDataset: isLoadingUploadDataset || isLoadingGenerateViews,
     isLoadingUpdateDataset,
-    isLoading,
     isUpload,
     publishedModalProps: { handleClose, isOpen, handleOpen },
     isOwner,

@@ -25,3 +25,13 @@ export interface IUpdateDatasetAvailability {
 }
 
 export type IDatasetTimeseries = { dataset: IDataset; timeseries: any[] };
+
+export interface IChartProps {
+  id: string;
+  interval: string;
+  keys: {
+    name: string;
+    color: string;
+  }[];
+  data: Record<string, any>[];
+}
