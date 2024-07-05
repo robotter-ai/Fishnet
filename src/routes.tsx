@@ -26,7 +26,7 @@ export const router = createBrowserRouter([
         element: <ProtectedRoutes />,
         children: [
           {
-            path: 'data/:id/details',
+            path: ':id/details',
             element: <DataDetails />,
           },
           {
