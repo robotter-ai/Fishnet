@@ -11,10 +11,13 @@ export const preprocessTimeseries = createAsyncThunk(
   'timeseries/preprocessTimeseries',
   async (formData: any, thunkAPI) => {
     try {
+      const headers = getHeaders(true, true);
       const { data } = await axios.post(
         `${FISHNET_API_URL}/timeseries/csv`,
         formData,
-        getHeaders(true, true)
+        {
+          headers,
+        }
       );
       return data;
     } catch (err: any) {
