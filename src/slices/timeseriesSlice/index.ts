@@ -1,17 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import getErrMsg from '@shared/utils/getErrMsg';
-import {
-  FISHNET_API_URL,
-  getHeaders,
-} from '@slices/requestConfig';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { FISHNET_API_URL, cookies } from '@store/config';
 
 export const preprocessTimeseries = createAsyncThunk(
   'timeseries/preprocessTimeseries',
   async (formData: any, thunkAPI) => {
     try {
-      const headers = getHeaders(true, true);
+      const bearerToken = cookies.get('bearerToken');
+      const headers = {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${bearerToken}`
+      };
       const { data } = await axios.post(
         `${FISHNET_API_URL}/timeseries/csv`,
         formData,
@@ -30,8 +31,6 @@ export type DownloadTimeseries = {
   timeseriesIDs: string[];
   compression: boolean;
 };
-
-
 
 interface TimeseriesProps {
   isLoading: boolean;

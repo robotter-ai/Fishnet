@@ -52,7 +52,7 @@ const COLUMNS: ITableColumns[] = [
 
 const BoughtDataTable = () => {
   const { getTransactions } = useAppSelector((state) => state.transactions);
-  console.log(getTransactions.purchases)
+
   return (
     <CustomTable
       data={getTransactions.purchases}
