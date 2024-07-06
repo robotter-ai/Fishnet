@@ -1,36 +1,31 @@
-import { Starred } from '@components/form';
-import Button from '@components/ui/Button';
-import ClickToCopy from '@shared/components/ClickToCopy';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { Link, useParams } from 'react-router-dom';
 import { useGetDatasetPermissionsQuery } from '@store/monitor-access/api';
-import { DatasetPermisionProps } from '@store/monitor-access/types';
 import { Transaction } from '@slices/transactionSlice';
 import dayjs from 'dayjs';
+import TruncatedAddress from '@shared/components/TruncatedAddress';
 
 interface TableMapperColumns {
   handleOpenRefuseAccess: () => void;
 }
 
-const RefuseAccess = ({
-  handleOpenRefuseAccess,
-}: {
-  handleOpenRefuseAccess: () => void;
-}) => {
-  return (
-    <div className="flex justify-end">
-      <Button
-        text="Refuse"
-        btnStyle="outline-primary"
-        onClick={handleOpenRefuseAccess}
-      />
-    </div>
-  );
-};
+// const RefuseAccess = ({
+//   handleOpenRefuseAccess,
+// }: {
+//   handleOpenRefuseAccess: () => void;
+// }) => {
+//   return (
+//     <div className="flex justify-end">
+//       <Button
+//         text="Refuse"
+//         btnStyle="outline-primary"
+//         onClick={handleOpenRefuseAccess}
+//       />
+//     </div>
+//   );
+// };
 
-const SALES_COLUMNS = ({
-  handleOpenRefuseAccess,
-}: TableMapperColumns): ITableColumns[] => [
+const SALES_COLUMNS: ITableColumns[] = [
   {
     header: 'USERS WALLET',
     cell: ({ signer }) => (
@@ -55,7 +50,7 @@ const SALES_COLUMNS = ({
   },
   {
     header: 'DLs',
-    cell: ({ maxExecutionCount }) => '',
+    cell: () => '',
     sortWith: 'maxExecutionCount',
   },
 ];
@@ -65,116 +60,36 @@ const MANUAL_ACCESS_COLUMNS = ({
 }: TableMapperColumns): ITableColumns[] => [
   {
     header: 'USERS WALLET',
-    cell: ({ name }) => (
-      <Link
-        to={`/data/${'dataset-id'}`}
-        className="text-primary whitespace-nowrap"
-      >
-        {name}
-      </Link>
-    ),
-    sortWith: 'name',
+    cell: ({ requestor }) => <TruncatedAddress address={requestor} copy />,
+    sortWith: 'requestor',
   },
   {
     header: 'PROFILE BIO',
-    cell: ({ requestor }) => (
-      <div className="flex gap-3">
-        <p className="w-[200px] truncate">{requestor}</p>
-        <ClickToCopy text={requestor} />
-      </div>
-    ),
+    cell: () => '',
     sortWith: 'requestor',
   },
   {
     header: 'ACCESS DATE',
-    cell: ({ maxExecutionCount, executionCount }) => '',
-    sortWith: 'requestor',
+    cell: ({ timestamp }) => dayjs.unix(timestamp).format('DD-MM-YYYY HH:MM'),
+    sortWith: 'timestamp',
   },
   {
     header: 'DLs',
-    cell: ({ maxExecutionCount }) => '',
+    cell: () => '',
     sortWith: 'maxExecutionCount',
   },
   {
     header: 'Buy PRICE',
-    cell: ({ forgotten }) => '',
+    cell: () => '',
     sortWith: 'maxExecutionCount',
-  },
-];
-
-const accountAndAlgorithmColumns = ({
-  handleOpenRefuseAccess,
-}: TableMapperColumns): ITableColumns[] => [
-  {
-    header: 'Program name',
-    cell: ({ name }) => (
-      <Link
-        to={`/data/${'dataset-id'}`}
-        className="text-primary whitespace-nowrap"
-      >
-        {name}
-      </Link>
-    ),
-    sortWith: 'name',
-  },
-  {
-    header: 'Hash',
-    cell: ({ requestor, algorithmID }) => (
-      <div className="flex flex-col gap-3">
-        <div>
-          <p className="text-primary text-[10px]">Account</p>
-          <div className="flex gap-3">
-            <p className="w-[200px] truncate">{requestor}</p>
-            <ClickToCopy text={requestor} />
-          </div>
-        </div>
-        <div>
-          <p className="text-primary text-[10px]">Algorithm</p>
-          <div className="flex gap-3">
-            <p className="w-[200px] truncate">{algorithmID}</p>
-            <ClickToCopy text={algorithmID} />
-          </div>
-        </div>
-      </div>
-    ),
-    sortWith: 'requestor',
-  },
-  {
-    header: 'Usages left',
-    cell: ({ maxExecutionCount, executionCount }) => (
-      <div className="bg-[#E6EEFF] w-[84px] h-[34px] flex pl-4 items-center rounded-md border border-primary">
-        {Number(maxExecutionCount) - Number(executionCount)}
-      </div>
-    ),
-  },
-  {
-    header: 'Usage limit',
-    cell: ({ maxExecutionCount }) => maxExecutionCount,
-    sortWith: 'maxExecutionCount',
-  },
-  {
-    header: '',
-    cell: ({ starred }) => (
-      <div className="flex gap-3">
-        <Starred starred={starred} />
-      </div>
-    ),
-  },
-  {
-    header: '',
-    cell: () => (
-      <RefuseAccess handleOpenRefuseAccess={handleOpenRefuseAccess} />
-    ),
   },
 ];
 
 const TableMapper = ({
   sales,
-  permissions,
   handleOpenRefuseAccess,
 }: {
-  sales: Transaction[]
-  permissions: DatasetPermisionProps
+  sales: Transaction[];
   handleOpenRefuseAccess: () => void;
 }) => {
   const { id } = useParams();
@@ -183,32 +98,17 @@ const TableMapper = ({
     dataset_id: id as string,
   });
 
-  const sharedByAcoount = data?.filter(
-    (item: any) => !!item.requestor && !item.algorithmID
-  );
-  const sharedByAlgorithm = data?.filter(
-    (item: any) => !!item.algorithmID && !item.requestor
-  );
-  const sharedByAccountAlgorithm = data?.filter(
-    (item: any) => !!item.requestor && !!item.algorithmID
-  );
-
   const tables = [
     {
       title: 'Sales',
-      columns: SALES_COLUMNS({ handleOpenRefuseAccess }),
+      columns: SALES_COLUMNS,
       data: sales,
     },
     {
       title: 'Manual access',
       columns: MANUAL_ACCESS_COLUMNS({ handleOpenRefuseAccess }),
-      data: sharedByAlgorithm,
+      data,
     },
-    // {
-    //   title: 'Shared by account and algorithm ',
-    //   columns: accountAndAlgorithmColumns({ handleOpenRefuseAccess }),
-    //   data: sharedByAccountAlgorithm,
-    // },
   ];
 
   return (

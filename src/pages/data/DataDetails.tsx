@@ -7,7 +7,7 @@ import { useAppDispatch } from '@shared/hooks/useStore';
 import dayjs from 'dayjs';
 import { IoCheckbox } from 'react-icons/io5';
 import { RxCaretLeft } from 'react-icons/rx';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import TruncatedItemHash from '@shared/components/TruncatedItemHash';
 import { useAuth } from '@contexts/auth-provider';
@@ -189,14 +189,14 @@ const DataDetails = () => {
     <div>
       <div className="flex justify-between items-center mb-5">
         <div>
-          <Link
-            to=".."
+          <button
+            type="button"
             onClick={() => navigate(-1)}
             className="flex items-center text-primary"
           >
             <RxCaretLeft size={30} />
             Back
-          </Link>
+          </button>
         </div>
         <div>{action()}</div>
       </div>

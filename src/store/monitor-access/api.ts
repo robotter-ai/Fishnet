@@ -44,7 +44,6 @@ const monitorAccessApi = globalApi.injectEndpoints({
         dataset_id: string;
         timeseriesIDs?: string[];
         requestor?: string;
-        maxExecutionCount?: number;
       }
     >({
       query: ({ dataset_id, ...data }) => ({

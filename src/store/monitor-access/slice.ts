@@ -7,9 +7,9 @@ interface StateProps {
 
 const initialState: StateProps = {
   permissions: {
-    requestor: undefined,
-    algorithmID: undefined,
-    requestedExecutionCount: undefined,
+    requestor: '',
+    algorithmID: '',
+    datasetID: '',
   },
 };
 
@@ -29,9 +29,14 @@ const monitorAccessSlice = createSlice({
         [action.payload.input]: action.payload.value,
       };
     },
+
+    resetPermissionsInput: (state) => {
+      state.permissions = initialState.permissions;
+    },
   },
 });
 
-export const { onChangePermissionsInput } = monitorAccessSlice.actions;
+export const { onChangePermissionsInput, resetPermissionsInput } =
+  monitorAccessSlice.actions;
 
 export default monitorAccessSlice;
