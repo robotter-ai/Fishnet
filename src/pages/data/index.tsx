@@ -17,27 +17,31 @@ const MyData = () => {
   const {
     tabs,
     data,
-    handleCsvToJson,
-    filterParams,
-    handleFilterTable,
+    query,
+    search,
+    handleChangeSearch,
     isLoadingBrowseData,
     isLoadingPublishedData,
+    handlePreProcessTimeseries,
     isLoadingPreprocessTimeseries,
   } = useDataTable();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
   const { address } = useAuth();
 
-  const TableMapper: { [key: string]: ReactNode } = {
+  const TableMapper: Record<typeof query, ReactNode> = {
     published: (
-      <PublishedTable data={data} isLoading={isLoadingPublishedData} />
+      <PublishedTable
+        data={data.published}
+        isLoading={isLoadingPublishedData}
+      />
     ),
     'browse-data': (
-      <BrowseDataTable data={data} isLoading={isLoadingBrowseData} />
+      <BrowseDataTable data={data.all} isLoading={isLoadingBrowseData} />
     ),
   };
-  const query: null | string = searchParams.get('tab') || 'browse-data';
-  const TableComponent = TableMapper?.[query];
+
+  const TableComponent = TableMapper[query];
 
   return (
     <div>
@@ -63,8 +67,8 @@ const MyData = () => {
         </div>
         <div className="flex gap-4 items-center">
           <SearchInput
-            value={filterParams.value}
-            onChange={(value) => handleFilterTable(value)}
+            value={search}
+            onChange={(value) => handleChangeSearch(value)}
           />
           <Button
             size="md"
@@ -93,13 +97,13 @@ const MyData = () => {
           accept=".csv"
           ref={inputFileRef}
           style={{ display: 'none' }}
-          onChange={(e) => handleCsvToJson(e.target.files![0])}
+          onChange={(e) => handlePreProcessTimeseries(e.target.files![0])}
           disabled={isLoadingPreprocessTimeseries}
         />
         <FileUploader
           name="file"
           types={['CSV']}
-          handleChange={(file: File) => handleCsvToJson(file)}
+          handleChange={(file: File) => handlePreProcessTimeseries(file)}
         >
           <div className="flex justify-center items-center h-[207px] bg-light-20 my-8 rounded-[32px]">
             {isLoadingPreprocessTimeseries ? (

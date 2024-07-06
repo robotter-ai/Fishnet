@@ -1,8 +1,3 @@
-export interface IGetDataset {
-  type: 'browse-data' | 'published';
-  address: string;
-}
-
 export interface IGenerateViews {
   datasetID: string;
   data: any;

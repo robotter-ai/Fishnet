@@ -117,7 +117,7 @@ export default () => {
   };
 
   const handleSaveChart = () => {
-    if (selectedChart.keys?.length === 0) return; // Check if the columns has been added before proceeding
+    if (selectedChart.keys?.length === 0) return; // Check if the keys (columns) has been added before proceeding
 
     const isNewChart = ![...charts].filter(
       (item) => item.id === selectedChart.id
