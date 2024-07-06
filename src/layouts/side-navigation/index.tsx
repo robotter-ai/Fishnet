@@ -70,7 +70,7 @@ function SideNavigation() {
     >
       <div className="flex flex-col items-center">
         <Link to="/">
-          <img src="./fishnet.png" alt="Robotter PNG" width={36} />
+          <img src="/fishnet.png" alt="Robotter PNG" width={36} />
         </Link>
         <nav className="mt-[56px]">
           <NavList />
