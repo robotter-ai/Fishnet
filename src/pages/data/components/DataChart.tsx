@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import dayjs, {ManipulateType, OpUnitType} from 'dayjs';
 import classNames from 'classnames';
@@ -42,15 +42,15 @@ const getDuration = (index: number): DurationInfo => {
 const formatDateByGranularity = (date: any, durationInfo: DurationInfo) => {
   switch (durationInfo.type) {
     case 'day':
-      return dayjs(date).format('HH:mm');
+      return dayjs(date).format('h:mm A');
     case 'week':
-      return dayjs(date).format('D. HH:mm');
+      return dayjs(date).format('DD MMM');
     case 'month':
-      return dayjs(date).format('MMM D. HH:mm');
+      return dayjs(date).format('DD MMM');
     case 'year':
-      return dayjs(date).format('MMM D. YYYY');
+      return dayjs(date).format("MMM 'YY");
     default:
-      return dayjs(date).format('MMM D. YYYY');
+      return dayjs(date).format('YYYY');
   }
 }
 
@@ -66,12 +66,18 @@ const DataChart: React.FC<{
   const [activeDuration, setActiveDuration] = useState(5);
   const durationType = getDuration(activeDuration);
 
-  function filterChartData(): FormattedDataEntry[] {
+  // Filtered Chart Data According to Active Duration (granularity)
+  const chartData: FormattedDataEntry[] = useMemo(() => {
     if (data.length === 0) return [];
-    const cutoffDate = dayjs(data[0].date).subtract(durationType.value, durationType.type);
-    return data.filter((item) => {
-      return dayjs(item.date).isAfter(cutoffDate);
-    }).sort((a, b) => dayjs(a.date).diff(dayjs(b.date)))
+    const cutoffDate = dayjs(data[0].date).subtract(
+      durationType.value,
+      durationType.type
+    );
+    return data
+      .filter((item) => {
+        return dayjs(item.date).isAfter(cutoffDate);
+      })
+      .sort((a, b) => dayjs(a.date).diff(dayjs(b.date)))
       .map((item) => {
         const date = formatDateByGranularity(item.date, durationType);
         return {
@@ -79,16 +85,10 @@ const DataChart: React.FC<{
           date,
         };
       });
-  }
-
-  let dataToUse = filterChartData();
-
-  useEffect(() => {
-    dataToUse = filterChartData();
   }, [activeDuration]);
 
   const domainSize = [
-    Math.min(...dataToUse.map((item) => {
+    Math.min(...chartData.map((item) => {
       const value = item[chart.keys[0].name];
       if (typeof value === 'number') {
         return value
@@ -96,7 +96,7 @@ const DataChart: React.FC<{
         return Number.MAX_SAFE_INTEGER;
       }
     })),
-    Math.max(...dataToUse.map((item) => {
+    Math.max(...chartData.map((item) => {
       const value = item[chart.keys[0].name];
       if (typeof value === 'number') {
         return value
@@ -144,7 +144,7 @@ const DataChart: React.FC<{
         ) : null}
       </div>
       <ResponsiveContainer width="100%" height={250}>
-        <AreaChart data={dataToUse} margin={{ left: -2 }}>
+        <AreaChart data={chartData} margin={{ left: -2 }}>
           <defs>
             {chart.keys.map((item, idx: number) => (
               <linearGradient
@@ -167,7 +167,9 @@ const DataChart: React.FC<{
             <YAxis
               axisLine={false}
               tickLine={false}
-              tickFormatter={(number) => (number === 0 ? '' : number)}
+              tickFormatter={(number) =>
+                number === 0 ? '' : Number(number).toFixed(2)
+              }
               domain={domainSize}
             />
           )}

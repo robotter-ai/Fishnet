@@ -8,56 +8,66 @@ import {
   usePreProcessTimeseriesMutation,
 } from '@store/data/api';
 import { useAuth } from '@contexts/auth-provider';
+import { IDataset } from '@store/data/types';
 
 type DatasetTabs = 'published' | 'browse-data';
 
 export default () => {
   const auth = useAuth();
   const navigate = useNavigate();
-  const { setTitle } = usePageTitle();
   const dispatch = useAppDispatch();
+  const { setTitle } = usePageTitle();
   const [searchParams] = useSearchParams();
 
   const query: DatasetTabs =
     (searchParams.get('tab') as DatasetTabs) || 'browse-data';
 
-  const { data: all, isLoading: isLoadingBrowseData } = useGetDatasetsQuery(
+  const [search, setSearch] = useState<Record<DatasetTabs, string>>({
+    'browse-data': '',
+    published: '',
+  });
+
+  const { all, isLoadingBrowseData } = useGetDatasetsQuery(
+    { view_as: auth?.address },
     {
-      type: 'browse-data',
-      address: auth?.address,
-    },
-    { skip: query !== 'browse-data' }
+      selectFromResult: ({ data, isLoading }) => ({
+        all: data?.filter(
+          (item) =>
+            (item.name &&
+              item.name.toLowerCase().includes(search[query].toLowerCase())) ||
+            (item.desc &&
+              item.desc.toLowerCase().includes(search[query].toLowerCase()))
+        ) as IDataset[],
+        isLoadingBrowseData: isLoading,
+      }),
+    }
   );
-  const { data: published, isLoading: isLoadingPublishedData } =
-    useGetDatasetsQuery(
-      {
-        type: 'published',
-        address: auth?.address,
-      },
-      { skip: query !== 'published' }
-    );
+  const { published, isLoadingPublishedData } = useGetDatasetsQuery(
+    { by: auth?.address },
+    {
+      selectFromResult: ({ data, isLoading }) => ({
+        published: data?.filter(
+          (item) =>
+            (item.name &&
+              item.name.toLowerCase().includes(search[query].toLowerCase())) ||
+            (item.desc &&
+              item.desc.toLowerCase().includes(search[query].toLowerCase()))
+        ) as IDataset[],
+        isLoadingPublishedData: isLoading,
+      }),
+      skip: query !== 'published',
+    }
+  );
 
   const [preProcessTimeseries, { isLoading: isLoadingPreprocessTimeseries }] =
     usePreProcessTimeseriesMutation();
-
-  const DATA_MAP: Record<DatasetTabs, any> = {
-    published,
-    'browse-data': all,
-  };
-
-  const dataToUse = DATA_MAP[query] || [];
-
-  const [filterParams, setFilterParams] = useState({
-    value: '',
-    data: dataToUse,
-  });
 
   const tabs = [
     { key: 'browse-data', name: 'Browse data' },
     ...(auth?.address ? [{ key: 'published', name: 'Published' }] : []),
   ];
 
-  const PAGE_TITLE: Record<string, string> = {
+  const PAGE_TITLE: Record<DatasetTabs, string> = {
     'browse-data': 'All data',
     published: 'Your data',
   };
@@ -66,7 +76,7 @@ export default () => {
     setTitle(PAGE_TITLE[query]);
   }, [dispatch, query]);
 
-  const handleCsvToJson = (file: File) => {
+  const handlePreProcessTimeseries = (file: File) => {
     const formData = new FormData();
     formData.append('data_file', file);
     preProcessTimeseries(formData)
@@ -78,24 +88,19 @@ export default () => {
       });
   };
 
-  const handleFilterTable = (value: any) => {
-    if (!value) return setFilterParams({ value, data: dataToUse });
-    return setFilterParams({
-      value,
-      data: dataToUse.filter(({ name }: any) =>
-        name.toLowerCase().includes(value.toLowerCase())
-      ),
-    });
+  const handleChangeSearch = (value: string) => {
+    setSearch((prevState) => ({ ...prevState, [query]: value }));
   };
 
   return {
     tabs,
-    data: dataToUse,
-    filterParams,
-    handleCsvToJson,
-    handleFilterTable,
+    query,
+    handleChangeSearch,
     isLoadingBrowseData,
+    search: search[query],
     isLoadingPublishedData,
+    data: { all, published },
+    handlePreProcessTimeseries,
     isLoadingPreprocessTimeseries,
   };
 };

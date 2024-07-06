@@ -71,7 +71,7 @@ const CustomButton: React.FC<ButtonProps> = ({
   icon,
 }) => {
   const btnClassnames = classNames(
-    'app-btn block px-5 text-white text-[14px] rounded-[150px] whitespace-nowrap',
+    'app-btn block relative px-5 text-white text-[14px] rounded-[150px] whitespace-nowrap disabled:cursor-not-allowed',
     {
       'h-9 px-7': size === 'sm',
       'h-[44px] font-bold px-10': size === 'md',
@@ -114,12 +114,16 @@ const CustomButton: React.FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled || isLoading}
     >
+      <div
+        className={classNames('flex gap-[11px] justify-center items-center', {
+          'text-transparent': isLoading,
+        })}
+      >
+        {icon ? ICONS[icon] : null}
+        {text}
+      </div>
       {isLoading ? (
-        <div
-          className={classNames('flex justify-center items-center absolute', {
-            'left-2/4': fullWidth,
-          })}
-        >
+        <div className="flex justify-center items-center absolute top-1/2 left-1/2">
           <FadeLoader
             color="currentColor"
             height={6}
@@ -127,12 +131,7 @@ const CustomButton: React.FC<ButtonProps> = ({
             width={1.25}
           />
         </div>
-      ) : (
-        <div className="flex gap-[11px] justify-center items-center">
-          {icon ? ICONS[icon] : null}
-          {text}
-        </div>
-      )}
+      ) : null}
     </button>
   );
 };

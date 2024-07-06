@@ -1,8 +1,8 @@
 export interface DatasetPermisionProps {
-  requestor?: string;
+  requestor: string;
+  datasetID: string;
   algorithmID?: string;
   timeseriesIDs?: string[];
-  requestedExecutionCount?: number;
   maxExecutionCount?: number;
   authorizer?: string;
 }

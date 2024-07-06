@@ -52,7 +52,6 @@ const AllowComponent = ({ item }: any) => {
               grantPermissions({
                 dataset_id: item.datasetID,
                 requestor: item.requestor,
-                maxExecutionCount,
               })
             }
           />

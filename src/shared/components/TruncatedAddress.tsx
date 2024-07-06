@@ -1,11 +1,6 @@
 import ClickToCopy from '@shared/components/ClickToCopy';
 import classNames from 'classnames';
-import React from "react";
-
-enum Type {
-  Solana = 'solana',
-  Ethereum = 'ethereum'
-}
+import React from 'react';
 
 interface ITruncatedAddress {
   address: string;
@@ -14,21 +9,22 @@ interface ITruncatedAddress {
   link?: boolean;
 }
 
+export const getTruncatedAddress = (address: string) => {
+  if (!address) return '';
+  const hashArray = address.split('');
+  const firstHalf = hashArray.slice(0, 4);
+  const secondHalf = hashArray.slice(-4);
+  return `${firstHalf.join('')}...${secondHalf.join('')}`;
+};
+
 const TruncatedAddress: React.FC<ITruncatedAddress> = ({
   address,
   copy,
   color,
 }) => {
-  const getTruncatedAddress = () => {
-    if (!address) return '';
-    const hashArray = address.split('');
-    const firstHalf = hashArray.slice(0, 4);
-    const secondHalf = hashArray.slice(-4);
-    return `${firstHalf.join('')}...${secondHalf.join('')}`;
-  };
-
   let url = '';
-  if(!!address) {
+
+  if (address) {
     if (address.startsWith('0x')) {
       url = `https://etherscan.io/address/${address}`;
     } else {
@@ -43,8 +39,13 @@ const TruncatedAddress: React.FC<ITruncatedAddress> = ({
           'text-primary': color === 'primary',
         })}
       >
-        <a className="text-primary hover:underline" href={url} target="_blank" rel="noreferrer">
-          {getTruncatedAddress()}
+        <a
+          className="text-primary hover:underline"
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {getTruncatedAddress(address)}
         </a>
       </p>
       {copy ? <ClickToCopy text={address} /> : null}

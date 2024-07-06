@@ -72,10 +72,7 @@ const COLUMNS: ITableColumns[] = [
 const PublishedTable = () => {
   const { address } = useAuth();
 
-  const publishedDatasets = useGetDatasetsQuery({
-    type: 'published',
-    address: address,
-  });
+  const publishedDatasets = useGetDatasetsQuery({ by: address });
   const { getTransactions } = useAppSelector((app) => app.transactions);
   const totalDownloads = publishedDatasets.data
     ?.map((dataset: IDataset) => dataset.downloads)

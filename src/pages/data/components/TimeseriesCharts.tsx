@@ -87,6 +87,7 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
             icon="box"
             fullWidth
             onClick={handleSaveChart}
+            disabled={!selectedChart?.keys?.length}
           />
         </div>
       </AppModal>

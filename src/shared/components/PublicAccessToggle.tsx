@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ToggleButton } from '@components/form';
 import AppModal from '@components/ui/AppModal';
 import CustomButton from '@components/ui/Button';
 import useModal from '@shared/hooks/useModal';
 import { useUpdateDatasetAvailabilityMutation } from '@store/data/api';
-import { toast } from 'sonner';
 
 interface IPublicAccessToggleProps {
   datasetId: string;
@@ -17,15 +16,17 @@ const PublicAccessToggle: React.FC<IPublicAccessToggleProps> = ({
 }) => {
   const { isOpen, handleOpen, handleClose } = useModal();
 
-  const [updateDatasetAvailability, { isSuccess, isLoading }] =
+  const [updateDatasetAvailability, { isLoading }] =
     useUpdateDatasetAvailabilityMutation();
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success('Dataset have been updated!');
-      handleClose();
-    }
-  }, [isSuccess]);
+  const handleUpdateAvailability = () => {
+    updateDatasetAvailability({
+      datasetID: datasetId,
+      available: !available,
+    })
+      .unwrap()
+      .then(() => handleClose());
+  };
 
   return (
     <>
@@ -46,12 +47,7 @@ const PublicAccessToggle: React.FC<IPublicAccessToggleProps> = ({
             size="lg"
             fullWidth
             isLoading={isLoading}
-            onClick={async () =>
-              await updateDatasetAvailability({
-                datasetID: datasetId,
-                available: !available,
-              }).unwrap()
-            }
+            onClick={handleUpdateAvailability}
           />
           <CustomButton
             text="No, back"
