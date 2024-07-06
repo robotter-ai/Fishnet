@@ -15,7 +15,6 @@ const BrowseDataTable = ({
   data: Record<string, any>[];
   isLoading: boolean;
 }) => {
-  console.log(data)
   const { address } = useAuth();
   const { handlePurchase } = useTransaction();
   const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
