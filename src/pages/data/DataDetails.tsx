@@ -17,6 +17,8 @@ import { onChangePermissionsInput } from '@store/monitor-access/slice';
 import useDownloadDataset from './hooks/useDownloadDataset';
 import useDataDetails from './hooks/useDataDetails';
 import TimeseriesCharts from './components/TimeseriesCharts';
+import CustomButton from '@components/ui/Button';
+import useTransaction from '@shared/hooks/useTransaction';
 
 const DataDetails = () => {
   const navigate = useNavigate();
@@ -36,6 +38,7 @@ const DataDetails = () => {
     isOwner,
   } = useDataDetails();
   const { handleDownload, isLoading: isDownloading } = useDownloadDataset();
+  const { handlePurchase } = useTransaction();
 
   const [requestPermissions, { isLoading: isLoadingRequestPermissions }] =
     useRequestDatasetPermissionsMutation();
@@ -134,7 +137,7 @@ const DataDetails = () => {
         />
       );
     }
-    if (dataset?.available || dataset?.permission_status === 'GRANTED') {
+    if (dataset.price == 0 || dataset?.permission_status === 'GRANTED') {
       return (
         <Button
           text="Download"
@@ -148,25 +151,35 @@ const DataDetails = () => {
     }
     if (!dataset?.available || !(dataset?.permission_status === 'GRANTED')) {
       return (
-        <Button
-          text="Request access"
-          size="md"
-          icon="lock"
-          btnStyle="outline-primary"
-          onClick={() => {
-            dispatch(
-              onChangePermissionsInput({
-                input: 'requestor',
-                value: address,
-              })
-            );
-            requestPermissions({ dataset_id: dataset?.item_hash });
-          }}
-          isLoading={
-            dataset?.permission_status === 'REQUESTED' ||
-            isLoadingRequestPermissions
-          }
-        />
+        <div className="flex items-center space-x-4">
+          <Button
+            text="Request access"
+            size="md"
+            icon="lock"
+            btnStyle="outline-primary"
+            onClick={() => {
+              dispatch(
+                onChangePermissionsInput({
+                  input: 'requestor',
+                  value: address,
+                })
+              );
+              requestPermissions({ dataset_id: dataset?.item_hash });
+            }}
+            isLoading={
+              dataset?.permission_status === 'REQUESTED' || isLoadingRequestPermissions
+            }
+            className="w-32"
+          />
+          <CustomButton
+            text="Buy"
+            size="md"
+            icon="buy"
+            btnStyle="solid-secondary"
+            onClick={() => handlePurchase(dataset.item_hash)}
+            className="w-32"
+          />
+        </div>
       );
     }
     return null;
@@ -212,7 +225,7 @@ const DataDetails = () => {
               <TextInput
                 label="Description"
                 placeholder="What is the data about?"
-                value={dataset?.desc}
+                value={dataset?.desc || ''}
                 onChange={(e) => handleOnChange('desc', e.target.value)}
                 fullWidth
               />

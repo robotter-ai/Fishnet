@@ -2,7 +2,6 @@
 import { PriceTagIcon } from '@assets/icons';
 import TextInput from '@components/form/TextInput';
 import useModal from '@shared/hooks/useModal';
-import useTransaction from '@shared/hooks/useTransaction';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -28,7 +27,7 @@ export default function PriceButton({
   price: string;
   paymentTrigger?: boolean;
 }) {
-  const { setPrice } = useTransaction();
+  const [dataPrice, setPrice] = useState<string>('0');
   const [fieldPrice, setFieldPrice] = useState(0);
   const { isOpen, handleOpen, handleClose } = useModal();
   const navigate = useNavigate();
