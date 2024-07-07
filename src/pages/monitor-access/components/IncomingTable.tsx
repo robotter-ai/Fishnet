@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@contexts/auth-provider';
 import { DeletePrompt } from '@shared/components/Prompts';
 import AppModal from '@components/ui/AppModal';
@@ -12,6 +12,23 @@ import {
   useGetIncomingPermissionsQuery,
   useGrantDatasetPermissionsMutation,
 } from '@store/monitor-access/api';
+import { useLazyGetDatasetByIdQuery } from '@store/data/api';
+import { IDataset } from '@store/data/types';
+
+type Permission = {
+  authorizer: string;
+  changed: boolean;
+  current_revision: number;
+  datasetID: string;
+  forgotten: boolean;
+  item_hash: string;
+  requestor: string;
+  revision_hashes: string[];
+  signer: string;
+  status: string;
+  timeseriesID: string;
+  timestamp: number;
+};
 
 const AllowComponent = ({ item }: any) => {
   const { isOpen, handleOpen, handleClose } = useModal();
@@ -74,27 +91,26 @@ const COLUMNS = ({
     header: 'Name',
     cell: (item) => (
       <Link
-        to={`/data/${item.item_hash}`}
+        to={`/data/${item.name}`}
         className="text-primary whitespace-nowrap"
       >
-        {item.name}
+        {item.dataset?.name || ''}
       </Link>
     ),
     sortWith: 'name',
   },
   {
     header: 'Description',
-    cell: ({ datasetID }) => '',
+    cell: (item) => item.dataset?.desc || '',
   },
   {
     header: 'BUYERS Wallet',
-    cell: ({ status }) => '',
-    sortWith: 'status',
+    cell: ({ requestor }) => requestor,
+    sortWith: 'requestor',
   },
   {
     header: 'DLs',
-    cell: ({ requestor }) => '',
-    sortWith: 'requestor',
+    cell: (item) => item.dataset?.downloads || '',
   },
   {
     header: '',
@@ -131,10 +147,48 @@ const COLUMNS = ({
 
 const IncomingTable = () => {
   const auth = useAuth();
-
-  const { data, isLoading } = useGetIncomingPermissionsQuery({
+  
+  const { data: incomingPermissions } = useGetIncomingPermissionsQuery({
     address: auth?.address,
-  });
+  }, { skip: !auth?.address });
+
+  const filteredPermissions = useMemo(() => {
+    return incomingPermissions?.filter((permission: Permission) => permission.status === 'REQUESTED') || [];
+  }, [incomingPermissions]);
+
+  const uniqueDatasetIds = useMemo(() => {
+    const ids = filteredPermissions.map((permission: Permission) => permission.datasetID);
+    return [...new Set(ids)];
+  }, [filteredPermissions]);
+
+  const [fetchDatasetById] = useLazyGetDatasetByIdQuery();
+  const [datasets, setDatasets] = useState<IDataset[]>([]);
+  const [loadingDatasets, setLoadingDatasets] = useState(false);
+
+  useEffect(() => {
+    const fetchDatasets = async () => {
+      setLoadingDatasets(true);
+      try {
+        const results = await Promise.all(uniqueDatasetIds.map(datasetID =>
+          fetchDatasetById({ datasetID: datasetID as string, view_as: auth?.address as string }).unwrap()
+        ));
+        setDatasets(results);
+      } catch (error) {
+        console.error('Error fetching datasets:', error);
+      } finally {
+        setLoadingDatasets(false);
+      }
+    };
+
+    if (uniqueDatasetIds.length > 0) {
+      fetchDatasets();
+    }
+  }, [uniqueDatasetIds, fetchDatasetById, auth?.address]);
+
+  const combinedData = filteredPermissions.map((permission: Permission) => ({
+    ...permission,
+    dataset: datasets.find((data: IDataset) => data.item_hash === permission.datasetID) || null,
+  }));
 
   const [
     denyPermissions,
@@ -147,13 +201,13 @@ const IncomingTable = () => {
 
   return (
     <CustomTable
-      data={data}
+      data={combinedData}
       columns={COLUMNS({
         handleRefusePermision,
         isSuccessDenyPermission,
         isLoadingDenyPermissions,
       })}
-      isLoading={isLoading}
+      isLoading={loadingDatasets}
     />
   );
 };

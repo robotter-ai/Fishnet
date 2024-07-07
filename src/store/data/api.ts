@@ -112,4 +112,5 @@ export const {
   useLazyDownloadDatasetCSVQuery,
   usePreProcessTimeseriesMutation,
   useUpdateDatasetAvailabilityMutation,
+  useLazyGetDatasetByIdQuery
 } = dataApi;
