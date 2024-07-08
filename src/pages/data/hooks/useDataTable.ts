@@ -79,11 +79,12 @@ export default () => {
   const handlePreProcessTimeseries = (file: File) => {
     const formData = new FormData();
     formData.append('data_file', file);
+    const title = file.name.replaceAll('.csv', '');
     preProcessTimeseries(formData)
       .unwrap()
       .then((res) => {
         dispatch(setTimeseries(res));
-        setTitle(file.name);
+        setTitle(title);
         navigate(`/data/${'upload'}`);
       });
   };

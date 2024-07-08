@@ -1,6 +1,5 @@
 import TextInput from '@components/form/TextInput';
 import AppModal from '@components/ui/AppModal';
-import Button from '@components/ui/Button';
 import DataSummary from '@shared/components/Summary';
 import ViewLoader from '@shared/components/ViewLoader';
 import { useAppDispatch } from '@shared/hooks/useStore';
@@ -14,11 +13,11 @@ import { useAuth } from '@contexts/auth-provider';
 import { IDataset } from '@store/data/types';
 import { useRequestDatasetPermissionsMutation } from '@store/monitor-access/api';
 import { onChangePermissionsInput } from '@store/monitor-access/slice';
+import useTransaction from '@shared/hooks/useTransaction';
+import CustomButton from '@components/ui/Button';
 import useDownloadDataset from './hooks/useDownloadDataset';
 import useDataDetails from './hooks/useDataDetails';
 import TimeseriesCharts from './components/TimeseriesCharts';
-import CustomButton from '@components/ui/Button';
-import useTransaction from '@shared/hooks/useTransaction';
 
 const DataDetails = () => {
   const navigate = useNavigate();
@@ -104,7 +103,7 @@ const DataDetails = () => {
   const action = () => {
     if (address === '') {
       return (
-        <Button
+        <CustomButton
           text="Wallet required"
           size="md"
           icon="lock"
@@ -115,19 +114,19 @@ const DataDetails = () => {
     }
     if (isUpload) {
       return (
-        <Button
+        <CustomButton
           text="Publish"
           icon="upload"
           size="md"
           isLoading={isLoadingUploadDataset as boolean}
           onClick={handleUploadDataset}
-          disabled={!dataset?.name || !dataset?.price}
+          disabled={!dataset?.name}
         />
       );
     }
     if (isOwner) {
       return (
-        <Button
+        <CustomButton
           text="Save"
           icon="box"
           size="md"
@@ -137,9 +136,9 @@ const DataDetails = () => {
         />
       );
     }
-    if (dataset.price == 0 || dataset?.permission_status === 'GRANTED') {
+    if (dataset.price === 0 || dataset?.permission_status === 'GRANTED') {
       return (
-        <Button
+        <CustomButton
           text="Download"
           size="md"
           icon="download"
@@ -152,7 +151,7 @@ const DataDetails = () => {
     if (!dataset?.available || !(dataset?.permission_status === 'GRANTED')) {
       return (
         <div className="flex items-center space-x-4">
-          <Button
+          <CustomButton
             text="Request access"
             size="md"
             icon="lock"
@@ -167,7 +166,8 @@ const DataDetails = () => {
               requestPermissions({ dataset_id: dataset?.item_hash });
             }}
             isLoading={
-              dataset?.permission_status === 'REQUESTED' || isLoadingRequestPermissions
+              dataset?.permission_status === 'REQUESTED' ||
+              isLoadingRequestPermissions
             }
             className="w-32"
           />
@@ -217,7 +217,7 @@ const DataDetails = () => {
                 label="Price"
                 placeholder="Set a price for your data"
                 type="number"
-                value={dataset?.price}
+                value={dataset.price}
                 onChange={(e) => handleOnChange('price', e.target.value)}
                 fullWidth
                 trail="USDC"
@@ -258,7 +258,7 @@ const DataDetails = () => {
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-7">
-          <Button
+          <CustomButton
             text="Edit"
             size="lg"
             icon="edit"
@@ -269,7 +269,7 @@ const DataDetails = () => {
               handleClose();
             }}
           />
-          <Button
+          <CustomButton
             text="Home"
             size="lg"
             fullWidth
