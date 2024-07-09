@@ -6,3 +6,5 @@ export interface DatasetPermisionProps {
   maxExecutionCount?: number;
   authorizer?: string;
 }
+
+export type IMonitorAccessTab = 'published' | 'bought' | 'sold' | 'incoming';

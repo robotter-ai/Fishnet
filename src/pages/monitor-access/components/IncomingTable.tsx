@@ -14,6 +14,7 @@ import {
 } from '@store/monitor-access/api';
 import { useLazyGetDatasetByIdQuery } from '@store/data/api';
 import { IDataset } from '@store/data/types';
+import { useAppSelector } from '@store/hooks';
 
 type Permission = {
   authorizer: string;
@@ -91,7 +92,7 @@ const COLUMNS = ({
     header: 'Name',
     cell: (item) => (
       <Link
-        to={`/data/${item.name}`}
+        to={`/data/${item.dataset?.item_hash}`}
         className="text-primary whitespace-nowrap"
       >
         {item.dataset?.name || ''}
@@ -147,7 +148,9 @@ const COLUMNS = ({
 
 const IncomingTable = () => {
   const auth = useAuth();
-  
+
+  const { search } = useAppSelector((state) => state.monitorAccess);
+
   const { data: incomingPermissions } = useGetIncomingPermissionsQuery({
     address: auth?.address,
   }, { skip: !auth?.address });
@@ -201,7 +204,11 @@ const IncomingTable = () => {
 
   return (
     <CustomTable
-      data={combinedData}
+      data={combinedData.filter(
+        (item: any) =>
+          item?.dataset?.name &&
+          item?.dataset?.name.toLowerCase().includes(search.toLowerCase())
+      )}
       columns={COLUMNS({
         handleRefusePermision,
         isSuccessDenyPermission,

@@ -5,7 +5,7 @@ import { useAppDispatch } from '@shared/hooks/useStore';
 import { useAppSelector } from '@store/hooks';
 import { useGrantDatasetPermissionsMutation } from '@store/monitor-access/api';
 import {
-  onChangePermissionsInput,
+  setPermissionsInput,
   resetPermissionsInput,
 } from '@store/monitor-access/slice';
 import { createSearchParams, Link, useNavigate } from 'react-router-dom';
@@ -85,7 +85,7 @@ const AddAccessModal = ({
             value={permissions.requestor}
             onChange={(e) =>
               dispatch(
-                onChangePermissionsInput({
+                setPermissionsInput({
                   input: 'requestor',
                   value: e.target.value,
                 })

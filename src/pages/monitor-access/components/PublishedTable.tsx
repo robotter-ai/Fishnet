@@ -5,7 +5,6 @@ import PublicAccessToggle from '@shared/components/PublicAccessToggle';
 import { useAuth } from '@contexts/auth-provider';
 import DataSummary from '@shared/components/Summary';
 import DataChart from '@pages/data/components/DataChart';
-import { nanoid } from 'nanoid';
 import { useGetDatasetsQuery } from '@store/data/api';
 import { useAppSelector } from '@store/hooks';
 import { IDataset } from '@store/data/types';
@@ -50,7 +49,7 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'Price',
     accessor: 'desc',
-    cell: (item) => item.price != 0 ? item.price + ' USDC' : "Free",
+    cell: (item) => (item.price !== 0 ? `${item.price} USDC` : 'Free'),
     sortWith: 'item',
   },
   {
@@ -72,9 +71,23 @@ const COLUMNS: ITableColumns[] = [
 const PublishedTable = () => {
   const { address } = useAuth();
 
-  const publishedDatasets = useGetDatasetsQuery({ by: address });
+  const { search } = useAppSelector((app) => app.monitorAccess);
   const { getTransactions } = useAppSelector((app) => app.transactions);
-  const totalDownloads = publishedDatasets.data
+
+  const { published, isLoading } = useGetDatasetsQuery(
+    { by: address },
+    {
+      selectFromResult: ({ data, ...rest }) => ({
+        published: data?.filter(
+          (item) =>
+            item.name && item.name.toLowerCase().includes(search.toLowerCase())
+        ) as IDataset[],
+        ...rest,
+      }),
+    }
+  );
+
+  const totalDownloads = published
     ?.map((dataset: IDataset) => dataset.downloads)
     .reduce((acc: number, downloads) => {
       if (downloads) {
@@ -82,7 +95,7 @@ const PublishedTable = () => {
       }
       return 0;
     }, 0);
-  
+
   const STATISTICS = [
     {
       name: 'Total profit',
@@ -96,7 +109,7 @@ const PublishedTable = () => {
       name: 'Total downloads',
       value: totalDownloads,
     },
-  ];  
+  ];
 
   return (
     <>
@@ -114,11 +127,7 @@ const PublishedTable = () => {
           }}
         /> */}
       </div>
-      <CustomTable
-        data={publishedDatasets.data as IDataset[]}
-        columns={COLUMNS}
-        isLoading={publishedDatasets.isLoading}
-      />
+      <CustomTable data={published} columns={COLUMNS} isLoading={isLoading} />
     </>
   );
 };

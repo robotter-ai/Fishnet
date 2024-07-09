@@ -12,7 +12,7 @@ import TruncatedItemHash from '@shared/components/TruncatedItemHash';
 import { useAuth } from '@contexts/auth-provider';
 import { IDataset } from '@store/data/types';
 import { useRequestDatasetPermissionsMutation } from '@store/monitor-access/api';
-import { onChangePermissionsInput } from '@store/monitor-access/slice';
+import { setPermissionsInput } from '@store/monitor-access/slice';
 import useTransaction from '@shared/hooks/useTransaction';
 import CustomButton from '@components/ui/Button';
 import useDownloadDataset from './hooks/useDownloadDataset';
@@ -158,7 +158,7 @@ const DataDetails = () => {
             btnStyle="outline-primary"
             onClick={() => {
               dispatch(
-                onChangePermissionsInput({
+                setPermissionsInput({
                   input: 'requestor',
                   value: address,
                 })

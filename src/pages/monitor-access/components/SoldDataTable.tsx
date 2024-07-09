@@ -7,14 +7,12 @@ const COLUMNS: ITableColumns[] = [
   {
     header: 'Name',
     cell: (item) => (
-      <>
-        <Link
-          to={`/data/${item.datasetId}`}
-          className="text-primary whitespace-nowrap"
-        >
-          {item.datasetName}
-        </Link>
-      </>
+      <Link
+        to={`/data/${item.datasetId}`}
+        className="text-primary whitespace-nowrap"
+      >
+        {item.datasetName}
+      </Link>
     ),
     sortWith: 'name',
   },
@@ -36,11 +34,16 @@ const COLUMNS: ITableColumns[] = [
 ];
 
 const SoldDataTable = () => {
+  const { search } = useAppSelector((state) => state.monitorAccess);
   const { getTransactions } = useAppSelector((state) => state.transactions);
 
   return (
     <CustomTable
-      data={getTransactions.sales}
+      data={getTransactions.sales.filter(
+        (item) =>
+          item?.datasetName &&
+          item?.datasetName.toLowerCase().includes(search.toLowerCase())
+      )}
       columns={COLUMNS}
       isLoading={getTransactions.isLoading}
     />

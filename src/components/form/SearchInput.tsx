@@ -2,7 +2,7 @@ import { SearchIcon } from '@assets/icons';
 
 interface ISearchInputProps {
   value: string;
-  onChange: (value: any) => void;
+  onChange: (value: string) => void;
 }
 
 const SearchInput: React.FC<ISearchInputProps> = ({ value, onChange }) => {

@@ -35,7 +35,6 @@ const COLUMNS: ITableColumns[] = [
   },
   {
     header: '',
-    //@todo
     cell: (item) => <Starred starred={item.forgotten} />,
   },
   {
@@ -51,11 +50,16 @@ const COLUMNS: ITableColumns[] = [
 ];
 
 const BoughtDataTable = () => {
+  const { search } = useAppSelector((state) => state.monitorAccess);
   const { getTransactions } = useAppSelector((state) => state.transactions);
 
   return (
     <CustomTable
-      data={getTransactions.purchases}
+      data={getTransactions.purchases.filter(
+        (item) =>
+          item?.datasetName &&
+          item?.datasetName.toLowerCase().includes(search.toLowerCase())
+      )}
       columns={COLUMNS}
       isLoading={getTransactions.isLoading}
     />

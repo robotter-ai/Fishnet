@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppSelector } from '@shared/hooks/useStore';
@@ -13,11 +13,19 @@ export default () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { setTitle } = usePageTitle();
 
+  const [search, setSearch] = useState('');
+
   const { data } = useGetUserInfoQuery({ address: session?.address });
 
   const user = data as IUserInfo;
 
   const { getTransactions } = useAppSelector((app) => app.transactions);
+
+  const transactions = getTransactions.transactions.filter(
+    (item) =>
+      item?.datasetName &&
+      item?.datasetName.toLowerCase().includes(search.toLowerCase())
+  );
 
   const query: ITab = (searchParams.get('tab') as ITab) || 'overview';
 
@@ -41,9 +49,11 @@ export default () => {
     tabs,
     user,
     query,
+    search,
+    setSearch,
+    transactions,
     searchParams,
     setSearchParams,
     address: session?.address,
-    transactions: getTransactions.transactions,
   };
 };

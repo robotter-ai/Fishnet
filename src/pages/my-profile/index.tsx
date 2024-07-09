@@ -11,7 +11,9 @@ const MyProfile = () => {
     tabs,
     user,
     query,
+    search,
     address,
+    setSearch,
     transactions,
     searchParams,
     setSearchParams,
@@ -22,7 +24,7 @@ const MyProfile = () => {
       <Overview user={user} address={address} transactions={transactions} />
     ),
     'edit-account': <EditAccount user={user} transactions={transactions} />,
-    'browse-users': <BrowseUsers />,
+    'browse-users': <BrowseUsers search={search} />,
   };
 
   const TableComponent = TableMapper[query];
@@ -49,7 +51,7 @@ const MyProfile = () => {
             </div>
           ))}
         </div>
-        <SearchInput value="" onChange={() => null} />
+        <SearchInput value={search} onChange={(value) => setSearch(value)} />
       </div>
       {TableComponent}
     </div>

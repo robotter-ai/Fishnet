@@ -22,6 +22,7 @@ export interface Transaction {
   amount: string;
   timestamp: string;
   permissionHashes: string[];
+  datasetName?: string;
 }
 
 export type DatasetSales = {
