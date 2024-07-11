@@ -218,7 +218,13 @@ const DataDetails = () => {
                 placeholder="Set a price for your data"
                 type="number"
                 value={dataset.price}
-                onChange={(e) => handleOnChange('price', e.target.value)}
+                onChange={({ target: { value } }) => {
+                  // Check if the value starts with 0
+                  if (/^0/.test(value) && value.length > 1) {
+                    value = value.replace(/^0/, '');
+                  }
+                  handleOnChange('price', value);
+                }}
                 fullWidth
                 trail="USDC"
               />

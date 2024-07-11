@@ -35,7 +35,7 @@ const COLUMNS: ITableColumns[] = [
     sortWith: 'available',
   },
   {
-    header: 'DLS',
+    header: 'DOWNLOADS',
     accessor: 'desc',
     cell: (item) => '',
     sortWith: 'item',
@@ -99,11 +99,11 @@ const PublishedTable = () => {
   const STATISTICS = [
     {
       name: 'Total profit',
-      value: getTransactions.totalProfit,
+      value: getTransactions.totalProfit || 0,
     },
     {
       name: 'Total sales',
-      value: getTransactions.totalSales,
+      value: getTransactions.totalSales || 0,
     },
     {
       name: 'Total downloads',

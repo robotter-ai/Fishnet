@@ -101,6 +101,7 @@ const AddAccessModal = ({
             fullWidth
             isLoading={isLoading}
             onClick={handleGrantPermission}
+            disabled={!permissions.requestor || !permissions.datasetID}
           />
           <CustomButton
             text="Choose a user"

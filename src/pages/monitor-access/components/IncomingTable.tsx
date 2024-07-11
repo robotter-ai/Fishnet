@@ -110,7 +110,7 @@ const COLUMNS = ({
     sortWith: 'requestor',
   },
   {
-    header: 'DLs',
+    header: 'DOWNLOADS',
     cell: (item) => item.dataset?.downloads || '',
   },
   {
@@ -151,16 +151,25 @@ const IncomingTable = () => {
 
   const { search } = useAppSelector((state) => state.monitorAccess);
 
-  const { data: incomingPermissions } = useGetIncomingPermissionsQuery({
-    address: auth?.address,
-  }, { skip: !auth?.address });
+  const { data: incomingPermissions } = useGetIncomingPermissionsQuery(
+    {
+      address: auth?.address,
+    },
+    { skip: !auth?.address }
+  );
 
   const filteredPermissions = useMemo(() => {
-    return incomingPermissions?.filter((permission: Permission) => permission.status === 'REQUESTED') || [];
+    return (
+      incomingPermissions?.filter(
+        (permission: Permission) => permission.status === 'REQUESTED'
+      ) || []
+    );
   }, [incomingPermissions]);
 
   const uniqueDatasetIds = useMemo(() => {
-    const ids = filteredPermissions.map((permission: Permission) => permission.datasetID);
+    const ids = filteredPermissions.map(
+      (permission: Permission) => permission.datasetID
+    );
     return [...new Set(ids)];
   }, [filteredPermissions]);
 
@@ -172,9 +181,14 @@ const IncomingTable = () => {
     const fetchDatasets = async () => {
       setLoadingDatasets(true);
       try {
-        const results = await Promise.all(uniqueDatasetIds.map(datasetID =>
-          fetchDatasetById({ datasetID: datasetID as string, view_as: auth?.address as string }).unwrap()
-        ));
+        const results = await Promise.all(
+          uniqueDatasetIds.map((datasetID) =>
+            fetchDatasetById({
+              datasetID: datasetID as string,
+              view_as: auth?.address as string,
+            }).unwrap()
+          )
+        );
         setDatasets(results);
       } catch (error) {
         console.error('Error fetching datasets:', error);
@@ -190,7 +204,10 @@ const IncomingTable = () => {
 
   const combinedData = filteredPermissions.map((permission: Permission) => ({
     ...permission,
-    dataset: datasets.find((data: IDataset) => data.item_hash === permission.datasetID) || null,
+    dataset:
+      datasets.find(
+        (data: IDataset) => data.item_hash === permission.datasetID
+      ) || null,
   }));
 
   const [

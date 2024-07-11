@@ -4,6 +4,7 @@ import AddAccessModal from '@shared/components/AddAccessModal';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import useModal from '@shared/hooks/useModal';
 import useSelectData from '@shared/hooks/useSelectData';
+import { converToValidUrl } from '@shared/utils/converToValidUrl';
 import { useAppDispatch } from '@store/hooks';
 import { setPermissionsInput } from '@store/monitor-access/slice';
 import { useGetAllUsersQuery } from '@store/profile/api';
@@ -32,7 +33,7 @@ const columns = ({
     sortWith: 'link',
   },
   {
-    header: 'DLs',
+    header: 'DOWNLOADS',
     cell: ({ downloads }) => downloads,
     sortWith: 'bio',
   },
@@ -40,7 +41,7 @@ const columns = ({
     header: 'Link',
     cell: ({ link }) => (
       <a
-        href={link}
+        href={converToValidUrl(link as string)}
         className="text-primary hover:underline"
         rel="noreferrer"
         target="_blank"
