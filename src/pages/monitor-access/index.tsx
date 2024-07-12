@@ -1,20 +1,18 @@
 import { SearchInput } from '@components/form';
-import AppModal from '@components/ui/AppModal';
-import Button from '@components/ui/Button';
-import useModal from '@shared/hooks/useModal';
 import classNames from 'classnames';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
+import { IMonitorAccessTab } from '@store/monitor-access/types';
 import IncomingTable from './components/IncomingTable';
 import PublishedTable from './components/PublishedTable';
-import useMonitorAccessTable, { ITab } from './hooks/useMonitorAccessTable';
+import useMonitorAccessTable from './hooks/useMonitorAccessTable';
 import BoughtDataTable from './components/BoughtDataTable';
 import SoldDataTable from './components/SoldDataTable';
 
 const MonitorAccess = () => {
-  const { tabs, query, setSearchParams } = useMonitorAccessTable();
-  const { isOpen, handleClose } = useModal();
+  const { tabs, query, search, setSearchParams, onChangeSearch } =
+    useMonitorAccessTable();
 
-  const TableMapper: Record<ITab, ReactNode> = {
+  const TableMapper: Record<IMonitorAccessTab, ReactNode> = {
     published: <PublishedTable />,
     bought: <BoughtDataTable />,
     sold: <SoldDataTable />,
@@ -44,27 +42,9 @@ const MonitorAccess = () => {
             </div>
           ))}
         </div>
-        <SearchInput value="" onChange={handleClose} />
+        <SearchInput value={search} onChange={onChangeSearch} />
       </div>
       {TableComponent}
-      <AppModal
-        title="Deleted file cannot be restored"
-        isOpen={isOpen}
-        handleClose={handleClose}
-      >
-        <div className="my-[20px]">
-          <p>Are you sure?</p>
-        </div>
-        <div className="flex flex-col gap-4">
-          <Button
-            text="Yes, delete"
-            btnStyle="outline-red"
-            size="lg"
-            fullWidth
-          />
-          <Button text="No, back" size="lg" fullWidth />
-        </div>
-      </AppModal>
     </div>
   );
 };

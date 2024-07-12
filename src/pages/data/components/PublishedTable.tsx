@@ -34,13 +34,6 @@ const PublishedTable = ({
       sortWith: 'desc',
     },
     {
-      header: 'DLS',
-      cell: (item) => (
-        <div className="flex w-[100px] gap-3">{item?.forgotten}</div>
-      ),
-      sortWith: '',
-    },
-    {
       header: 'PRICE',
       cell: ({ price }) =>
         price === '0' ? (
@@ -55,6 +48,13 @@ const PublishedTable = ({
           <PriceButton price={price} />
         ),
       sortWith: 'price',
+    },
+    {
+      header: 'DOWNLOADS',
+      cell: (item) => (
+        <div className="flex w-[100px] gap-3">{item?.forgotten}</div>
+      ),
+      sortWith: '',
     },
     {
       header: '     ',

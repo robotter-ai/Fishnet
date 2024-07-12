@@ -4,8 +4,9 @@ import AddAccessModal from '@shared/components/AddAccessModal';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import useModal from '@shared/hooks/useModal';
 import useSelectData from '@shared/hooks/useSelectData';
+import { converToValidUrl } from '@shared/utils/converToValidUrl';
 import { useAppDispatch } from '@store/hooks';
-import { onChangePermissionsInput } from '@store/monitor-access/slice';
+import { setPermissionsInput } from '@store/monitor-access/slice';
 import { useGetAllUsersQuery } from '@store/profile/api';
 import { IUserInfo } from '@store/profile/types';
 
@@ -32,7 +33,7 @@ const columns = ({
     sortWith: 'link',
   },
   {
-    header: 'DLs',
+    header: 'DOWNLOADS',
     cell: ({ downloads }) => downloads,
     sortWith: 'bio',
   },
@@ -40,7 +41,7 @@ const columns = ({
     header: 'Link',
     cell: ({ link }) => (
       <a
-        href={link}
+        href={converToValidUrl(link as string)}
         className="text-primary hover:underline"
         rel="noreferrer"
         target="_blank"
@@ -66,7 +67,7 @@ const columns = ({
     : []),
 ];
 
-const BrowseUsers = () => {
+const BrowseUsers = ({ search }: { search: string }) => {
   const dispatch = useAppDispatch();
   const { isSelect } = useSelectData();
   const { data, isLoading } = useGetAllUsersQuery();
@@ -77,14 +78,24 @@ const BrowseUsers = () => {
   } = useModal();
 
   const handleOpenAddAccessModal = (value: string) => {
-    dispatch(onChangePermissionsInput({ input: 'requestor', value }));
+    dispatch(setPermissionsInput({ input: 'requestor', value }));
     handleOpenAccessSettings();
   };
 
   return (
     <>
       <CustomTable
-        data={data as IUserInfo[]}
+        data={
+          data?.filter(
+            (item) =>
+              (item?.username &&
+                item?.username.toLowerCase().includes(search.toLowerCase())) ||
+              (item?.link &&
+                item?.link.toLowerCase().includes(search.toLowerCase())) ||
+              (item?.bio &&
+                item?.bio.toLowerCase().includes(search.toLowerCase()))
+          ) as IUserInfo[]
+        }
         columns={columns({ isSelect, handleOpenAddAccessModal })}
         isLoading={isLoading}
       />

@@ -1,12 +1,18 @@
 import { useEffect } from 'react';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useSearchParams } from 'react-router-dom';
+import { IMonitorAccessTab } from '@store/monitor-access/types';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { setMonitorAccessSearchInput } from '@store/monitor-access/slice';
 
-export type ITab = 'published' | 'bought' | 'sold' | 'incoming';
+export type ITab = IMonitorAccessTab;
 
 export default () => {
-  const [searchParam, setSearchParams] = useSearchParams();
   const { setTitle } = usePageTitle();
+  const dispatch = useAppDispatch();
+  const [searchParam, setSearchParams] = useSearchParams();
+
+  const { search } = useAppSelector((state) => state.monitorAccess);
 
   const query: ITab = (searchParam.get('tab') as ITab) || 'published';
 
@@ -28,5 +34,15 @@ export default () => {
     setTitle(PAGE_TITLE[query]);
   }, [query]);
 
-  return { tabs, query, setSearchParams };
+  const onChangeSearch = (value: string) => {
+    dispatch(setMonitorAccessSearchInput(value));
+  };
+
+  return {
+    tabs,
+    query,
+    search,
+    onChangeSearch,
+    setSearchParams,
+  };
 };

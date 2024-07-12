@@ -83,9 +83,9 @@ function TopNavigation() {
                             <p className="text-[#29324A] text-base leading-4 mb-2">
                               {item.message_text}
                             </p>
-                            <p className="text-sm text-[#91989C] leading-none">
+                            {/* <p className="text-sm text-[#91989C] leading-none">
                               8h ago
-                            </p>
+                            </p> */}
                           </div>
                         ))}
                     </div>

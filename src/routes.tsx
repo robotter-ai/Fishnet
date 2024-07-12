@@ -5,6 +5,7 @@ import DataDetails from '@pages/data/DataDetails';
 import MonitorAccess from '@pages/monitor-access';
 import DataSettings from '@pages/monitor-access/DataSettings';
 import MyProfile from '@pages/my-profile';
+import NotFound from '@pages/not-found';
 import Layout from './layouts';
 
 const ProtectedRoutes = () => {
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
         path: 'data/:id',
         element: <DataDetails />,
       },
+
       {
         element: <ProtectedRoutes />,
         children: [
@@ -43,12 +45,11 @@ export const router = createBrowserRouter([
           },
         ],
       },
+
+      {
+        path: '*',
+        element: <NotFound />,
+      },
     ],
   },
-  {
-    path: '*',
-    element: <h1>Not Found!</h1>,
-  },
 ]);
-
-// TODO: Toast Classname "!bg-[#F6FAFB] !w-fit !py-3 !whitespace-nowrap !px-8 right-1/2 -translate-x-1/2 !rounded-full"

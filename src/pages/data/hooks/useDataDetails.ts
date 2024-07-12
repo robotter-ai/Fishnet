@@ -19,7 +19,7 @@ export default () => {
   const auth = useAuth();
   const [dataset, setDataset] = useState<Record<string, any>>({
     name: '',
-    price: '',
+    price: 0,
     desc: '',
   });
   const { timeseries, charts } = useAppSelector((state) => state.data);
@@ -50,7 +50,7 @@ export default () => {
     } else {
       setDataset({
         name: getTitle(),
-        price: '',
+        price: 0,
       });
       handleOnChange('owner', auth?.address);
     }

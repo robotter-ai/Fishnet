@@ -4,22 +4,20 @@ import useModal from '@shared/hooks/useModal';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@contexts/auth-provider';
 import { useGetDatasetByIdQuery } from '@store/data/api';
-import { onChangePermissionsInput } from '@store/monitor-access/slice';
+import { setPermissionsInput } from '@store/monitor-access/slice';
+import usePageTitle from '@shared/hooks/usePageTitle';
 
 export default () => {
   const auth = useAuth();
   const { id } = useParams();
   const dispatch = useAppDispatch();
+  const { setTitle } = usePageTitle();
   const {
     isOpen: isOpenAccessSettings,
     handleOpen: handleOpenAccessSettings,
     handleClose: handleCloseAccessSettings,
   } = useModal();
 
-  const [dataset, setDataset] = useState<Record<string, any>>({
-    name: '',
-    price: 0,
-  });
   const { data, isSuccess } = useGetDatasetByIdQuery({
     datasetID: id as string,
     view_as: auth.address,
@@ -27,17 +25,17 @@ export default () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setDataset(data);
+      setTitle(data.name);
     }
   }, [isSuccess]);
 
   const handleOpenAddAccess = () => {
-    dispatch(onChangePermissionsInput({ input: 'datasetID', value: id }));
+    dispatch(setPermissionsInput({ input: 'datasetID', value: id }));
     handleOpenAccessSettings();
   };
 
   return {
-    dataset,
+    dataset: data,
     isOpenAccessSettings,
     handleCloseAccessSettings,
     handleOpenAccessSettings: handleOpenAddAccess,

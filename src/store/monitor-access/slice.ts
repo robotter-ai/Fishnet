@@ -3,6 +3,7 @@ import { DatasetPermisionProps } from '@store/monitor-access/types';
 
 interface StateProps {
   permissions: DatasetPermisionProps;
+  search: string;
 }
 
 const initialState: StateProps = {
@@ -11,13 +12,14 @@ const initialState: StateProps = {
     algorithmID: '',
     datasetID: '',
   },
+  search: '',
 };
 
 const monitorAccessSlice = createSlice({
   name: 'monitorAccess',
   initialState,
   reducers: {
-    onChangePermissionsInput: (
+    setPermissionsInput: (
       state,
       action: PayloadAction<{
         input: keyof DatasetPermisionProps;
@@ -30,13 +32,20 @@ const monitorAccessSlice = createSlice({
       };
     },
 
+    setMonitorAccessSearchInput: (state, action: PayloadAction<string>) => {
+      state.search = action.payload;
+    },
+
     resetPermissionsInput: (state) => {
       state.permissions = initialState.permissions;
     },
   },
 });
 
-export const { onChangePermissionsInput, resetPermissionsInput } =
-  monitorAccessSlice.actions;
+export const {
+  setPermissionsInput,
+  resetPermissionsInput,
+  setMonitorAccessSearchInput,
+} = monitorAccessSlice.actions;
 
 export default monitorAccessSlice;

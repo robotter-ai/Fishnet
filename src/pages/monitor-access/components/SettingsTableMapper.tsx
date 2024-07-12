@@ -49,7 +49,7 @@ const SALES_COLUMNS: ITableColumns[] = [
     sortWith: 'item',
   },
   {
-    header: 'DLs',
+    header: 'DOWNLOADS',
     cell: () => '',
     sortWith: 'maxExecutionCount',
   },
@@ -74,7 +74,7 @@ const MANUAL_ACCESS_COLUMNS = ({
     sortWith: 'timestamp',
   },
   {
-    header: 'DLs',
+    header: 'DOWNLOADS',
     cell: () => '',
     sortWith: 'maxExecutionCount',
   },

@@ -79,11 +79,12 @@ export default () => {
   const handlePreProcessTimeseries = (file: File) => {
     const formData = new FormData();
     formData.append('data_file', file);
+    const title = file.name.split('.').slice(0, -1).join('-'); // Removing the file extension
     preProcessTimeseries(formData)
       .unwrap()
       .then((res) => {
         dispatch(setTimeseries(res));
-        setTitle(file.name);
+        setTitle(title);
         navigate(`/data/${'upload'}`);
       });
   };

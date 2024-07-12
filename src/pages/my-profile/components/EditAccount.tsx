@@ -32,7 +32,7 @@ const EditAccount: React.FC<IEditAccountProps> = ({ user, transactions }) => {
 
   return (
     <div className="grid grid-cols-2 gap-5 mt-8">
-      <div className="flex flex-col gap-6 w-3/4 bg-[#FAFAFA] rounded-lg p-8">
+      <div className="flex flex-col gap-6 w-3/4 bg-[#FAFAFA] rounded-[32px] p-8">
         <TextInput
           label="Username"
           placeholder="Your name for other users?"
