@@ -8,12 +8,16 @@ import useOwner from '@shared/hooks/useOwner';
 import {
   useGenerateViewsMutation,
   useGetDatasetByIdQuery,
+  useGetDatasetTimeseriesQuery,
   useUpdateDatasetMutation,
   useUploadDatasetMutation,
 } from '@store/data/api';
 import { IDataset } from '@store/data/types';
+import { useAppDispatch } from '@store/hooks';
+import { setTimeseries } from '@store/data/slice';
 
 export default () => {
+  const dispatch = useAppDispatch();
   const { id } = useParams();
   const { setTitle, getTitle } = usePageTitle();
   const auth = useAuth();
@@ -42,6 +46,18 @@ export default () => {
     useGenerateViewsMutation();
   const [updateDataset, { isLoading: isLoadingUpdateDataset }] =
     useUpdateDatasetMutation();
+
+  const { data: publishedTimeseries, isSuccess: isSuccessPublishedTimeseries } =
+    useGetDatasetTimeseriesQuery(id as string, {
+      skip: isUpload,
+    });
+
+  useEffect(() => {
+    if (!isUpload && isSuccessPublishedTimeseries) {
+      // This sets the timeseries for a live or published dataset
+      dispatch(setTimeseries(publishedTimeseries));
+    }
+  }, [isUpload, isSuccessPublishedTimeseries]);
 
   useEffect(() => {
     if (isGetDatasetSuccess) {
@@ -93,9 +109,16 @@ export default () => {
   };
 
   const handleUpdateDataset = () => {
-    updateDataset(inputsToUpload).then(() => {
-      handleOpen();
-    });
+    if (!inputsToUpload?.name) {
+      // stop execution and outline the input field
+      return;
+    }
+
+    updateDataset(inputsToUpload)
+      .unwrap()
+      .then(() => {
+        handleGenerateViews({ timeseries });
+      });
   };
 
   const handleGenerateViews = (res: any) => {
@@ -112,12 +135,12 @@ export default () => {
       // For loop for the chart columns to get the timeseries ID
       for (let k = 0; k < columns.length; k++) {
         const coulumn = columns[k];
-        const timesery = res?.timeseries?.find(
+        const timeseriesItem = res?.timeseries?.find(
           (item: any) => item.name === coulumn
         );
-        endTime = timesery.latest;
-        startTime = timesery.earliest;
-        timeseriesIDs.push(timesery.item_hash);
+        endTime = timeseriesItem.latest;
+        startTime = timeseriesItem.earliest;
+        timeseriesIDs.push(timeseriesItem.item_hash);
       }
 
       views.push({
@@ -125,11 +148,14 @@ export default () => {
         granularity: chart.interval,
         startTime,
         endTime,
+        // This check below is to persist the item_hash of an aready existing view
+        // A new view is using a local id of lenght 4 (nanaoid(4)) - so to test for an id with lenght > 5 is valid
+        ...(chart.id.length > 5 ? { item_hash: chart.id } : {}),
       });
     }
 
     generateViews({
-      datasetID: res?.dataset?.item_hash,
+      datasetID: isUpload ? res?.dataset?.item_hash : id,
       data: views,
     })
       .unwrap()
@@ -156,7 +182,7 @@ export default () => {
     handleUpdateDataset,
     isLoadingGetDataset,
     isLoadingUploadDataset: isLoadingUploadDataset || isLoadingGenerateViews,
-    isLoadingUpdateDataset,
+    isLoadingUpdateDataset: isLoadingUpdateDataset || isLoadingGenerateViews,
     isUpload,
     publishedModalProps: { handleClose, isOpen, handleOpen },
     isOwner,

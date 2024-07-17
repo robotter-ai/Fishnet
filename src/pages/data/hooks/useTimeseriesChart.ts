@@ -1,17 +1,11 @@
 import useModal from '@shared/hooks/useModal';
 import { useAppSelector } from '@shared/hooks/useStore';
 import { getRandomColor } from '@shared/utils/getRandomColor';
-import {
-  useGetDatasetTimeseriesQuery,
-  useGetViewsQuery,
-} from '@store/data/api';
+import { useGetViewsQuery } from '@store/data/api';
 import { nanoid } from 'nanoid';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  convertToChartData,
-  convertViewToChartData,
-} from '@shared/utils/convertToChartData';
+import { convertToChartData } from '@shared/utils/convertToChartData';
 import { setCharts } from '@store/data/slice';
 import { useAppDispatch } from '@store/hooks';
 import { IChartProps } from '@store/data/types';
@@ -27,18 +21,8 @@ export default () => {
   const { data: views = [] } = useGetViewsQuery(id as string, {
     skip: isUpload,
   });
-  const { data: publishedTimeseries = [] } = useGetDatasetTimeseriesQuery(
-    id as string,
-    {
-      skip: isUpload,
-    }
-  );
 
-  const timeseriesToUse = useMemo(() => {
-    return isUpload ? timeseries : publishedTimeseries;
-  }, [timeseries, publishedTimeseries]);
-
-  const columns: string[] = timeseriesToUse.map((item: any) => item.name);
+  const columns: string[] = timeseries.map((item: any) => item.name);
 
   const [selectedChart, setSelectedChart] = useState<Partial<IChartProps>>({});
 
@@ -71,7 +55,8 @@ export default () => {
               name,
               color: getRandomColor(),
             })),
-            data: convertViewToChartData(item),
+            // data: convertViewToChartData(item),
+            data: convertToChartData(timeseries),
           }))
         )
       );
@@ -83,7 +68,7 @@ export default () => {
       setSelectedChart({
         id: nanoid(4),
         interval: 'YEAR',
-        data: convertToChartData(timeseriesToUse),
+        data: convertToChartData(timeseries),
       });
     } else {
       const index = charts.findIndex((item) => item.id === chartId);
@@ -154,6 +139,6 @@ export default () => {
     selectedChart,
     handleSaveChart,
     handleDeleteChart,
-    timeseries: timeseriesToUse,
+    timeseries,
   };
 };
