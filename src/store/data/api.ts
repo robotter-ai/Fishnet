@@ -85,7 +85,7 @@ const dataApi = globalApi.injectEndpoints({
     getDatasetTimeseries: builder.query<any, string>({
       query: (datasetID) => ({
         method: 'GET',
-        url: `/datasets/${datasetID}/timeseries`,
+        url: `/datasets/${datasetID}/timeseries/json`,
       }),
     }),
 
@@ -112,5 +112,5 @@ export const {
   useLazyDownloadDatasetCSVQuery,
   usePreProcessTimeseriesMutation,
   useUpdateDatasetAvailabilityMutation,
-  useLazyGetDatasetByIdQuery
+  useLazyGetDatasetByIdQuery,
 } = dataApi;

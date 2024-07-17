@@ -44,7 +44,7 @@ const TimeseriesCharts = ({ isOwner, summary }: any) => {
           />
         ))}
       </div>
-      {isUpload ? (
+      {isUpload || isOwner ? (
         <div className="flex gap-5">
           {[1, 2].map((_, idx) => (
             <div
