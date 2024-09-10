@@ -54,10 +54,40 @@ const getTransactions = async (params: UserTranasctions) => {
     return data;
 };
 
+export type CreateTokenAccount = {
+    signer: string;
+};
+
+const createTokenAccount = async (params: CreateTokenAccount) => {
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    return await axios.get(
+        `${TRANSACTIONS_API_URL}/solana/createTokenAccount`,
+        { headers, params }
+    );
+};
+
+export type SendNewTokenAccount = {
+    transaction: string;
+};
+
+const sendNewTokenAccount = async (params: SendNewTokenAccount) => {
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    return await axios.get(
+        `${TRANSACTIONS_API_URL}/solana/sendNewTokenAccount`,
+        { headers, params }
+    );
+};
+
 const transactionsService = {
     createTransaction,
     sendTransaction,
     getTransactions,
+    createTokenAccount,
+    sendNewTokenAccount
 };
 
 export default transactionsService;
