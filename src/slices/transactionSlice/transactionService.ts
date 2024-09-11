@@ -6,28 +6,28 @@ export type CreateTransaction = {
     signer: string;
 };
 
-const createTransaction = async (params: CreateTransaction) => {
+const createPaymentTransaction = async (params: CreateTransaction) => {
     const headers = {
         'Content-Type': 'application/json',
     };
     const { data } = await axios.get(
-        `${TRANSACTIONS_API_URL}/solana/createTransaction`,
+        `${TRANSACTIONS_API_URL}/solana/createPaymentTransaction`,
         { headers, params }
     );
     return data;
 };
 
-export type SendTransaction = {
+export type SendPaymentTransaction = {
     datasetId: string;
     transaction: string;
 };
 
-const sendTransaction = async (body: SendTransaction) => {
+const sendPaymentTransaction = async (body: SendPaymentTransaction) => {
     const headers = {
         'Content-Type': 'application/json',
     };
     const { data } = await axios.post(
-        `${TRANSACTIONS_API_URL}/solana/sendTransaction`,
+        `${TRANSACTIONS_API_URL}/solana/sendPaymentTransaction`,
         body,
         { headers }
     );
@@ -62,32 +62,40 @@ const createTokenAccount = async (params: CreateTokenAccount) => {
     const headers = {
         'Content-Type': 'application/json',
     };
-    return await axios.get(
-        `${TRANSACTIONS_API_URL}/solana/createTokenAccount`,
-        { headers, params }
-    );
+    try {
+        const response = await axios.get(
+            `${TRANSACTIONS_API_URL}/solana/createTokenAccount`,
+            { headers, params }
+        );
+        return response;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            return error.response;
+        }
+        throw error;
+    }
 };
 
-export type SendNewTokenAccount = {
+export type SendTransaction = {
     transaction: string;
 };
 
-const sendNewTokenAccount = async (params: SendNewTokenAccount) => {
+const sendTransaction = async (params: SendTransaction) => {
     const headers = {
         'Content-Type': 'application/json',
     };
     return await axios.get(
-        `${TRANSACTIONS_API_URL}/solana/sendNewTokenAccount`,
+        `${TRANSACTIONS_API_URL}/solana/sendTransaction`,
         { headers, params }
     );
 };
 
 const transactionsService = {
-    createTransaction,
+    createPaymentTransaction,
+    sendPaymentTransaction,
+    createTokenAccount,
     sendTransaction,
     getTransactions,
-    createTokenAccount,
-    sendNewTokenAccount
 };
 
 export default transactionsService;

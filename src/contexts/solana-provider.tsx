@@ -9,12 +9,10 @@ import { clusterApiUrl } from '@solana/web3.js';
 const SolanaContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const network = WalletAdapterNetwork.Mainnet;
   const endpoint = useMemo(() => clusterApiUrl(network), []);
-
   const wallets = useMemo(() => [], [network]);
 
   const onError = useCallback((error: WalletError) => {
     // notify({ type: 'error', message: error.message ? `${error.name}: ${error.message}` : error.name });
-    // eslint-disable-next-line no-console
     console.error(error);
   }, []);
 
