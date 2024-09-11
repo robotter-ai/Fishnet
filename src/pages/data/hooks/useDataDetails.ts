@@ -94,24 +94,34 @@ export default () => {
       return;
     }
 
-    handleCreateTokenAccount().then(value => {
-      if (value) {
-        uploadDataset({
-          dataset: inputsToUpload,
-          timeseries: timeseries.map((item: any) => ({
-            name: item.name,
-            owner: item.owner,
-            desc: item.desc,
-            data: item.data,
-          })),
-        })
-        .unwrap()
-        .then((res: any) => {
-          setDataset(res?.dataset);
-          handleGenerateViews(res);
-        });
-      }
-    });
+    const uploadDatasetAction = () => {
+      uploadDataset({
+        dataset: inputsToUpload,
+        timeseries: timeseries.map((item: any) => ({
+          name: item.name,
+          owner: item.owner,
+          desc: item.desc,
+          data: item.data,
+        })),
+      })
+      .unwrap()
+      .then((res: any) => {
+        setDataset(res?.dataset);
+        handleGenerateViews(res);
+      });
+    };
+
+    if (Number(inputsToUpload.price) > 0) {
+      handleCreateTokenAccount().then(value => {
+        if (value) {
+          uploadDatasetAction();
+        }
+      }).catch(e => {
+        console.log(e);
+      });
+    } else {
+      uploadDatasetAction();
+    }
   };
 
   const handleUpdateDataset = () => {
