@@ -114,5 +114,4 @@ const transactionsSlice = createSlice({
 });
 
 export const { resetTransactionsSlice } = transactionsSlice.actions;
-export const { createTransaction, sendTransaction, createTokenAccount, sendNewTokenAccount } = transactionsService;
 export default transactionsSlice;
