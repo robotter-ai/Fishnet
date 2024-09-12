@@ -53,7 +53,7 @@ export default () => {
             const transaction = Buffer.from(signedTransaction.serialize()).toString('base64');
             const responseSend = await transactionsService.sendTransaction({ transaction });
             
-            if (responseSend.status === 200) {
+            if (responseSend.signature) {
               toast.success('Token account created successfully');
               return true;
             } else {

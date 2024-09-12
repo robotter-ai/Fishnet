@@ -80,14 +80,16 @@ export type SendTransaction = {
     transaction: string;
 };
 
-const sendTransaction = async (params: SendTransaction) => {
+const sendTransaction = async (body: SendTransaction) => {
     const headers = {
         'Content-Type': 'application/json',
     };
-    return await axios.get(
+    const { data } = await axios.post(
         `${TRANSACTIONS_API_URL}/solana/sendTransaction`,
-        { headers, params }
+        body,
+        { headers }
     );
+    return data;
 };
 
 const transactionsService = {
