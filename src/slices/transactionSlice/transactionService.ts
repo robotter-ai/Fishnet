@@ -10,11 +10,17 @@ const createPaymentTransaction = async (params: CreateTransaction) => {
     const headers = {
         'Content-Type': 'application/json',
     };
-    const { data } = await axios.get(
-        `${TRANSACTIONS_API_URL}/solana/createPaymentTransaction`,
-        { headers, params }
-    );
-    return data;
+    try {
+        return await axios.get(
+            `${TRANSACTIONS_API_URL}/solana/createPaymentTransaction`,
+            { headers, params }
+        );
+    } catch(error) {
+        if (axios.isAxiosError(error) && error.response) {
+            return error.response;
+        }
+        throw error;
+    }
 };
 
 export type SendPaymentTransaction = {

@@ -17,12 +17,17 @@ export default () => {
     if (!datasetId) throw new Error('Item hash is undefined');
     if (!signTransaction) throw new Error('Wallet not connected');
 
-    const { transaction } = await transactionsService.createPaymentTransaction({
+    const transactionResponse = await transactionsService.createPaymentTransaction({
       signer: address,
       datasetId
     })
 
-    const serializedBuffer = Buffer.from(transaction, 'base64');
+    if (transactionResponse.status !== 200) {
+      toast.error(transactionResponse.data.error);
+      return;
+    }
+
+    const serializedBuffer = Buffer.from(transactionResponse.data.transaction, 'base64');
     const unsignedTransaction = VersionedTransaction.deserialize(serializedBuffer);
     const signedTransaction = await signTransaction(unsignedTransaction);
     const signedSerializedBase64 = Buffer.from(signedTransaction.serialize()).toString('base64');
@@ -31,7 +36,11 @@ export default () => {
       datasetId,
     });
 
-    navigate(`/data/${datasetId}`);
+    if (response.message === 'success') {
+      navigate(`/data/${datasetId}`);
+    } else {
+      toast.error(response.data.message);
+    }
   }, [address, signTransaction, navigate]);
 
   const handleCreateTokenAccount = useCallback(async () => {
@@ -64,7 +73,7 @@ export default () => {
           break;
   
         case 404:
-          toast.message('Ensure you have SOL in your wallet');
+          toast.error('Ensure you have SOL in your wallet');
           return false;
   
         default:
