@@ -28,6 +28,19 @@ import { ReactComponent as BoxIcon } from '@assets/icons/box.svg';
 import { ReactComponent as ArrowDownIcon } from '@assets/icons/arrow-down.svg';
 import { ReactComponent as ArrowUpIcon } from '@assets/icons/arrow-up.svg';
 import { ReactComponent as ShieldTickIcon } from '@assets/icons/shield-tick.svg';
+import { ReactComponent as NotificationIcon } from '@assets/icons/Notification.svg';
+import { ReactComponent as PhantomIcon } from '@assets/icons/Phantom.svg';
+import { ReactComponent as HeadProfileIcon } from '@assets/icons/Profile.svg';
+import { ReactComponent as RobotterLogo } from '@assets/icons/Robotter Logo.svg';
+import { ReactComponent as TrainingIcon } from '@assets/icons/Training.svg';
+import { ReactComponent as TutorialIcon } from '@assets/icons/Tutorials.svg';
+import { ReactComponent as ChartminiIcon } from '@assets/icons/Chartmini.svg';
+import { ReactComponent as WalletIcon } from '@assets/icons/Wallet.svg';
+import { ReactComponent as UpIcon } from '@assets/icons/Up.svg';
+import { ReactComponent as DownIcon } from '@assets/icons/Down.svg';
+import { ReactComponent as ArrowUp2Icon } from '@assets/icons/arrowUp.svg';
+import { ReactComponent as ArrowDown2Icon } from '@assets/icons/arrowDown.svg';
+
 
 export {
   AlarmClockIcon,
@@ -60,4 +73,16 @@ export {
   ArrowDownIcon,
   ArrowUpIcon,
   ShieldTickIcon,
+  NotificationIcon,
+  ChartminiIcon,
+  HeadProfileIcon,
+  PhantomIcon,
+  RobotterLogo,
+  TrainingIcon,
+  TutorialIcon,
+  WalletIcon,
+  UpIcon,
+  DownIcon,
+  ArrowDown2Icon,
+  ArrowUp2Icon
 };

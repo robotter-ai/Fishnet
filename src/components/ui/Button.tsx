@@ -12,6 +12,7 @@ import {
   ShieldTickIcon,
 } from '@assets/icons';
 import classNames from 'classnames';
+import { ButtonHTMLAttributes } from 'react';
 import { Link } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
 
@@ -28,11 +29,12 @@ type IconTypes =
   | 'box'
   | 'shield';
 
-interface ButtonProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string;
   size?: 'sm' | 'md' | 'lg';
   icon?: IconTypes;
-  btnStyle?: 'outline-primary' | 'outline-red' | 'solid-secondary';
+  btnStyle?: 'outline-primary' | 'outline-red' | 'solid-secondary' | 'solid-navy';
+  xtraStyles?: string;
   onClick?: () => void;
   isLoading?: boolean;
   disabled?: boolean;
@@ -62,6 +64,7 @@ const CustomButton: React.FC<ButtonProps> = ({
   text,
   size = 'sm',
   btnStyle,
+  xtraStyles,
   onClick,
   fullWidth,
   isLoading,
@@ -69,9 +72,10 @@ const CustomButton: React.FC<ButtonProps> = ({
   href,
   linkTo,
   icon,
+  ...rest
 }) => {
   const btnClassnames = classNames(
-    'app-btn block relative px-5 text-white text-[14px] rounded-[150px] whitespace-nowrap disabled:cursor-not-allowed',
+    `app-btn block relative px-5 text-white text-[14px] rounded-[150px] whitespace-nowrap disabled:cursor-not-allowed `,
     {
       'h-9 px-7': size === 'sm',
       'h-[44px] font-bold px-10': size === 'md',
@@ -79,8 +83,9 @@ const CustomButton: React.FC<ButtonProps> = ({
       'btn-outline-primary': btnStyle === 'outline-primary',
       'btn-outline-red': btnStyle === 'outline-red',
       'btn-solid-secondary': btnStyle === 'solid-secondary',
+      'btn-solid-navy': btnStyle === 'solid-navy',
       'w-full': fullWidth,
-    }
+    }, `${xtraStyles && xtraStyles}`
   );
 
   if (href) {
@@ -109,6 +114,7 @@ const CustomButton: React.FC<ButtonProps> = ({
 
   return (
     <button
+      {...rest}
       type={type === 'button' ? 'button' : 'submit'}
       className={btnClassnames}
       onClick={onClick}

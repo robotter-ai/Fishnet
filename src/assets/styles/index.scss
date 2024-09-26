@@ -58,6 +58,14 @@ h2 {
     background: #3e73c4;
     color: $white;
   }
+  &.btn-solid-navy {
+    background: #3E00FF;
+    color: $white;
+    transition: all .5s linear;
+    &:hover {
+      opacity: .65;
+    }
+  }
   &.btn-outline-red {
     background: $white;
     color: $red;

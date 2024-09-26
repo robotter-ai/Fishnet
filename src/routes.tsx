@@ -6,46 +6,31 @@ import MonitorAccess from '@pages/monitor-access';
 import DataSettings from '@pages/monitor-access/DataSettings';
 import MyProfile from '@pages/my-profile';
 import NotFound from '@pages/not-found';
-import Layout from './layouts';
+import OverviewBots from '@pages/overview-bots';
 
 const ProtectedRoutes = () => {
   const cookies = new Cookies();
   const token = cookies.get('bearerToken');
 
-  return token ? <Outlet /> : <Navigate to="/" replace />;
+  return !token ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 export const router = createBrowserRouter([
   {
-    element: <Layout />,
     children: [
       {
         path: '/',
-        element: <MyData />,
+        element: <h2>Go to /overview</h2>,
       },
-      {
-        path: 'data/:id',
-        element: <DataDetails />,
-      },
-
       {
         element: <ProtectedRoutes />,
         children: [
           {
-            path: 'monitor-access',
-            element: <MonitorAccess />,
-          },
-          {
-            path: 'monitor-access/:id/settings',
-            element: <DataSettings />,
-          },
-          {
-            path: 'profile',
-            element: <MyProfile />,
+            path: 'overview',
+            element: <OverviewBots />,
           },
         ],
       },
-
       {
         path: '*',
         element: <NotFound />,
