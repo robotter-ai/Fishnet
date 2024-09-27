@@ -1,6 +1,7 @@
 import { IStatsTableData } from '../hooks/useProfile';
 import CustomButton from '@components/ui/Button';
 import MiniLineChart from './MiniLineChart';
+import CustomText from './CustomText';
 
 interface IStatsTableProps {
   title: string;
@@ -22,17 +23,9 @@ const StatsTable: React.FC<IStatsTableProps> = ({
         {statsData.map((stat, index) => (
           <div
             key={index}
-            className="flex justify-between items-center px-3 py-1 xl:h-[2.0625rem] border-b border-b-light-400"
+            className="flex justify-between items-center py-1 xl:h-[2.0625rem] border-b border-b-light-400"
           >
-            <p className="flex-[3] text-sm font-normal text-dark-200 leading-none">
-              {stat.label}{' '}
-              <span className="relative w-[0.65625rem] h-[0.65625rem] text-light-400 border border-light-400 rounded-[50%] cursor-default px-1 text-xs group">
-                ?
-                <span className="bg-[#555] text-white text-xs text-center rounded-md p-1 absolute z-10 bottom-[125%] left-1/2 ml-[-10px] opacity-0 group-hover:opacity-100 transition-opacity">
-                  {stat.label}
-                </span>
-              </span>
-            </p>
+            <CustomText text={stat.label} toolTipText={stat.label} />
             <div className="flex flex-[2] justify-end">
               {/* Chart */}
               {stat.chartData && (

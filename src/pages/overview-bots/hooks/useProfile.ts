@@ -46,12 +46,12 @@ export interface ICardBotData {
     percentage: number;
     color: string;
   }[];
-  lineChartData: number[];
+  lineChartData: number[] | null;
   tableData: {
     labelA: (string | number)[];
     labelB: (string | number)[];
-    percentage: number;
-    isProfit: boolean;
+    percentage: number | null;
+    isProfit: boolean | null;
   }[];
 }
 
@@ -318,6 +318,129 @@ export default () => {
     },
   ];
 
+  const cardBotDataBT: ICardBotData[] = [
+    {
+      name: '2024-06-23 19:23',
+      rate: 1256,
+      isPositive: true,
+      pieChartData: [
+        { amount: 68, tag: 'profit', percentage: 68, color: '#218358' },
+        { amount: 32, tag: 'loss', percentage: 32, color: '#CE2C31' },
+      ],
+      lineChartData: null,
+      tableData: [
+        {
+          labelA: [150, 'APR'],
+          labelB: [12, 'Max Dropdown'],
+          percentage: null,
+          isProfit: null,
+        },
+        {
+          labelA: [3.21, 'Sharpe ratio'],
+          labelB: [110, 'Successful sells'],
+          percentage: null,
+          isProfit: null,
+        },
+        {
+          labelA: [70, 'Sentiment'],
+          labelB: [90, 'Loss sells'],
+          percentage: null,
+          isProfit: null,
+        },
+      ],
+    },
+    {
+      name: '2024-06-19 20:01',
+      rate: 941,
+      isPositive: true,
+      pieChartData: [
+        { amount: 65, tag: 'profit', percentage: 65, color: '#218358' },
+        { amount: 35, tag: 'loss', percentage: 35, color: '#CE2C31' },
+      ],
+      lineChartData: null,
+      tableData: [
+        {
+          labelA: [124, 'APR'],
+          labelB: [15, 'Max Dropdown'],
+          percentage: null,
+          isProfit: null,
+        },
+        {
+          labelA: [2.84, 'Sharpe ratio'],
+          labelB: [64, 'Successful sells'],
+          percentage: null,
+          isProfit: null,
+        },
+        {
+          labelA: [75, 'Sentiment'],
+          labelB: [36, 'Loss sells'],
+          percentage: null,
+          isProfit: null,
+        },
+      ],
+    },
+    {
+      name: '2024-06-11 12:05',
+      rate: 322,
+      isPositive: false,
+      pieChartData: [
+        { amount: 48, tag: 'profit', percentage: 48, color: '#218358' },
+        { amount: 52, tag: 'loss', percentage: 52, color: '#CE2C31' },
+      ],
+      lineChartData: null,
+      tableData: [
+        {
+          labelA: [-20, 'APR'],
+          labelB: [53, 'Max Dropdown'],
+          percentage: null,
+          isProfit: null,
+        },
+        {
+          labelA: [1.37, 'Sharpe ratio'],
+          labelB: [34, 'Successful sells'],
+          percentage: null,
+          isProfit: null,
+        },
+        {
+          labelA: [42, 'Sentiment'],
+          labelB: [40, 'Loss sells'],
+          percentage: null,
+          isProfit: null,
+        },
+      ],
+    },
+    {
+      name: '2024-06-09 07:53',
+      rate: 500,
+      isPositive: false,
+      pieChartData: [
+        { amount: 46, tag: 'profit', percentage: 46, color: '#218358' },
+        { amount: 54, tag: 'loss', percentage: 54, color: '#CE2C31' },
+      ],
+      lineChartData: null,
+      tableData: [
+        {
+          labelA: [-17, 'APR'],
+          labelB: [58, 'Max Dropdown'],
+          percentage: null,
+          isProfit: null,
+        },
+        {
+          labelA: [1.21, 'Sharpe ratio'],
+          labelB: [58, 'Successful sells'],
+          percentage: null,
+          isProfit: null,
+        },
+        {
+          labelA: [44, 'Sentiment'],
+          labelB: [42, 'Loss sells'],
+          percentage: null,
+          isProfit: null,
+        },
+      ],
+    },
+  ];
+
   useEffect(() => {
     setTitle(PAGE_TITLE[query]);
   }, [query]);
@@ -331,6 +454,7 @@ export default () => {
     statsDataOTN,
     cryptoStats,
     cardBotData,
+    cardBotDataBT,
     user,
     query,
     dateQuery,

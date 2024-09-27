@@ -1,6 +1,8 @@
 import Header from './components/Header';
 import useProfile, { ITab } from './hooks/useProfile';
 import Overview from './components/Overview';
+import Training from './components/Training';
+import { URLSearchParamsInit, NavigateOptions } from 'react-router-dom';
 
 const OverviewBots = () => {
   const {
@@ -12,6 +14,7 @@ const OverviewBots = () => {
     statsData,
     statsDataOTN,
     cardBotData,
+    cardBotDataBT,
     user,
     query,
     dateQuery,
@@ -43,7 +46,15 @@ const OverviewBots = () => {
       />
     ),
     datasets: <></>,
-    training: <></>,
+    training: (
+      <Training
+        timeQuery={timeQuery}
+        timeTabs={timeTabs}
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+        cardBotData={cardBotDataBT}
+      />
+    ),
     bots: <></>,
     tutorial: <></>,
   };
