@@ -6,28 +6,34 @@ export type CreateTransaction = {
     signer: string;
 };
 
-const createTransaction = async (params: CreateTransaction) => {
+const createPaymentTransaction = async (params: CreateTransaction) => {
     const headers = {
         'Content-Type': 'application/json',
     };
-    const { data } = await axios.get(
-        `${TRANSACTIONS_API_URL}/solana/createTransaction`,
-        { headers, params }
-    );
-    return data;
+    try {
+        return await axios.get(
+            `${TRANSACTIONS_API_URL}/solana/createPaymentTransaction`,
+            { headers, params }
+        );
+    } catch(error) {
+        if (axios.isAxiosError(error) && error.response) {
+            return error.response;
+        }
+        throw error;
+    }
 };
 
-export type SendTransaction = {
+export type SendPaymentTransaction = {
     datasetId: string;
     transaction: string;
 };
 
-const sendTransaction = async (body: SendTransaction) => {
+const sendPaymentTransaction = async (body: SendPaymentTransaction) => {
     const headers = {
         'Content-Type': 'application/json',
     };
     const { data } = await axios.post(
-        `${TRANSACTIONS_API_URL}/solana/sendTransaction`,
+        `${TRANSACTIONS_API_URL}/solana/sendPaymentTransaction`,
         body,
         { headers }
     );
@@ -54,8 +60,48 @@ const getTransactions = async (params: UserTranasctions) => {
     return data;
 };
 
+export type CreateTokenAccount = {
+    signer: string;
+};
+
+const createTokenAccount = async (params: CreateTokenAccount) => {
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    try {
+        const response = await axios.get(
+            `${TRANSACTIONS_API_URL}/solana/createTokenAccount`,
+            { headers, params }
+        );
+        return response;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            return error.response;
+        }
+        throw error;
+    }
+};
+
+export type SendTransaction = {
+    transaction: string;
+};
+
+const sendTransaction = async (body: SendTransaction) => {
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    const { data } = await axios.post(
+        `${TRANSACTIONS_API_URL}/solana/sendTransaction`,
+        body,
+        { headers }
+    );
+    return data;
+};
+
 const transactionsService = {
-    createTransaction,
+    createPaymentTransaction,
+    sendPaymentTransaction,
+    createTokenAccount,
     sendTransaction,
     getTransactions,
 };

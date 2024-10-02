@@ -15,6 +15,7 @@ import {
 import { IDataset } from '@store/data/types';
 import { useAppDispatch } from '@store/hooks';
 import { setTimeseries } from '@store/data/slice';
+import useTransaction from '@shared/hooks/useTransaction';
 
 export default () => {
   const dispatch = useAppDispatch();
@@ -86,26 +87,41 @@ export default () => {
       : { timeseriesIDs: [], ownsAllTimeseries: true }),
   };
 
+  const { handleCreateTokenAccount } = useTransaction();
   const handleUploadDataset = () => {
     if (!inputsToUpload?.name) {
       // stop execution and outline the input field
       return;
     }
 
-    uploadDataset({
-      dataset: inputsToUpload,
-      timeseries: timeseries.map((item: any) => ({
-        name: item.name,
-        owner: item.owner,
-        desc: item.desc,
-        data: item.data,
-      })),
-    })
+    const uploadDatasetAction = () => {
+      uploadDataset({
+        dataset: inputsToUpload,
+        timeseries: timeseries.map((item: any) => ({
+          name: item.name,
+          owner: item.owner,
+          desc: item.desc,
+          data: item.data,
+        })),
+      })
       .unwrap()
       .then((res: any) => {
         setDataset(res?.dataset);
         handleGenerateViews(res);
       });
+    };
+
+    if (Number(inputsToUpload.price) > 0) {
+      handleCreateTokenAccount().then(value => {
+        if (value) {
+          uploadDatasetAction();
+        }
+      }).catch(e => {
+        console.log(e);
+      });
+    } else {
+      uploadDatasetAction();
+    }
   };
 
   const handleUpdateDataset = () => {
@@ -113,6 +129,7 @@ export default () => {
       // stop execution and outline the input field
       return;
     }
+
 
     updateDataset(inputsToUpload)
       .unwrap()
