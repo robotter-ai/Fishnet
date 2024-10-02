@@ -43,6 +43,7 @@ import { ReactComponent as ArrowDown2Icon } from '@assets/icons/arrowDown.svg';
 import { ReactComponent as BackIcon } from '@assets/icons/back.svg';
 import { ReactComponent as ArrowLeftIcon } from '@assets/icons/arrow-left.svg';
 import { ReactComponent as ArrowRightIcon } from '@assets/icons/arrow-right.svg';
+import { ReactComponent as CalendarIcon } from '@assets/icons/Calendar.svg';
 
 export {
   AlarmClockIcon,
@@ -90,4 +91,5 @@ export {
   BackIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
+  CalendarIcon
 };

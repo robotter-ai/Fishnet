@@ -5,21 +5,25 @@ import CustomPieChart from './CustomPieChart';
 import MiniLineChart from './MiniLineChart';
 import classNames from 'classnames';
 import React from 'react';
+import CustomBtn from '@components/ui/CustomBtn';
 
 interface ICardBotProps {
   cardBotData: ICardBotData;
+  xtraStyle?: string;
 }
 
-const CardBot: React.FC<ICardBotProps> = ({ cardBotData }) => {
+const CardBot: React.FC<ICardBotProps> = ({ cardBotData, xtraStyle }) => {
   return (
     <div
       id="card_bot"
-      className="relative max-w-[20.3125rem] w-full h-[11.9375rem] rounded-[22px] bg-light-200 border border-chart-300 p-4 mb-4 pt-[1.50rem]"
+      className={`relative lt:w-full lt:max-w-max max-w-[20.3125rem] w-full h-[11.9375rem] rounded-[22px] bg-light-200 border border-chart-300 p-4 mb-4 pt-[1.50rem] ${
+        xtraStyle ? xtraStyle : ''
+      }`}
     >
       <div className="">
         <div id="table" className="">
           {cardBotData.tableData.map((row, i) => (
-            <div key={i} id="row" className="grid grid-cols-6 mb-2">
+            <div key={i} id="row" className="grid grid-cols-6 gap-x-2 mb-2">
               {i === 0 && (
                 <>
                   <h2 className="text-xs col-span-2 font-bold text-dark-300 mb-3">
@@ -57,10 +61,11 @@ const CardBot: React.FC<ICardBotProps> = ({ cardBotData }) => {
                   </div>
 
                   <div className="mb-3 flex justify-end">
-                    <CustomButton
+                    <CustomBtn
                       text="View"
-                      style={{ background: 'transparent' }}
-                      xtraStyles="flex justify-center items-center py-1 text-xs text-navy border border-navy w-[2.75rem] h-[1.4375rem] transition-colors duration-300 hover:!bg-navy hover:!text-white"
+                      size="sm"
+                      btnStyle="outline-primary"
+                      xtraStyles="max-w-[2.75rem]"
                     />
                   </div>
                 </>

@@ -7,6 +7,7 @@ import DataSettings from '@pages/monitor-access/DataSettings';
 import MyProfile from '@pages/my-profile';
 import NotFound from '@pages/not-found';
 import OverviewBots from '@pages/overview-bots';
+import Layout from './layouts';
 
 const ProtectedRoutes = () => {
   const cookies = new Cookies();
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
           {
             path: 'overview',
             element: <OverviewBots />,
+          },
+          {
+            path: 'profile',
+            element: <MyProfile />,
           },
         ],
       },

@@ -1,29 +1,38 @@
-import { ICardBotData, ICryptoStats, IDateTabs, IStatsTableData, ITab, ITabs } from '../hooks/useProfile';
+import {
+  ICardBotData,
+  ICryptoStats,
+  IDateTabs,
+  IPerfTab,
+  IStatsTableData,
+  ITab,
+  ITabs,
+  ITimeTab,
+} from '../hooks/useProfile';
 import { totalAmount } from '../../../utils/formatMoney.util';
 import { SetURLSearchParams } from 'react-router-dom';
 import Performance from '../components/Performance';
-import { DownIcon, UpIcon } from '@assets/icons';
-import CustomButton from '@components/ui/Button';
+import CustomBtn from '@components/ui/CustomBtn';
 import CustomPieChart from './CustomPieChart';
-import CustomTabs from './CustomTabs';
-import PnLChart from './PnLChart';
+import CryptoStats from './CryptoStats';
 import StatsTable from './StatsTable';
 import classNames from 'classnames';
+import Switcher from './Switcher';
+import PnLChart from './PnLChart';
 import React from 'react';
 
 interface IOverviewProps {
   dateTabs: IDateTabs[];
   dateQuery: string;
-  timeQuery: ITab;
-  perfQuery: ITab;
+  timeQuery: ITimeTab;
+  perfQuery: IPerfTab;
   timeTabs: ITabs[];
   perfTabs: ITabs[];
-  statsData: IStatsTableData[]
-  statsDataOTN: IStatsTableData[]
-  cryptoStats: ICryptoStats[]
+  statsData: IStatsTableData[];
+  statsDataOTN: IStatsTableData[];
+  cryptoStats: ICryptoStats[];
   searchParams: URLSearchParams;
   setSearchParams: SetURLSearchParams;
-  cardBotData: ICardBotData[]
+  cardBotData: ICardBotData[];
 }
 
 const Overview: React.FC<IOverviewProps> = ({
@@ -42,15 +51,15 @@ const Overview: React.FC<IOverviewProps> = ({
 }) => {
   return (
     <>
-      <div id='overview_header' className="flex flex-col md:flex-row gap-y-3 md:gap-y-3 justify-between items-center mt-5">
+      <div
+        id="overview_header"
+        className="flex flex-col md:flex-row gap-y-3 md:gap-y-3 justify-between items-center mt-5"
+      >
         <h2 className="font-semibold text-2xl">Performance Summary</h2>
-        <div className="w-[20.3125rem]">
-          <CustomButton
-            text="Create New Model"
-            btnStyle="solid-navy"
-            fullWidth
-          />
-        </div>
+        <CustomBtn
+          text="Create New Model"
+          xtraStyles="max-w-[20.3125rem] w-[90%]"
+        />
       </div>
 
       <div
@@ -77,40 +86,12 @@ const Overview: React.FC<IOverviewProps> = ({
         ))}
       </div>
 
-      <div className="flex flex-col lg:flex-row justify-between gap-x-4">
+      <div className="flex flex-col xl:flex-row justify-between gap-x-4">
         <div id="left" className="w-full">
-          <div className="mt-5 flex items-center gap-x-8">
-            {cryptoStats.map((stats, i) => (
-              <div key={i} className="flex items-center gap-x-3">
-                <span
-                  style={{ background: stats.color }}
-                  className={`w-4 h-4 rounded-full`}
-                ></span>
-                <span>
-                  <h2 className="text-dark-300 font-normal text-base mb-1">
-                    ${stats.amount}
-                  </h2>
-                  <h2 className="text-dark-100 font-normal text-xs">
-                    {stats.tag}
-                  </h2>
-                </span>
-                <div
-                  className={classNames(
-                    'flex justify-center items-center min-w-[3.8125rem] h-[1.4375rem] bg-green-100 rounded-lg px-2 pt-[3px] gap-x-1',
-                    { 'bg-red-100': i === 2 }
-                  )}
-                >
-                  {i === 2 ? <DownIcon /> : <UpIcon />}
-                  <h2 className="font-semibold text-base text-white">
-                    {stats.percentage}%
-                  </h2>
-                </div>
-              </div>
-            ))}
-          </div>
+          <div className="overflow-x-auto lg:overflow-x-clip pb-2">
+            <CryptoStats data={cryptoStats} />
 
-          <div className="mt-5">
-            <div id="piechart_n_stats_table" className="flex gap-x-3">
+            <div id="piechart_n_stats_table" className="flex gap-x-3 mt-5">
               <CustomPieChart
                 size={210}
                 innerRadius={90}
@@ -127,7 +108,8 @@ const Overview: React.FC<IOverviewProps> = ({
                   </>
                 }
               />
-              <div className="flex flex-row md:flex-col xl:flex-row w-full gap-y-4 xl:gap-y-0 xl:gap-x-3">
+
+              <div className="flex flex-row md:flex-col lg:flex-row w-full gap-y-4 xl:gap-y-0 gap-x-3">
                 <StatsTable title="Statistics" statsData={statsData} />
                 <StatsTable
                   title="Lock 450 OTN more to Save on FEES and COSTS"
@@ -136,21 +118,26 @@ const Overview: React.FC<IOverviewProps> = ({
                 />
               </div>
             </div>
+          </div>
 
-            <div id="time_tabs" className="mt-5">
-              <div className="flex justify-between items-center mb-4 mt-10">
-                <h2 className="font-semibold text-2xl text-dark-300">P&L</h2>
-                <div className="max-w-[20.25rem] w-[80%] h-[1.9375rem]">
-                  <CustomTabs
-                    isTab={false}
-                    query={timeQuery}
-                    tabs={timeTabs}
-                    searchParams={searchParams}
-                    setSearchParams={setSearchParams}
-                  />
-                </div>
+          <div id="time_tabs" className="mt-5 w-full">
+            <div className="flex justify-between items-center mb-4 mt-10">
+              <h2 className="font-semibold text-2xl text-dark-300">P&L</h2>
+              <div className="max-w-[20.25rem] w-[80%] h-[1.9375rem]">
+                <Switcher
+                  keyQuery="time"
+                  query={timeQuery}
+                  tabs={timeTabs}
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                />
               </div>
-              <PnLChart />
+            </div>
+
+            <div className="overflow-x-auto xl:overflow-x-clip">
+              <div className="w-[63.4375rem] lg:w-full">
+                <PnLChart height={459} minWidth={389} />
+              </div>
             </div>
           </div>
         </div>

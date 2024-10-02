@@ -42,6 +42,10 @@ h2 {
   // border-radius: 0px;
 }
 
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
 .app-btn {
   background: linear-gradient(259.65deg, #1dc3cf -19.75%, #0093a7 135.06%);
   &.btn-outline-primary {
@@ -92,13 +96,21 @@ h2 {
   backdrop-filter: blur(10px) !important;
 }
 
-#question_mark_sign:hover span {
+#question_mark_sign:hover + #tooltip {
   opacity: 100;
 }
 
 #cardBotNameGrid {
   display: grid;
-  grid-template-columns: 5.4rem auto
+  grid-template-columns: 5.4rem auto;
+}
+
+.react-date-picker .react-date-picker__wrapper {
+  border: none;
+}
+
+#notification {
+  box-shadow: 0px 16px 32px 0px #16253533;
 }
 
 @import './form.scss';
