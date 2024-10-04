@@ -58,6 +58,14 @@ h2 {
     background: #3e73c4;
     color: $white;
   }
+  &.btn-solid-navy {
+    background: #3e00ff;
+    color: $white;
+    transition: all 0.5s linear;
+    &:hover {
+      opacity: 0.65;
+    }
+  }
   &.btn-outline-red {
     background: $white;
     color: $red;
@@ -82,6 +90,15 @@ h2 {
 .css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
   background-color: rgb(255, 255, 255, 0.5) !important;
   backdrop-filter: blur(10px) !important;
+}
+
+#question_mark_sign:hover span {
+  opacity: 100;
+}
+
+#cardBotNameGrid {
+  display: grid;
+  grid-template-columns: 5.4rem auto
 }
 
 @import './form.scss';

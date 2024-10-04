@@ -1,7 +1,7 @@
-import { globalApi } from '@store/config';
+import { robotterApi } from '@store/config';
 import { INotification, IUserInfo, UserProps } from './types';
 
-const profileApi = globalApi.injectEndpoints({
+const profileApi = robotterApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserInfo: builder.query<IUserInfo, { address: string }>({
       query: ({ address }) => ({
@@ -33,7 +33,7 @@ const profileApi = globalApi.injectEndpoints({
         method: 'GET',
         url: `/users/${address}/notifications`,
       }),
-      providesTags: ['Profile', 'Dataset', 'Permissions'],
+      providesTags: ['Profile'],
     }),
   }),
 });

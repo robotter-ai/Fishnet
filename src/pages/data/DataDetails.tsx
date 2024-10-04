@@ -37,7 +37,6 @@ const DataDetails = () => {
     isOwner,
   } = useDataDetails();
   const { handleDownload, isLoading: isDownloading } = useDownloadDataset();
-  const { handlePurchase } = useTransaction();
 
   const [requestPermissions, { isLoading: isLoadingRequestPermissions }] =
     useRequestDatasetPermissionsMutation();
@@ -176,7 +175,6 @@ const DataDetails = () => {
             size="md"
             icon="buy"
             btnStyle="solid-secondary"
-            onClick={() => handlePurchase(dataset.item_hash)}
             className="w-32"
           />
         </div>

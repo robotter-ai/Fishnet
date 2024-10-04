@@ -35,19 +35,8 @@ const COLUMNS: ITableColumns[] = [
 
 const SoldDataTable = () => {
   const { search } = useAppSelector((state) => state.monitorAccess);
-  const { getTransactions } = useAppSelector((state) => state.transactions);
 
-  return (
-    <CustomTable
-      data={getTransactions.sales.filter(
-        (item) =>
-          item?.datasetName &&
-          item?.datasetName.toLowerCase().includes(search.toLowerCase())
-      )}
-      columns={COLUMNS}
-      isLoading={getTransactions.isLoading}
-    />
-  );
+  return;
 };
 
 export default SoldDataTable;

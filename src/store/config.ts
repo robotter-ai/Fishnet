@@ -3,7 +3,7 @@ import { BaseQueryFn, createApi } from '@reduxjs/toolkit/query/react';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { toast } from 'sonner';
 
-export const FISHNET_API_URL = import.meta.env.VITE_FISHNET_API_URL;
+export const ROBOTTER_API_URL = import.meta.env.VITE_ROBOTTER_API_URL;
 export const TRANSACTIONS_API_URL = import.meta.env.VITE_TRANSACTIONS_API_URL;
 
 export const cookies = new Cookies();
@@ -57,12 +57,22 @@ const axiosBaseQuery =
     }
   };
 
-export const globalApi = createApi({
+export const robotterApi = createApi({
   reducerPath: 'api',
   baseQuery: axiosBaseQuery({
-    baseUrl: FISHNET_API_URL,
+    baseUrl: import.meta.env.VITE_ROBOTTER_API_URL || 'http://localhost:8000',
   }),
   refetchOnReconnect: true,
-  tagTypes: ['Dataset', 'Permissions', 'Timeseries', 'Profile', 'View'],
+  tagTypes: ['Profile'],
+  endpoints: () => ({}),
+});
+
+export const transactionsApi = createApi({
+  reducerPath: 'transactionsApi',
+  baseQuery: axiosBaseQuery({
+    baseUrl: import.meta.env.VITE_TRANSACTIONS_API_URL || 'http://localhost:3000',
+  }),
+  refetchOnReconnect: true,
+  tagTypes: ['Transactions'],
   endpoints: () => ({}),
 });

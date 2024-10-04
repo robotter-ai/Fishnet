@@ -29,19 +29,7 @@ const Login = () => {
             alt="Fishnet Logo"
             className="w-full h-full"
           />
-          {/* <Button
-            text="Enter Fishnet"
-            icon="home"
-            onClick={() => {
-              navigate('/data', { replace: true });
-            }}
-          />
-          <div className="bg-[#F6FAFB] text-center flex flex-col justify-center py-[10px] px-[25%]">
-            <p className="text-2xl">
-              This app is only for demonstration purposes. <br />
-              Do not upload any sensitive data.
-            </p>
-          </div> */}
+          {}
         </div>
       </div>
       <AppModal

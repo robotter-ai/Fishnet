@@ -16,19 +16,15 @@ const DataSettings = () => {
     handleOpenAccessSettings,
     handleCloseAccessSettings,
   } = useDataSettings();
-  const { getTransactions } = useAppSelector((app) => app.transactions);
-  const datasetSales = getTransactions.sales.filter(
-    (x) => x.datasetId === dataset?.item_hash
-  );
-
+  
   const STATISTICS = [
     {
       name: 'Total profit',
-      value: getTransactions.datasetSales[dataset?.item_hash]?.profit || 0,
+      value: 0,
     },
     {
       name: 'Total sales',
-      value: getTransactions.datasetSales[dataset?.item_hash]?.sales || 0,
+      value: 0,
     },
     {
       name: 'Total downloads',
@@ -76,7 +72,6 @@ const DataSettings = () => {
           }}
         /> */}
       </div>
-      <TableMapper sales={datasetSales} handleOpenRefuseAccess={() => {}} />
       <AddAccessModal
         isOpen={isOpenAccessSettings}
         handleClose={handleCloseAccessSettings}

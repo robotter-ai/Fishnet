@@ -51,19 +51,8 @@ const COLUMNS: ITableColumns[] = [
 
 const BoughtDataTable = () => {
   const { search } = useAppSelector((state) => state.monitorAccess);
-  const { getTransactions } = useAppSelector((state) => state.transactions);
 
-  return (
-    <CustomTable
-      data={getTransactions.purchases.filter(
-        (item) =>
-          item?.datasetName &&
-          item?.datasetName.toLowerCase().includes(search.toLowerCase())
-      )}
-      columns={COLUMNS}
-      isLoading={getTransactions.isLoading}
-    />
-  );
+  return;
 };
 
 export default BoughtDataTable;

@@ -19,8 +19,6 @@ const AddAccessModal = ({
   isOpen: boolean;
   handleClose: () => void;
 }) => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const { permissions } = useAppSelector((state) => state.monitorAccess);
 
   const [grantPermissions, { isLoading }] =
@@ -47,9 +45,6 @@ const AddAccessModal = ({
           }
         );
         handleClose();
-        if (window.location.pathname === '/profile') {
-          navigate(-1); // Navigate back to previous page if the current page is profile
-        }
       });
   };
 
@@ -109,7 +104,6 @@ const AddAccessModal = ({
             btnStyle="outline-primary"
             fullWidth
             isLoading={isLoading}
-            onClick={() => navigate('/profile?tab=browse-users&select=true')}
           />
         </div>
       </div>

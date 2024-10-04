@@ -1,8 +1,8 @@
-import { globalApi } from '@store/config';
+import { robotterApi } from '@store/config';
 
 const CHAIN = 'SOL';
 
-const authApi = globalApi.injectEndpoints({
+const authApi = robotterApi.injectEndpoints({
   endpoints: (builder) => ({
     requestChallenge: builder.mutation<
       {
@@ -34,7 +34,15 @@ const authApi = globalApi.injectEndpoints({
       }),
     }),
 
-    refreshToken: builder.mutation<void, { token: string }>({
+    refreshToken: builder.mutation<
+    {
+      address: string;
+      chain: string;
+      valid_til: number;
+      token: string;
+    },
+    { token: string }
+    >({
       query: ({ token }) => ({
         method: 'POST',
         url: `/authorization/refresh?token=${token}`,
