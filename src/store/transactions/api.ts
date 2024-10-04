@@ -9,12 +9,15 @@ const transactionsEndpoints = transactionsApi.injectEndpoints({
         params,
       }),
     }),
-    deposit: builder.mutation<{ transaction: string; botId: number }, { owner: string; amount: number; delegate: string }>({
-      query: (body) => ({
+    deposit: builder.mutation<
+        { transaction: string; botId: number; mangoAccount?: string; status: number; message?: string },
+        { body: string }
+    >({
+        query: (body) => ({
         url: '/deposit',
         method: 'POST',
         body,
-      }),
+        }),
     }),
     withdraw: builder.mutation<{ transaction: string }, { owner: string; botId: number }>({
       query: (body) => ({

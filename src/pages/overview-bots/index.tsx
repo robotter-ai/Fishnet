@@ -2,7 +2,7 @@ import Header from './components/Header';
 import useProfile, { ITab } from './hooks/useProfile';
 import Overview from './components/Overview';
 import Training from './components/Training';
-import { URLSearchParamsInit, NavigateOptions } from 'react-router-dom';
+import Bots from './components/Bots';
 
 const OverviewBots = () => {
   const {
@@ -15,15 +15,11 @@ const OverviewBots = () => {
     statsDataOTN,
     cardBotData,
     cardBotDataBT,
-    user,
+    botData,
     query,
     dateQuery,
     timeQuery,
     perfQuery,
-    search,
-    address,
-    setSearch,
-    transactions,
     searchParams,
     setSearchParams,
   } = useProfile();
@@ -55,7 +51,15 @@ const OverviewBots = () => {
         cardBotData={cardBotDataBT}
       />
     ),
-    bots: <></>,
+    bots: (
+      <Bots
+        botData={botData}
+        timeTabs={timeTabs}
+        timeQuery={timeQuery}
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      />
+    ),
     tutorial: <></>,
   };
 
@@ -69,7 +73,7 @@ const OverviewBots = () => {
         searchParams={searchParams}
         setSearchParams={setSearchParams}
       />
-      {Component}
+        {Component}
     </div>
   );
 };

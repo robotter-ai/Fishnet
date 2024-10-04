@@ -9,6 +9,7 @@ import Cookies from 'universal-cookie';
 import jwt_decode from 'jwt-decode';
 import LogRocket from 'logrocket';
 import bs58 from 'bs58';
+import { toast } from 'sonner';
 
 interface AuthContextType {
   address: string;
@@ -48,6 +49,18 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const { publicKey, signMessage, disconnect } = useWallet();
   const [address, setAddress] = useState('');
   const { data: usdcBalanceData, refetch: refetchUsdcBalance } = useGetUserUsdcBalanceQuery({ user: address }, { skip: !address });
+
+  useEffect(() => {
+    console.log(usdcBalanceData)
+    if (usdcBalanceData) {
+      dispatch(setUsdcBalance(usdcBalanceData.balance));
+      if(usdcBalanceData.balance == 0) {
+        toast.message('You dont have USDC')
+      } else {
+        if ((usdcBalanceData as any).message) toast.message((usdcBalanceData as any).message);
+      }
+    }
+  }, [usdcBalanceData, dispatch]);
 
   const resetAuth = useCallback(async () => {
     cookies.remove('bearerToken');
@@ -151,6 +164,8 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
 
     handleAuth(address);
   }, [publicKey]);
+
+
 
   const contextValue = useMemo(() => ({
     address,
