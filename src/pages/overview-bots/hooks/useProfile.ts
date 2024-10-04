@@ -71,14 +71,6 @@ export default () => {
 
   const user = data as IUserInfo;
 
-  const { getTransactions } = useAppSelector((app) => app.transactions);
-
-  const transactions = getTransactions.transactions.filter(
-    (item) =>
-      item?.datasetName &&
-      item?.datasetName.toLowerCase().includes(search.toLowerCase())
-  );
-
   const query: ITab = (searchParams.get('tab') as ITab) || 'overview';
   const dateQuery: ITab = (searchParams.get('date') as ITab) || 'week';
   const timeQuery = (searchParams.get('time') as ITab) || 'day';
@@ -462,7 +454,6 @@ export default () => {
     perfQuery,
     search,
     setSearch,
-    transactions,
     searchParams,
     setSearchParams,
     address: session?.address,

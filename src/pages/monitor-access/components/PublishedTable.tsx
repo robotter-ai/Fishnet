@@ -72,7 +72,6 @@ const PublishedTable = () => {
   const { address } = useAuth();
 
   const { search } = useAppSelector((app) => app.monitorAccess);
-  const { getTransactions } = useAppSelector((app) => app.transactions);
 
   const { published, isLoading } = useGetDatasetsQuery(
     { by: address },
@@ -99,11 +98,11 @@ const PublishedTable = () => {
   const STATISTICS = [
     {
       name: 'Total profit',
-      value: getTransactions.totalProfit || 0,
+      value: 0,
     },
     {
       name: 'Total sales',
-      value: getTransactions.totalSales || 0,
+      value: 0,
     },
     {
       name: 'Total downloads',

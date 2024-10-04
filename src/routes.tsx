@@ -12,7 +12,7 @@ const ProtectedRoutes = () => {
   const cookies = new Cookies();
   const token = cookies.get('bearerToken');
 
-  return !token ? <Outlet /> : <Navigate to="/" replace />;
+  return token ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 export const router = createBrowserRouter([

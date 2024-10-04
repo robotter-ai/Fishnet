@@ -19,14 +19,6 @@ export default () => {
 
   const user = data as IUserInfo;
 
-  const { getTransactions } = useAppSelector((app) => app.transactions);
-
-  const transactions = getTransactions.transactions.filter(
-    (item) =>
-      item?.datasetName &&
-      item?.datasetName.toLowerCase().includes(search.toLowerCase())
-  );
-
   const query: ITab = (searchParams.get('tab') as ITab) || 'overview';
 
   const tabs: { key: ITab; name: string }[] = [
@@ -51,7 +43,6 @@ export default () => {
     query,
     search,
     setSearch,
-    transactions,
     searchParams,
     setSearchParams,
     address: session?.address,

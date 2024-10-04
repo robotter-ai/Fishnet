@@ -1,9 +1,7 @@
 import React from 'react';
 import { ITab, ITabs } from '../hooks/useProfile';
 import {
-  NavigateOptions,
   SetURLSearchParams,
-  URLSearchParamsInit,
 } from 'react-router-dom';
 import {
   RobotterLogo,
@@ -12,8 +10,12 @@ import {
   HeadProfileIcon,
   PhantomIcon,
 } from '@assets/icons';
-import classNames from 'classnames';
 import CustomTabs from './CustomTabs';
+import { useAuth } from '@contexts/auth-provider';
+import useModal from '@shared/hooks/useModal';
+import TruncatedAddress from '@shared/components/TruncatedAddress';
+import AppModal from '@components/ui/AppModal';
+import LoginForm from '@shared/components/LoginForm';
 
 export interface IHeaderProps {
   query: ITab;
@@ -28,6 +30,9 @@ const Header: React.FC<IHeaderProps> = ({
   searchParams,
   setSearchParams,
 }) => {
+  const { address } = useAuth();
+  const { isOpen, handleOpen, handleClose } = useModal();
+
   return (
     <header className="flex items-center justify-between w-full flex-wrap">
       <div className="flex items-center gap-x-4">
@@ -56,10 +61,27 @@ const Header: React.FC<IHeaderProps> = ({
         <span className="w-9 h-9 bg-blue-100 text-blue-400 rounded-full flex justify-center items-center cursor-pointer">
           <HeadProfileIcon width={'1rem'} height={'1rem'} />
         </span>
-        <span className="flex items-center justify-center gap-x-2 rounded-[33px] bg-blue-100 text-blue-400 text-sm font-normal w-[9.8125rem] h-[2.25rem]">
-          <h3>0xe5...48sx</h3> <PhantomIcon />
-        </span>
+        {address ? (
+          <span className="flex items-center justify-center gap-x-2 rounded-[33px] bg-blue-100 text-blue-400 text-sm font-normal w-[9.8125rem] h-[2.25rem]">
+            <TruncatedAddress address={address} />
+            <PhantomIcon />
+          </span>
+        ) : (
+          <span 
+            className="flex items-center justify-center gap-x-2 rounded-[33px] bg-blue-100 text-blue-400 text-sm font-normal w-[9.8125rem] h-[2.25rem] cursor-pointer"
+            onClick={handleOpen}
+          >
+            Connect Wallet
+          </span>
+        )}
       </div>
+      <AppModal
+        title="Connect a wallet"
+        isOpen={isOpen}
+        handleClose={handleClose}
+      >
+        <LoginForm />
+      </AppModal>
     </header>
   );
 };
