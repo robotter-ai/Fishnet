@@ -14,9 +14,14 @@ import {
 } from '@assets/icons';
 
 export type ITab = 'overview' | 'datasets' | 'training' | 'bots' | 'tutorial';
+export type ITimeTab = 'minute' | 'hour' | 'day' | 'week' | 'month';
+export type IDateTab = 'day' | 'week' | 'month' | 'time';
+export type IStratTab = 'strat' | 'hyper';
+export type IChatTab = 'trades' | 'pnl';
+export type IPerfTab = 'best' | 'worst';
 
 export interface ITabs {
-  key: string;
+  key: ITab | ITimeTab | IDateTab | IStratTab | IChatTab | IPerfTab;
   name: string;
   icon: JSX.Element | null;
 }
@@ -34,6 +39,11 @@ export interface ICryptoStats {
   tag: string;
   percentage: number;
   color: string;
+}
+
+export interface ISolData {
+  name: string;
+  isChecked: null;
 }
 
 export interface ICardBotData {
@@ -97,9 +107,12 @@ export default () => {
   //const user = data as IUserInfo;
 
   const query: ITab = (searchParams.get('tab') as ITab) || 'overview';
-  const dateQuery: ITab = (searchParams.get('date') as ITab) || 'week';
-  const timeQuery = (searchParams.get('time') as ITab) || 'day';
-  const perfQuery = (searchParams.get('perf') as ITab) || 'best';
+  const dateQuery = (searchParams.get('date') as IDateTab) || 'week';
+  const tradeDateQuery = (searchParams.get('trade_date') as IDateTab) || 'day';
+  const timeQuery = (searchParams.get('time') as ITimeTab) || 'day';
+  const perfQuery = (searchParams.get('perf') as IPerfTab) || 'best';
+  const stratQuery = (searchParams.get('strat') as IStratTab) || 'strat';
+  const chartTypeQuery = (searchParams.get('chart') as IChatTab) || 'trades';
 
   const tabs: ITabs[] = [
     {
@@ -146,6 +159,12 @@ export default () => {
     { key: 'time', name: 'All time' },
   ];
 
+  const tradeDateTabs: ITabs[] = [
+    { key: 'day', name: 'Day', icon: null },
+    { key: 'week', name: 'Week', icon: null },
+    { key: 'month', name: 'Month', icon: null },
+  ];
+
   const timeTabs: ITabs[] = [
     { key: 'minute', name: '15m', icon: null },
     { key: 'hour', name: '1h', icon: null },
@@ -157,6 +176,16 @@ export default () => {
   const perfTabs: ITabs[] = [
     { key: 'best', name: 'Best Performance', icon: null },
     { key: 'worst', name: 'Worst Performance', icon: null },
+  ];
+
+  const stratTabs: ITabs[] = [
+    { key: 'strat', name: 'Strategy', icon: null },
+    { key: 'hyper', name: 'Hyperparameters', icon: null },
+  ];
+
+  const chartTypeTabs: ITabs[] = [
+    { key: 'pnl', name: 'P&L', icon: null },
+    { key: 'trades', name: 'Trades', icon: null },
   ];
 
   const PAGE_TITLE: Record<ITab, string> = {
@@ -171,6 +200,27 @@ export default () => {
     { amount: 9186, tag: 'Big Brain', percentage: 20, color: '#3AA8F0' },
     { amount: 7036, tag: 'Trade Genius', percentage: 11, color: '#1F609C' },
     { amount: 3127, tag: 'Alpha Trader', percentage: 1, color: '#4AB6C4' },
+  ];
+
+  const cryptoStatsBots: ICryptoStats[] = [
+    {
+      tag: 'SOL',
+      percentage: 11,
+      amount: 46,
+      color: '#1F609C',
+    },
+    {
+      tag: 'BTC',
+      percentage: 10,
+      amount: 56,
+      color: '#3AA8F0',
+    },
+    {
+      amount: 550,
+      tag: 'OTN',
+      percentage: 9,
+      color: '#4AB6C4',
+    },
   ];
 
   const statsData: IStatsTableData[] = [
@@ -208,6 +258,81 @@ export default () => {
       chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       progressValue: null,
       color: '#4CAF50',
+    },
+  ];
+  const statsDataSOL: IStatsTableData[] = [
+    {
+      label: 'Unrealized P&L',
+      value: '-$20',
+      chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
+      progressValue: null,
+      color: '#F44336',
+    },
+    {
+      label: 'Portfolio',
+      value: '$9186',
+      chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
+      progressValue: null,
+      color: '#4CAF50',
+    },
+    {
+      label: 'Traded volume',
+      value: '$16532',
+      chartData: [98, 40, 60, 38, 42, 46, 40, 90, 95, 50],
+      progressValue: null,
+      color: '#4CAF50',
+    },
+    {
+      label: 'Total trades',
+      value: '14',
+      chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
+      progressValue: null,
+      color: '#F44336',
+    },
+    {
+      label: 'APR',
+      value: '210%',
+      chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
+      progressValue: null,
+      color: '#F44336',
+    },
+    {
+      label: 'Sharpe ratio',
+      value: '2.81',
+      chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
+      progressValue: null,
+      color: '#F44336',
+    },
+  ];
+
+  const statsDataLock: IStatsTableData[] = [
+    {
+      label: 'OTN',
+      value: '550',
+      chartData: null,
+      progressValue: 50,
+      color: '#F44336',
+    },
+    {
+      label: 'Monthly compute costs',
+      value: '$50',
+      chartData: [98, 40, 60, 38, 42, 46, 40, 90, 95, 50],
+      progressValue: null,
+      color: '#F44336',
+    },
+    {
+      label: 'Maker fee',
+      value: '2%',
+      chartData: null,
+      progressValue: 20,
+      color: '#F44336',
+    },
+    {
+      label: 'Taker fee',
+      value: '3%',
+      chartData: null,
+      progressValue: 30,
+      color: '#F44336',
     },
   ];
 
@@ -521,6 +646,27 @@ export default () => {
     },
   ];
 
+  const solData: ISolData[] = [
+    { name: 'SOL/USDC', isChecked: null },
+    { name: 'SOL/BNB', isChecked: null },
+    { name: 'SOL/JUP', isChecked: null },
+  ];
+
+  const infoTable = [
+    ['Start date', '2024-30-27'],
+    ['Initial amount', '$1487'],
+    ['Deposit address', 'B2hj...k2oT'],
+  ];
+
+  const stratTable = [
+    ['Exchange', 'Binance'],
+    ['Strategy/Value', 'Bar Up Down / 0.5'],
+    ['Market trend', 'Bullish / 67%'],
+    ['Leverage', 'x4'],
+    ['Take profit', '+20%'],
+    ['Stop loss', '-10%'],
+  ];
+
   useEffect(() => {
     setTitle(PAGE_TITLE[query]);
   }, [query]);
@@ -530,17 +676,28 @@ export default () => {
     dateTabs,
     timeTabs,
     perfTabs,
+    stratTabs,
+    tradeDateTabs,
+    chartTypeTabs,
     statsData,
     statsDataOTN,
+    statsDataSOL,
+    statsDataLock,
     cryptoStats,
+    cryptoStatsBots,
     cardBotData,
     cardBotDataBT,
-    botData,
+    solData,
+    infoTable,
+    stratTable,
     //user,
     query,
     dateQuery,
     timeQuery,
     perfQuery,
+    tradeDateQuery,
+    stratQuery,
+    chartTypeQuery,
     search,
     setSearch,
     searchParams,

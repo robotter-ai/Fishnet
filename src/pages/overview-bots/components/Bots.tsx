@@ -1,5 +1,5 @@
 import React from 'react';
-import { IBotData, ITab, ITabs } from '../hooks/useProfile';
+import { IBotData, ICardBotData, IChatTab, ICryptoStats, IDateTab, ISolData, IStatsTableData, IStratTab, ITab, ITabs, ITimeTab } from '../hooks/useProfile';
 import CustomButton from '@components/ui/Button';
 import MiniLineChart from './MiniLineChart';
 import CustomTabs from './CustomTabs';
@@ -7,20 +7,48 @@ import { SetURLSearchParams } from 'react-router-dom';
 import useTransaction from '@shared/hooks/useTransaction';
 
 interface IBotsProps {
+    solData: ISolData[];
     botsData: IBotData[] | null;
+    infoTable: string[][];
+    stratTable: string[][];
+    dateQuery: string;
+    timeQuery: ITimeTab;
+    tradeDateQuery: IDateTab;
+    chartTypeQuery: IChatTab;
+    stratQuery: IStratTab;
     timeTabs: ITabs[];
-    timeQuery: ITab;
+    stratTabs: ITabs[];
+    tradeDateTabs: ITabs[];
+    chartTypeTabs: ITabs[];
+    statsDataSOL: IStatsTableData[];
+    statsDataLock: IStatsTableData[];
+    cryptoStats: ICryptoStats[];
     searchParams: URLSearchParams;
     setSearchParams: SetURLSearchParams;
+    cardBotData: ICardBotData[];
 }
 
 const Bots: React.FC<IBotsProps> = ({
     botsData,
     timeTabs,
+    stratTabs,
+    tradeDateTabs,
+    stratTable,
+    infoTable,
+    solData,
+    chartTypeTabs,
+    dateQuery,
     timeQuery,
+    chartTypeQuery,
+    tradeDateQuery,
+    stratQuery,
+    statsDataSOL,
+    statsDataLock,
+    cryptoStats,
+    cardBotData,
     searchParams,
     setSearchParams,
-  }) => {
+}) => {
     const { deposit, withdraw } = useTransaction();
     const headers = ['BOT', 'STATUS', 'P&L', 'PORTFOLIO', 'ACCURACY', 'SHARPE RATIO', 'APR', ''];
 

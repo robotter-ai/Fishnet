@@ -1,5 +1,4 @@
 import React from 'react';
-import { ITab, ITabs } from '../hooks/useProfile';
 import {
   SetURLSearchParams,
 } from 'react-router-dom';
@@ -16,9 +15,18 @@ import useModal from '@shared/hooks/useModal';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import AppModal from '@components/ui/AppModal';
 import LoginForm from '@shared/components/LoginForm';
+import {
+  IChatTab,
+  IDateTab,
+  IPerfTab,
+  IStratTab,
+  ITab,
+  ITabs,
+  ITimeTab,
+} from '../hooks/useProfile';
 
 export interface IHeaderProps {
-  query: ITab;
+  query: ITab | ITimeTab | IDateTab | IStratTab | IChatTab | IPerfTab;
   tabs: ITabs[];
   searchParams: URLSearchParams;
   setSearchParams: SetURLSearchParams;

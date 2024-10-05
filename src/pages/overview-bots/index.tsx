@@ -11,15 +11,27 @@ const OverviewBots = () => {
     dateTabs,
     timeTabs,
     perfTabs,
+    stratTabs,
+    tradeDateTabs,
+    chartTypeTabs,
     cryptoStats,
+    cryptoStatsBots,
     statsData,
     statsDataOTN,
+    statsDataSOL,
+    statsDataLock,
     cardBotData,
     cardBotDataBT,
     query,
     dateQuery,
     timeQuery,
     perfQuery,
+    stratQuery,
+    tradeDateQuery,
+    chartTypeQuery,
+    stratTable,
+    infoTable,
+    solData,
     searchParams,
     setSearchParams,
   } = useProfile();
@@ -56,10 +68,24 @@ const OverviewBots = () => {
     bots: (
       <Bots
         botsData={botsData}
-        timeTabs={timeTabs}
+        solData={solData}
+        infoTable={infoTable}
+        stratTable={stratTable}
+        dateQuery={dateQuery}
         timeQuery={timeQuery}
+        stratQuery={stratQuery}
+        tradeDateQuery={tradeDateQuery}
+        chartTypeQuery={chartTypeQuery}
+        timeTabs={timeTabs}
+        stratTabs={stratTabs}
+        tradeDateTabs={tradeDateTabs}
+        chartTypeTabs={chartTypeTabs}
+        statsDataSOL={statsDataSOL}
+        statsDataLock={statsDataLock}
+        cryptoStats={cryptoStatsBots}
         searchParams={searchParams}
         setSearchParams={setSearchParams}
+        cardBotData={cardBotDataBT}
       />
     ),
     tutorial: <></>,
