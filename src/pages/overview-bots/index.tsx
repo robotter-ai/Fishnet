@@ -1,8 +1,9 @@
+import Header from './components/Header';
 import useProfile, { ITab } from './hooks/useProfile';
 import Overview from './components/Overview';
 import Training from './components/Training';
-import Header from './components/Header';
 import Bots from './components/Bots';
+import { useAuth } from '@contexts/auth-provider';
 
 const OverviewBots = () => {
   const {
@@ -21,7 +22,6 @@ const OverviewBots = () => {
     statsDataLock,
     cardBotData,
     cardBotDataBT,
-    user,
     query,
     dateQuery,
     timeQuery,
@@ -32,13 +32,11 @@ const OverviewBots = () => {
     stratTable,
     infoTable,
     solData,
-    search,
-    address,
-    setSearch,
-    transactions,
     searchParams,
     setSearchParams,
   } = useProfile();
+
+  const { botsData } = useAuth();
 
   const Mapper: Record<ITab, React.ReactNode> = {
     overview: (
@@ -69,6 +67,7 @@ const OverviewBots = () => {
     ),
     bots: (
       <Bots
+        botsData={botsData}
         solData={solData}
         infoTable={infoTable}
         stratTable={stratTable}
@@ -95,17 +94,14 @@ const OverviewBots = () => {
   const Component = Mapper[query];
 
   return (
-    <div className="py-8 px-6 max-w-[90rem] w-full mx-auto overflow-x-hidden">
+    <div className="py-8 px-6 max-w-[90rem] w-full mx-auto">
       <Header
         query={query}
         tabs={tabs}
         searchParams={searchParams}
         setSearchParams={setSearchParams}
       />
-      <div>
         {Component}
-      </div>
-      
     </div>
   );
 };

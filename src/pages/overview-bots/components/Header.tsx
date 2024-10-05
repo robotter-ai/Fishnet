@@ -1,10 +1,19 @@
-import { SetURLSearchParams } from 'react-router-dom';
-import MenuModal from '@components/ui/MenuModal';
-import { RobotterLogo } from '@assets/icons';
-import { HiMenuAlt3 } from 'react-icons/hi';
-import { MdClose } from 'react-icons/md';
-import React, { useState } from 'react';
-import Switcher from './Switcher';
+import React from 'react';
+import {
+  SetURLSearchParams,
+} from 'react-router-dom';
+import {
+  RobotterLogo,
+  BellIcon,
+  WalletIcon,
+  HeadProfileIcon,
+  PhantomIcon,
+} from '@assets/icons';
+import { useAuth } from '@contexts/auth-provider';
+import useModal from '@shared/hooks/useModal';
+import TruncatedAddress from '@shared/components/TruncatedAddress';
+import AppModal from '@components/ui/AppModal';
+import LoginForm from '@shared/components/LoginForm';
 import {
   IChatTab,
   IDateTab,
@@ -14,6 +23,7 @@ import {
   ITabs,
   ITimeTab,
 } from '../hooks/useProfile';
+import Switcher from './Switcher';
 
 export interface IHeaderProps {
   query: ITab | ITimeTab | IDateTab | IStratTab | IChatTab | IPerfTab;
@@ -28,9 +38,8 @@ const Header: React.FC<IHeaderProps> = ({
   searchParams,
   setSearchParams,
 }) => {
-  const [showModal, setShowModal] = useState(false);
-
-  const handleOpenMenu = () => setShowModal((prev) => !prev);
+  const { address } = useAuth();
+  const { isOpen, handleOpen, handleClose } = useModal();
 
   return (
     <header className="flex items-center justify-between gap-x-4 w-full relative">
@@ -48,18 +57,40 @@ const Header: React.FC<IHeaderProps> = ({
         </div>
       </div>
 
-      <div className="lg:hidden cursor-pointer text-navy">
-        {showModal ? (
-          <MdClose size={24} onClick={handleOpenMenu} />
+      <div className="flex items-center gap-x-3">
+        <span className="relative w-9 h-9 bg-blue-100 text-blue-400 rounded-full flex justify-center items-center cursor-pointer">
+          <BellIcon width={'1rem'} height={'1rem'} />
+          <span className="absolute top-[-5px] right-[-2px] flex justify-center items-center w-[1.125rem] h-[1.125rem] rounded-full bg-navy">
+            <h3 className="font-bold text-xs text-white">3</h3>
+          </span>
+        </span>
+        <span className="w-9 h-9 bg-blue-100 text-blue-400 rounded-full flex justify-center items-center cursor-pointer">
+          <WalletIcon width={'1rem'} height={'1rem'} />
+        </span>
+        <span className="w-9 h-9 bg-blue-100 text-blue-400 rounded-full flex justify-center items-center cursor-pointer">
+          <HeadProfileIcon width={'1rem'} height={'1rem'} />
+        </span>
+        {address ? (
+          <span className="flex items-center justify-center gap-x-2 rounded-[33px] bg-blue-100 text-blue-400 text-sm font-normal w-[9.8125rem] h-[2.25rem]">
+            <TruncatedAddress address={address} />
+            <PhantomIcon />
+          </span>
         ) : (
-          <HiMenuAlt3 size={24} onClick={handleOpenMenu} />
-        )}
-        {showModal && (
-          <MenuModal xtraStyle="justify-center absolute top-10 left-0 z-50 px-4 py-4 w-full" />
+          <span 
+            className="flex items-center justify-center gap-x-2 rounded-[33px] bg-blue-100 text-blue-400 text-sm font-normal w-[9.8125rem] h-[2.25rem] cursor-pointer"
+            onClick={handleOpen}
+          >
+            Connect Wallet
+          </span>
         )}
       </div>
-
-      <MenuModal xtraStyle="hidden lg:flex justify-between" />
+      <AppModal
+        title="Connect a wallet"
+        isOpen={isOpen}
+        handleClose={handleClose}
+      >
+        <LoginForm />
+      </AppModal>
     </header>
   );
 };

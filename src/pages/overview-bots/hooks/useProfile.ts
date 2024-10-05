@@ -44,6 +44,11 @@ export interface ICryptoStats {
   color: string;
 }
 
+export interface ISolData {
+  name: string;
+  isChecked: null;
+}
+
 export interface ICardBotData {
   name: string;
   rate: number;
@@ -55,6 +60,31 @@ export interface ICardBotData {
     labelB: (string | number)[];
     percentage: number | null;
     isProfit: boolean | null;
+  }[];
+}
+
+export interface IBotData {
+  id: number;
+  name: string;
+  status: 'Active' | 'Stopped';
+  pnl: {
+    value: number;
+    percentage: number;
+    isPositive: boolean;
+    chartData: number[];
+  };
+  portfolio: {
+    value: number;
+    percentage: number;
+  };
+  accuracy: number;
+  sharpeRatio: number;
+  apr: number;
+  delegate: string;
+  events: {
+    event_category: 'deposit' | 'withdraw' | 'trade';
+    timestamp: string;
+    [key: string]: any;
   }[];
 }
 
@@ -75,17 +105,9 @@ export default () => {
 
   const [search, setSearch] = useState('');
 
-  const { data } = useGetUserInfoQuery({ address: session?.address });
+  //const { data } = useGetUserInfoQuery({ address: session?.address });
 
-  const user = data as IUserInfo;
-
-  const { getTransactions } = useAppSelector((app) => app.transactions);
-
-  const transactions = getTransactions.transactions.filter(
-    (item) =>
-      item?.datasetName &&
-      item?.datasetName.toLowerCase().includes(search.toLowerCase())
-  );
+  //const user = data as IUserInfo;
 
   const query: ITab = (searchParams.get('tab') as ITab) || 'overview';
   const dateQuery = (searchParams.get('date') as IDateTab) || 'week';
@@ -279,45 +301,6 @@ export default () => {
     },
   ];
 
-  const statsDataOTN: IStatsTableData[] = [
-    {
-      label: 'OTN Balance',
-      value: '550',
-      chartData: null,
-      progressValue: 50,
-      color: '',
-      toolTipText:
-        "The amount of OTN (Robotter's native token) you hold. Staking OTN can reduce your trading fees and unlock additional rewards for increased profitability.",
-    },
-    {
-      label: 'Monthly compute costs',
-      value: '$150',
-      chartData: [98, 40, 60, 38, 42, 46, 40, 90, 95, 50],
-      progressValue: null,
-      color: '#F44336',
-      toolTipText:
-        'The estimated cost for running your trading bots, including data processing and computational resources, billed monthly',
-    },
-    {
-      label: 'Av. maker fee',
-      value: '2%',
-      chartData: null,
-      progressValue: 20,
-      color: '',
-      toolTipText:
-        'The average fee charged for placing limit orders that add liquidity to the market. Lower maker fees can reduce your overall trading costs.',
-    },
-    {
-      label: 'Av taker fee',
-      value: '3%',
-      chartData: null,
-      progressValue: 30,
-      color: '',
-      toolTipText:
-        'The average fee charged for executing market orders that remove liquidity from the market. Higher taker fees can impact your overall trading profitability.',
-    },
-  ];
-
   const statsDataSOL: IStatsTableData[] = [
     {
       label: 'Unrealized P&L',
@@ -366,6 +349,45 @@ export default () => {
       progressValue: null,
       color: null,
       toolTipText: null,
+    },
+  ];
+
+  const statsDataOTN: IStatsTableData[] = [
+    {
+      label: 'OTN Balance',
+      value: '550',
+      chartData: null,
+      progressValue: 50,
+      color: '',
+      toolTipText:
+        "The amount of OTN (Robotter's native token) you hold. Staking OTN can reduce your trading fees and unlock additional rewards for increased profitability.",
+    },
+    {
+      label: 'Monthly compute costs',
+      value: '$150',
+      chartData: [98, 40, 60, 38, 42, 46, 40, 90, 95, 50],
+      progressValue: null,
+      color: '#F44336',
+      toolTipText:
+        'The estimated cost for running your trading bots, including data processing and computational resources, billed monthly',
+    },
+    {
+      label: 'Av. maker fee',
+      value: '2%',
+      chartData: null,
+      progressValue: 20,
+      color: '',
+      toolTipText:
+        'The average fee charged for placing limit orders that add liquidity to the market. Lower maker fees can reduce your overall trading costs.',
+    },
+    {
+      label: 'Av taker fee',
+      value: '3%',
+      chartData: null,
+      progressValue: 30,
+      color: '',
+      toolTipText:
+        'The average fee charged for executing market orders that remove liquidity from the market. Higher taker fees can impact your overall trading profitability.',
     },
   ];
 
@@ -662,6 +684,69 @@ export default () => {
     },
   ];
 
+  const botData: IBotData[] = [
+    {
+      id: 1,
+      name: 'Big Brain',
+      status: 'Active',
+      pnl: {
+        value: 1837,
+        percentage: 20,
+        isPositive: true,
+        chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
+      },
+      portfolio: {
+        value: 9186,
+        percentage: 20,
+      },
+      accuracy: 65,
+      sharpeRatio: 2.81,
+      apr: 210,
+      delegate: 'rikiFB2VznT2izUT7UffzWCn1X4gNmGutX7XEqFdpRR',
+      events: []
+    },
+    {
+      id: 2,
+      name: 'Trade Genius',
+      status: 'Active',
+      pnl: {
+        value: 773,
+        percentage: 11,
+        isPositive: true,
+        chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
+      },
+      portfolio: {
+        value: 7036,
+        percentage: 11,
+      },
+      accuracy: 59,
+      sharpeRatio: 2.01,
+      apr: 187,
+      delegate: 'rikiFB2VznT2izUT7UffzWCn1X4gNmGutX7XEqFdpRR',
+      events: []
+    },
+    {
+      id: 3,
+      name: 'Alpha Trader',
+      status: 'Active',
+      pnl: {
+        value: 31,
+        percentage: 1,
+        isPositive: false,
+        chartData: [90, 85, 80, 70, 60, 65, 75, 76, 95, 80],
+      },
+      portfolio: {
+        value: 3127,
+        percentage: 1,
+      },
+      accuracy: 49,
+      sharpeRatio: 1.75,
+      apr: 165,
+      delegate: 'rikiFB2VznT2izUT7UffzWCn1X4gNmGutX7XEqFdpRR',
+      events: []
+    },
+  ];
+
   const solData: ISolData[] = [
     { name: 'SOL/USDC', isChecked: null },
     { name: 'SOL/BNB', isChecked: null },
@@ -706,7 +791,7 @@ export default () => {
     solData,
     infoTable,
     stratTable,
-    user,
+    //user,
     query,
     dateQuery,
     timeQuery,
@@ -716,7 +801,6 @@ export default () => {
     chartTypeQuery,
     search,
     setSearch,
-    transactions,
     searchParams,
     setSearchParams,
     address: session?.address,

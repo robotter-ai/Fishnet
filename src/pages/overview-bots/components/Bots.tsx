@@ -1,219 +1,178 @@
-import {
-  ICardBotData,
-  IChatTab,
-  ICryptoStats,
-  IDateTab,
-  ISolData,
-  IStatsTableData,
-  IStratTab,
-  ITab,
-  ITabs,
-  ITimeTab,
-} from '../hooks/useProfile';
+import React, { useState } from 'react';
+import { IBotData, ICardBotData, IChatTab, ICryptoStats, IDateTab, ISolData, IStatsTableData, IStratTab, ITab, ITabs, ITimeTab } from '../hooks/useProfile';
+import CustomButton from '@components/ui/Button';
+import MiniLineChart from './MiniLineChart';
 import { SetURLSearchParams } from 'react-router-dom';
-import { BackIcon, DownIcon, UpIcon } from '@assets/icons';
-import CandlestickChart from './CandlestickChart';
-import CustomPieChart from './CustomPieChart';
-import Switcher from './Switcher';
-import PnLChart from './PnLChart';
-import StatsTable from './StatsTable';
-import classNames from 'classnames';
-import React from 'react';
-import ButtonList from './ButtonList';
-import SidebarTable from './SidebarTable';
-import CustomBtn from '@components/ui/CustomBtn';
-import TradeTable from './TradeTable';
-import GoBack from './GoBack';
-import CryptoStats from './CryptoStats';
+import useTransaction from '@shared/hooks/useTransaction';
+import CustomTabs from './CustomTabs';
+import SingleBotView from './BotView';
 
 interface IBotsProps {
-  solData: ISolData[];
-  infoTable: string[][];
-  stratTable: string[][];
-  dateQuery: string;
-  timeQuery: ITimeTab;
-  tradeDateQuery: IDateTab;
-  chartTypeQuery: IChatTab;
-  stratQuery: IStratTab;
-  timeTabs: ITabs[];
-  stratTabs: ITabs[];
-  tradeDateTabs: ITabs[];
-  chartTypeTabs: ITabs[];
-  statsDataSOL: IStatsTableData[];
-  statsDataLock: IStatsTableData[];
-  cryptoStats: ICryptoStats[];
-  searchParams: URLSearchParams;
-  setSearchParams: SetURLSearchParams;
-  cardBotData: ICardBotData[];
+    solData: ISolData[];
+    botsData: IBotData[] | null;
+    infoTable: string[][];
+    stratTable: string[][];
+    dateQuery: string;
+    timeQuery: ITimeTab;
+    tradeDateQuery: IDateTab;
+    chartTypeQuery: IChatTab;
+    stratQuery: IStratTab;
+    timeTabs: ITabs[];
+    stratTabs: ITabs[];
+    tradeDateTabs: ITabs[];
+    chartTypeTabs: ITabs[];
+    statsDataSOL: IStatsTableData[];
+    statsDataLock: IStatsTableData[];
+    cryptoStats: ICryptoStats[];
+    searchParams: URLSearchParams;
+    setSearchParams: SetURLSearchParams;
+    cardBotData: ICardBotData[];
 }
 
 const Bots: React.FC<IBotsProps> = ({
-  timeTabs,
-  stratTabs,
-  tradeDateTabs,
-  stratTable,
-  infoTable,
-  solData,
-  chartTypeTabs,
-  dateQuery,
-  timeQuery,
-  chartTypeQuery,
-  tradeDateQuery,
-  stratQuery,
-  statsDataSOL,
-  statsDataLock,
-  cryptoStats,
-  cardBotData,
-  searchParams,
-  setSearchParams,
+    botsData,
+    timeTabs,
+    stratTabs,
+    tradeDateTabs,
+    stratTable,
+    infoTable,
+    solData,
+    chartTypeTabs,
+    dateQuery,
+    timeQuery,
+    chartTypeQuery,
+    tradeDateQuery,
+    stratQuery,
+    statsDataSOL,
+    statsDataLock,
+    cryptoStats,
+    cardBotData,
+    searchParams,
+    setSearchParams,
 }) => {
-  const getChartTypeQuery = searchParams.get('chart') || 'trades';
+    const { deposit, withdraw } = useTransaction();
+    const headers = ['BOT', 'STATUS', 'P&L', 'PORTFOLIO', 'ACCURACY', 'SHARPE RATIO', 'APR', ''];
+    const [selectedBot, setSelectedBot] = useState<IBotData | null>(null);
 
-  return (
-    <>
-      <div className="flex flex-col xl:flex-row justify-between gap-x-4">
-        <div id="left" className="w-full">
-          <div className="flex gap-x-4 overflow-x-auto mt-6 pb-4">
-            <div className="pt-3">
-              <GoBack />
-              <div className="mt-16">
-                <CustomPieChart
-                  size={210}
-                  innerRadius={90}
-                  outerRadius={103}
-                  cryptoStats={cryptoStats}
-                  label={
-                    <>
-                      <h1 className="font-bold text-[2rem] text-center text-dark-300">
-                        +$1837
-                      </h1>
-                      <p className="font-normal text-sm text-center text-dark-100">
-                        +20% P&L
-                      </p>
-                    </>
-                  }
-                />
-              </div>
+    const handleBotClick = (bot: IBotData | undefined) => {
+        if(!bot) return;
+        
+        setSelectedBot(bot);
+    };
+
+    const handleBackToList = () => {
+        setSelectedBot(null);
+    };
+    
+    if (selectedBot) {
+      return (
+          <SingleBotView
+              bot={selectedBot}
+              onBack={handleBackToList}
+              onWithdraw={() => withdraw(selectedBot.id)}
+              solData={solData}
+              infoTable={infoTable}
+              stratTable={stratTable}
+              dateQuery={dateQuery}
+              timeQuery={timeQuery}
+              tradeDateQuery={tradeDateQuery}
+              chartTypeQuery={chartTypeQuery}
+              stratQuery={stratQuery}
+              timeTabs={timeTabs}
+              stratTabs={stratTabs}
+              tradeDateTabs={tradeDateTabs}
+              chartTypeTabs={chartTypeTabs}
+              statsDataSOL={statsDataSOL}
+              statsDataLock={statsDataLock}
+              cryptoStats={cryptoStats}
+              searchParams={searchParams}
+              setSearchParams={setSearchParams}
+              cardBotData={cardBotData}
+          />
+      );
+    }
+
+    return (
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Trading bots list</h2>
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex space-x-4">
+              {['Best', 'Worst', 'OTN', 'SOL', 'BTC', 'USDC'].map((tab) => (
+                <button key={tab} className="text-blue-400 hover:text-blue-600">{tab}</button>
+              ))}
             </div>
-
-            <div className="flex-1">
-              <CryptoStats data={cryptoStats} showValue />
-
-              <div className="flex flex-row md:flex-col lg:flex-row gap-y-4 xl:gap-y-0 gap-x-4 mt-8">
-                <StatsTable
-                  showActive
-                  titleStyle="mb-4"
-                  title="SOL BIG BRAIN"
-                  statsData={statsDataSOL}
-                  hasQuestionMark={false}
-                />
-                <StatsTable
-                  titleStyle="mb-5"
-                  title="Lock 450 OTN more to boost your bonus"
-                  statsData={statsDataLock}
-                  hasQuestionMark={false}
-                  showBtn
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-5">
-            <div id="time_tabs" className="mt-5 w-full">
-              <div className="max-w-[24.625rem]  mt-10 mb-5">
-                <ButtonList
-                  btnStyle="bg-light-200 hover:border-blue-300/40"
-                  activeStyle="text-blue-300 border-blue-300 hover:border-blue-300/80 hover:bg-blue-100"
-                  btnData={solData}
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-y-5 md:gap-y-0 justify-between items-center mb-4">
-                <div className="max-w-[9.8125rem] w-[60%] h-[1.9375rem]">
-                  <Switcher
-                    keyQuery="chart"
-                    query={chartTypeQuery}
-                    tabs={chartTypeTabs}
-                    searchParams={searchParams}
-                    setSearchParams={setSearchParams}
-                  />
-                </div>
-
-                <div className="max-w-[20.25rem] w-[80%] h-[1.9375rem]">
-                  <Switcher
-                    keyQuery="time"
-                    query={timeQuery}
-                    tabs={timeTabs}
-                    searchParams={searchParams}
-                    setSearchParams={setSearchParams}
-                  />
-                </div>
-              </div>
-
-              <div className="overflow-x-auto xl:overflow-x-clip">
-                <div className="h-auto w-[63.4375rem] lg:w-full">                
-                  {getChartTypeQuery === 'trades' && (
-                    <CandlestickChart height={459} />
-                  )}
-                  {getChartTypeQuery === 'pnl' && (
-                    <PnLChart height={459} minWidth={408} />
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="right" className="flex-1">
-          <div className="flex justify-center xl:justify-end my-8">
-            <div className="max-w-[15.3125rem] w-full h-[1.9375rem]">
-              <Switcher
-                keyQuery="strat"
-                query={stratQuery}
-                tabs={stratTabs}
+            <div className="w-64">
+              <CustomTabs
+                isTab={false}
+                tabs={timeTabs}
+                query={timeQuery}
                 searchParams={searchParams}
                 setSearchParams={setSearchParams}
               />
             </div>
           </div>
-
-          <div className="gap-x-3 overflow-x-auto flex flex-col md:flex-row xl:flex-col">
-            <SidebarTable title="information" data={infoTable} showIcon />
-            <SidebarTable title="Strategy" data={stratTable} />
-          </div>
-
-          <div className="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-x-4">
-            <CustomBtn
-              text="Edit Strategy"
-              xtraStyles="max-w-[20.3125rem] w-full my-2"
-            />
-
-            <CustomBtn
-              text="Stop Trading"
-              btnStyle="outline-secondary"
-              xtraStyles="max-w-[20.3125rem] w-full my-2"
-            />
+          <button 
+            className="flex items-center text-blue-500 hover:text-blue-700 mb-4"
+            onClick={() => deposit(1, 'rikiFB2VznT2izUT7UffzWCn1X4gNmGutX7XEqFdpRR')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+            </svg>
+            Create New Bot
+          </button>
+          <table className="w-full">
+            <thead>
+              <tr>
+                {headers.map((header) => (
+                  <th key={header} className="text-left py-2 text-gray-500">{header}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {botsData?.map((bot, index) => (
+                <tr key={index} className="border-b cursor-pointer" onClick={() => handleBotClick(botsData.find((x) => x.id === bot.id))}>
+                  <td className="py-4">{bot.name}</td>
+                  <td>
+                    <span className={`px-2 py-1 rounded text-white ${bot.status === 'Active' ? 'bg-green-500' : 'bg-red-500'}`}>
+                      {bot.status}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="flex items-center">
+                      <span className={bot.pnl.isPositive ? 'text-green-500' : 'text-red-500'}>
+                        {bot.pnl.isPositive ? '+' : '-'} ${bot.pnl.value} ({bot.pnl.percentage}%)
+                      </span>
+                      <MiniLineChart
+                        data={bot.pnl.chartData}
+                        color={bot.pnl.isPositive ? '#218358' : '#CE2C31'}
+                      />
+                    </div>
+                  </td>
+                  <td>${bot.portfolio.value} ({bot.portfolio.percentage}%)</td>
+                  <td>{bot.accuracy}%</td>
+                  <td>{bot.sharpeRatio}</td>
+                  <td>{bot.apr}%</td>
+                  <td>
+                    <div className="flex space-x-2">
+                      <CustomButton 
+                        text="Withdraw" 
+                        style={{ background: 'transparent', color: 'blue' }} 
+                        onClick={() => withdraw(bot.id)}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="mt-4 flex justify-center">
+            <CustomButton text="1" style={{ background: 'blue', color: 'white' }} />
+            <CustomButton text="2" style={{ background: 'transparent', color: 'blue' }} />
+            <CustomButton text="3" style={{ background: 'transparent', color: 'blue' }} />
+            <CustomButton text="..." style={{ background: 'transparent', color: 'blue' }} />
           </div>
         </div>
-      </div>
-
-      <div>
-        <h1 className="font-semibold text-2xl text-dark-300 mt-8">
-          List of Trades
-        </h1>
-        <div className="max-w-[14.6875rem] w-full h-[1.9375rem] my-6">
-          <Switcher
-            keyQuery="trade_date"
-            query={tradeDateQuery}
-            tabs={tradeDateTabs}
-            searchParams={searchParams}
-            setSearchParams={setSearchParams}
-          />
-        </div>
-        <TradeTable />
-      </div>
-    </>
-  );
+      );
 };
 
 export default Bots;

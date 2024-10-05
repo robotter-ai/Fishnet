@@ -13,7 +13,7 @@ const ProtectedRoutes = () => {
   const cookies = new Cookies();
   const token = cookies.get('bearerToken');
 
-  return !token ? <Outlet /> : <Navigate to="/" replace />;
+  return token ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 export const router = createBrowserRouter([
@@ -21,20 +21,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h2>Go to /overview</h2>,
-      },
-      {
-        element: <ProtectedRoutes />,
-        children: [
-          {
-            path: 'overview',
-            element: <OverviewBots />,
-          },
-          {
-            path: 'profile',
-            element: <MyProfile />,
-          },
-        ],
+        element:  <OverviewBots />,
       },
       {
         path: '*',
