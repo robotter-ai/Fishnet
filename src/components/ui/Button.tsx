@@ -35,7 +35,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: IconTypes;
   btnStyle?: 'outline-primary' | 'outline-red' | 'solid-secondary' | 'solid-navy';
   xtraStyles?: string;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   isLoading?: boolean;
   disabled?: boolean;
   type?: 'button' | 'submit';
