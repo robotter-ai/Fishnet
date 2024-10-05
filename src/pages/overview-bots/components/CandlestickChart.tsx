@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 
-// Define the data structure for the series
 interface CandlestickData {
   x: Date;
   y: number[];
 }
 
-const ApexChart: React.FC = () => {
+interface ICandlestickChart {
+  height: number;
+}
+
+const CandlestickChart: React.FC<ICandlestickChart> = ({ height }) => {
   const [series] = useState<{ data: CandlestickData[] }[]>([
     {
       data: [
@@ -259,7 +262,7 @@ const ApexChart: React.FC = () => {
   const options: ApexOptions = {
     chart: {
       type: 'candlestick',
-      height: 500,
+      height,
     },
     legend: {
       show: true,
@@ -268,6 +271,7 @@ const ApexChart: React.FC = () => {
       type: 'datetime',
     },
     yaxis: {
+      opposite: true,
       tooltip: {
         enabled: true,
       },
@@ -275,15 +279,13 @@ const ApexChart: React.FC = () => {
   };
 
   return (
-    <div>
-      <ReactApexChart
-        options={options}
-        series={series}
-        type="candlestick"
-        height={500}
-      />
-    </div>
+    <ReactApexChart
+      options={options}
+      series={series}
+      type="candlestick"
+      height={height}
+    />
   );
 };
 
-export default ApexChart;
+export default CandlestickChart;

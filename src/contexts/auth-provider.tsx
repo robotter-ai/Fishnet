@@ -86,12 +86,11 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const handleTokenValidation = useCallback(async (token: string, address: string) => {
     try {
       const decoded = jwt_decode<JwtPayload>(token);
-      
       if (decoded.sub !== address) {
         resetAuth();
         return false;
       }
-  
+
       if (decoded.exp && Date.now() >= decoded.exp * 1000) {
         const refreshedToken = await refreshTokenMutation({ token }).unwrap();
         token = refreshedToken.token;

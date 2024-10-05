@@ -5,7 +5,7 @@ const Stepper = ({ currentStep }: { currentStep: number }) => {
   const steps = ['Backtest Strategy', 'Results', 'Connect', 'Balance'];
 
   return (
-    <div className="flex items-center justify-between w-[90%] max-w-[25rem] mx-auto md:mx-0">
+    <div className="flex items-center justify-between w-[80%] md:w-[90%] max-w-[25rem] mx-auto md:mx-0">
       {steps.map((step, index) => (
         <div key={index} className="flex items-center relative">
           <div
@@ -31,7 +31,7 @@ const Stepper = ({ currentStep }: { currentStep: number }) => {
           {index < steps.length - 1 && (
             <div
               id="line"
-              className="w-[3.5rem] md:w-[5.5rem] h-[1px] bg-light-400 absolute left-[30px] top-[10px] z-[-1]"
+              className="lt:w-[2.5rem] w-[5.5rem] md:w-[5.5rem] h-[1px] bg-light-400 absolute left-[30px] top-[10px] z-[-1]"
             ></div>
           )}
         </div>

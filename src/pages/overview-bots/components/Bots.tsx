@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IBotData, ICardBotData, IChatTab, ICryptoStats, IDateTab, ISolData, IStatsTableData, IStratTab, ITab, ITabs, ITimeTab } from '../hooks/useProfile';
 import CustomButton from '@components/ui/Button';
 import MiniLineChart from './MiniLineChart';
-import CustomTabs from './CustomTabs';
 import { SetURLSearchParams } from 'react-router-dom';
 import useTransaction from '@shared/hooks/useTransaction';
+import CustomTabs from './CustomTabs';
+import SingleBotView from './BotView';
 
 interface IBotsProps {
     solData: ISolData[];
@@ -51,6 +52,45 @@ const Bots: React.FC<IBotsProps> = ({
 }) => {
     const { deposit, withdraw } = useTransaction();
     const headers = ['BOT', 'STATUS', 'P&L', 'PORTFOLIO', 'ACCURACY', 'SHARPE RATIO', 'APR', ''];
+    const [selectedBot, setSelectedBot] = useState<IBotData | null>(null);
+
+    const handleBotClick = (bot: IBotData | undefined) => {
+        if(!bot) return;
+        
+        setSelectedBot(bot);
+    };
+
+    const handleBackToList = () => {
+        setSelectedBot(null);
+    };
+    
+    if (selectedBot) {
+      return (
+          <SingleBotView
+              bot={selectedBot}
+              onBack={handleBackToList}
+              onWithdraw={() => withdraw(selectedBot.id)}
+              solData={solData}
+              infoTable={infoTable}
+              stratTable={stratTable}
+              dateQuery={dateQuery}
+              timeQuery={timeQuery}
+              tradeDateQuery={tradeDateQuery}
+              chartTypeQuery={chartTypeQuery}
+              stratQuery={stratQuery}
+              timeTabs={timeTabs}
+              stratTabs={stratTabs}
+              tradeDateTabs={tradeDateTabs}
+              chartTypeTabs={chartTypeTabs}
+              statsDataSOL={statsDataSOL}
+              statsDataLock={statsDataLock}
+              cryptoStats={cryptoStats}
+              searchParams={searchParams}
+              setSearchParams={setSearchParams}
+              cardBotData={cardBotData}
+          />
+      );
+    }
 
     return (
         <div>
@@ -90,7 +130,7 @@ const Bots: React.FC<IBotsProps> = ({
             </thead>
             <tbody>
               {botsData?.map((bot, index) => (
-                <tr key={index} className="border-b">
+                <tr key={index} className="border-b cursor-pointer" onClick={() => handleBotClick(botsData.find((x) => x.id === bot.id))}>
                   <td className="py-4">{bot.name}</td>
                   <td>
                     <span className={`px-2 py-1 rounded text-white ${bot.status === 'Active' ? 'bg-green-500' : 'bg-red-500'}`}>

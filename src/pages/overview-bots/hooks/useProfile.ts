@@ -31,13 +31,16 @@ export interface IStatsTableData {
   value: string;
   chartData: null | number[];
   progressValue: null | number;
-  color: string;
+  color: string | null;
+  toolTipText: string | null;
 }
 
 export interface ICryptoStats {
   amount: number;
   tag: string;
   percentage: number;
+  value: number | null;
+  isProfit: boolean;
   color: string;
 }
 
@@ -50,12 +53,7 @@ export interface ICardBotData {
   name: string;
   rate: number;
   isPositive: boolean;
-  pieChartData: {
-    amount: number;
-    tag: string;
-    percentage: number;
-    color: string;
-  }[];
+  pieChartData: ICryptoStats[];
   lineChartData: number[] | null;
   tableData: {
     labelA: (string | number)[];
@@ -93,6 +91,11 @@ export interface IBotData {
 export interface IDateTabs {
   key: string;
   name: string;
+}
+
+export interface ISolData {
+  name: string;
+  isChecked: null;
 }
 
 export default () => {
@@ -152,11 +155,11 @@ export default () => {
     },
   ];
 
-  const dateTabs: IDateTabs[] = [
-    { key: 'day', name: 'Last Day' },
-    { key: 'week', name: 'Last Week' },
-    { key: 'month', name: 'Last Month' },
-    { key: 'time', name: 'All time' },
+  const dateTabs: ITabs[] = [
+    { key: 'day', name: 'Last Day', icon: null },
+    { key: 'week', name: 'Last Week', icon: null },
+    { key: 'month', name: 'Last Month', icon: null },
+    { key: 'time', name: 'All time', icon: null },
   ];
 
   const tradeDateTabs: ITabs[] = [
@@ -197,28 +200,55 @@ export default () => {
   };
 
   const cryptoStats: ICryptoStats[] = [
-    { amount: 9186, tag: 'Big Brain', percentage: 20, color: '#3AA8F0' },
-    { amount: 7036, tag: 'Trade Genius', percentage: 11, color: '#1F609C' },
-    { amount: 3127, tag: 'Alpha Trader', percentage: 1, color: '#4AB6C4' },
+    {
+      amount: 9186,
+      tag: 'Big Brain',
+      percentage: 20,
+      value: null,
+      isProfit: true,
+      color: '#3AA8F0',
+    },
+    {
+      amount: 7036,
+      tag: 'Trade Genius',
+      percentage: 11,
+      value: null,
+      isProfit: true,
+      color: '#1F609C',
+    },
+    {
+      amount: 3127,
+      tag: 'Alpha Trader',
+      percentage: 1,
+      value: null,
+      isProfit: false,
+      color: '#4AB6C4',
+    },
   ];
 
   const cryptoStatsBots: ICryptoStats[] = [
     {
+      amount: 42.6,
       tag: 'SOL',
       percentage: 11,
-      amount: 46,
+      value: 4.6,
+      isProfit: true,
       color: '#1F609C',
     },
     {
+      amount: 0.13,
       tag: 'BTC',
       percentage: 10,
-      amount: 56,
+      value: 0.013,
+      isProfit: true,
       color: '#3AA8F0',
     },
     {
       amount: 550,
       tag: 'OTN',
       percentage: 9,
+      value: 49.5,
+      isProfit: true,
       color: '#4AB6C4',
     },
   ];
@@ -230,6 +260,8 @@ export default () => {
       chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       progressValue: null,
       color: '#4CAF50',
+      toolTipText:
+        'Shows the net gain or loss from your trades over a selected time period, helping you track performance',
     },
     {
       label: 'Traded volume',
@@ -237,6 +269,8 @@ export default () => {
       chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       progressValue: null,
       color: '#4CAF50',
+      toolTipText:
+        'Represents the total value of all assets traded by your bots during the selected period, providing insight into your trading activity.',
     },
     {
       label: 'Total trades',
@@ -244,6 +278,8 @@ export default () => {
       chartData: [98, 40, 60, 38, 42, 46, 40, 90, 95, 50],
       progressValue: null,
       color: '#F44336',
+      toolTipText:
+        'The number of all executed buy and sell orders by your bots during the selected period, showing the overall trading activity.',
     },
     {
       label: 'Total accuracy',
@@ -251,6 +287,8 @@ export default () => {
       chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       progressValue: null,
       color: '#4CAF50',
+      toolTipText:
+        'The percentage of successful trades made by your bots, indicating how often their predictions were correct.',
     },
     {
       label: 'APR',
@@ -258,8 +296,11 @@ export default () => {
       chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       progressValue: null,
       color: '#4CAF50',
+      toolTipText:
+        'The projected annual return on your trading strategies, expressed as a percentage, based on current performance and compounding',
     },
   ];
+
   const statsDataSOL: IStatsTableData[] = [
     {
       label: 'Unrealized P&L',
@@ -267,6 +308,7 @@ export default () => {
       chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       progressValue: null,
       color: '#F44336',
+      toolTipText: null,
     },
     {
       label: 'Portfolio',
@@ -274,6 +316,7 @@ export default () => {
       chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       progressValue: null,
       color: '#4CAF50',
+      toolTipText: null,
     },
     {
       label: 'Traded volume',
@@ -281,6 +324,7 @@ export default () => {
       chartData: [98, 40, 60, 38, 42, 46, 40, 90, 95, 50],
       progressValue: null,
       color: '#4CAF50',
+      toolTipText: null,
     },
     {
       label: 'Total trades',
@@ -288,51 +332,23 @@ export default () => {
       chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       progressValue: null,
       color: '#F44336',
+      toolTipText: null,
     },
     {
       label: 'APR',
       value: '210%',
-      chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
+      chartData: null,
       progressValue: null,
-      color: '#F44336',
+      color: null,
+      toolTipText: null,
     },
     {
       label: 'Sharpe ratio',
       value: '2.81',
-      chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
+      chartData: null,
       progressValue: null,
-      color: '#F44336',
-    },
-  ];
-
-  const statsDataLock: IStatsTableData[] = [
-    {
-      label: 'OTN',
-      value: '550',
-      chartData: null,
-      progressValue: 50,
-      color: '#F44336',
-    },
-    {
-      label: 'Monthly compute costs',
-      value: '$50',
-      chartData: [98, 40, 60, 38, 42, 46, 40, 90, 95, 50],
-      progressValue: null,
-      color: '#F44336',
-    },
-    {
-      label: 'Maker fee',
-      value: '2%',
-      chartData: null,
-      progressValue: 20,
-      color: '#F44336',
-    },
-    {
-      label: 'Taker fee',
-      value: '3%',
-      chartData: null,
-      progressValue: 30,
-      color: '#F44336',
+      color: null,
+      toolTipText: null,
     },
   ];
 
@@ -343,6 +359,8 @@ export default () => {
       chartData: null,
       progressValue: 50,
       color: '',
+      toolTipText:
+        "The amount of OTN (Robotter's native token) you hold. Staking OTN can reduce your trading fees and unlock additional rewards for increased profitability.",
     },
     {
       label: 'Monthly compute costs',
@@ -350,6 +368,8 @@ export default () => {
       chartData: [98, 40, 60, 38, 42, 46, 40, 90, 95, 50],
       progressValue: null,
       color: '#F44336',
+      toolTipText:
+        'The estimated cost for running your trading bots, including data processing and computational resources, billed monthly',
     },
     {
       label: 'Av. maker fee',
@@ -357,6 +377,8 @@ export default () => {
       chartData: null,
       progressValue: 20,
       color: '',
+      toolTipText:
+        'The average fee charged for placing limit orders that add liquidity to the market. Lower maker fees can reduce your overall trading costs.',
     },
     {
       label: 'Av taker fee',
@@ -364,6 +386,43 @@ export default () => {
       chartData: null,
       progressValue: 30,
       color: '',
+      toolTipText:
+        'The average fee charged for executing market orders that remove liquidity from the market. Higher taker fees can impact your overall trading profitability.',
+    },
+  ];
+
+  const statsDataLock: IStatsTableData[] = [
+    {
+      label: 'OTN',
+      value: '550',
+      chartData: null,
+      progressValue: 50,
+      color: null,
+      toolTipText: null,
+    },
+    {
+      label: 'Monthly compute costs',
+      value: '$50',
+      chartData: [98, 40, 60, 38, 42, 46, 40, 90, 95, 50],
+      progressValue: null,
+      color: '#F44336',
+      toolTipText: null,
+    },
+    {
+      label: 'Maker fee',
+      value: '2%',
+      chartData: null,
+      progressValue: 20,
+      color: null,
+      toolTipText: null,
+    },
+    {
+      label: 'Taker fee',
+      value: '3%',
+      chartData: null,
+      progressValue: 30,
+      color: null,
+      toolTipText: null,
     },
   ];
 
@@ -373,8 +432,22 @@ export default () => {
       rate: 1837,
       isPositive: true,
       pieChartData: [
-        { amount: 65, tag: 'profit', percentage: 65, color: '#218358' },
-        { amount: 35, tag: 'loss', percentage: 35, color: '#CE2C31' },
+        {
+          amount: 65,
+          tag: 'profit',
+          percentage: 65,
+          color: '#218358',
+          isProfit: true,
+          value: null,
+        },
+        {
+          amount: 35,
+          tag: 'loss',
+          percentage: 35,
+          color: '#CE2C31',
+          isProfit: false,
+          value: null,
+        },
       ],
       lineChartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       tableData: [
@@ -403,8 +476,22 @@ export default () => {
       rate: 773,
       isPositive: true,
       pieChartData: [
-        { amount: 59, tag: 'profit', percentage: 59, color: '#218358' },
-        { amount: 41, tag: 'loss', percentage: 41, color: '#CE2C31' },
+        {
+          amount: 59,
+          tag: 'profit',
+          percentage: 59,
+          color: '#218358',
+          isProfit: true,
+          value: null,
+        },
+        {
+          amount: 41,
+          tag: 'loss',
+          percentage: 41,
+          color: '#CE2C31',
+          isProfit: false,
+          value: null,
+        },
       ],
       lineChartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       tableData: [
@@ -433,8 +520,22 @@ export default () => {
       rate: 31,
       isPositive: false,
       pieChartData: [
-        { amount: 49, tag: 'profit', percentage: 49, color: '#218358' },
-        { amount: 51, tag: 'loss', percentage: 51, color: '#CE2C31' },
+        {
+          amount: 49,
+          tag: 'profit',
+          percentage: 49,
+          color: '#218358',
+          isProfit: true,
+          value: null,
+        },
+        {
+          amount: 51,
+          tag: 'loss',
+          percentage: 51,
+          color: '#CE2C31',
+          isProfit: true,
+          value: null,
+        },
       ],
       lineChartData: [90, 85, 80, 70, 60, 65, 75, 76, 95, 80],
       tableData: [
@@ -466,8 +567,8 @@ export default () => {
       rate: 1256,
       isPositive: true,
       pieChartData: [
-        { amount: 68, tag: 'profit', percentage: 68, color: '#218358' },
-        { amount: 32, tag: 'loss', percentage: 32, color: '#CE2C31' },
+        { amount: 68, tag: 'profit', percentage: 68, color: '#218358', isProfit: true, value: null },
+        { amount: 32, tag: 'loss', percentage: 32, color: '#CE2C31', isProfit: false, value: null },
       ],
       lineChartData: null,
       tableData: [
@@ -496,8 +597,8 @@ export default () => {
       rate: 941,
       isPositive: true,
       pieChartData: [
-        { amount: 65, tag: 'profit', percentage: 65, color: '#218358' },
-        { amount: 35, tag: 'loss', percentage: 35, color: '#CE2C31' },
+        { amount: 65, tag: 'profit', percentage: 65, color: '#218358', isProfit: true, value: null },
+        { amount: 35, tag: 'loss', percentage: 35, color: '#CE2C31', isProfit: false, value: null },
       ],
       lineChartData: null,
       tableData: [
@@ -526,8 +627,8 @@ export default () => {
       rate: 322,
       isPositive: false,
       pieChartData: [
-        { amount: 48, tag: 'profit', percentage: 48, color: '#218358' },
-        { amount: 52, tag: 'loss', percentage: 52, color: '#CE2C31' },
+        { amount: 48, tag: 'profit', percentage: 48, color: '#218358', isProfit: true, value: null },
+        { amount: 52, tag: 'loss', percentage: 52, color: '#CE2C31', isProfit: false, value: null },
       ],
       lineChartData: null,
       tableData: [
@@ -556,8 +657,8 @@ export default () => {
       rate: 500,
       isPositive: false,
       pieChartData: [
-        { amount: 46, tag: 'profit', percentage: 46, color: '#218358' },
-        { amount: 54, tag: 'loss', percentage: 54, color: '#CE2C31' },
+        { amount: 46, tag: 'profit', percentage: 46, color: '#218358', isProfit: true, value: null },
+        { amount: 54, tag: 'loss', percentage: 54, color: '#CE2C31', isProfit: false, value: null },
       ],
       lineChartData: null,
       tableData: [

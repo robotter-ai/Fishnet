@@ -9,7 +9,6 @@ import {
   HeadProfileIcon,
   PhantomIcon,
 } from '@assets/icons';
-import CustomTabs from './CustomTabs';
 import { useAuth } from '@contexts/auth-provider';
 import useModal from '@shared/hooks/useModal';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
@@ -24,6 +23,7 @@ import {
   ITabs,
   ITimeTab,
 } from '../hooks/useProfile';
+import Switcher from './Switcher';
 
 export interface IHeaderProps {
   query: ITab | ITimeTab | IDateTab | IStratTab | IChatTab | IPerfTab;
@@ -42,12 +42,13 @@ const Header: React.FC<IHeaderProps> = ({
   const { isOpen, handleOpen, handleClose } = useModal();
 
   return (
-    <header className="flex items-center justify-between w-full flex-wrap">
-      <div className="flex items-center gap-x-4">
+    <header className="flex items-center justify-between gap-x-4 w-full relative">
+      <div className="flex items-center gap-x-4 w-full">
         <RobotterLogo />
-        <div className="w-[35.25rem] h-[2.25rem]">
-          <CustomTabs
-            isTab
+        <div className="max-w-[35.25rem] w-full h-[2.25rem]">
+          <Switcher
+            keyQuery="tab"
+            isHeader
             query={query}
             tabs={tabs}
             searchParams={searchParams}

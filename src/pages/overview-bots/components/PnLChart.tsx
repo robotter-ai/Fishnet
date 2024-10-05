@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Bar,
   Line,
@@ -9,7 +10,6 @@ import {
   ComposedChart,
   ResponsiveContainer,
   ReferenceLine,
-  BarChart,
 } from 'recharts';
 
 export interface IDataPoint {
@@ -52,12 +52,28 @@ const formatYAxisTicks = (tick: number) => {
   return tick === maxTick ? `$${tick}` : `${tick}`;
 };
 
-const PnLChart = () => {
+interface IPnLChartProps {
+  height: number;
+  minWidth: number;
+}
+
+const PnLChart: React.FC<IPnLChartProps> = ({ height, minWidth }) => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <ResponsiveContainer width="100%" height={459}>
+    <ResponsiveContainer
+      width={
+        windowWidth >= 1280 && windowWidth <= 1441 ? windowWidth - minWidth : '100%'
+      }
+      height={height}
+    >
       <ComposedChart
-        width={1015}
-        height={459}
         data={data}
         stackOffset="sign"
         margin={{

@@ -91,4 +91,5 @@ export {
   BackIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
+  CalendarIcon
 };
