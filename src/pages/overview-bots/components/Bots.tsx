@@ -56,19 +56,15 @@ const Bots: React.FC<IBotsProps> = ({
 
     const handleBotClick = (bot: IBotData | undefined) => {
         if(!bot) return;
-        
-        setSelectedBot(bot);
-    };
 
-    const handleBackToList = () => {
-        setSelectedBot(null);
+        setSelectedBot(bot);
     };
     
     if (selectedBot) {
       return (
           <SingleBotView
               bot={selectedBot}
-              onBack={handleBackToList}
+              onBack={() => setSelectedBot(null)}
               onWithdraw={() => withdraw(selectedBot.id)}
               solData={solData}
               infoTable={infoTable}
@@ -157,7 +153,10 @@ const Bots: React.FC<IBotsProps> = ({
                       <CustomButton 
                         text="Withdraw" 
                         style={{ background: 'transparent', color: 'blue' }} 
-                        onClick={() => withdraw(bot.id)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          withdraw(bot.id);
+                        }}
                       />
                     </div>
                   </td>

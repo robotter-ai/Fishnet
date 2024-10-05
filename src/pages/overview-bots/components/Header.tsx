@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   SetURLSearchParams,
 } from 'react-router-dom';
@@ -40,6 +40,12 @@ const Header: React.FC<IHeaderProps> = ({
 }) => {
   const { address } = useAuth();
   const { isOpen, handleOpen, handleClose } = useModal();
+
+  useEffect(() => {
+    if (address) {
+      handleClose();
+    }
+  }, [address, handleClose]);
 
   return (
     <header className="flex items-center justify-between gap-x-4 w-full relative">

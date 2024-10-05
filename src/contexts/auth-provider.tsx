@@ -52,27 +52,8 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const token = cookies.get("bearerToken");
   const { publicKey, signMessage, disconnect } = useWallet();
   const [address, setAddress] = useState('');
-  const { data: usdcBalanceData, refetch: refetchUsdcBalance } = useGetUserUsdcBalanceQuery({ user: address }, { skip: !address });
-  const { data: botsData, refetch: refetchBotData } = useGetUserBotsAndEventsQuery({ userAddress: address }, { skip: !address });
-
-  useEffect(() => {
-    if (usdcBalanceData) {
-      dispatch(setUsdcBalance(usdcBalanceData.balance));
-      if(usdcBalanceData.balance == 0) {
-        toast.message('You dont have USDC')
-      } else {
-        console.log(usdcBalanceData)
-        if ((usdcBalanceData as any).error) toast.message((usdcBalanceData as any).error);
-      }
-    }
-  }, [usdcBalanceData, dispatch]);
-
-  useEffect(() => {
-    console.log(botsData)
-    if (botsData) {
-      dispatch(setBots(botsData.data));
-    }
-  }, [botsData, dispatch]);
+  const { data: usdcBalanceData } = useGetUserUsdcBalanceQuery({ user: address }, { skip: !address });
+  const { data: botsData } = useGetUserBotsAndEventsQuery({ userAddress: address }, { skip: !address });
 
   const resetAuth = useCallback(async () => {
     cookies.remove('bearerToken');
@@ -83,42 +64,60 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     dispatch(setLoginStatus(LoginStatus.OUT));
   }, [disconnect, cookies, dispatch]);
 
-  const handleTokenValidation = useCallback(async (token: string, address: string) => {
+  const handleTokenValidation = useCallback(async (tokenIn: string, address: string) => {
     try {
-      const decoded = jwt_decode<JwtPayload>(token);
+      const decoded = jwt_decode<JwtPayload>(tokenIn);
       if (decoded.sub !== address) {
         resetAuth();
         return false;
       }
-
-      if (decoded.exp && Date.now() >= decoded.exp * 1000) {
-        const refreshedToken = await refreshTokenMutation({ token }).unwrap();
-        token = refreshedToken.token;
-      }
   
-      // Set the cookie here
-      cookies.set('bearerToken', token, {
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (decoded.exp && currentTime >= decoded.exp) {
+        try {
+          const refreshedToken = await refreshTokenMutation({ token }).unwrap();
+          const newDecoded = jwt_decode<JwtPayload>(refreshedToken.token);
+          
+          if (newDecoded.exp) {
+            const maxAge = newDecoded.exp - currentTime;
+            cookies.set('bearerToken', refreshedToken.token, {
+              path: '/',
+              maxAge: maxAge * 1000,
+              expires: new Date(newDecoded.exp * 1000),
+              secure: true,
+              sameSite: 'strict'
+            });
+          } else {
+            console.error("New token does not have an expiration");
+            await resetAuth();
+            return false;
+          }
+        } catch (error) {
+          console.error("Failed to refresh token", error);
+          await resetAuth();
+          return false;
+        }
+      }
+
+      cookies.set('bearerToken', tokenIn, {
         path: '/',
         maxAge: decoded.exp ? decoded.exp * 1000 - Date.now() : undefined,
         expires: decoded.exp ? new Date(decoded.exp * 1000) : undefined,
         secure: true,
         sameSite: 'strict'
       });
-  
+
       setAddress(address);
       dispatch(setLoginStatus(LoginStatus.IN));
       LogRocket.identify(address);
   
-      refetchUsdcBalance();
-      refetchBotData();
-
       return true;
     } catch (error) {
       console.error("Failed to validate or refresh token", error);
       resetAuth();
       return false;
     }
-  }, [cookies, dispatch, refetchUsdcBalance, resetAuth, refreshTokenMutation]);
+  }, [cookies, dispatch, resetAuth, refreshTokenMutation]);
   
   const handleChallenge = useCallback(async (challenge: string, address: string) => {
     try {

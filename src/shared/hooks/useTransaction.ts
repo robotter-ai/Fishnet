@@ -19,6 +19,7 @@ interface TransactionError extends Error {
   data?: {
     message?: string;
   };
+  error?: string
 }
 
 export const useTransactions = () => {
@@ -57,7 +58,7 @@ export const useTransactions = () => {
   const handleTransactionError = useCallback((error: unknown, operation: string) => {
     console.error(`${operation} failed:`, error);
     const transactionError = error as TransactionError;
-    const errorMessage = transactionError.data?.message || transactionError.message || `${operation} failed. Please try again.`;
+    const errorMessage = transactionError.error || transactionError.data?.message || transactionError.message || `${operation} failed. Please try again.`;
     toast.error(errorMessage);
     throw transactionError;
   }, []);
@@ -112,7 +113,7 @@ export const useTransactions = () => {
       const result = await response.json();
 
       if (!response.ok || !result || typeof result !== 'object' || !result.transaction) {
-        throw new Error(result.message || 'Invalid response from withdraw request');
+          return { signature: '' };
       }
 
       const { signature } = await signAndSendTransaction(result.transaction);
