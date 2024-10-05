@@ -3,15 +3,15 @@ export interface Bot {
     owner: string;
     balance: number;
     status: 'active' | 'inactive';
-  }
+}
   
-  export interface DepositParams {
+export interface DepositParams {
     owner: string;
     amount: number;
     delegate: string;
-  }
+}
   
-  export interface WithdrawParams {
+export interface WithdrawParams {
     owner: string;
     botId: number;
-  }
+}

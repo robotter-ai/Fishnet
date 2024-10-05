@@ -1,3 +1,4 @@
+import { IBotData } from '@pages/overview-bots/hooks/useProfile';
 import { transactionsApi } from '../config';
 
 const transactionsEndpoints = transactionsApi.injectEndpoints({
@@ -9,36 +10,17 @@ const transactionsEndpoints = transactionsApi.injectEndpoints({
         params,
       }),
     }),
-    deposit: builder.mutation<
-        { transaction: string; botId: number; mangoAccount?: string; status: number; message?: string },
-        { body: string }
-    >({
-        query: (body) => ({
-        url: '/deposit',
-        method: 'POST',
-        body,
+    getUserBotsAndEvents: builder.query<{ data: IBotData[] }, { userAddress: string }>({
+        query: (params) => ({
+          url: '/getBotData',
+          method: 'GET',
+          params,
         }),
-    }),
-    withdraw: builder.mutation<{ transaction: string }, { owner: string; botId: number }>({
-      query: (body) => ({
-        url: '/withdraw',
-        method: 'POST',
-        body,
-      }),
-    }),
-    sendTransaction: builder.mutation<{ signature: string }, { transaction: string }>({
-      query: (body) => ({
-        url: '/sendTransaction',
-        method: 'POST',
-        body,
-      }),
     }),
   }),
 });
 
 export const {
   useGetUserUsdcBalanceQuery,
-  useDepositMutation,
-  useWithdrawMutation,
-  useSendTransactionMutation,
+  useGetUserBotsAndEventsQuery
 } = transactionsEndpoints;

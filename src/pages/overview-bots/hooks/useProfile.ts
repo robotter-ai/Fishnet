@@ -73,6 +73,11 @@ export interface IBotData {
   sharpeRatio: number;
   apr: number;
   delegate: string;
+  events: {
+    event_category: 'deposit' | 'withdraw' | 'trade';
+    timestamp: string;
+    [key: string]: any;
+  }[];
 }
 
 export interface IDateTabs {
@@ -472,6 +477,7 @@ export default () => {
       sharpeRatio: 2.81,
       apr: 210,
       delegate: 'rikiFB2VznT2izUT7UffzWCn1X4gNmGutX7XEqFdpRR',
+      events: []
     },
     {
       id: 2,
@@ -491,6 +497,7 @@ export default () => {
       sharpeRatio: 2.01,
       apr: 187,
       delegate: 'rikiFB2VznT2izUT7UffzWCn1X4gNmGutX7XEqFdpRR',
+      events: []
     },
     {
       id: 3,
@@ -510,6 +517,7 @@ export default () => {
       sharpeRatio: 1.75,
       apr: 165,
       delegate: 'rikiFB2VznT2izUT7UffzWCn1X4gNmGutX7XEqFdpRR',
+      events: []
     },
   ];
 

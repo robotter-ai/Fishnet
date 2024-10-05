@@ -3,10 +3,19 @@ import Button from '@components/ui/Button';
 import LoginForm from '@shared/components/LoginForm';
 import useModal from '@shared/hooks/useModal';
 import LoginWaveImg from '@assets/images/login-wave.png';
+import { useAuth } from '@contexts/auth-provider';
+import { useEffect } from 'react';
 
 const Login = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
+  const { address } = useAuth();
 
+  useEffect(() => {
+    if (address) {
+      handleClose();
+    }
+  }, [address, handleClose]);
+  
   return (
     <>
       <div className="flex flex-col h-[100vh] bg-white">

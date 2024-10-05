@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useMemo, useEffect, ReactNode, useCallback, useState } from 'react';
 import { useSolveChallengeMutation, useRequestChallengeMutation, useRefreshTokenMutation } from '@store/auth/api';
+import { useGetUserBotsAndEventsQuery } from '@store/transactions/api';
 import { setLoginStatus, LoginStatus } from '@slices/appSlice';
 import { useGetUserUsdcBalanceQuery } from '@store/transactions/api';
-import { setUsdcBalance } from '@store/transactions/slice';
+import { setBots, setUsdcBalance } from '@store/transactions/slice';
 import { useAppDispatch } from '@shared/hooks/useStore';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Cookies from 'universal-cookie';
@@ -10,10 +11,12 @@ import jwt_decode from 'jwt-decode';
 import LogRocket from 'logrocket';
 import bs58 from 'bs58';
 import { toast } from 'sonner';
+import { IBotData } from '@pages/overview-bots/hooks/useProfile';
 
 interface AuthContextType {
   address: string;
   usdcBalance: number | null;
+  botsData: IBotData[] | null;
   resetAuth: () => void;
 }
 
@@ -33,6 +36,7 @@ interface ChallengeResponse {
 const defaultContextValue: AuthContextType = {
   address: '',
   usdcBalance: null,
+  botsData: null,
   resetAuth: () => {}
 };
 
@@ -49,23 +53,32 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const { publicKey, signMessage, disconnect } = useWallet();
   const [address, setAddress] = useState('');
   const { data: usdcBalanceData, refetch: refetchUsdcBalance } = useGetUserUsdcBalanceQuery({ user: address }, { skip: !address });
+  const { data: botsData, refetch: refetchBotData } = useGetUserBotsAndEventsQuery({ userAddress: address }, { skip: !address });
 
   useEffect(() => {
-    console.log(usdcBalanceData)
     if (usdcBalanceData) {
       dispatch(setUsdcBalance(usdcBalanceData.balance));
       if(usdcBalanceData.balance == 0) {
         toast.message('You dont have USDC')
       } else {
-        if ((usdcBalanceData as any).message) toast.message((usdcBalanceData as any).message);
+        console.log(usdcBalanceData)
+        if ((usdcBalanceData as any).error) toast.message((usdcBalanceData as any).error);
       }
     }
   }, [usdcBalanceData, dispatch]);
+
+  useEffect(() => {
+    console.log(botsData)
+    if (botsData) {
+      dispatch(setBots(botsData.data));
+    }
+  }, [botsData, dispatch]);
 
   const resetAuth = useCallback(async () => {
     cookies.remove('bearerToken');
     await disconnect();
     setAddress('');
+    dispatch(setBots([]));
     dispatch(setUsdcBalance(0));
     dispatch(setLoginStatus(LoginStatus.OUT));
   }, [disconnect, cookies, dispatch]);
@@ -97,11 +110,9 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
       dispatch(setLoginStatus(LoginStatus.IN));
       LogRocket.identify(address);
   
-      // Delay the refetch to ensure the address has been set
-      setTimeout(() => {
-        refetchUsdcBalance();
-      }, 100);
-  
+      refetchUsdcBalance();
+      refetchBotData();
+
       return true;
     } catch (error) {
       console.error("Failed to validate or refresh token", error);
@@ -132,7 +143,8 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
         const decoded = jwt_decode<JwtPayload>(token);
         if (decoded.sub !== address) {
           console.error("Token address mismatch");
-          resetAuth();
+          const { challenge } = await requestAuthChallenge({ address }).unwrap();
+          await handleChallenge(challenge, address);
           return;
         }
         
@@ -141,6 +153,7 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
         } else {
           setAddress(address);
           dispatch(setLoginStatus(LoginStatus.IN));
+          // refresh? refetchUsdcBalance(); refetchBotData();
         }
       } catch (error) {
         console.error("Failed to decode token", error);
@@ -165,13 +178,12 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     handleAuth(address);
   }, [publicKey]);
 
-
-
   const contextValue = useMemo(() => ({
     address,
     usdcBalance: usdcBalanceData?.balance ?? null,
+    botsData: botsData?.data ?? null,
     resetAuth
-  }), [address, usdcBalanceData, resetAuth]);
+  }), [address, usdcBalanceData, botsData, resetAuth]);
 
   return (
     <AuthContext.Provider value={contextValue}>

@@ -3,6 +3,7 @@ import useProfile, { ITab } from './hooks/useProfile';
 import Overview from './components/Overview';
 import Training from './components/Training';
 import Bots from './components/Bots';
+import { useAuth } from '@contexts/auth-provider';
 
 const OverviewBots = () => {
   const {
@@ -15,7 +16,6 @@ const OverviewBots = () => {
     statsDataOTN,
     cardBotData,
     cardBotDataBT,
-    botData,
     query,
     dateQuery,
     timeQuery,
@@ -23,6 +23,8 @@ const OverviewBots = () => {
     searchParams,
     setSearchParams,
   } = useProfile();
+
+  const { botsData } = useAuth();
 
   const Mapper: Record<ITab, React.ReactNode> = {
     overview: (
@@ -53,7 +55,7 @@ const OverviewBots = () => {
     ),
     bots: (
       <Bots
-        botData={botData}
+        botsData={botsData}
         timeTabs={timeTabs}
         timeQuery={timeQuery}
         searchParams={searchParams}

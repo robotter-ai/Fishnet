@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Bot } from './types';
+import { IBotData } from '@pages/overview-bots/hooks/useProfile';
 
 interface TransactionsState {
   isLoading: boolean;
   success: boolean | null;
-  bots: Bot[];
+  bots: IBotData[];
   usdcBalance: number | null;
 }
 
@@ -25,20 +25,8 @@ const transactionsSlice = createSlice({
     setUsdcBalance: (state, action: PayloadAction<number>) => {
       state.usdcBalance = action.payload;
     },
-    setBots: (state, action: PayloadAction<Bot[]>) => {
+    setBots: (state, action: PayloadAction<IBotData[]>) => {
       state.bots = action.payload;
-    },
-    addBot: (state, action: PayloadAction<Bot>) => {
-      state.bots.push(action.payload);
-    },
-    updateBot: (state, action: PayloadAction<Bot>) => {
-      const index = state.bots.findIndex(bot => bot.id === action.payload.id);
-      if (index !== -1) {
-        state.bots[index] = action.payload;
-      }
-    },
-    removeBot: (state, action: PayloadAction<number>) => {
-      state.bots = state.bots.filter(bot => bot.id !== action.payload);
     },
   },
 });
@@ -47,8 +35,5 @@ export const {
   resetTransactions,
   setUsdcBalance,
   setBots,
-  addBot,
-  updateBot,
-  removeBot,
 } = transactionsSlice.actions;
 export default transactionsSlice.reducer;

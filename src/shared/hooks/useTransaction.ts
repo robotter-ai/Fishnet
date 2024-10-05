@@ -87,7 +87,7 @@ export const useTransactions = () => {
       }
   
       const { signature } = await signAndSendTransaction(result.transaction);
-      toast.success(`Deposit successful. Bot ID: ${result.botId}, Signature: ${signature}`);
+      toast.success(`Deposit successful`);
       return { botId: result.botId, signature, mangoAccount: result.mangoAccount };
     } catch (error) {
       return handleTransactionError(error, 'Deposit');
@@ -116,7 +116,7 @@ export const useTransactions = () => {
       }
 
       const { signature } = await signAndSendTransaction(result.transaction);
-      toast.success(`Withdrawal successful. Signature: ${signature}`);
+      toast.success(`Withdrawal successful`);
       return { signature };
     } catch (error) {
       return handleTransactionError(error, 'Withdrawal');

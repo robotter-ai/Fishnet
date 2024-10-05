@@ -20,7 +20,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h2>Go to /overview</h2>,
+        element:  <OverviewBots />,
       },
       {
         element: <ProtectedRoutes />,
