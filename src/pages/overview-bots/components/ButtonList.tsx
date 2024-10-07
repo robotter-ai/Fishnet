@@ -8,17 +8,20 @@ interface IButtonListProps {
   }[];
   btnStyle?: string;
   activeStyle?: string;
+  getIndexCallback?: (index: number) => void;
 }
 
 const ButtonList: React.FC<IButtonListProps> = ({
   btnData,
   btnStyle,
   activeStyle,
+  getIndexCallback,
 }) => {
   const [index, setIndex] = useState(1);
 
   const handleOnClick = (idx: number) => {
     setIndex(idx);
+    getIndexCallback && getIndexCallback(idx);
   };
 
   return (

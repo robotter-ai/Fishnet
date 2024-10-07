@@ -69,7 +69,7 @@ const CustomBtn: React.FC<ButtonProps> = ({
     {
       'h-[1.4375rem] text-xs font-normal px-2 py-1': size === 'sm',
       'h-[2.75rem] py-[9px] text-base font-semibold': size === 'lg',
-      'bg-transparent border-navy !text-navy hover:!bg-navy hover:!text-white':
+      'bg-transparent border-navy !text-navy hover:!bg-navy hover:!text-white disabled:!text-gray-500 disabled:border-gray-500 disabled:hover:!bg-inherit':
         btnStyle === 'outline-primary',
       'bg-transparent border-red-100 !text-red-100 hover:!bg-red-100 hover:!text-white':
         btnStyle === 'outline-secondary',

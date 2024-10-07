@@ -86,6 +86,7 @@ const SingleBotView: React.FC<IBotViewProps> = ({
                             </button>
                             <div className="mt-16">
                                 <CustomPieChart
+                                    isEmpty
                                     size={210}
                                     innerRadius={90}
                                     outerRadius={103}
@@ -105,10 +106,11 @@ const SingleBotView: React.FC<IBotViewProps> = ({
                         </div>
 
                         <div className="flex-1">
-                            <CryptoStats data={cryptoStats} showValue />
+                            <CryptoStats data={cryptoStats} showValue isEmpty/>
 
                             <div className="flex flex-row md:flex-col lg:flex-row gap-y-4 xl:gap-y-0 gap-x-4 mt-8">
                                 <StatsTable
+                                    isEmpty
                                     showActive
                                     titleStyle="mb-4"
                                     title="SOL BIG BRAIN"
@@ -116,6 +118,7 @@ const SingleBotView: React.FC<IBotViewProps> = ({
                                     hasQuestionMark={false}
                                 />
                                 <StatsTable
+                                    isEmpty
                                     titleStyle="mb-5"
                                     title="Lock 450 OTN more to boost your bonus"
                                     statsData={statsDataLock}

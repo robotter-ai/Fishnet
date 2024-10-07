@@ -6,6 +6,7 @@ import CardBot from './CardBot';
 
 interface IPerformanceProps extends IHeaderProps {
   cardBotData: ICardBotData[];
+  isEmpty: boolean;
 }
 
 const Performance: React.FC<IPerformanceProps> = ({
@@ -14,6 +15,7 @@ const Performance: React.FC<IPerformanceProps> = ({
   searchParams,
   setSearchParams,
   cardBotData,
+  isEmpty,
 }) => {
   return (
     <div className="flex flex-col items-center w-full xl:w-auto mt-4 xl:mt-0">
@@ -35,6 +37,7 @@ const Performance: React.FC<IPerformanceProps> = ({
       <div className="mt-2 w-full gap-x-3 overflow-x-auto flex lt:flex-col flex-row xl:flex-col lt:items-center">
         {cardBotData.map((item, idx) => (
           <CardBot
+            isEmpty={isEmpty}
             key={idx}
             cardBotData={item}
             xtraStyle="lg:flex-auto flex-none"
@@ -42,16 +45,18 @@ const Performance: React.FC<IPerformanceProps> = ({
         ))}
       </div>
 
-      <span className="flex items-center gap-x-4">
-        {[<ArrowDown2Icon />, <ArrowUp2Icon />].map((icon, idx) => (
-          <span
-            key={idx}
-            className="flex justify-center items-center w-[2.25rem] h-[2.25rem] bg-blue-100 text-blue-400 rounded-full cursor-pointer transition-colors duration-300 hover:text-white hover:bg-navy/80"
-          >
-            {icon}
-          </span>
-        ))}
-      </span>
+      {!isEmpty && (
+        <span className="flex items-center gap-x-4">
+          {[<ArrowDown2Icon />, <ArrowUp2Icon />].map((icon, idx) => (
+            <span
+              key={idx}
+              className="flex justify-center items-center w-[2.25rem] h-[2.25rem] bg-blue-100 text-blue-400 rounded-full cursor-pointer transition-colors duration-300 hover:text-white hover:bg-navy/80"
+            >
+              {icon}
+            </span>
+          ))}
+        </span>
+      )}
     </div>
   );
 };

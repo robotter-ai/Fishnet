@@ -10,6 +10,7 @@ interface IStatsTableProps {
   hasQuestionMark?: boolean;
   showActive?: boolean;
   titleStyle?: string;
+  isEmpty: boolean;
 }
 
 const StatsTable: React.FC<IStatsTableProps> = ({
@@ -19,6 +20,7 @@ const StatsTable: React.FC<IStatsTableProps> = ({
   hasQuestionMark,
   showActive,
   titleStyle,
+  isEmpty,
 }) => {
   return (
     <div className="border-collapse w-auto flex-none md:flex-1">
@@ -56,29 +58,38 @@ const StatsTable: React.FC<IStatsTableProps> = ({
               />
             </div>
 
-            <div id="COL 2" className="flex justify-between gap-x-1 items-center">
+            <div
+              id="COL 2"
+              className="flex justify-between gap-x-1 items-center"
+            >
               <div>
                 {/* Chart */}
-                {stat.chartData && (
-                  <div className="w-[5.7rem] h-[1.4375rem]">
-                    <MiniLineChart
-                      data={stat.chartData}
-                      color={stat.color ? stat.color : ''}
-                    />
-                  </div>
+                {isEmpty && !stat.progressValue ? (
+                  <div className="w-[6.25rem] h-[2px] bg-states"></div>
+                ) : (
+                  stat.chartData && (
+                    <div className="w-[5.7rem] h-[1.4375rem]">
+                      <MiniLineChart
+                        data={stat.chartData}
+                        color={stat.color ? stat.color : ''}
+                      />
+                    </div>
+                  )
                 )}
                 {/* Progress Bar */}
                 {stat.progressValue && (
                   <div className="w-[5.7rem] h-[0.479375rem] bg-blue-100 rounded-[34px]">
-                    <span
-                      style={{ width: `${stat.progressValue}%` }}
-                      className="block h-full bg-blue-200 rounded-[34px]"
-                    ></span>
+                    {!isEmpty && (
+                      <span
+                        style={{ width: `${stat.progressValue}%` }}
+                        className="block h-full bg-blue-200 rounded-[34px]"
+                      ></span>
+                    )}
                   </div>
                 )}
               </div>
               <p className="flex-1 text-sm text-dark-300 font-normal text-right leading-none">
-                {stat.value}
+                {isEmpty ? 0 : stat.value}
               </p>
             </div>
           </div>
@@ -90,6 +101,7 @@ const StatsTable: React.FC<IStatsTableProps> = ({
           size="sm"
           btnStyle="outline-primary"
           xtraStyles="max-w-[4.5625rem] mt-2"
+          disabled={isEmpty}
         />
       )}
     </div>
