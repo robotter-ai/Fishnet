@@ -1,4 +1,4 @@
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 
 export default (owner: string) => {
   const auth = useAuth();
