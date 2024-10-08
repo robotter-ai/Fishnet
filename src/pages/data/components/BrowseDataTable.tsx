@@ -4,7 +4,7 @@ import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PriceButton from '@components/ui/PriceButton';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import {Link} from 'react-router-dom';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import useDownloadDataset from '../hooks/useDownloadDataset';
 import useTransaction from '@shared/hooks/useTransaction';
 
@@ -16,7 +16,7 @@ const BrowseDataTable = ({
   isLoading: boolean;
 }) => {
   console.log(data)
-  const { address } = useAuth();
+    const { address } = useAppSelector((state) => state.auth);
   const { handlePurchase } = useTransaction();
   const { handleDownload, isLoading : isDownloading } = useDownloadDataset();
   const COLUMNS: ITableColumns[] = [

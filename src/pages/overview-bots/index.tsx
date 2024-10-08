@@ -3,7 +3,7 @@ import useProfile, { ITab } from './hooks/useProfile';
 import Overview from './components/Overview';
 import Training from './components/Training';
 import Bots from './components/Bots';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 
 const OverviewBots = () => {
   const {
@@ -36,7 +36,7 @@ const OverviewBots = () => {
     setSearchParams,
   } = useProfile();
 
-  const { botsData } = useAuth();
+  const { botsData } = useAppSelector((state) => state.auth);
 
   const Mapper: Record<ITab, React.ReactNode> = {
     overview: (

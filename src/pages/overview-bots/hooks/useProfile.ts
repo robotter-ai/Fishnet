@@ -2,7 +2,6 @@ import { createElement, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppSelector } from '@shared/hooks/useStore';
-import { useAuth } from '@contexts/auth-provider';
 import { useGetUserInfoQuery } from '@store/profile/api';
 import { IUserInfo } from '@store/profile/types';
 import {
@@ -99,7 +98,7 @@ export interface ISolData {
 }
 
 export default () => {
-  const session = useAuth();
+  const { address } = useAppSelector((state) => state.auth);
   const [searchParams, setSearchParams] = useSearchParams();
   const { setTitle } = usePageTitle();
 
@@ -803,6 +802,6 @@ export default () => {
     setSearch,
     searchParams,
     setSearchParams,
-    address: session?.address,
+    address,
   };
 };

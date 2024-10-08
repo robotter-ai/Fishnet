@@ -9,7 +9,7 @@ import {
   HeadProfileIcon,
   PhantomIcon,
 } from '@assets/icons';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import AppModal from '@components/ui/AppModal';
@@ -38,7 +38,7 @@ const Header: React.FC<IHeaderProps> = ({
   searchParams,
   setSearchParams,
 }) => {
-  const { address } = useAuth();
+    const { address } = useAppSelector((state) => state.auth);
   const { isOpen, handleOpen, handleClose } = useModal();
 
   useEffect(() => {

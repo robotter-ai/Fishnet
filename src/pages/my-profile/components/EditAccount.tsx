@@ -5,7 +5,7 @@ import useOnChange from '@shared/hooks/useOnChange';
 import { toast } from 'sonner';
 import { useUpdateUserInfoMutation } from '@store/profile/api';
 import TransactionTable from './TransactionTable';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 
 interface IEditAccountProps {
   user: IUserInfo;

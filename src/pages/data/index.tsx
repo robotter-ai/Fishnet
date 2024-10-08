@@ -7,7 +7,7 @@ import { ReactNode, useRef } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
 import { useSearchParams } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import BrowseDataTable from './components/BrowseDataTable';
 import PublishedTable from './components/PublishedTable';
 import useDataTable from './hooks/useDataTable';
@@ -27,7 +27,7 @@ const MyData = () => {
   } = useDataTable();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, handleOpen, handleClose } = useModal();
-  const { address } = useAuth();
+    const { address } = useAppSelector((state) => state.auth);
 
   const TableMapper: Record<typeof query, ReactNode> = {
     published: (

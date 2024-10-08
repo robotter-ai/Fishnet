@@ -2,7 +2,7 @@ import Button from '@components/ui/Button';
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import PublicAccessToggle from '@shared/components/PublicAccessToggle';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import DataSummary from '@shared/components/Summary';
 import DataChart from '@pages/data/components/DataChart';
 import { useGetDatasetsQuery } from '@store/data/api';
@@ -69,7 +69,7 @@ const COLUMNS: ITableColumns[] = [
 ];
 
 const PublishedTable = () => {
-  const { address } = useAuth();
+    const { address } = useAppSelector((state) => state.auth);
 
   const { search } = useAppSelector((app) => app.monitorAccess);
 

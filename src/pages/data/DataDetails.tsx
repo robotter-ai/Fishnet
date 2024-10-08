@@ -9,7 +9,7 @@ import { RxCaretLeft } from 'react-icons/rx';
 import { useNavigate } from 'react-router-dom';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
 import TruncatedItemHash from '@shared/components/TruncatedItemHash';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import CustomButton from '@components/ui/Button';
 import useDownloadDataset from './hooks/useDownloadDataset';
 import useDataDetails from './hooks/useDataDetails';
@@ -18,7 +18,7 @@ import TimeseriesCharts from './components/TimeseriesCharts';
 const DataDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { address } = useAuth();
+    const { address } = useAppSelector((state) => state.auth);
 
   const {
     dataset,

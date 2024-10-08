@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch } from '@shared/hooks/useStore';
 import useModal from '@shared/hooks/useModal';
 import { useState, useEffect } from 'react';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import { useGetDatasetByIdQuery } from '@store/data/api';
 import { setPermissionsInput } from '@store/monitor-access/slice';
 import usePageTitle from '@shared/hooks/usePageTitle';

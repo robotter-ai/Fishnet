@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import usePageTitle from '@shared/hooks/usePageTitle';
-import { useAppSelector } from '@shared/hooks/useStore';
-import { useAuth } from '@contexts/auth-provider';
 import { useGetUserInfoQuery } from '@store/profile/api';
 import { IUserInfo } from '@store/profile/types';
+import { useAppSelector } from '@store/hooks';
 
 export type ITab = 'overview' | 'edit-account' | 'browse-users';
 
 export default () => {
-  const session = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const { setTitle } = usePageTitle();
 
   const [search, setSearch] = useState('');
+  const { address } = useAppSelector((state) => state.auth);
 
-  const { data } = useGetUserInfoQuery({ address: session?.address });
+  const { data } = useGetUserInfoQuery({ address });
 
   const user = data as IUserInfo;
 
@@ -45,6 +44,6 @@ export default () => {
     setSearch,
     searchParams,
     setSearchParams,
-    address: session?.address,
+    address,
   };
 };

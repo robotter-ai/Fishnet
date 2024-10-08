@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import CustomTable, { ITableColumns } from '@components/ui/CustomTable';
 import { useEffect, useMemo, useState } from 'react';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import { DeletePrompt } from '@shared/components/Prompts';
 import AppModal from '@components/ui/AppModal';
 import TextInput from '@components/form/TextInput';
