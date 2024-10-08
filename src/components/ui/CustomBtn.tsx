@@ -65,15 +65,15 @@ const CustomBtn: React.FC<ButtonProps> = ({
   ...rest
 }) => {
   const btnClassnames = classNames(
-    `flex justify-center items-center relative px-5 bg-navy !text-white text-center border border-transparent rounded-[76px] whitespace-nowrap disabled:cursor-not-allowed transition-colors duration-300  `,
+    `flex justify-center items-center relative px-5 bg-navy !text-white text-center border disabled:opacity-40 border-transparent rounded-[76px] whitespace-nowrap disabled:cursor-not-allowed transition-colors duration-300`,
     {
       'h-[1.4375rem] text-xs font-normal px-2 py-1': size === 'sm',
       'h-[2.75rem] py-[9px] text-base font-semibold': size === 'lg',
-      'bg-transparent border-navy !text-navy hover:!bg-navy hover:!text-white disabled:!text-gray-500 disabled:border-gray-500 disabled:hover:!bg-inherit':
+      'bg-transparent border-navy !text-navy hover:!border-blue-300 hover:!text-blue-300 disabled:!text-gray-500 disabled:border-light-400 disabled:hover:!bg-inherit disabled:hover:!border-inherit':
         btnStyle === 'outline-primary',
       'bg-transparent border-red-100 !text-red-100 hover:!bg-red-100 hover:!text-white':
         btnStyle === 'outline-secondary',
-      'hover:!bg-navy/60': btnStyle === 'solid-primary',
+      'hover:!bg-blue-300 hover:!text-light-100': btnStyle === 'solid-primary',
       'w-full': fullWidth,
     },
     `${xtraStyles ? xtraStyles : ''}`

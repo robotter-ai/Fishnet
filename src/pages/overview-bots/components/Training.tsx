@@ -8,7 +8,7 @@ import {
 import { SetURLSearchParams } from 'react-router-dom';
 import { MdOutlineCheckCircle } from 'react-icons/md';
 import CustomButton from '@components/ui/Button';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Stepper from './Stepper';
 import { BackIcon } from '@assets/icons';
 import Switcher from './Switcher';
@@ -24,6 +24,9 @@ import ButtonList from './ButtonList';
 import CustomBtn from '@components/ui/CustomBtn';
 import GoBack from './GoBack';
 import LineTab from './LineTab';
+import { useGetHistoricalCandlesMutation } from '@store/market/api';
+import { ClipLoader, FadeLoader } from 'react-spinners';
+import { transformData } from '../../../utils/transformData';
 
 export interface ITrainingProps {
   timeQuery: ITimeTab;
@@ -46,9 +49,16 @@ const Training: React.FC<ITrainingProps> = ({
   setSearchParams,
   cardBotData,
 }) => {
+  const [historicalCandlesData, { isLoading, data, error }] =
+    useGetHistoricalCandlesMutation();
   const [currentStep, setCurrentStep] = useState(1);
   const [index, setIndex] = useState(2);
   const [value, setValue] = React.useState(0);
+  const [tradePair, setTradePair] = useState('SOL-PERP');
+  const [timeStamp, setTimeStamp] = useState({
+    startTime: 1727771877,
+    endTime: 1728376677,
+  });
   const solData = [
     { name: 'SOL/USDC', isChecked: true },
     { name: 'SOL/BNB', isChecked: true },
@@ -68,11 +78,38 @@ const Training: React.FC<ITrainingProps> = ({
     console.log('Selected value:', value);
   };
 
-  const getIndexCallback = (idx: number) => {
-    setIndex(idx);
+  const getTradePair = (pair: string) => {
+    setTradePair(pair);
   };
 
   const onRangeChange = (rangeValue: number) => setValue(rangeValue);
+
+  const startTimeUnix = (unix: number) => {
+    setTimeStamp((prevState) => ({ ...prevState, startTime: unix }));
+  };
+
+  const endTimeUnix = (unix: number) => {
+    setTimeStamp((prevState) => ({ ...prevState, endTime: unix }));
+  };
+
+  const handleCandleData = useCallback(async () => {
+    try {
+      await historicalCandlesData({
+        connector_name: 'birdeye',
+        trading_pair: tradePair,
+        market_address: '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs',
+        interval: '15m',
+        start_time: timeStamp.startTime,
+        end_time: timeStamp.endTime,
+      });
+    } catch (error) {
+      console.log('TRY CATCH ERROR => ', error);
+    }
+  }, [tradePair, timeStamp]);
+
+  useEffect(() => {
+    handleCandleData();
+  }, [tradePair, timeStamp]);
 
   return (
     <div>
@@ -120,7 +157,7 @@ const Training: React.FC<ITrainingProps> = ({
             <p className="uppercase text-xs font-semibold text-dark-200 mb-5">
               Adjust settings for each trading pair separately
             </p>
-            <ButtonList btnData={solData} getIndexCallback={getIndexCallback} />
+            <ButtonList btnData={solData} getTradePair={getTradePair} />
           </div>
 
           {index === 2 ? (
@@ -133,7 +170,11 @@ const Training: React.FC<ITrainingProps> = ({
                   text={'Select Exchange'}
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                 />
-                <CustomDropdown options={options} onSelect={handleSelect} />
+                <CustomDropdown
+                  options={options}
+                  onSelect={handleSelect}
+                  placeholder="Select an Option"
+                />
               </div>
               <div id="COL 2" className="hidden md:block"></div>
               <div id="COL 3" className="col-span-2 md:col-auto">
@@ -305,15 +346,27 @@ const Training: React.FC<ITrainingProps> = ({
         </div>
 
         <div id="right" className="w-full">
-          <CandlestickChart height={500} />
+          <div className="h-[500px] relative">
+            {isLoading ? (
+              <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 inset-x-auto">
+                <FadeLoader color="#65636D" />
+              </div>
+            ) : (
+              <CandlestickChart
+                height={500}
+                data={data ? transformData(data.data) : []}
+              />
+            )}
+          </div>
+
           <div>
             <CustomText
               text={'Select timespan for the Backtest'}
               xtraStyle="mb-5 font-semibold text-xs uppercase"
             />
             <div className="flex flex-col md:flex-row justify-between gap-y-4 md:gap-y-0 md:gap-x-4">
-              <CustomDatePicker />
-              <CustomDatePicker />
+              <CustomDatePicker getUnixTimeStamp={startTimeUnix} />
+              <CustomDatePicker getUnixTimeStamp={endTimeUnix} />
             </div>
           </div>
         </div>

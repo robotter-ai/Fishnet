@@ -22,9 +22,10 @@ import StatsTable from './StatsTable';
 import classNames from 'classnames';
 import Switcher from './Switcher';
 import PnLChart from './PnLChart';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@contexts/auth-provider';
 import LineTab from './LineTab';
+import { useCreateInstanceMutation } from '@store/instance/api';
 
 interface IOverviewProps {
   dateTabs: IDateTabs[];
@@ -56,7 +57,20 @@ const Overview: React.FC<IOverviewProps> = ({
   setSearchParams,
 }) => {
   const [isEmpty, setIsEmpty] = useState(true);
+  const [createInstance, { isLoading }] = useCreateInstanceMutation();
   const { address } = useAuth();
+
+  const handleCreateNewModel = useCallback(async () => {
+    try {
+      await createInstance({
+        strategy_name: 'test',
+        strategy_parameters: {},
+        market: 'string',
+      }).unwrap();
+    } catch (e) {
+      console.error('Failed to solve authentication challenge', e);
+    }
+  }, []);
 
   useEffect(() => {
     if (address) {
@@ -74,6 +88,8 @@ const Overview: React.FC<IOverviewProps> = ({
         <CustomBtn
           text="Create New Model"
           xtraStyles="max-w-[20.3125rem] w-[90%]"
+          isLoading={isLoading}
+          onClick={handleCreateNewModel}
         />
       </div>
 

@@ -63,7 +63,7 @@ export const robotterApi = createApi({
     baseUrl: import.meta.env.VITE_ROBOTTER_API_URL || 'http://localhost:8000',
   }),
   refetchOnReconnect: true,
-  tagTypes: ['Profile'],
+  tagTypes: ['Profile', 'Instance', 'StartInstance', 'StopInstance', 'Candle'],
   endpoints: () => ({}),
 });
 
