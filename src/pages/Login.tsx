@@ -3,12 +3,12 @@ import Button from '@components/ui/Button';
 import LoginForm from '@shared/components/LoginForm';
 import useModal from '@shared/hooks/useModal';
 import LoginWaveImg from '@assets/images/login-wave.png';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import { useEffect } from 'react';
 
 const Login = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
-  const { address } = useAuth();
+    const { address } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     if (address) {

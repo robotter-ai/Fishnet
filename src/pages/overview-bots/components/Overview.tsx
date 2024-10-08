@@ -23,7 +23,7 @@ import classNames from 'classnames';
 import Switcher from './Switcher';
 import PnLChart from './PnLChart';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import LineTab from './LineTab';
 import { useCreateInstanceMutation } from '@store/instance/api';
 
@@ -58,7 +58,7 @@ const Overview: React.FC<IOverviewProps> = ({
 }) => {
   const [isEmpty, setIsEmpty] = useState(true);
   const [createInstance, { isLoading }] = useCreateInstanceMutation();
-  const { address } = useAuth();
+  const { address } = useAppSelector((state) => state.auth);
 
   const handleCreateNewModel = useCallback(async () => {
     try {

@@ -1,9 +1,5 @@
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from './useStore';
 
-export default (owner: string) => {
-  const auth = useAuth();
-
-  const isOwner = auth?.address === owner;
-
-  return { isOwner };
+const useOwner = () => {
+  const { address } = useAppSelector((state) => state.auth);
 };

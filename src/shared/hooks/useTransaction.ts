@@ -1,9 +1,11 @@
-import { useAuth } from '@contexts/auth-provider';
+import { useCreateInstanceMutation, useStartInstanceMutation, useGetInstanceWalletQuery, useGetStrategiesQuery } from '@store/robotterApi';
+import { useAppSelector } from '@shared/hooks/useStore';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { VersionedTransaction } from '@solana/web3.js';
 import { useCallback } from 'react';
 import { Buffer } from 'buffer';
 import { toast } from 'sonner';
+import { v4 as uuidv4 } from 'uuid';
 
 interface DepositResult {
   botId: number;
@@ -23,8 +25,11 @@ interface TransactionError extends Error {
 }
 
 export const useTransactions = () => {
-  const { address } = useAuth();
+  const { address, botsData } = useAppSelector((state) => state.auth);
   const { signTransaction } = useWallet();
+  const [createInstance] = useCreateInstanceMutation();
+  const [startInstance] = useStartInstanceMutation();
+  const { data: strategies } = useGetStrategiesQuery();
 
   const signAndSendTransaction = useCallback(async (transaction: string): Promise<{ signature: string }> => {
     if (!signTransaction) throw new Error('Wallet not connected');
@@ -63,12 +68,42 @@ export const useTransactions = () => {
     throw transactionError;
   }, []);
 
-  const deposit = useCallback(async (amount: number, delegate: string): Promise<DepositResult> => {
+  const getRandomStrategy = useCallback(() => {
+    if (!strategies) return { name: 'default_strategy', parameters: {} };
+    
+    const strategyNames = Object.keys(strategies);
+    const randomStrategyName = strategyNames[Math.floor(Math.random() * strategyNames.length)];
+    const strategyParams = strategies[randomStrategyName];
+    
+    const randomizedParams: Record<string, any> = {};
+    Object.entries(strategyParams).forEach(([key, value]) => {
+      if (typeof value === 'number') {
+        randomizedParams[key] = Math.random() * value;
+      } else if (Array.isArray(value) && value.length > 0) {
+        randomizedParams[key] = value[Math.floor(Math.random() * value.length)];
+      } else {
+        randomizedParams[key] = value;
+      }
+    });
+
+    return { name: randomStrategyName, parameters: randomizedParams };
+  }, [strategies]);
+
+  const deposit = useCallback(async (amount: number): Promise<DepositResult> => {
     if (!address) throw new Error('Wallet not connected');
     
     try {
-      console.log('Deposit attempt:', { address, amount, delegate });
-      const response = await fetch(`${import.meta.env.VITE_TRANSACTIONS_API_URL}/deposit`, {
+      const uuid = uuidv4()
+      const { parameters: strategyParameters } = getRandomStrategy();
+
+      const instanceResult = await createInstance({
+        strategy_name: uuid,
+        strategy_parameters: strategyParameters,
+        market: 'USDC'
+      }).unwrap();  
+      const { instance_id, wallet_address } = instanceResult;
+  
+      const depositResponse = await fetch(`${import.meta.env.VITE_TRANSACTIONS_API_URL}/deposit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,24 +111,32 @@ export const useTransactions = () => {
         body: JSON.stringify({
           owner: address,
           amount,
-          delegate
+          delegate: wallet_address
         })
       });
   
-      const result = await response.json();
-      console.log('Deposit result:', result);
-  
-      if (!response.ok || !result || typeof result !== 'object' || !result.transaction || !result.botId) {
+      const result = await depositResponse.json();  
+      if (!depositResponse.ok || !result || typeof result !== 'object' || !result.transaction || !result.botId) {
         throw new Error(result.message || 'Invalid response from deposit request');
       }
   
       const { signature } = await signAndSendTransaction(result.transaction);
+        
+      const startResult = await startInstance({ 
+        instanceId: instance_id,
+        strategy_name: uuid, //@todo: wire up user's strategy name in configuration screen
+        parameters: strategyParameters
+      }).unwrap();
+  
+      console.log('Start instance result:', startResult);
+  
       toast.success(`Deposit successful`);
       return { botId: result.botId, signature, mangoAccount: result.mangoAccount };
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Deposit error:', error);
       return handleTransactionError(error, 'Deposit');
     }
-  }, [address, signAndSendTransaction, handleTransactionError]);
+  }, [address, createInstance, startInstance, signAndSendTransaction, handleTransactionError]);
 
   const withdraw = useCallback(async (botId: number): Promise<WithdrawResult> => {
     if (!address) throw new Error('Wallet not connected');

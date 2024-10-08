@@ -17,6 +17,7 @@ const axiosBaseQuery =
     {
       url: string;
       method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+      body?: AxiosRequestConfig['data'];
       data?: AxiosRequestConfig['data'];
       params?: AxiosRequestConfig['params'];
       headers?: AxiosRequestConfig['headers'];
@@ -24,26 +25,31 @@ const axiosBaseQuery =
     unknown,
     unknown
   > =>
-  async ({ url, method, data, params, headers }) => {
+  async ({ url, method, body, data, params, headers }) => {
     try {
       const token = cookies.get('bearerToken');
+
+      console.log('Request:', { url, method, body, data, params, headers });
 
       const result = await axios({
         url: baseUrl + url,
         method,
-        data,
+        data: body || data,
         params,
         headers: { Authorization: `Bearer ${token}`, ...headers },
       });
+
+      console.log('Response:', result);
 
       return { data: result?.data ? result.data : null };
     } catch (axiosError) {
       const err = axiosError as AxiosError;
 
+      console.error('Error:', err.response);
+
       if (err.response?.status === 401) {
         toast.error('Session expired. Please connect again.');
-        cookies.remove('bearerToken'); // Remove token when it has expired
-        // window.location.assign(`${window.location.origin}/`); // TODO: Redirect to the connect wallet page or open the sign challenge modal
+        cookies.remove('bearerToken');
       } else {
         toast.error(err.message);
       }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import WalletIcon from '@assets/images/wallet-icon.png';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import classNames from 'classnames';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import { BellIcon } from '@assets/icons';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import TruncatedAddress from '@shared/components/TruncatedAddress';
@@ -14,7 +14,7 @@ import LoginForm from '@shared/components/LoginForm';
 import { INotification } from '@store/profile/types';
 
 function TopNavigation() {
-  const { address } = useAuth();
+  const { address } = useAppSelector((state) => state.auth);
   const { title } = usePageTitle();
   const { isOpen, handleOpen, handleClose } = useModal();
   const [notifications, setNotifications] = useState<INotification[]>([]);
