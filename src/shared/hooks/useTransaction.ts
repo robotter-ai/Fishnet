@@ -124,7 +124,7 @@ export const useTransactions = () => {
         
       const startResult = await startInstance({ 
         instanceId: instance_id,
-        strategy_name: uuid,
+        strategy_name: uuid, //@todo: wire up user's strategy name in configuration screen
         parameters: strategyParameters
       }).unwrap();
   
