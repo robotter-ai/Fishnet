@@ -24,6 +24,7 @@ import {
   ITimeTab,
 } from '../hooks/useProfile';
 import Switcher from './Switcher';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export interface IHeaderProps {
   query: ITab | ITimeTab | IDateTab | IStratTab | IChatTab | IPerfTab;
@@ -38,8 +39,17 @@ const Header: React.FC<IHeaderProps> = ({
   searchParams,
   setSearchParams,
 }) => {
-    const { address } = useAppSelector((state) => state.auth);
+  const { address } = useAppSelector((state) => state.auth);
   const { isOpen, handleOpen, handleClose } = useModal();
+  const { wallet } = useWallet();
+
+  const getWalletIcon = () => {
+    if (!wallet) return null;
+    
+    if (wallet.adapter.icon) {
+      return <img src={wallet.adapter.icon} alt={wallet.adapter.name} width="16" height="16" />;
+    }
+  };
 
   useEffect(() => {
     if (address) {
@@ -79,7 +89,7 @@ const Header: React.FC<IHeaderProps> = ({
         {address ? (
           <span className="flex items-center justify-center gap-x-2 rounded-[33px] bg-blue-100 text-blue-400 text-sm font-normal w-[9.8125rem] h-[2.25rem]">
             <TruncatedAddress address={address} />
-            <PhantomIcon />
+            {getWalletIcon()}
           </span>
         ) : (
           <span 
