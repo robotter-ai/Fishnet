@@ -7,7 +7,7 @@ const instanceApi = robotterApi.injectEndpoints({
       query: (data) => ({
         method: 'POST',
         url: `/historical-candles`,
-        data
+        data,
       }),
       invalidatesTags: ['Candle'],
     }),

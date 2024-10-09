@@ -2,8 +2,6 @@ import { createElement, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppSelector } from '@shared/hooks/useStore';
-import { useGetUserInfoQuery } from '@store/profile/api';
-import { IUserInfo } from '@store/profile/types';
 import {
   ChartminiIcon,
   FolderIcon,
@@ -100,11 +98,6 @@ export interface IDateTabs {
   name: string;
 }
 
-export interface ISolData {
-  name: string;
-  isChecked: null;
-}
-
 export default () => {
   const { address } = useAppSelector((state) => state.auth);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -112,9 +105,9 @@ export default () => {
 
   const [search, setSearch] = useState('');
 
-  //const { data } = useGetUserInfoQuery({ address: session?.address });
+  // const { data } = useGetUserInfoQuery({ address: session?.address });
 
-  //const user = data as IUserInfo;
+  // const user = data as IUserInfo;
 
   const query: ITab = (searchParams.get('tab') as ITab) || 'overview';
   const dateQuery = (searchParams.get('date') as IDateTab) || 'week';
@@ -874,7 +867,7 @@ export default () => {
     infoTable,
     bigStatTable,
     stratTable,
-    //user,
+    // user,
     query,
     dateQuery,
     timeQuery,

@@ -10,17 +10,18 @@ const transactionsEndpoints = transactionsApi.injectEndpoints({
         params,
       }),
     }),
-    getUserBotsAndEvents: builder.query<{ data: IBotData[] }, { userAddress: string }>({
-        query: (params) => ({
-          url: '/getBotData',
-          method: 'GET',
-          params,
-        }),
+    getUserBotsAndEvents: builder.query<
+      { data: IBotData[] },
+      { userAddress: string }
+    >({
+      query: (params) => ({
+        url: '/getBotData',
+        method: 'GET',
+        params,
+      }),
     }),
   }),
 });
 
-export const {
-  useGetUserUsdcBalanceQuery,
-  useGetUserBotsAndEventsQuery
-} = transactionsEndpoints;
+export const { useGetUserUsdcBalanceQuery, useGetUserBotsAndEventsQuery } =
+  transactionsEndpoints;

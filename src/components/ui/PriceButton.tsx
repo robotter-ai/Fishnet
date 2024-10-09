@@ -8,7 +8,10 @@ import { toast } from 'sonner';
 import AppModal from './AppModal';
 import CustomButton from './Button';
 
-const PriceView = ({ price, handleOpen }: {
+const PriceView = ({
+  price,
+  handleOpen,
+}: {
   price: string;
   handleOpen: () => void;
 }) => {

@@ -11,14 +11,16 @@ export const websocketApi = createApi({
         address,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved, dispatch }
       ) {
-        const ws = new WebSocket(import.meta.env.VITE_TRANSACTIONS_API_URL + '/ws');
+        const ws = new WebSocket(
+          `${import.meta.env.VITE_TRANSACTIONS_API_URL}/ws`
+        );
 
         try {
           await cacheDataLoaded;
 
           const listener = (event: MessageEvent) => {
             const data = JSON.parse(event.data);
-            console.log(data)
+            console.log(data);
             switch (data.type) {
               case 'connectionSuccess':
                 dispatch(setBotData(data.payload.bots));
@@ -61,11 +63,13 @@ export const websocketApi = createApi({
 function handleUpdate(event: any, dispatch: any) {
   switch (event.type) {
     case 'botUpdate':
-      dispatch(updateBotStats({
-        id: event.botId,
-        ...event.data,
-        events: [event, ...event.events] // Add the new event to the beginning of the array
-      }));
+      dispatch(
+        updateBotStats({
+          id: event.botId,
+          ...event.data,
+          events: [event, ...event.events], // Add the new event to the beginning of the array
+        })
+      );
       break;
     case 'balanceUpdate':
       dispatch(setUsdcBalance(event.balance));
@@ -76,4 +80,5 @@ function handleUpdate(event: any, dispatch: any) {
   }
 }
 
-export const { useGetWebsocketUpdatesQuery, middleware: websocketMiddleware } = websocketApi;
+export const { useGetWebsocketUpdatesQuery, middleware: websocketMiddleware } =
+  websocketApi;

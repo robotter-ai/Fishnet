@@ -1,7 +1,7 @@
 import { SetURLSearchParams } from 'react-router-dom';
-import { IDateTabs } from '../hooks/useProfile';
 import classNames from 'classnames';
 import React from 'react';
+import { IDateTabs } from '../hooks/useProfile';
 
 interface ILineTabProps {
   data: IDateTabs[];

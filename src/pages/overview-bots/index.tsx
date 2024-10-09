@@ -1,9 +1,9 @@
+import { useAppSelector } from '@shared/hooks/useStore';
 import Header from './components/Header';
 import useProfile, { ITab } from './hooks/useProfile';
 import Overview from './components/Overview';
 import Training from './components/Training';
 import Bots from './components/Bots';
-import { useAppSelector } from '@shared/hooks/useStore';
 
 const OverviewBots = () => {
   const {

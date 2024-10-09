@@ -24,8 +24,8 @@ const RangeSlider: React.FC<IRangeSliderProps> = ({
   return (
     <div>
       <div className="flex justify-between items-center text-light-400 text-[0.625rem] px-2">
-        <p>{minLabel ? minLabel : min}</p>
-        <p>{maxLabel ? maxLabel : max}</p>
+        <p>{minLabel || min}</p>
+        <p>{maxLabel || max}</p>
       </div>
       <input
         {...rest}

@@ -21,7 +21,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>(
-    placeholder ? placeholder : options[0].label
+    placeholder || options[0].label
   );
   const lastIdx = options.length - 1;
 
@@ -48,10 +48,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   }, []);
 
   return (
-    <div
-      ref={dropDownRef}
-      className="relative w-full h-[2.25rem]"
-    >
+    <div ref={dropDownRef} className="relative w-full h-[2.25rem]">
       <div
         className={`px-4 py-2 rounded-[100px] bg-light-200 border border-transparent text-sm cursor-pointer flex items-center justify-between ${
           isOpen ? 'border-blue-300' : ''

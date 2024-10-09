@@ -1,7 +1,7 @@
-import { ICryptoStats } from '../hooks/useProfile';
 import { UpIcon, DownIcon } from '@assets/icons';
 import classNames from 'classnames';
 import React from 'react';
+import { ICryptoStats } from '../hooks/useProfile';
 
 interface ICryptoStatsProps {
   data: ICryptoStats[];
@@ -18,7 +18,7 @@ const CryptoStats: React.FC<ICryptoStatsProps> = ({
     <div className="mt-5 flex items-center gap-x-8">
       {isEmpty ? (
         <div className="flex flex-none items-center gap-x-3">
-          <span className={`w-4 h-4 rounded-full bg-chart-200`}></span>
+          <span className="w-4 h-4 rounded-full bg-chart-200" />
           <span>
             <h2 className="text-dark-300 font-normal text-base mb-1">$0</h2>
           </span>
@@ -33,8 +33,8 @@ const CryptoStats: React.FC<ICryptoStatsProps> = ({
           <div key={i} className="flex flex-none items-center gap-x-3">
             <span
               style={{ background: stats.color }}
-              className={`w-4 h-4 rounded-full`}
-            ></span>
+              className="w-4 h-4 rounded-full"
+            />
             <span>
               <h2 className="text-dark-300 font-normal text-base mb-1">
                 {stats.amount}

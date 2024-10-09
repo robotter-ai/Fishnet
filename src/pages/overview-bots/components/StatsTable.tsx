@@ -1,5 +1,5 @@
-import { IStatsTableData } from '../hooks/useProfile';
 import CustomBtn from '@components/ui/CustomBtn';
+import { IStatsTableData } from '../hooks/useProfile';
 import MiniLineChart from './MiniLineChart';
 import CustomText from './CustomText';
 
@@ -26,9 +26,7 @@ const StatsTable: React.FC<IStatsTableProps> = ({
     <div className="border-collapse w-auto flex-none md:flex-1">
       <div
         id="title"
-        className={`flex gap-x-4 items-center ${
-          titleStyle ? titleStyle : 'mb-3'
-        }`}
+        className={`flex gap-x-4 items-center ${titleStyle || 'mb-3'}`}
       >
         <h2 className="font-semibold text-xs text-dark-300  uppercase">
           {title}
@@ -65,7 +63,7 @@ const StatsTable: React.FC<IStatsTableProps> = ({
               <div>
                 {/* Chart */}
                 {isEmpty && !stat.progressValue ? (
-                  <div className="w-[6.25rem] h-[2px] bg-states"></div>
+                  <div className="w-[6.25rem] h-[2px] bg-states" />
                 ) : (
                   stat.chartData && (
                     <div className="w-[5.7rem] h-[1.4375rem]">
@@ -83,7 +81,7 @@ const StatsTable: React.FC<IStatsTableProps> = ({
                       <span
                         style={{ width: `${stat.progressValue}%` }}
                         className="block h-full bg-blue-200 rounded-[34px]"
-                      ></span>
+                      />
                     )}
                   </div>
                 )}

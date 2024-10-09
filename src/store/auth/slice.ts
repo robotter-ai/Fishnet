@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export enum LoginStatus {
   IN = 'IN',
   OUT = 'OUT',
-  PENDING = 'PENDING'
+  PENDING = 'PENDING',
 }
 
 interface PnL {
@@ -45,7 +45,9 @@ const authSlice = createSlice({
       state.botsData = action.payload;
     },
     updateBotStats: (state, action: PayloadAction<Partial<IBotData>>) => {
-      const index = state.botsData.findIndex(bot => bot.id === action.payload.id);
+      const index = state.botsData.findIndex(
+        (bot) => bot.id === action.payload.id
+      );
       if (index !== -1) {
         state.botsData[index] = { ...state.botsData[index], ...action.payload };
       } else if (action.payload.id) {
@@ -58,13 +60,13 @@ const authSlice = createSlice({
   },
 });
 
-export const { 
-  setAddress, 
-  setLoginStatus, 
-  setUsdcBalance, 
+export const {
+  setAddress,
+  setLoginStatus,
+  setUsdcBalance,
   setBotData,
-  updateBotStats, 
-  resetAuth 
+  updateBotStats,
+  resetAuth,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -8,14 +8,14 @@ import { useEffect } from 'react';
 
 const Login = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
-    const { address } = useAppSelector((state) => state.auth);
+  const { address } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     if (address) {
       handleClose();
     }
   }, [address, handleClose]);
-  
+
   return (
     <>
       <div className="flex flex-col h-[100vh] bg-white">

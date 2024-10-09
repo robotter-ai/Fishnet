@@ -35,13 +35,13 @@ const authApi = robotterApi.injectEndpoints({
     }),
 
     refreshToken: builder.mutation<
-    {
-      address: string;
-      chain: string;
-      valid_til: number;
-      token: string;
-    },
-    { token: string }
+      {
+        address: string;
+        chain: string;
+        valid_til: number;
+        token: string;
+      },
+      { token: string }
     >({
       query: ({ token }) => ({
         method: 'POST',

@@ -8,7 +8,7 @@ interface ICustomPieChartProps {
   innerRadius: number;
   outerRadius: number;
   hasStroke?: boolean;
-  isEmpty: boolean
+  isEmpty: boolean;
 }
 
 const CustomPieChart: React.FC<ICustomPieChartProps> = ({
@@ -18,7 +18,7 @@ const CustomPieChart: React.FC<ICustomPieChartProps> = ({
   innerRadius,
   outerRadius,
   hasStroke = true,
-  isEmpty
+  isEmpty,
 }) => {
   return (
     <div className="relative w-fit h-fit">
@@ -36,12 +36,13 @@ const CustomPieChart: React.FC<ICustomPieChartProps> = ({
           strokeWidth={isEmpty ? 0 : 1}
           stroke={hasStroke ? undefined : 'none'}
         >
-          {!isEmpty && cryptoStats.map((_, idx) => (
-            <Cell
-              key={`cell-${idx}`}
-              fill={cryptoStats[idx % cryptoStats.length].color}
-            />
-          ))}
+          {!isEmpty &&
+            cryptoStats.map((_, idx) => (
+              <Cell
+                key={`cell-${idx}`}
+                fill={cryptoStats[idx % cryptoStats.length].color}
+              />
+            ))}
         </Pie>
       </PieChart>
       <div className="absolute top-1/2 translate-y-[-50%] left-0 right-0 mx-auto">

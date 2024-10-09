@@ -69,7 +69,9 @@ const PnLChart: React.FC<IPnLChartProps> = ({ height, minWidth }) => {
   return (
     <ResponsiveContainer
       width={
-        windowWidth >= 1280 && windowWidth <= 1441 ? windowWidth - minWidth : '100%'
+        windowWidth >= 1280 && windowWidth <= 1441
+          ? windowWidth - minWidth
+          : '100%'
       }
       height={height}
     >

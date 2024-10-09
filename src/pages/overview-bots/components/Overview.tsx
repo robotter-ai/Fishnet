@@ -1,4 +1,14 @@
 import {
+  NavigateOptions,
+  SetURLSearchParams,
+  URLSearchParamsInit,
+} from 'react-router-dom';
+import CustomBtn from '@components/ui/CustomBtn';
+import classNames from 'classnames';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useAppSelector } from '@shared/hooks/useStore';
+import { useCreateInstanceMutation } from '@store/instances/api';
+import {
   ICardBotData,
   ICryptoStats,
   IDateTabs,
@@ -9,23 +19,13 @@ import {
   ITimeTab,
 } from '../hooks/useProfile';
 import { totalAmount } from '../../../utils/formatMoney.util';
-import {
-  NavigateOptions,
-  SetURLSearchParams,
-  URLSearchParamsInit,
-} from 'react-router-dom';
-import Performance from '../components/Performance';
-import CustomBtn from '@components/ui/CustomBtn';
+import Performance from './Performance';
 import CustomPieChart from './CustomPieChart';
 import CryptoStats from './CryptoStats';
 import StatsTable from './StatsTable';
-import classNames from 'classnames';
 import Switcher from './Switcher';
 import PnLChart from './PnLChart';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useAppSelector } from '@shared/hooks/useStore';
 import LineTab from './LineTab';
-import { useCreateInstanceMutation } from '@store/instance/api';
 
 interface IOverviewProps {
   dateTabs: IDateTabs[];
@@ -161,7 +161,7 @@ const Overview: React.FC<IOverviewProps> = ({
             </div>
 
             {isEmpty ? (
-              <div className="w-full h-[361px] rounded-[22px] bg-light-300"></div>
+              <div className="w-full h-[361px] rounded-[22px] bg-light-300" />
             ) : (
               <div className="overflow-x-auto xl:overflow-x-clip">
                 <div className="w-[63.4375rem] lg:w-full">

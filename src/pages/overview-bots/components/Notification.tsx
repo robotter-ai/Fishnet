@@ -60,7 +60,7 @@ const Notification = forwardRef<HTMLDivElement>((_, ref) => {
         ))}
       </div>
 
-      <div className='max-h-96 overflow-y-auto'>
+      <div className="max-h-96 overflow-y-auto">
         {notificationData.map((data, index) => (
           <div
             key={index}
@@ -80,7 +80,7 @@ const Notification = forwardRef<HTMLDivElement>((_, ref) => {
               <span
                 id="tiny_dot"
                 className="w-1 h-1 rounded-full bg-blue-300"
-              ></span>
+              />
               <h6 className="text-[0.625rem] text-dark-100 leading-[12.1px]">
                 {data.time} ago
               </h6>

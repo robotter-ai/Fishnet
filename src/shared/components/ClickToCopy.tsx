@@ -1,6 +1,6 @@
 import { CopyIcon } from '@assets/icons';
 import { toast } from 'sonner';
-import React from "react";
+import React from 'react';
 
 interface ClickToCopyProps {
   text: string;

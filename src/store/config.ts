@@ -76,7 +76,8 @@ export const robotterApi = createApi({
 export const transactionsApi = createApi({
   reducerPath: 'transactionsApi',
   baseQuery: axiosBaseQuery({
-    baseUrl: import.meta.env.VITE_TRANSACTIONS_API_URL || 'http://localhost:3000',
+    baseUrl:
+      import.meta.env.VITE_TRANSACTIONS_API_URL || 'http://localhost:3000',
   }),
   refetchOnReconnect: true,
   tagTypes: ['Transactions'],

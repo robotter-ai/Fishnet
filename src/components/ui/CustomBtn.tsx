@@ -76,7 +76,7 @@ const CustomBtn: React.FC<ButtonProps> = ({
       'hover:!bg-blue-300 hover:!text-light-100': btnStyle === 'solid-primary',
       'w-full': fullWidth,
     },
-    `${xtraStyles ? xtraStyles : ''}`
+    `${xtraStyles || ''}`
   );
 
   return (

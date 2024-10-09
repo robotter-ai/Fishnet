@@ -1,11 +1,11 @@
-import { ICardBotData } from '../hooks/useProfile';
 import { UpIcon, DownIcon } from '@assets/icons';
 import CustomButton from '@components/ui/Button';
-import CustomPieChart from './CustomPieChart';
-import MiniLineChart from './MiniLineChart';
 import classNames from 'classnames';
 import React from 'react';
 import CustomBtn from '@components/ui/CustomBtn';
+import MiniLineChart from './MiniLineChart';
+import CustomPieChart from './CustomPieChart';
+import { ICardBotData } from '../hooks/useProfile';
 
 interface ICardBotProps {
   cardBotData: ICardBotData;
@@ -22,7 +22,7 @@ const CardBot: React.FC<ICardBotProps> = ({
     <div
       id="card_bot"
       className={`relative lt:w-full lt:max-w-max max-w-[20.3125rem] w-full h-[11.9375rem] rounded-[22px] bg-light-200 border border-chart-300 p-4 mb-4 pt-[1.50rem] ${
-        xtraStyle ? xtraStyle : ''
+        xtraStyle || ''
       } ${isEmpty ? 'bg-light-300 border-light-300' : ''}`}
     >
       {!isEmpty && (

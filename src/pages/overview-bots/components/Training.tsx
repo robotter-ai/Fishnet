@@ -1,11 +1,14 @@
+import { SetURLSearchParams } from 'react-router-dom';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import CustomBtn from '@components/ui/CustomBtn';
+import { useGetHistoricalCandlesMutation } from '@store/market/api';
+import { ClipLoader, FadeLoader } from 'react-spinners';
 import {
   ICardBotData,
   IResultStrat,
   ITabs,
   ITimeTab,
 } from '../hooks/useProfile';
-import { SetURLSearchParams } from 'react-router-dom';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import Stepper from './Stepper';
 import Switcher from './Switcher';
 import CustomDropdown from './CustomDropdown';
@@ -16,11 +19,8 @@ import Pagination from './Pagination';
 import CandlestickChart from './CandlestickChart';
 import CustomDatePicker from './CustomDatePicker';
 import ButtonList from './ButtonList';
-import CustomBtn from '@components/ui/CustomBtn';
 import GoBack from './GoBack';
 import LineTab from './LineTab';
-import { useGetHistoricalCandlesMutation } from '@store/market/api';
-import { FadeLoader } from 'react-spinners';
 import { transformData } from '../../../utils/transformData';
 import { strategiesConfigData } from '../../../utils/strategyConfigData';
 
@@ -188,7 +188,7 @@ const Training: React.FC<ITrainingProps> = ({
             >
               <div id="COL 1" className="col-span-2 md:col-auto">
                 <CustomText
-                  text={'Select Exchange'}
+                  text="Select Exchange"
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                 />
                 <CustomDropdown
@@ -197,10 +197,10 @@ const Training: React.FC<ITrainingProps> = ({
                   placeholder="Select an Option"
                 />
               </div>
-              <div id="COL 2" className="hidden md:block"></div>
+              <div id="COL 2" className="hidden md:block" />
               <div id="COL 3" className="col-span-2 md:col-auto">
                 <CustomText
-                  text={'Select Trading Strategy'}
+                  text="Select Trading Strategy"
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                 />
                 <CustomDropdown
@@ -210,13 +210,13 @@ const Training: React.FC<ITrainingProps> = ({
               </div>
               <div id="COL 4" className="col-span-2 md:col-auto">
                 <CustomText
-                  text={'Normalized value'}
+                  text="Normalized value"
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                 />
                 <div className="flex justify-between gap-x-4">
                   <p className="relative flex text-sm justify-start items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
                     {value.normalizeValue}
-                    <span className="absolute hidden md:block top-1/2 translate-y-[-50%] left-[-21px] w-[1.375rem] h-[3px] bg-light-200"></span>
+                    <span className="absolute hidden md:block top-1/2 translate-y-[-50%] left-[-21px] w-[1.375rem] h-[3px] bg-light-200" />
                   </p>
                   <div className="w-60 flex-1 mt-[-5px]">
                     <RangeSlider
@@ -232,20 +232,20 @@ const Training: React.FC<ITrainingProps> = ({
               </div>
               <div id="COL 5" className="col-span-2 md:col-auto">
                 <CustomText
-                  text={'Select Market trend'}
+                  text="Select Market trend"
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                 />
                 <CustomDropdown options={options} onSelect={() => {}} />
               </div>
               <div id="COL 6" className="col-span-2 md:col-auto">
                 <CustomText
-                  text={'Adjust the Selected Market Trend Level'}
+                  text="Adjust the Selected Market Trend Level"
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                 />
                 <div className="flex justify-between gap-x-4">
                   <p className="relative flex justify-start text-sm items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
                     {value.marketTrendLevel}%
-                    <span className="absolute hidden md:block top-1/2 translate-y-[-50%] left-[-21px] w-[1.375rem] h-[3px] bg-light-200"></span>
+                    <span className="absolute hidden md:block top-1/2 translate-y-[-50%] left-[-21px] w-[1.375rem] h-[3px] bg-light-200" />
                   </p>
                   <div className="w-60 flex-1 mt-[-5px]">
                     <RangeSlider
@@ -262,7 +262,7 @@ const Training: React.FC<ITrainingProps> = ({
               </div>
               <div id="COL 7" className="col-span-2 md:col-auto">
                 <CustomText
-                  text={'Set Leverage'}
+                  text="Set Leverage"
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                 />
                 <div className="flex justify-between gap-x-4">
@@ -282,10 +282,10 @@ const Training: React.FC<ITrainingProps> = ({
                   </div>
                 </div>
               </div>
-              <div id="COL 8" className="hidden md:block"></div>
+              <div id="COL 8" className="hidden md:block" />
               <div id="COL 9" className="col-span-2 md:col-auto">
                 <CustomText
-                  text={'Take PROFIT, +% from initial'}
+                  text="Take PROFIT, +% from initial"
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                   showOptText
                 />
@@ -309,7 +309,7 @@ const Training: React.FC<ITrainingProps> = ({
               </div>
               <div id="COL 10" className="col-span-2 md:col-auto">
                 <CustomText
-                  text={'Stop Loss, -% from initial'}
+                  text="Stop Loss, -% from initial"
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                   showOptText
                 />
@@ -397,7 +397,7 @@ const Training: React.FC<ITrainingProps> = ({
 
           <div>
             <CustomText
-              text={'Select timespan for the Backtest'}
+              text="Select timespan for the Backtest"
               xtraStyle="mb-5 font-semibold text-xs uppercase"
             />
             <div className="flex flex-col md:flex-row justify-between gap-y-4 md:gap-y-0 md:gap-x-4">

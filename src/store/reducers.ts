@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import appSlice from '@slices/appSlice';
-import auth from './auth/slice'
+import auth from './auth/slice';
 import { robotterApi, transactionsApi } from './config';
 import { websocketApi } from './wsApi';
 

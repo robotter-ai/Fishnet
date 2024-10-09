@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { SetURLSearchParams } from 'react-router-dom';
+import { BackIcon } from '@assets/icons';
+import CustomBtn from '@components/ui/CustomBtn';
 import {
   ICardBotData,
   IChatTab,
@@ -11,8 +14,6 @@ import {
   ITimeTab,
   IBotData,
 } from '../hooks/useProfile';
-import { SetURLSearchParams } from 'react-router-dom';
-import { BackIcon } from '@assets/icons';
 import CandlestickChart from './CandlestickChart';
 import CustomPieChart from './CustomPieChart';
 import Switcher from './Switcher';
@@ -20,7 +21,6 @@ import PnLChart from './PnLChart';
 import StatsTable from './StatsTable';
 import ButtonList from './ButtonList';
 import SidebarTable from './SidebarTable';
-import CustomBtn from '@components/ui/CustomBtn';
 import TradeTable from './TradeTable';
 import GoBack from './GoBack';
 import CryptoStats from './CryptoStats';
