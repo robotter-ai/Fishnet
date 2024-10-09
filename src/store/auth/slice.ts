@@ -7,13 +7,6 @@ export enum LoginStatus {
   PENDING = 'PENDING'
 }
 
-interface PnL {
-  value: number;
-  percentage: number;
-  isPositive: boolean;
-  chartData: any[];
-}
-
 interface AuthState {
   address: string;
   loginStatus: LoginStatus;
@@ -44,6 +37,9 @@ const authSlice = createSlice({
     setBotData: (state, action: PayloadAction<IBotData[]>) => {
       state.botsData = action.payload;
     },
+    addBot: (state, action: PayloadAction<IBotData>) => {
+      state.botsData.unshift(action.payload);
+    },
     updateBotStats: (state, action: PayloadAction<Partial<IBotData>>) => {
       const index = state.botsData.findIndex(bot => bot.id === action.payload.id);
       if (index !== -1) {
@@ -63,6 +59,7 @@ export const {
   setLoginStatus, 
   setUsdcBalance, 
   setBotData,
+  addBot,
   updateBotStats, 
   resetAuth 
 } = authSlice.actions;

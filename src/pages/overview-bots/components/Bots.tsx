@@ -6,6 +6,7 @@ import { SetURLSearchParams } from 'react-router-dom';
 import useTransaction from '@shared/hooks/useTransaction';
 import CustomTabs from './CustomTabs';
 import SingleBotView from './BotView';
+import { useAppSelector } from '@store/hooks';
 
 interface IBotsProps {
     solData: ISolData[];
@@ -29,8 +30,12 @@ interface IBotsProps {
     cardBotData: ICardBotData[];
 }
 
+const truncateDecimals = (value: number, decimalPlaces: number = 2): number => {
+  const multiplier = Math.pow(10, decimalPlaces);
+  return Math.trunc(value * multiplier) / multiplier;
+};
+
 const Bots: React.FC<IBotsProps> = ({
-    botsData,
     timeTabs,
     stratTabs,
     tradeDateTabs,
@@ -53,6 +58,8 @@ const Bots: React.FC<IBotsProps> = ({
     const { deposit, withdraw } = useTransaction();
     const headers = ['BOT', 'STATUS', 'P&L', 'PORTFOLIO', 'ACCURACY', 'SHARPE RATIO', 'APR', ''];
     const [selectedBot, setSelectedBot] = useState<IBotData | null>(null);
+
+    const botsData = useAppSelector((state) => state.auth.botsData);
 
     const handleBotClick = (bot: IBotData | undefined) => {
         if(!bot) return;
@@ -136,7 +143,7 @@ const Bots: React.FC<IBotsProps> = ({
                   <td>
                     <div className="flex items-center">
                       <span className={bot.pnl.isPositive ? 'text-green-500' : 'text-red-500'}>
-                        {bot.pnl.isPositive ? '+' : '-'} ${bot.pnl.value} ({bot.pnl.percentage}%)
+                        {bot.pnl.isPositive ? '+' : '-'} ${truncateDecimals(bot.pnl.value)} ({truncateDecimals(bot.pnl.percentage)}%)
                       </span>
                       <MiniLineChart
                         data={bot.pnl.chartData}
@@ -144,10 +151,10 @@ const Bots: React.FC<IBotsProps> = ({
                       />
                     </div>
                   </td>
-                  <td>${bot.portfolio.value} ({bot.portfolio.percentage}%)</td>
-                  <td>{bot.accuracy}%</td>
-                  <td>{bot.sharpeRatio}</td>
-                  <td>{bot.apr}%</td>
+                  <td>${truncateDecimals(bot.portfolio)}</td>
+                  <td>{truncateDecimals(bot.accuracy)}%</td>
+                  <td>{truncateDecimals(bot.sharpeRatio)}</td>
+                  <td>{truncateDecimals(bot.apr)}%</td>
                   <td>
                     <div className="flex space-x-2">
                       <CustomButton 

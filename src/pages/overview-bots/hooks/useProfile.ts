@@ -72,10 +72,7 @@ export interface IBotData {
     isPositive: boolean;
     chartData: number[];
   };
-  portfolio: {
-    value: number;
-    percentage: number;
-  };
+  portfolio: number;
   accuracy: number;
   sharpeRatio: number;
   apr: number;
@@ -694,10 +691,7 @@ export default () => {
         isPositive: true,
         chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       },
-      portfolio: {
-        value: 9186,
-        percentage: 20,
-      },
+      portfolio: 9186,
       accuracy: 65,
       sharpeRatio: 2.81,
       apr: 210,
@@ -714,10 +708,7 @@ export default () => {
         isPositive: true,
         chartData: [50, 60, 40, 49, 38, 34, 80, 76, 95, 100],
       },
-      portfolio: {
-        value: 7036,
-        percentage: 11,
-      },
+      portfolio: 7036,
       accuracy: 59,
       sharpeRatio: 2.01,
       apr: 187,
@@ -734,10 +725,7 @@ export default () => {
         isPositive: false,
         chartData: [90, 85, 80, 70, 60, 65, 75, 76, 95, 80],
       },
-      portfolio: {
-        value: 3127,
-        percentage: 1,
-      },
+      portfolio: 1,
       accuracy: 49,
       sharpeRatio: 1.75,
       apr: 165,

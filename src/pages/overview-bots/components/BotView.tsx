@@ -25,6 +25,11 @@ import TradeTable from './TradeTable';
 import GoBack from './GoBack';
 import CryptoStats from './CryptoStats';
 
+const truncateDecimals = (value: number, decimalPlaces: number = 2): number => {
+    const multiplier = Math.pow(10, decimalPlaces);
+    return Math.trunc(value * multiplier) / multiplier;
+};
+
 interface IBotViewProps {
     bot: IBotData;
     onBack: () => void;
@@ -93,10 +98,10 @@ const SingleBotView: React.FC<IBotViewProps> = ({
                                     label={
                                         <>
                                             <h1 className="font-bold text-[2rem] text-center text-dark-300">
-                                                {bot.pnl.isPositive ? '+' : '-'}${bot.pnl.value}
+                                                {bot.pnl.isPositive ? '+' : '-'}${truncateDecimals(bot.pnl.value)}
                                             </h1>
                                             <p className="font-normal text-sm text-center text-dark-100">
-                                                {bot.pnl.isPositive ? '+' : '-'}{bot.pnl.percentage}% P&L
+                                                {bot.pnl.isPositive ? '+' : '-'}{truncateDecimals(bot.pnl.percentage)}% P&L
                                             </p>
                                         </>
                                     }

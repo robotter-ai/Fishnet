@@ -64,7 +64,9 @@ export const useTransactions = () => {
     console.error(`${operation} failed:`, error);
     const transactionError = error as TransactionError;
     const errorMessage = transactionError.error || transactionError.data?.message || transactionError.message || `${operation} failed. Please try again.`;
-    toast.error(errorMessage);
+    
+    console.log(errorMessage);
+    toast.error(`Bug found on ${operation}!, ensure you have USDC and SOL`);
     throw transactionError;
   }, []);
 
@@ -103,6 +105,8 @@ export const useTransactions = () => {
       }).unwrap();  
       const { instance_id, wallet_address } = instanceResult;
   
+      toast.message('You need to wait 30 min to be able to withdraw');
+
       const depositResponse = await fetch(`${import.meta.env.VITE_TRANSACTIONS_API_URL}/deposit`, {
         method: 'POST',
         headers: {
@@ -121,14 +125,6 @@ export const useTransactions = () => {
       }
   
       const { signature } = await signAndSendTransaction(result.transaction);
-        
-      const startResult = await startInstance({ 
-        instanceId: instance_id,
-        strategy_name: uuid,
-        parameters: strategyParameters
-      }).unwrap();
-  
-      console.log('Start instance result:', startResult);
   
       toast.success(`Deposit successful`);
       return { botId: result.botId, signature, mangoAccount: result.mangoAccount };
@@ -156,7 +152,8 @@ export const useTransactions = () => {
       const result = await response.json();
 
       if (!response.ok || !result || typeof result !== 'object' || !result.transaction) {
-          return { signature: '' };
+        toast.message('You need to wait sometime to be able to withdraw');
+        return { signature: '' };
       }
 
       const { signature } = await signAndSendTransaction(result.transaction);
