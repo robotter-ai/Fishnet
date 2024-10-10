@@ -1,16 +1,12 @@
 import {
   ICardBotData,
   IResultStrat,
-  ITab,
   ITabs,
   ITimeTab,
 } from '../hooks/useProfile';
 import { SetURLSearchParams } from 'react-router-dom';
-import { MdOutlineCheckCircle } from 'react-icons/md';
-import CustomButton from '@components/ui/Button';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import Stepper from './Stepper';
-import { BackIcon } from '@assets/icons';
 import Switcher from './Switcher';
 import CustomDropdown from './CustomDropdown';
 import RangeSlider from './RangeSlider';
@@ -18,15 +14,15 @@ import CustomText from './CustomText';
 import CardBot from './CardBot';
 import Pagination from './Pagination';
 import CandlestickChart from './CandlestickChart';
-import { CandlestickSeries } from 'react-financial-charts';
 import CustomDatePicker from './CustomDatePicker';
 import ButtonList from './ButtonList';
 import CustomBtn from '@components/ui/CustomBtn';
 import GoBack from './GoBack';
 import LineTab from './LineTab';
 import { useGetHistoricalCandlesMutation } from '@store/market/api';
-import { ClipLoader, FadeLoader } from 'react-spinners';
+import { FadeLoader } from 'react-spinners';
 import { transformData } from '../../../utils/transformData';
+import { strategiesConfigData } from '../../../utils/strategyConfigData';
 
 export interface ITrainingProps {
   timeQuery: ITimeTab;
@@ -53,12 +49,26 @@ const Training: React.FC<ITrainingProps> = ({
     useGetHistoricalCandlesMutation();
   const [currentStep, setCurrentStep] = useState(1);
   const [index, setIndex] = useState(2);
-  const [value, setValue] = React.useState(0);
+  const pmm = 'pmmdynamiccontrollerconfig';
+
+  const strategiesOpt = Object.keys(strategiesConfigData).map((key) => ({
+    label: key,
+    value: key,
+  }));
+
+  const [value, setValue] = React.useState({
+    normalizeValue: 0.5,
+    marketTrendLevel: 34,
+    leverage: strategiesConfigData[pmm]?.leverage?.default || 0,
+    stopLoss: strategiesConfigData[pmm]?.stop_loss?.default || 0,
+    takeProfit: strategiesConfigData[pmm]?.take_profit?.default || 0,
+  });
   const [tradePair, setTradePair] = useState('SOL-PERP');
   const [timeStamp, setTimeStamp] = useState({
     startTime: 1727771877,
     endTime: 1728376677,
   });
+
   const solData = [
     { name: 'SOL/USDC', isChecked: true },
     { name: 'SOL/BNB', isChecked: true },
@@ -75,14 +85,25 @@ const Training: React.FC<ITrainingProps> = ({
   ];
 
   const handleSelect = (value: string) => {
-    console.log('Selected value:', value);
+    const config = strategiesConfigData[value];
+    setValue((prevState) => ({
+      ...prevState,
+      leverage: config?.leverage?.default ?? 0,
+      stopLoss:
+        (config?.stop_loss?.default ? +config?.stop_loss?.default : 0) ?? 0,
+      takeProfit:
+        (config?.take_profit?.default ? +config?.take_profit?.default : 0) ?? 0,
+    }));
   };
 
   const getTradePair = (pair: string) => {
     setTradePair(pair);
   };
 
-  const onRangeChange = (rangeValue: number) => setValue(rangeValue);
+  const handleOnRangeChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = evt.target;
+    setValue((prevState) => ({ ...prevState, [name]: +value }));
+  };
 
   const startTimeUnix = (unix: number) => {
     setTimeStamp((prevState) => ({ ...prevState, startTime: unix }));
@@ -172,7 +193,7 @@ const Training: React.FC<ITrainingProps> = ({
                 />
                 <CustomDropdown
                   options={options}
-                  onSelect={handleSelect}
+                  onSelect={() => {}}
                   placeholder="Select an Option"
                 />
               </div>
@@ -182,7 +203,10 @@ const Training: React.FC<ITrainingProps> = ({
                   text={'Select Trading Strategy'}
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                 />
-                <CustomDropdown options={options} onSelect={handleSelect} />
+                <CustomDropdown
+                  options={strategiesOpt}
+                  onSelect={handleSelect}
+                />
               </div>
               <div id="COL 4" className="col-span-2 md:col-auto">
                 <CustomText
@@ -191,15 +215,17 @@ const Training: React.FC<ITrainingProps> = ({
                 />
                 <div className="flex justify-between gap-x-4">
                   <p className="relative flex text-sm justify-start items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    {value}
+                    {value.normalizeValue}
                     <span className="absolute hidden md:block top-1/2 translate-y-[-50%] left-[-21px] w-[1.375rem] h-[3px] bg-light-200"></span>
                   </p>
-                  <div className="w-full mt-[-5px]">
+                  <div className="w-60 flex-1 mt-[-5px]">
                     <RangeSlider
+                      name="normalizeValue"
                       min={0}
                       max={1}
                       step={0.1}
-                      onRangeChange={onRangeChange}
+                      value={value.normalizeValue}
+                      onChange={handleOnRangeChange}
                     />
                   </div>
                 </div>
@@ -209,7 +235,7 @@ const Training: React.FC<ITrainingProps> = ({
                   text={'Select Market trend'}
                   xtraStyle="mb-5 font-semibold text-xs uppercase"
                 />
-                <CustomDropdown options={options} onSelect={handleSelect} />
+                <CustomDropdown options={options} onSelect={() => {}} />
               </div>
               <div id="COL 6" className="col-span-2 md:col-auto">
                 <CustomText
@@ -218,16 +244,18 @@ const Training: React.FC<ITrainingProps> = ({
                 />
                 <div className="flex justify-between gap-x-4">
                   <p className="relative flex justify-start text-sm items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    65%
+                    {value.marketTrendLevel}%
                     <span className="absolute hidden md:block top-1/2 translate-y-[-50%] left-[-21px] w-[1.375rem] h-[3px] bg-light-200"></span>
                   </p>
-                  <div className="w-full mt-[-5px]">
+                  <div className="w-60 flex-1 mt-[-5px]">
                     <RangeSlider
+                      name="marketTrendLevel"
                       min={1}
                       max={100}
                       minLabel="1%"
                       maxLabel="100%"
-                      onRangeChange={onRangeChange}
+                      value={value.marketTrendLevel}
+                      onChange={handleOnRangeChange}
                     />
                   </div>
                 </div>
@@ -239,15 +267,17 @@ const Training: React.FC<ITrainingProps> = ({
                 />
                 <div className="flex justify-between gap-x-4">
                   <p className="flex text-xs justify-start items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    x4
+                    x{value.leverage ?? 0}
                   </p>
-                  <div className="w-full mt-[-5px]">
+                  <div className="w-60 flex-1 mt-[-5px]">
                     <RangeSlider
+                      name="leverage"
                       min={0}
-                      max={5}
+                      max={100}
                       minLabel="0"
-                      maxLabel="x5"
-                      onRangeChange={onRangeChange}
+                      maxLabel="x100"
+                      value={value.leverage ? +value.leverage : 0}
+                      onChange={handleOnRangeChange}
                     />
                   </div>
                 </div>
@@ -261,15 +291,18 @@ const Training: React.FC<ITrainingProps> = ({
                 />
                 <div className="flex justify-between gap-x-4">
                   <p className="flex justify-start items-center text-xs px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    +20%
+                    +{value.takeProfit}%
                   </p>
-                  <div className="w-full mt-[-5px]">
+                  <div className="w-60 flex-1 mt-[-5px]">
                     <RangeSlider
+                      name="takeProfit"
                       min={1}
                       max={1000}
+                      step={0.01}
                       minLabel="1%"
                       maxLabel="1000%"
-                      onRangeChange={onRangeChange}
+                      value={value.takeProfit ? +value.takeProfit : 0}
+                      onChange={handleOnRangeChange}
                     />
                   </div>
                 </div>
@@ -282,15 +315,18 @@ const Training: React.FC<ITrainingProps> = ({
                 />
                 <div className="flex justify-between gap-x-4">
                   <p className="flex justify-start text-sm items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    -10%
+                    -{value.stopLoss}%
                   </p>
-                  <div className="w-full">
+                  <div className="w-60 flex-1">
                     <RangeSlider
+                      name="stopLoss"
                       min={1}
                       max={100}
+                      step={0.1}
                       minLabel="-1%"
                       maxLabel="-100%"
-                      onRangeChange={onRangeChange}
+                      value={value.stopLoss ? +value.stopLoss : 0}
+                      onChange={handleOnRangeChange}
                     />
                   </div>
                 </div>

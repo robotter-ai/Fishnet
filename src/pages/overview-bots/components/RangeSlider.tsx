@@ -2,31 +2,23 @@ import { ChangeEvent, InputHTMLAttributes, useState } from 'react';
 import '@assets/styles/slider.scss';
 
 interface IRangeSliderProps extends InputHTMLAttributes<HTMLInputElement> {
-  min: number,
-  max: number,
+  min: number;
+  max: number;
+  value: number;
   minLabel?: string;
   maxLabel?: string;
-  onRangeChange: (value: number) => void;
 }
 
 const RangeSlider: React.FC<IRangeSliderProps> = ({
   min,
   max,
+  value,
   minLabel,
   maxLabel,
-  onRangeChange,
   ...rest
 }) => {
-  const [value, setValue] = useState(0);
-
   const getBackgroundSize = () => {
     return { backgroundSize: `${(value * 100) / max}% 100%` };
-  };
-
-  const onChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    const value = +evt.target.value;
-    setValue(value);
-    onRangeChange(value);
   };
 
   return (
@@ -40,7 +32,6 @@ const RangeSlider: React.FC<IRangeSliderProps> = ({
         type="range"
         min={min}
         max={max}
-        onChange={onChange}
         style={getBackgroundSize()}
         value={value}
       />
