@@ -91,6 +91,7 @@ const SingleBotView: React.FC<IBotViewProps> = ({
                             </button>
                             <div className="mt-16">
                                 <CustomPieChart
+                                    isEmpty
                                     size={210}
                                     innerRadius={90}
                                     outerRadius={103}
