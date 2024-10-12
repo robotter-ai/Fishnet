@@ -9,12 +9,13 @@ interface CandlestickData {
 
 interface ICandlestickChart {
   height: number;
+  data: CandlestickData[];
 }
 
-const CandlestickChart: React.FC<ICandlestickChart> = ({ height }) => {
+const CandlestickChart: React.FC<ICandlestickChart> = ({ height, data }) => {
   const [series] = useState<{ data: CandlestickData[] }[]>([
     {
-      data: [
+      data: data || [
         {
           x: new Date(1538778600000),
           y: [6629.81, 6650.5, 6623.04, 6633.33],

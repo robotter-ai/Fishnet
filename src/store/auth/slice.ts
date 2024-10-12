@@ -4,7 +4,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export enum LoginStatus {
   IN = 'IN',
   OUT = 'OUT',
-  PENDING = 'PENDING'
+  PENDING = 'PENDING',
+}
+
+interface PnL {
+  value: number;
+  percentage: number;
+  isPositive: boolean;
+  chartData: any[];
 }
 
 interface AuthState {

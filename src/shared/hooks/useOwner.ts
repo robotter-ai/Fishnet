@@ -1,9 +1,5 @@
-import { useAppSelector } from '@shared/hooks/useStore';
+import { useAppSelector } from './useStore';
 
-export default (owner: string) => {
-  const auth = useAuth();
-
-  const isOwner = auth?.address === owner;
-
-  return { isOwner };
+const useOwner = () => {
+  const { address } = useAppSelector((state) => state.auth);
 };

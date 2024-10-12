@@ -8,10 +8,13 @@ const LoginForm = () => {
   const { wallets, select } = useWallet();
   const [selectedWallet, setSelectedWallet] = useState<WalletName | null>(null);
   const solanaWallets = useMemo(() => {
-    return wallets.filter((wallet) =>
-      wallet.readyState === WalletReadyState.Installed 
-      && wallet.adapter.name !== 'Brave Wallet'
-    ).map((x) => x.adapter)
+    return wallets
+      .filter(
+        (wallet) =>
+          wallet.readyState === WalletReadyState.Installed &&
+          wallet.adapter.name !== 'Brave Wallet'
+      )
+      .map((x) => x.adapter);
   }, [wallets]);
 
   return (

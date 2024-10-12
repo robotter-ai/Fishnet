@@ -2,8 +2,6 @@ import { createElement, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import usePageTitle from '@shared/hooks/usePageTitle';
 import { useAppSelector } from '@shared/hooks/useStore';
-import { useGetUserInfoQuery } from '@store/profile/api';
-import { IUserInfo } from '@store/profile/types';
 import {
   ChartminiIcon,
   FolderIcon,
@@ -18,9 +16,17 @@ export type IDateTab = 'day' | 'week' | 'month' | 'time';
 export type IStratTab = 'strat' | 'hyper';
 export type IChatTab = 'trades' | 'pnl';
 export type IPerfTab = 'best' | 'worst';
+export type IResultStrat = 'result' | 'strategy';
 
 export interface ITabs {
-  key: ITab | ITimeTab | IDateTab | IStratTab | IChatTab | IPerfTab;
+  key:
+    | ITab
+    | ITimeTab
+    | IDateTab
+    | IStratTab
+    | IChatTab
+    | IPerfTab
+    | IResultStrat;
   name: string;
   icon: JSX.Element | null;
 }
@@ -89,11 +95,6 @@ export interface IDateTabs {
   name: string;
 }
 
-export interface ISolData {
-  name: string;
-  isChecked: null;
-}
-
 export default () => {
   const { address } = useAppSelector((state) => state.auth);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -101,9 +102,9 @@ export default () => {
 
   const [search, setSearch] = useState('');
 
-  //const { data } = useGetUserInfoQuery({ address: session?.address });
+  // const { data } = useGetUserInfoQuery({ address: session?.address });
 
-  //const user = data as IUserInfo;
+  // const user = data as IUserInfo;
 
   const query: ITab = (searchParams.get('tab') as ITab) || 'overview';
   const dateQuery = (searchParams.get('date') as IDateTab) || 'week';
@@ -111,6 +112,8 @@ export default () => {
   const timeQuery = (searchParams.get('time') as ITimeTab) || 'day';
   const perfQuery = (searchParams.get('perf') as IPerfTab) || 'best';
   const stratQuery = (searchParams.get('strat') as IStratTab) || 'strat';
+  const resultStatQuery =
+    (searchParams.get('resultStat') as IResultStrat) || 'result';
   const chartTypeQuery = (searchParams.get('chart') as IChatTab) || 'trades';
 
   const tabs: ITabs[] = [
@@ -156,6 +159,11 @@ export default () => {
     { key: 'week', name: 'Last Week', icon: null },
     { key: 'month', name: 'Last Month', icon: null },
     { key: 'time', name: 'All time', icon: null },
+  ];
+
+  const resultStratTabs: ITabs[] = [
+    { key: 'result', name: 'Result', icon: null },
+    { key: 'strategy', name: 'Strategy', icon: null },
   ];
 
   const tradeDateTabs: ITabs[] = [
@@ -563,8 +571,22 @@ export default () => {
       rate: 1256,
       isPositive: true,
       pieChartData: [
-        { amount: 68, tag: 'profit', percentage: 68, color: '#218358', isProfit: true, value: null },
-        { amount: 32, tag: 'loss', percentage: 32, color: '#CE2C31', isProfit: false, value: null },
+        {
+          amount: 68,
+          tag: 'profit',
+          percentage: 68,
+          color: '#218358',
+          isProfit: true,
+          value: null,
+        },
+        {
+          amount: 32,
+          tag: 'loss',
+          percentage: 32,
+          color: '#CE2C31',
+          isProfit: false,
+          value: null,
+        },
       ],
       lineChartData: null,
       tableData: [
@@ -593,8 +615,22 @@ export default () => {
       rate: 941,
       isPositive: true,
       pieChartData: [
-        { amount: 65, tag: 'profit', percentage: 65, color: '#218358', isProfit: true, value: null },
-        { amount: 35, tag: 'loss', percentage: 35, color: '#CE2C31', isProfit: false, value: null },
+        {
+          amount: 65,
+          tag: 'profit',
+          percentage: 65,
+          color: '#218358',
+          isProfit: true,
+          value: null,
+        },
+        {
+          amount: 35,
+          tag: 'loss',
+          percentage: 35,
+          color: '#CE2C31',
+          isProfit: false,
+          value: null,
+        },
       ],
       lineChartData: null,
       tableData: [
@@ -623,8 +659,22 @@ export default () => {
       rate: 322,
       isPositive: false,
       pieChartData: [
-        { amount: 48, tag: 'profit', percentage: 48, color: '#218358', isProfit: true, value: null },
-        { amount: 52, tag: 'loss', percentage: 52, color: '#CE2C31', isProfit: false, value: null },
+        {
+          amount: 48,
+          tag: 'profit',
+          percentage: 48,
+          color: '#218358',
+          isProfit: true,
+          value: null,
+        },
+        {
+          amount: 52,
+          tag: 'loss',
+          percentage: 52,
+          color: '#CE2C31',
+          isProfit: false,
+          value: null,
+        },
       ],
       lineChartData: null,
       tableData: [
@@ -653,8 +703,22 @@ export default () => {
       rate: 500,
       isPositive: false,
       pieChartData: [
-        { amount: 46, tag: 'profit', percentage: 46, color: '#218358', isProfit: true, value: null },
-        { amount: 54, tag: 'loss', percentage: 54, color: '#CE2C31', isProfit: false, value: null },
+        {
+          amount: 46,
+          tag: 'profit',
+          percentage: 46,
+          color: '#218358',
+          isProfit: true,
+          value: null,
+        },
+        {
+          amount: 54,
+          tag: 'loss',
+          percentage: 54,
+          color: '#CE2C31',
+          isProfit: false,
+          value: null,
+        },
       ],
       lineChartData: null,
       tableData: [
@@ -696,7 +760,7 @@ export default () => {
       sharpeRatio: 2.81,
       apr: 210,
       delegate: 'rikiFB2VznT2izUT7UffzWCn1X4gNmGutX7XEqFdpRR',
-      events: []
+      events: [],
     },
     {
       id: 2,
@@ -713,7 +777,7 @@ export default () => {
       sharpeRatio: 2.01,
       apr: 187,
       delegate: 'rikiFB2VznT2izUT7UffzWCn1X4gNmGutX7XEqFdpRR',
-      events: []
+      events: [],
     },
     {
       id: 3,
@@ -730,7 +794,7 @@ export default () => {
       sharpeRatio: 1.75,
       apr: 165,
       delegate: 'rikiFB2VznT2izUT7UffzWCn1X4gNmGutX7XEqFdpRR',
-      events: []
+      events: [],
     },
   ];
 
@@ -755,6 +819,17 @@ export default () => {
     ['Stop loss', '-10%'],
   ];
 
+  const bigStatTable = [
+    ['Model Name', 'SOL Big Brain'],
+    ['Test P&L', '+$1100 (11%)'],
+    ['Trading Accuracy', '63%'],
+    ['Max. dropdown', '53%'],
+    ['Sharp ratio', '3.44'],
+    ['APR', '154%'],
+    ['Total trades', '12'],
+    ['Timespan', '2024-05-01 / 2024-05-31'],
+  ];
+
   useEffect(() => {
     setTitle(PAGE_TITLE[query]);
   }, [query]);
@@ -766,6 +841,7 @@ export default () => {
     perfTabs,
     stratTabs,
     tradeDateTabs,
+    resultStratTabs,
     chartTypeTabs,
     statsData,
     statsDataOTN,
@@ -777,12 +853,14 @@ export default () => {
     cardBotDataBT,
     solData,
     infoTable,
+    bigStatTable,
     stratTable,
-    //user,
+    // user,
     query,
     dateQuery,
     timeQuery,
     perfQuery,
+    resultStatQuery,
     tradeDateQuery,
     stratQuery,
     chartTypeQuery,

@@ -33,7 +33,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string;
   size?: 'sm' | 'md' | 'lg';
   icon?: IconTypes;
-  btnStyle?: 'outline-primary' | 'outline-red' | 'solid-secondary' | 'solid-navy';
+  btnStyle?:
+    | 'outline-primary'
+    | 'outline-red'
+    | 'solid-secondary'
+    | 'solid-navy';
   xtraStyles?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   isLoading?: boolean;
@@ -85,7 +89,8 @@ const CustomButton: React.FC<ButtonProps> = ({
       'btn-solid-secondary': btnStyle === 'solid-secondary',
       'btn-solid-navy': btnStyle === 'solid-navy',
       'w-full': fullWidth,
-    }, `${xtraStyles && xtraStyles}`
+    },
+    `${xtraStyles && xtraStyles}`
   );
 
   if (href) {

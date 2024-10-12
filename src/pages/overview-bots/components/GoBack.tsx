@@ -4,10 +4,10 @@ function GoBack() {
   return (
     <div
       id="go_back_arrow"
-      className="flex gap-x-2 ml-2 items-center cursor-pointer text-navy transition-all hover:translate-x-[-2px]"
+      className="flex gap-x-2 ml-2 items-center cursor-pointer text-navy transition-all hover:translate-x-[-2px] hover:text-blue-300"
     >
       <BackIcon />
-      <h2 className="font-semibold text-xs text-navy">Back</h2>
+      <span className="font-semibold text-xs">Back</span>
     </div>
   );
 }

@@ -21,7 +21,6 @@ export const appSlice = createSlice({
   },
 });
 
-export const { setPageTitle, setPageDetails } =
-  appSlice.actions;
+export const { setPageTitle, setPageDetails } = appSlice.actions;
 
 export default appSlice;

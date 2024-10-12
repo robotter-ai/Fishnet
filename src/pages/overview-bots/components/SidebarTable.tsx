@@ -4,10 +4,14 @@ import { BiCopy } from 'react-icons/bi';
 interface ISidebarTableProps {
   title: string;
   data: string[][];
-  showIcon?: boolean
+  showIcon?: boolean;
 }
 
-const SidebarTable: React.FC<ISidebarTableProps> = ({ title, data, showIcon }) => {
+const SidebarTable: React.FC<ISidebarTableProps> = ({
+  title,
+  data,
+  showIcon,
+}) => {
   return (
     <div className="w-full md:w-[20.3125rem] p-6 bg-light-200 rounded-[22px] mb-4 flex-none ">
       <h1 className="font-semibold text-xs text-center uppercase text-blue-400 mb-4">

@@ -11,7 +11,6 @@ interface BotStats {
   last_updated: number;
 }
 
-
 interface TransactionsState {
   isLoading: boolean;
   success: boolean | null;
@@ -40,7 +39,7 @@ const transactionsSlice = createSlice({
       state.bots = action.payload;
     },
     updateBotStats: (state, action: PayloadAction<Partial<IBotData>>) => {
-      const index = state.bots.findIndex(bot => bot.id === action.payload.id);
+      const index = state.bots.findIndex((bot) => bot.id === action.payload.id);
       if (index !== -1) {
         // Update existing bot stats
         state.bots[index] = {
@@ -55,10 +54,6 @@ const transactionsSlice = createSlice({
   },
 });
 
-export const {
-  resetTransactions,
-  setUsdcBalance,
-  setBots,
-  updateBotStats
-} = transactionsSlice.actions;
+export const { resetTransactions, setUsdcBalance, setBots, updateBotStats } =
+  transactionsSlice.actions;
 export default transactionsSlice.reducer;

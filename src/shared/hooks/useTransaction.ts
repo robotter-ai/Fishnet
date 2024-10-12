@@ -1,4 +1,8 @@
-import { useCreateInstanceMutation, useStartInstanceMutation, useGetInstanceWalletQuery, useGetStrategiesQuery } from '@store/robotterApi';
+import {
+  useCreateInstanceMutation,
+  useStartInstanceMutation,
+} from '@store/instances/api';
+import { useGetStrategiesQuery } from '@store/strategies/api';
 import { useAppSelector } from '@shared/hooks/useStore';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { VersionedTransaction } from '@solana/web3.js';
@@ -21,7 +25,7 @@ interface TransactionError extends Error {
   data?: {
     message?: string;
   };
-  error?: string
+  error?: string;
 }
 
 export const useTransactions = () => {
@@ -31,52 +35,67 @@ export const useTransactions = () => {
   const [startInstance] = useStartInstanceMutation();
   const { data: strategies } = useGetStrategiesQuery();
 
-  const signAndSendTransaction = useCallback(async (transaction: string): Promise<{ signature: string }> => {
-    if (!signTransaction) throw new Error('Wallet not connected');
+  const signAndSendTransaction = useCallback(
+    async (transaction: string): Promise<{ signature: string }> => {
+      if (!signTransaction) throw new Error('Wallet not connected');
 
-    try {
-      const serializedBuffer = Buffer.from(transaction, 'base64');
-      const unsignedTransaction = VersionedTransaction.deserialize(serializedBuffer);
-      const signedTransaction = await signTransaction(unsignedTransaction);
-      const signedSerializedBase64 = Buffer.from(signedTransaction.serialize()).toString('base64');
-      
-      const response = await fetch(`${import.meta.env.VITE_TRANSACTIONS_API_URL}/sendTransaction`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ transaction: signedSerializedBase64 }),
-      });
+      try {
+        const serializedBuffer = Buffer.from(transaction, 'base64');
+        const unsignedTransaction =
+          VersionedTransaction.deserialize(serializedBuffer);
+        const signedTransaction = await signTransaction(unsignedTransaction);
+        const signedSerializedBase64 = Buffer.from(
+          signedTransaction.serialize()
+        ).toString('base64');
 
-      if (!response.ok) {
-        throw new Error('Failed to send transaction');
+        const response = await fetch(
+          `${import.meta.env.VITE_TRANSACTIONS_API_URL}/sendTransaction`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ transaction: signedSerializedBase64 }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to send transaction');
+        }
+
+        const result = await response.json();
+        return { signature: result.signature };
+      } catch (error) {
+        console.error('Transaction signing or sending failed:', error);
+        throw new Error('Failed to sign or send transaction');
       }
+    },
+    [signTransaction]
+  );
 
-      const result = await response.json();
-      return { signature: result.signature };
-    } catch (error) {
-      console.error('Transaction signing or sending failed:', error);
-      throw new Error('Failed to sign or send transaction');
-    }
-  }, [signTransaction]);
-
-  const handleTransactionError = useCallback((error: unknown, operation: string) => {
-    console.error(`${operation} failed:`, error);
-    const transactionError = error as TransactionError;
-    const errorMessage = transactionError.error || transactionError.data?.message || transactionError.message || `${operation} failed. Please try again.`;
-    
-    console.log(errorMessage);
-    toast.error(`Bug found on ${operation}!, ensure you have USDC and SOL`);
-    throw transactionError;
-  }, []);
+  const handleTransactionError = useCallback(
+    (error: unknown, operation: string) => {
+      console.error(`${operation} failed:`, error);
+      const transactionError = error as TransactionError;
+      const errorMessage =
+        transactionError.error ||
+        transactionError.data?.message ||
+        transactionError.message ||
+        `${operation} failed. Please try again.`;
+      toast.error(errorMessage);
+      throw transactionError;
+    },
+    []
+  );
 
   const getRandomStrategy = useCallback(() => {
     if (!strategies) return { name: 'default_strategy', parameters: {} };
-    
+
     const strategyNames = Object.keys(strategies);
-    const randomStrategyName = strategyNames[Math.floor(Math.random() * strategyNames.length)];
+    const randomStrategyName =
+      strategyNames[Math.floor(Math.random() * strategyNames.length)];
     const strategyParams = strategies[randomStrategyName];
-    
+
     const randomizedParams: Record<string, any> = {};
     Object.entries(strategyParams).forEach(([key, value]) => {
       if (typeof value === 'number') {
@@ -91,78 +110,118 @@ export const useTransactions = () => {
     return { name: randomStrategyName, parameters: randomizedParams };
   }, [strategies]);
 
-  const deposit = useCallback(async (amount: number): Promise<DepositResult> => {
-    if (!address) throw new Error('Wallet not connected');
-    
-    try {
-      const uuid = uuidv4()
-      const { parameters: strategyParameters } = getRandomStrategy();
+  const deposit = useCallback(
+    async (amount: number): Promise<DepositResult> => {
+      if (!address) throw new Error('Wallet not connected');
 
-      const instanceResult = await createInstance({
-        strategy_name: uuid,
-        strategy_parameters: strategyParameters,
-        market: 'USDC'
-      }).unwrap();  
-      const { instance_id, wallet_address } = instanceResult;
-  
-      toast.message('You need to wait 30 min to be able to withdraw');
+      try {
+        const uuid = uuidv4();
+        const { parameters: strategyParameters } = getRandomStrategy();
 
-      const depositResponse = await fetch(`${import.meta.env.VITE_TRANSACTIONS_API_URL}/deposit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          owner: address,
-          amount,
-          delegate: wallet_address
-        })
-      });
-  
-      const result = await depositResponse.json();  
-      if (!depositResponse.ok || !result || typeof result !== 'object' || !result.transaction || !result.botId) {
-        throw new Error(result.message || 'Invalid response from deposit request');
+        const instanceResult = await createInstance({
+          strategy_name: uuid,
+          strategy_parameters: strategyParameters,
+          market: 'USDC',
+        }).unwrap();
+        const { instance_id, wallet_address } = instanceResult;
+
+        const depositResponse = await fetch(
+          `${import.meta.env.VITE_TRANSACTIONS_API_URL}/deposit`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              owner: address,
+              amount,
+              delegate: wallet_address,
+            }),
+          }
+        );
+
+        const result = await depositResponse.json();
+        if (
+          !depositResponse.ok ||
+          !result ||
+          typeof result !== 'object' ||
+          !result.transaction ||
+          !result.botId
+        ) {
+          throw new Error(
+            result.message || 'Invalid response from deposit request'
+          );
+        }
+
+        const { signature } = await signAndSendTransaction(result.transaction);
+
+        const startResult = await startInstance({
+          instanceId: instance_id,
+          strategy_name: uuid, // @todo: wire up user's strategy name in configuration screen
+          parameters: strategyParameters,
+        }).unwrap();
+
+        console.log('Start instances result:', startResult);
+
+        toast.success(`Deposit successful`);
+        return {
+          botId: result.botId,
+          signature,
+          mangoAccount: result.mangoAccount,
+        };
+      } catch (error: any) {
+        console.error('Deposit error:', error);
+        return handleTransactionError(error, 'Deposit');
       }
-  
-      const { signature } = await signAndSendTransaction(result.transaction);
-  
-      toast.success(`Deposit successful`);
-      return { botId: result.botId, signature, mangoAccount: result.mangoAccount };
-    } catch (error: any) {
-      console.error('Deposit error:', error);
-      return handleTransactionError(error, 'Deposit');
-    }
-  }, [address, createInstance, startInstance, signAndSendTransaction, handleTransactionError]);
+    },
+    [
+      address,
+      createInstance,
+      startInstance,
+      signAndSendTransaction,
+      handleTransactionError,
+    ]
+  );
 
-  const withdraw = useCallback(async (botId: number): Promise<WithdrawResult> => {
-    if (!address) throw new Error('Wallet not connected');
-    
-    try {
-      const response = await fetch(`${import.meta.env.VITE_TRANSACTIONS_API_URL}/withdraw`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          owner: address,
-          botId
-        })
-      });
+  const withdraw = useCallback(
+    async (botId: number): Promise<WithdrawResult> => {
+      if (!address) throw new Error('Wallet not connected');
 
-      const result = await response.json();
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_TRANSACTIONS_API_URL}/withdraw`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              owner: address,
+              botId,
+            }),
+          }
+        );
 
-      if (!response.ok || !result || typeof result !== 'object' || !result.transaction) {
-        toast.message('You need to wait sometime to be able to withdraw');
-        return { signature: '' };
+        const result = await response.json();
+
+        if (
+          !response.ok ||
+          !result ||
+          typeof result !== 'object' ||
+          !result.transaction
+        ) {
+          return { signature: '' };
+        }
+
+        const { signature } = await signAndSendTransaction(result.transaction);
+        toast.success(`Withdrawal successful`);
+        return { signature };
+      } catch (error) {
+        return handleTransactionError(error, 'Withdrawal');
       }
-
-      const { signature } = await signAndSendTransaction(result.transaction);
-      toast.success(`Withdrawal successful`);
-      return { signature };
-    } catch (error) {
-      return handleTransactionError(error, 'Withdrawal');
-    }
-  }, [address, signAndSendTransaction, handleTransactionError]);
+    },
+    [address, signAndSendTransaction, handleTransactionError]
+  );
 
   return { deposit, withdraw };
 };

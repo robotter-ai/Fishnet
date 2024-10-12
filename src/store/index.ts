@@ -11,7 +11,9 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(robotterApi.middleware, transactionsApi.middleware).concat(websocketMiddleware),
+    })
+      .concat(robotterApi.middleware, transactionsApi.middleware)
+      .concat(websocketMiddleware),
 });
 
 // Optional, but required for refetchOnFocus/refetchOnReconnect behaviors

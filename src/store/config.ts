@@ -69,14 +69,15 @@ export const robotterApi = createApi({
     baseUrl: import.meta.env.VITE_ROBOTTER_API_URL || 'http://localhost:8000',
   }),
   refetchOnReconnect: true,
-  tagTypes: ['Profile'],
+  tagTypes: ['Profile', 'Instance', 'StartInstance', 'StopInstance', 'Candle'],
   endpoints: () => ({}),
 });
 
 export const transactionsApi = createApi({
   reducerPath: 'transactionsApi',
   baseQuery: axiosBaseQuery({
-    baseUrl: import.meta.env.VITE_TRANSACTIONS_API_URL || 'http://localhost:3000',
+    baseUrl:
+      import.meta.env.VITE_TRANSACTIONS_API_URL || 'http://localhost:3000',
   }),
   refetchOnReconnect: true,
   tagTypes: ['Transactions'],

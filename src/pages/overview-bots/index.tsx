@@ -1,9 +1,9 @@
+import { useAppSelector } from '@shared/hooks/useStore';
 import Header from './components/Header';
 import useProfile, { ITab } from './hooks/useProfile';
 import Overview from './components/Overview';
 import Training from './components/Training';
 import Bots from './components/Bots';
-import { useAppSelector } from '@shared/hooks/useStore';
 
 const OverviewBots = () => {
   const {
@@ -13,6 +13,7 @@ const OverviewBots = () => {
     perfTabs,
     stratTabs,
     tradeDateTabs,
+    resultStratTabs,
     chartTypeTabs,
     cryptoStats,
     cryptoStatsBots,
@@ -28,6 +29,8 @@ const OverviewBots = () => {
     perfQuery,
     stratQuery,
     tradeDateQuery,
+    resultStatQuery,
+    bigStatTable,
     chartTypeQuery,
     stratTable,
     infoTable,
@@ -58,11 +61,14 @@ const OverviewBots = () => {
     datasets: <></>,
     training: (
       <Training
+        bigStatTable={bigStatTable}
         timeQuery={timeQuery}
         timeTabs={timeTabs}
         searchParams={searchParams}
         setSearchParams={setSearchParams}
         cardBotData={cardBotDataBT}
+        resultStatTab={resultStratTabs}
+        resultStatQuery={resultStatQuery}
       />
     ),
     bots: (
@@ -101,7 +107,7 @@ const OverviewBots = () => {
         searchParams={searchParams}
         setSearchParams={setSearchParams}
       />
-        {Component}
+      {Component}
     </div>
   );
 };

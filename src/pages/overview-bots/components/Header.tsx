@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  SetURLSearchParams,
-} from 'react-router-dom';
+import { SetURLSearchParams } from 'react-router-dom';
 import {
   RobotterLogo,
   BellIcon,
@@ -45,9 +43,16 @@ const Header: React.FC<IHeaderProps> = ({
 
   const getWalletIcon = () => {
     if (!wallet) return null;
-    
+
     if (wallet.adapter.icon) {
-      return <img src={wallet.adapter.icon} alt={wallet.adapter.name} width="16" height="16" />;
+      return (
+        <img
+          src={wallet.adapter.icon}
+          alt={wallet.adapter.name}
+          width="16"
+          height="16"
+        />
+      );
     }
   };
 
@@ -74,17 +79,17 @@ const Header: React.FC<IHeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-x-3">
-        <span className="relative w-9 h-9 bg-blue-100 text-blue-400 rounded-full flex justify-center items-center cursor-pointer">
-          <BellIcon width={'1rem'} height={'1rem'} />
+        <span className="relative w-9 h-9 bg-blue-100 text-blue-400 hover:text-blue-300 rounded-full flex justify-center items-center cursor-pointer">
+          <BellIcon width="1rem" height="1rem" />
           <span className="absolute top-[-5px] right-[-2px] flex justify-center items-center w-[1.125rem] h-[1.125rem] rounded-full bg-navy">
             <h3 className="font-bold text-xs text-white">3</h3>
           </span>
         </span>
-        <span className="w-9 h-9 bg-blue-100 text-blue-400 rounded-full flex justify-center items-center cursor-pointer">
-          <WalletIcon width={'1rem'} height={'1rem'} />
+        <span className="w-9 h-9 bg-blue-100 text-blue-400 hover:text-blue-300 rounded-full flex justify-center items-center cursor-pointer">
+          <WalletIcon width="1rem" height="1rem" />
         </span>
-        <span className="w-9 h-9 bg-blue-100 text-blue-400 rounded-full flex justify-center items-center cursor-pointer">
-          <HeadProfileIcon width={'1rem'} height={'1rem'} />
+        <span className="w-9 h-9 bg-blue-100 text-blue-400 hover:text-blue-300 rounded-full flex justify-center items-center cursor-pointer">
+          <HeadProfileIcon width="1rem" height="1rem" />
         </span>
         {address ? (
           <span className="flex items-center justify-center gap-x-2 rounded-[33px] bg-blue-100 text-blue-400 text-sm font-normal w-[9.8125rem] h-[2.25rem]">
@@ -92,8 +97,10 @@ const Header: React.FC<IHeaderProps> = ({
             {getWalletIcon()}
           </span>
         ) : (
-          <span 
-            className="flex items-center justify-center gap-x-2 rounded-[33px] bg-blue-100 text-blue-400 text-sm font-normal w-[9.8125rem] h-[2.25rem] cursor-pointer"
+          <span
+            className={`flex items-center justify-center gap-x-2 rounded-[33px] bg-blue-100 text-blue-400 hover:text-blue-300 border border-transparent text-sm font-normal w-[9.8125rem] h-[2.25rem] cursor-pointer ${
+              address !== '' ? 'text-blue-300 border-blue-300' : ''
+            }`}
             onClick={handleOpen}
           >
             Connect Wallet

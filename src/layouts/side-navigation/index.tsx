@@ -6,7 +6,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '@contexts/auth-provider';
 
 function NavList() {
-    const { address } = useAppSelector((state) => state.auth);
+  const { address } = useAppSelector((state) => state.auth);
 
   const links = [
     {

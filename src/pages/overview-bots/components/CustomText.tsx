@@ -60,7 +60,7 @@ const CustomText: React.FC<ICustomTextProps> = ({
     <div className="relative">
       <p
         className={`flex-[3] text-sm font-normal text-dark-200 leading-none w-fit ${
-          xtraStyle ? xtraStyle : ''
+          xtraStyle || ''
         }`}
       >
         {text}{' '}
@@ -80,9 +80,7 @@ const CustomText: React.FC<ICustomTextProps> = ({
           </span>
         )}
       </p>
-      {showToolTip[`${index}`] && (
-        <Tooltip text={toolTipText ? toolTipText : text} />
-      )}
+      {showToolTip[`${index}`] && <Tooltip text={toolTipText || text} />}
     </div>
   );
 };

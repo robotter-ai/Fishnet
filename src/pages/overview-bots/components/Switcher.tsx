@@ -1,7 +1,7 @@
-import { ITabs } from '../hooks/useProfile';
-import { IHeaderProps } from './Header';
 import classNames from 'classnames';
 import React from 'react';
+import { ITabs } from '../hooks/useProfile';
+import { IHeaderProps } from './Header';
 
 interface ISwitcherProps extends IHeaderProps {
   keyQuery: string;
