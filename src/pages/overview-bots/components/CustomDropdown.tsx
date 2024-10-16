@@ -10,12 +10,14 @@ interface CustomDropdownProps {
   options: Option[];
   onSelect: (value: string) => void;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
   options,
   onSelect,
   placeholder,
+  disabled,
 }) => {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -50,16 +52,20 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   return (
     <div ref={dropDownRef} className="relative w-full h-[2.25rem]">
       <div
-        className={`px-4 py-2 rounded-[100px] bg-light-200 border border-transparent text-sm cursor-pointer flex items-center justify-between ${
-          isOpen ? 'border-blue-300' : ''
-        } ${placeholder && !isSelected ? 'text-blue-200' : 'text-blue-400'}`}
+        className={`px-4 py-2 rounded-[100px] bg-light-200 border border-transparent text-sm cursor-pointer flex items-center justify-between transition-colors hover:border-blue-300 ${
+          disabled
+            ? 'cursor-not-allowed hover:border-transparent'
+            : 'cursor-pointer'
+        } ${isOpen && !disabled ? 'border-blue-300' : ''} ${
+          placeholder && !isSelected ? 'text-blue-200' : 'text-blue-400'
+        }`}
         onClick={() => setIsOpen(!isOpen)}
       >
         {selectedValue}
-        {isOpen ? <ArrowUp2Icon /> : <ArrowDown2Icon />}
+        {isOpen && !disabled ? <ArrowUp2Icon /> : <ArrowDown2Icon />}
       </div>
 
-      {isOpen && (
+      {isOpen && !disabled && (
         <div className="absolute w-full bg-dark-400 text-light-200 px-6 pt-2 pb-4 rounded-[22px] mt-2 max-h-60 overflow-y-auto z-10">
           {options.map((option, idx) => (
             <div

@@ -1,8 +1,9 @@
-import { SetURLSearchParams } from 'react-router-dom';
+import { strategiesConfigData as config } from '../../../utils/strategyConfigData';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import CustomBtn from '@components/ui/CustomBtn';
 import { useGetHistoricalCandlesMutation } from '@store/market/api';
-import { ClipLoader, FadeLoader } from 'react-spinners';
+import { SetURLSearchParams } from 'react-router-dom';
+import CustomBtn from '@components/ui/CustomBtn';
+import { FadeLoader } from 'react-spinners';
 import {
   ICardBotData,
   IResultStrat,
@@ -22,7 +23,7 @@ import ButtonList from './ButtonList';
 import GoBack from './GoBack';
 import LineTab from './LineTab';
 import { transformData } from '../../../utils/transformData';
-import { strategiesConfigData } from '../../../utils/strategyConfigData';
+import { formatText } from '../../../utils/formatText.util';
 
 export interface ITrainingProps {
   timeQuery: ITimeTab;
@@ -49,20 +50,21 @@ const Training: React.FC<ITrainingProps> = ({
     useGetHistoricalCandlesMutation();
   const [currentStep, setCurrentStep] = useState(1);
   const [index, setIndex] = useState(2);
-  const pmm = 'pmmdynamiccontrollerconfig';
-
-  const strategiesOpt = Object.keys(strategiesConfigData).map((key) => ({
+  const [cfgName, setCfgName] = useState('pmmdynamiccontrollerconfig');
+  const strategiesOpt = Object.keys(config).map((key) => ({
     label: key,
     value: key,
   }));
-
-  const [value, setValue] = React.useState({
-    normalizeValue: 0.5,
-    marketTrendLevel: 34,
-    leverage: strategiesConfigData[pmm]?.leverage?.default || 0,
-    stopLoss: strategiesConfigData[pmm]?.stop_loss?.default || 0,
-    takeProfit: strategiesConfigData[pmm]?.take_profit?.default || 0,
+  const valueArr = Object.keys(config[cfgName]).map((key) => {
+    const cfgD = config[cfgName][key].default;
+    const cfgDT = config[cfgName][key].display_type;
+    return cfgDT === 'input' || cfgDT === "toggle"
+      ? [key, cfgD ? cfgD : typeof cfgD === 'number' ? 0 : '']
+      : [];
   });
+  const [value, setValue] = useState<{ [key: string]: number }>(
+    Object.fromEntries(valueArr)
+  );
   const [tradePair, setTradePair] = useState('SOL-PERP');
   const [timeStamp, setTimeStamp] = useState({
     startTime: 1727771877,
@@ -85,15 +87,13 @@ const Training: React.FC<ITrainingProps> = ({
   ];
 
   const handleSelect = (value: string) => {
-    const config = strategiesConfigData[value];
-    setValue((prevState) => ({
-      ...prevState,
-      leverage: config?.leverage?.default ?? 0,
-      stopLoss:
-        (config?.stop_loss?.default ? +config?.stop_loss?.default : 0) ?? 0,
-      takeProfit:
-        (config?.take_profit?.default ? +config?.take_profit?.default : 0) ?? 0,
-    }));
+    setCfgName(value);
+    const valueArr = Object.keys(config[value]).map((key) => {
+      const cfgd = config[value][key].default;
+      const cfgType = config[value][key].type;
+      return [key, cfgd ? cfgd : cfgType === 'int' ? 0 : ''];
+    });
+    setValue(Object.fromEntries(valueArr));
   };
 
   const getTradePair = (pair: string) => {
@@ -182,154 +182,103 @@ const Training: React.FC<ITrainingProps> = ({
           </div>
 
           {index === 2 ? (
-            <div
-              id="sliders_n_dropdowns"
-              className="mt-5 grid grid-cols-2 gap-x-5 gap-y-6"
-            >
-              <div id="COL 1" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Select Exchange"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <CustomDropdown
-                  options={options}
-                  onSelect={() => {}}
-                  placeholder="Select an Option"
-                />
-              </div>
-              <div id="COL 2" className="hidden md:block" />
-              <div id="COL 3" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Select Trading Strategy"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <CustomDropdown
-                  options={strategiesOpt}
-                  onSelect={handleSelect}
-                />
-              </div>
-              <div id="COL 4" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Normalized value"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <div className="flex justify-between gap-x-4">
-                  <p className="relative flex text-sm justify-start items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    {value.normalizeValue}
-                    <span className="absolute hidden md:block top-1/2 translate-y-[-50%] left-[-21px] w-[1.375rem] h-[3px] bg-light-200" />
-                  </p>
-                  <div className="w-60 flex-1 mt-[-5px]">
-                    <RangeSlider
-                      name="normalizeValue"
-                      min={0}
-                      max={1}
-                      step={0.1}
-                      value={value.normalizeValue}
-                      onChange={handleOnRangeChange}
-                    />
-                  </div>
+            <div id="sliders_n_dropdowns" className="mt-5">
+              <div className="grid grid-cols-2 gap-x-5 gap-y-6 pr-2">
+                <div id="COL 1" className="col-span-2 md:col-auto">
+                  <CustomText
+                    text="Select Strategy"
+                    xtraStyle="mb-5 font-semibold text-xs uppercase"
+                  />
+                  <CustomDropdown
+                    options={options}
+                    onSelect={() => {}}
+                    placeholder="Mango Market"
+                    disabled
+                  />
+                </div>
+                <div id="COL 2" className="col-span-2 md:col-auto">
+                  <CustomText
+                    text="Select Trading Strategy"
+                    xtraStyle="mb-5 font-semibold text-xs uppercase"
+                  />
+                  <CustomDropdown
+                    options={strategiesOpt}
+                    onSelect={handleSelect}
+                  />
                 </div>
               </div>
-              <div id="COL 5" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Select Market trend"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <CustomDropdown options={options} onSelect={() => {}} />
-              </div>
-              <div id="COL 6" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Adjust the Selected Market Trend Level"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <div className="flex justify-between gap-x-4">
-                  <p className="relative flex justify-start text-sm items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    {value.marketTrendLevel}%
-                    <span className="absolute hidden md:block top-1/2 translate-y-[-50%] left-[-21px] w-[1.375rem] h-[3px] bg-light-200" />
-                  </p>
-                  <div className="w-60 flex-1 mt-[-5px]">
-                    <RangeSlider
-                      name="marketTrendLevel"
-                      min={1}
-                      max={100}
-                      minLabel="1%"
-                      maxLabel="100%"
-                      value={value.marketTrendLevel}
-                      onChange={handleOnRangeChange}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div id="COL 7" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Set Leverage"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <div className="flex justify-between gap-x-4">
-                  <p className="flex text-xs justify-start items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    x{value.leverage ?? 0}
-                  </p>
-                  <div className="w-60 flex-1 mt-[-5px]">
-                    <RangeSlider
-                      name="leverage"
-                      min={0}
-                      max={100}
-                      minLabel="0"
-                      maxLabel="x100"
-                      value={value.leverage ? +value.leverage : 0}
-                      onChange={handleOnRangeChange}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div id="COL 8" className="hidden md:block" />
-              <div id="COL 9" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Take PROFIT, +% from initial"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                  showOptText
-                />
-                <div className="flex justify-between gap-x-4">
-                  <p className="flex justify-start items-center text-xs px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    +{value.takeProfit}%
-                  </p>
-                  <div className="w-60 flex-1 mt-[-5px]">
-                    <RangeSlider
-                      name="takeProfit"
-                      min={1}
-                      max={1000}
-                      step={0.01}
-                      minLabel="1%"
-                      maxLabel="1000%"
-                      value={value.takeProfit ? +value.takeProfit : 0}
-                      onChange={handleOnRangeChange}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div id="COL 10" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Stop Loss, -% from initial"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                  showOptText
-                />
-                <div className="flex justify-between gap-x-4">
-                  <p className="flex justify-start text-sm items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    -{value.stopLoss}%
-                  </p>
-                  <div className="w-60 flex-1">
-                    <RangeSlider
-                      name="stopLoss"
-                      min={1}
-                      max={100}
-                      step={0.1}
-                      minLabel="-1%"
-                      maxLabel="-100%"
-                      value={value.stopLoss ? +value.stopLoss : 0}
-                      onChange={handleOnRangeChange}
-                    />
-                  </div>
-                </div>
+
+              <div className="scroll_container relative mt-6 grid grid-cols-2 gap-x-5 gap-y-6 max-h-96 pr-1">
+                {Object.keys(config[cfgName]).map((key, idx) => {
+                  const cfg = config[cfgName][key];
+                  return (
+                    <div
+                      key={idx}
+                      id={`COL ${idx}`}
+                      className="col-span-2 md:col-auto"
+                    >
+                      <CustomText
+                        showOptText={!cfg.required}
+                        text={`${formatText(key)} ${
+                          cfg.name === 'stop_loss'
+                            ? ', -% from initial'
+                            : cfg.name === 'take_profit'
+                            ? ', +% from initial'
+                            : ''
+                        }`}
+                        xtraStyle="mb-5 font-semibold text-xs uppercase"
+                      />
+
+                      {cfg.display_type === 'dropdown' && (
+                        <CustomDropdown
+                          options={
+                            cfg.valid_values
+                              ? cfg.valid_values.map((label, idx) => ({
+                                  label: `${label}`,
+                                  value: `${idx}`,
+                                }))
+                              : []
+                          }
+                          onSelect={() => {}}
+                        />
+                      )}
+
+                      {cfg.display_type === 'input' &&
+                      typeof cfg.default === 'number' ? (
+                        <div className="flex justify-between gap-x-4">
+                          <p className="flex justify-start items-center text-xs px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
+                            {`${cfg.is_percentage ? '+' : ''}${value[key]}${
+                              cfg.is_percentage ? '%' : ''
+                            }`}
+                          </p>
+                          <div className="w-60 flex-1 mt-[-5px]">
+                            <RangeSlider
+                              name={key}
+                              min={cfg.min_value || 0}
+                              max={cfg.max_value || 1000}
+                              step={0.01}
+                              minLabel={`${cfg.min_value || '0'}${
+                                cfg.is_percentage ? '%' : ''
+                              }`}
+                              maxLabel={`${cfg.max_value || '1000'}${
+                                cfg.is_percentage ? '%' : ''
+                              }`}
+                              value={value[key] ? +value[key] : 0}
+                              onChange={handleOnRangeChange}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <input
+                          className="bg-light-200 rounded-[22px] w-full h-[2.25rem] px-4 border border-transparent text-blue-400 focus:outline-blue-300 hover:border-blue-300/50"
+                          name={key}
+                          value={value[key]}
+                          onChange={() => {}}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               <CustomBtn
