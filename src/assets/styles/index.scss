@@ -115,6 +115,7 @@ h2 {
 
 .scroll_container {
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .scroll_container::-webkit-scrollbar {

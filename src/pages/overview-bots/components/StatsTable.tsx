@@ -48,8 +48,6 @@ const StatsTable: React.FC<IStatsTableProps> = ({
           >
             <div id="COL 1" className="flex items-center flex-1">
               <CustomText
-                index={index}
-                length={statsData.length}
                 text={stat.label}
                 hasQuestionMark={hasQuestionMark}
                 toolTipText={stat.toolTipText}

@@ -23,7 +23,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>(
-    placeholder || options[0].label
+    placeholder || (options.length > 0 ? options[0].label : 'Select Option')
   );
   const lastIdx = options.length - 1;
 

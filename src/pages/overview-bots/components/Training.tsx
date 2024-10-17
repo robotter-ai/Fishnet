@@ -1,5 +1,11 @@
 import { strategiesConfigData as config } from '../../../utils/strategyConfigData';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useGetHistoricalCandlesMutation } from '@store/market/api';
 import { SetURLSearchParams } from 'react-router-dom';
 import CustomBtn from '@components/ui/CustomBtn';
@@ -24,6 +30,7 @@ import GoBack from './GoBack';
 import LineTab from './LineTab';
 import { transformData } from '../../../utils/transformData';
 import { formatText } from '../../../utils/formatText.util';
+import ToggleButton from './ToggleButton';
 
 export interface ITrainingProps {
   timeQuery: ITimeTab;
@@ -34,6 +41,10 @@ export interface ITrainingProps {
   cardBotData: ICardBotData[];
   resultStatQuery: IResultStrat;
   bigStatTable: string[][];
+}
+
+interface ValueType {
+  [key: string]: number | string | boolean;
 }
 
 const Training: React.FC<ITrainingProps> = ({
@@ -49,7 +60,7 @@ const Training: React.FC<ITrainingProps> = ({
   const [historicalCandlesData, { isLoading, data, error }] =
     useGetHistoricalCandlesMutation();
   const [currentStep, setCurrentStep] = useState(1);
-  const [index, setIndex] = useState(2);
+  const parentRef = useRef<HTMLDivElement | null>(null);
   const [cfgName, setCfgName] = useState('pmmdynamiccontrollerconfig');
   const strategiesOpt = Object.keys(config).map((key) => ({
     label: key,
@@ -57,14 +68,9 @@ const Training: React.FC<ITrainingProps> = ({
   }));
   const valueArr = Object.keys(config[cfgName]).map((key) => {
     const cfgD = config[cfgName][key].default;
-    const cfgDT = config[cfgName][key].display_type;
-    return cfgDT === 'input' || cfgDT === "toggle"
-      ? [key, cfgD ? cfgD : typeof cfgD === 'number' ? 0 : '']
-      : [];
+    return [key, cfgD];
   });
-  const [value, setValue] = useState<{ [key: string]: number }>(
-    Object.fromEntries(valueArr)
-  );
+  const [value, setValue] = useState<ValueType>(Object.fromEntries(valueArr));
   const [tradePair, setTradePair] = useState('SOL-PERP');
   const [timeStamp, setTimeStamp] = useState({
     startTime: 1727771877,
@@ -87,22 +93,41 @@ const Training: React.FC<ITrainingProps> = ({
   ];
 
   const handleSelect = (value: string) => {
-    setCfgName(value);
     const valueArr = Object.keys(config[value]).map((key) => {
       const cfgd = config[value][key].default;
-      const cfgType = config[value][key].type;
-      return [key, cfgd ? cfgd : cfgType === 'int' ? 0 : ''];
+      return [key, cfgd];
     });
-    setValue(Object.fromEntries(valueArr));
+    setValue({ ...Object.fromEntries(valueArr), trading_pair: tradePair });
+    setCfgName(value);
   };
 
   const getTradePair = (pair: string) => {
     setTradePair(pair);
+    setValue((prevState) => ({ ...prevState, trading_pair: pair }));
   };
 
   const handleOnRangeChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = evt.target;
     setValue((prevState) => ({ ...prevState, [name]: +value }));
+  };
+
+  const handleOnInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = evt.target;
+    setValue((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleOnToggle = (isOn: boolean, key: string) => {
+    setValue((prevState) => ({ ...prevState, [key]: isOn }));
+  };
+
+  const handleNextStep = () => {
+    if (currentStep === 2) return;
+    setCurrentStep((prevState) => prevState + 1);
+  };
+
+  const handlePrevStep = () => {
+    if (currentStep === 1) return;
+    setCurrentStep((prevState) => prevState - 1);
   };
 
   const startTimeUnix = (unix: number) => {
@@ -139,13 +164,14 @@ const Training: React.FC<ITrainingProps> = ({
         className="flex flex-col md:flex-row gap-y-12 md:gap-y-3 justify-between items-center mt-8"
       >
         <div className="flex flex-col md:flex-row gap-y-4 lg:gap-y-0 md:gap-x-3 w-full">
-          <GoBack />
+          <GoBack onClick={handlePrevStep} />
           <Stepper currentStep={currentStep} />
         </div>
 
         <CustomBtn
           text="Run Backtest"
           xtraStyles="!max-w-[20.3125rem] md:w-[30%]"
+          onClick={handleNextStep}
         />
       </div>
 
@@ -181,12 +207,13 @@ const Training: React.FC<ITrainingProps> = ({
             <ButtonList btnData={solData} getTradePair={getTradePair} />
           </div>
 
-          {index === 2 ? (
+          {currentStep === 1 ? (
             <div id="sliders_n_dropdowns" className="mt-5">
               <div className="grid grid-cols-2 gap-x-5 gap-y-6 pr-2">
                 <div id="COL 1" className="col-span-2 md:col-auto">
                   <CustomText
                     text="Select Strategy"
+                    toolTipWidth="w-[8rem]"
                     xtraStyle="mb-5 font-semibold text-xs uppercase"
                   />
                   <CustomDropdown
@@ -199,6 +226,7 @@ const Training: React.FC<ITrainingProps> = ({
                 <div id="COL 2" className="col-span-2 md:col-auto">
                   <CustomText
                     text="Select Trading Strategy"
+                    toolTipWidth="w-[8rem]"
                     xtraStyle="mb-5 font-semibold text-xs uppercase"
                   />
                   <CustomDropdown
@@ -208,7 +236,10 @@ const Training: React.FC<ITrainingProps> = ({
                 </div>
               </div>
 
-              <div className="scroll_container relative mt-6 grid grid-cols-2 gap-x-5 gap-y-6 max-h-96 pr-1">
+              <div
+                ref={parentRef}
+                className="scroll_container relative mt-6 grid grid-cols-2 gap-x-5 gap-y-6 max-h-96 pr-1 py-3"
+              >
                 {Object.keys(config[cfgName]).map((key, idx) => {
                   const cfg = config[cfgName][key];
                   return (
@@ -218,7 +249,9 @@ const Training: React.FC<ITrainingProps> = ({
                       className="col-span-2 md:col-auto"
                     >
                       <CustomText
+                        ref={parentRef}
                         showOptText={!cfg.required}
+                        toolTipWidth="w-[8rem]"
                         text={`${formatText(key)} ${
                           cfg.name === 'stop_loss'
                             ? ', -% from initial'
@@ -229,11 +262,15 @@ const Training: React.FC<ITrainingProps> = ({
                         xtraStyle="mb-5 font-semibold text-xs uppercase"
                       />
 
-                      {cfg.display_type === 'dropdown' && (
+                      {cfg.display_type === 'dropdown' ||
+                      typeof cfg.default === 'object' ? (
                         <CustomDropdown
                           options={
-                            cfg.valid_values
-                              ? cfg.valid_values.map((label, idx) => ({
+                            cfg.valid_values || cfg.default
+                              ? (
+                                  cfg.valid_values ||
+                                  (cfg.default as Array<number | string>)
+                                ).map((label, idx) => ({
                                   label: `${label}`,
                                   value: `${idx}`,
                                 }))
@@ -241,39 +278,49 @@ const Training: React.FC<ITrainingProps> = ({
                           }
                           onSelect={() => {}}
                         />
-                      )}
+                      ) : null}
 
-                      {cfg.display_type === 'input' &&
-                      typeof cfg.default === 'number' ? (
-                        <div className="flex justify-between gap-x-4">
-                          <p className="flex justify-start items-center text-xs px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                            {`${cfg.is_percentage ? '+' : ''}${value[key]}${
-                              cfg.is_percentage ? '%' : ''
-                            }`}
-                          </p>
-                          <div className="w-60 flex-1 mt-[-5px]">
-                            <RangeSlider
-                              name={key}
-                              min={cfg.min_value || 0}
-                              max={cfg.max_value || 1000}
-                              step={0.01}
-                              minLabel={`${cfg.min_value || '0'}${
+                      {cfg.display_type === 'input' ? (
+                        typeof cfg.default === 'number' ? (
+                          <div className="flex justify-between gap-x-4">
+                            <p className="flex justify-start items-center text-xs px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
+                              {`${cfg.is_percentage ? '+' : ''}${value[key]}${
                                 cfg.is_percentage ? '%' : ''
                               }`}
-                              maxLabel={`${cfg.max_value || '1000'}${
-                                cfg.is_percentage ? '%' : ''
-                              }`}
-                              value={value[key] ? +value[key] : 0}
-                              onChange={handleOnRangeChange}
-                            />
+                            </p>
+                            <div className="w-60 flex-1 mt-[-5px]">
+                              <RangeSlider
+                                name={key}
+                                min={cfg.min_value || 0}
+                                max={cfg.max_value || 1000}
+                                step={cfg.type === 'int' ? 1 : 0.01}
+                                minLabel={`${cfg.min_value || '0'}${
+                                  cfg.is_percentage ? '%' : ''
+                                }`}
+                                maxLabel={`${cfg.max_value || '1000'}${
+                                  cfg.is_percentage ? '%' : ''
+                                }`}
+                                value={value[key] ? +value[key] : 0}
+                                onChange={handleOnRangeChange}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <input
-                          className="bg-light-200 rounded-[22px] w-full h-[2.25rem] px-4 border border-transparent text-blue-400 focus:outline-blue-300 hover:border-blue-300/50"
-                          name={key}
-                          value={value[key]}
-                          onChange={() => {}}
+                        ) : typeof cfg.default === 'string' ||
+                          cfg.type === 'str' ? (
+                          <input
+                            className="bg-light-200 rounded-[22px] w-full h-[2.25rem] px-4 border border-transparent text-blue-400 focus:outline-blue-300 hover:border-blue-300/50 disabled:cursor-not-allowed"
+                            name={key}
+                            value={`${value[key]}`}
+                            disabled={key === 'trading_pair'}
+                            onChange={handleOnInputChange}
+                          />
+                        ) : null
+                      ) : null}
+
+                      {cfg.display_type === 'toggle' && (
+                        <ToggleButton
+                          state={!!value[key] || false}
+                          toggleState={(isOn) => handleOnToggle(isOn, key)}
                         />
                       )}
                     </div>
@@ -287,7 +334,7 @@ const Training: React.FC<ITrainingProps> = ({
                 xtraStyles="!max-w-[11.625rem] !h-[1.9375rem] w-full !text-xs mt-6"
               />
             </div>
-          ) : (
+          ) : currentStep === 2 ? (
             <div>
               <LineTab
                 keyQuery="resultStat"
@@ -327,7 +374,7 @@ const Training: React.FC<ITrainingProps> = ({
                 xtraStyles="!max-w-[7.75rem] !h-[1.9375rem] w-full !text-xs mt-6"
               />
             </div>
-          )}
+          ) : null}
         </div>
 
         <div id="right" className="w-full">
