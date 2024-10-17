@@ -41,6 +41,7 @@ export interface ITrainingProps {
   cardBotData: ICardBotData[];
   resultStatQuery: IResultStrat;
   bigStatTable: string[][];
+  bigResultTable: string[][];
 }
 
 interface ValueType {
@@ -51,6 +52,7 @@ const Training: React.FC<ITrainingProps> = ({
   timeQuery,
   resultStatQuery,
   bigStatTable,
+  bigResultTable,
   resultStatTab,
   timeTabs,
   searchParams,
@@ -62,6 +64,7 @@ const Training: React.FC<ITrainingProps> = ({
   const [currentStep, setCurrentStep] = useState(1);
   const parentRef = useRef<HTMLDivElement | null>(null);
   const [cfgName, setCfgName] = useState('pmmdynamiccontrollerconfig');
+  const getReStatQuery = searchParams.get('resultStat') || 'result';
   const strategiesOpt = Object.keys(config).map((key) => ({
     label: key,
     value: key,
@@ -71,7 +74,7 @@ const Training: React.FC<ITrainingProps> = ({
     return [key, cfgD];
   });
   const [value, setValue] = useState<ValueType>(Object.fromEntries(valueArr));
-  const [tradePair, setTradePair] = useState('SOL-PERP');
+  const [tradePair, setTradePair] = useState('SOL/BNB');
   const [timeStamp, setTimeStamp] = useState({
     startTime: 1727771877,
     endTime: 1728376677,
@@ -169,15 +172,23 @@ const Training: React.FC<ITrainingProps> = ({
         </div>
 
         <CustomBtn
-          text="Run Backtest"
+          text={`${
+            currentStep === 1
+              ? 'Run Backtest'
+              : currentStep === 2
+              ? 'Connect to Exchange'
+              : ''
+          }`}
           xtraStyles="!max-w-[20.3125rem] md:w-[30%]"
           onClick={handleNextStep}
         />
       </div>
 
-      <div className="flex items-center justify-between my-8 flex-wrap gap-y-4 md:gap-y-0">
+      <div className="flex items-center justify-between mt-8 mb-6 flex-wrap gap-y-4 md:gap-y-0">
         <h2 className="font-semibold text-2xl text-dark-300">
-          Backtest strategy
+          {`Backtest ${
+            currentStep === 1 ? 'strategy' : currentStep === 2 ? 'results' : ''
+          }`}
         </h2>
         <div className="max-w-[20.25rem] w-[80%] h-[1.9375rem]">
           <Switcher
@@ -195,11 +206,6 @@ const Training: React.FC<ITrainingProps> = ({
         className="flex flex-col lg:flex-row justify-between gap-y-8 lg:gap-y-0 lg:gap-x-4"
       >
         <div id="left" className="w-full">
-          <div className="flex justify-between items-center text-sm border-y border-light-400 w-full lg:max-w-[41.875rem] h-[2.0625rem] mb-5">
-            <h3 className="text-dark-200">Model name</h3>
-            <h3 className="text-dark-300">SOL Big Brain</h3>
-          </div>
-
           <div>
             <p className="uppercase text-xs font-semibold text-dark-200 mb-5">
               Adjust settings for each trading pair separately
@@ -208,13 +214,13 @@ const Training: React.FC<ITrainingProps> = ({
           </div>
 
           {currentStep === 1 ? (
-            <div id="sliders_n_dropdowns" className="mt-5">
-              <div className="grid grid-cols-2 gap-x-5 gap-y-6 pr-2">
+            <div id="sliders_n_dropdowns" className="mt-6">
+              <div className="grid grid-cols-2 gap-x-5 gap-y-6 pr-2 mb-6">
                 <div id="COL 1" className="col-span-2 md:col-auto">
                   <CustomText
                     text="Select Strategy"
                     toolTipWidth="w-[8rem]"
-                    xtraStyle="mb-5 font-semibold text-xs uppercase"
+                    xtraStyle="mb-4 font-semibold text-xs uppercase"
                   />
                   <CustomDropdown
                     options={options}
@@ -227,7 +233,7 @@ const Training: React.FC<ITrainingProps> = ({
                   <CustomText
                     text="Select Trading Strategy"
                     toolTipWidth="w-[8rem]"
-                    xtraStyle="mb-5 font-semibold text-xs uppercase"
+                    xtraStyle="mb-4 font-semibold text-xs uppercase"
                   />
                   <CustomDropdown
                     options={strategiesOpt}
@@ -238,7 +244,7 @@ const Training: React.FC<ITrainingProps> = ({
 
               <div
                 ref={parentRef}
-                className="scroll_container relative mt-6 grid grid-cols-2 gap-x-5 gap-y-6 max-h-96 pr-1 py-3"
+                className="scroll_container relative grid grid-cols-2 gap-x-5 gap-y-6 max-h-96 pr-1 mb-8"
               >
                 {Object.keys(config[cfgName]).map((key, idx) => {
                   const cfg = config[cfgName][key];
@@ -246,7 +252,7 @@ const Training: React.FC<ITrainingProps> = ({
                     <div
                       key={idx}
                       id={`COL ${idx}`}
-                      className="col-span-2 md:col-auto"
+                      className="col-span-2 md:col-auto mt-6"
                     >
                       <CustomText
                         ref={parentRef}
@@ -259,7 +265,7 @@ const Training: React.FC<ITrainingProps> = ({
                             ? ', +% from initial'
                             : ''
                         }`}
-                        xtraStyle="mb-5 font-semibold text-xs uppercase"
+                        xtraStyle="mb-4 font-semibold text-xs uppercase"
                       />
 
                       {cfg.display_type === 'dropdown' ||
@@ -283,7 +289,7 @@ const Training: React.FC<ITrainingProps> = ({
                       {cfg.display_type === 'input' ? (
                         typeof cfg.default === 'number' ? (
                           <div className="flex justify-between gap-x-4">
-                            <p className="flex justify-start items-center text-xs px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
+                            <p className="flex justify-start items-center text-sm px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
                               {`${cfg.is_percentage ? '+' : ''}${value[key]}${
                                 cfg.is_percentage ? '%' : ''
                               }`}
@@ -308,7 +314,7 @@ const Training: React.FC<ITrainingProps> = ({
                         ) : typeof cfg.default === 'string' ||
                           cfg.type === 'str' ? (
                           <input
-                            className="bg-light-200 rounded-[22px] w-full h-[2.25rem] px-4 border border-transparent text-blue-400 focus:outline-blue-300 hover:border-blue-300/50 disabled:cursor-not-allowed"
+                            className="bg-light-200 rounded-[22px] w-full h-[2.25rem] px-4 border text-sm border-transparent text-blue-400 focus:outline-blue-300 hover:border-blue-300/50 disabled:cursor-not-allowed"
                             name={key}
                             value={`${value[key]}`}
                             disabled={key === 'trading_pair'}
@@ -331,7 +337,7 @@ const Training: React.FC<ITrainingProps> = ({
               <CustomBtn
                 text="Select Optimal Strategy"
                 btnStyle="outline-primary"
-                xtraStyles="!max-w-[11.625rem] !h-[1.9375rem] w-full !text-xs mt-6"
+                xtraStyles="!max-w-[11.625rem] !h-[1.9375rem] w-full !text-xs"
               />
             </div>
           ) : currentStep === 2 ? (
@@ -345,20 +351,32 @@ const Training: React.FC<ITrainingProps> = ({
               />
 
               <div id="table" className="mt-6">
-                {bigStatTable.map((col, i) => (
+                {(getReStatQuery === 'result'
+                  ? bigResultTable
+                  : bigStatTable
+                ).map((col, i) => (
                   <div
                     key={i}
                     className={`grid grid-cols-2 gap-4 border-b border-light-400 text-sm py-2 ${
                       i === 0 ? 'border-t' : ''
                     }`}
                   >
-                    <p className="text-left text-dark-200">{col[0]}</p>
+                    <CustomText
+                      text={col[0]}
+                      xtraStyle="text-left text-dark-200"
+                      hasQuestionMark={
+                        getReStatQuery === 'result' && i !== 0 && i !== 7
+                      }
+                      toolTipWidth="w-28"
+                    />
                     <p
                       className={`text-right text-dark-300 ${
-                        i === 1 || i === 2
-                          ? 'text-green-100'
-                          : i === 3
-                          ? 'text-red-100'
+                        getReStatQuery === 'result'
+                          ? i === 1 || i === 2
+                            ? 'text-green-100'
+                            : i === 3
+                            ? 'text-red-100'
+                            : ''
                           : ''
                       } flex gap-x-2 justify-end`}
                     >
@@ -404,7 +422,7 @@ const Training: React.FC<ITrainingProps> = ({
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-[2.5rem]">
         <h1 className="font-semibold text-2xl text-dark-300">
           Previous backtests strategies with the model
         </h1>

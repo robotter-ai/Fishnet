@@ -28,9 +28,6 @@ const Tooltip = forwardRef<HTMLDivElement, IToolTipProps>(
           console.log('TOOL = ', tooltipRect, '\nPARENT = ', parentRect);
 
           // Check for top overflow
-          // if (tooltipRect.top > parentRect.top) {
-          //   newLeftOffset = -(tooltipRect.top - parentRect.top + 10); // move bottom
-          // }
           if (tooltipRect.top < parentRect.top) {
             tooltip.style.top = `${35}px`; // Adjust the tooltip's position downwards
             setIsOverflow((prevState) => ({ ...prevState, top: true }));

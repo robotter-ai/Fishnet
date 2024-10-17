@@ -43,7 +43,7 @@ const CustomText = forwardRef<HTMLDivElement, ICustomTextProps>(
           <div className="relative">
             <span
               ref={spanRef}
-              className="w-5 h-5 text-light-400 border border-light-400 rounded-full cursor-pointer text-xs flex items-center justify-center"
+              className="w-4 h-4 text-light-400 border border-light-400 rounded-full cursor-pointer text-xs flex items-center justify-center"
               onClick={handleToolTipToggle}
             >
               ?

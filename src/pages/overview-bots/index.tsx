@@ -31,6 +31,7 @@ const OverviewBots = () => {
     tradeDateQuery,
     resultStatQuery,
     bigStatTable,
+    bigResultTable,
     chartTypeQuery,
     stratTable,
     infoTable,
@@ -62,6 +63,7 @@ const OverviewBots = () => {
     training: (
       <Training
         bigStatTable={bigStatTable}
+        bigResultTable={bigResultTable}
         timeQuery={timeQuery}
         timeTabs={timeTabs}
         searchParams={searchParams}

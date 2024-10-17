@@ -29,7 +29,7 @@ const LineTab: React.FC<ILineTabProps> = ({
           className={classNames(
             'text-dark-20 cursor-pointer font-normal text-xs transition-colors duration-300 hover:text-dark',
             {
-              '!text-blue-300 border-b !border-blue-300 pb-3':
+              '!text-blue-300 border-b !border-blue-300 pb-2':
                 item.key === query,
             }
           )}
