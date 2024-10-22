@@ -215,7 +215,7 @@ const Training: React.FC<ITrainingProps> = ({
 
           {currentStep === 1 ? (
             <div id="sliders_n_dropdowns" className="mt-6">
-              <div className="grid grid-cols-2 gap-x-5 gap-y-6 pr-2 mb-6">
+              <div className="grid grid-cols-2 gap-x-5 gap-y-6 mb-6">
                 <div id="COL 1" className="col-span-2 md:col-auto">
                   <CustomText
                     text="Select Strategy"
@@ -244,7 +244,7 @@ const Training: React.FC<ITrainingProps> = ({
 
               <div
                 ref={parentRef}
-                className="scroll_container relative grid grid-cols-2 gap-x-5 gap-y-6 max-h-96 pr-1 mb-8"
+                className="relative grid grid-cols-2 gap-x-5 gap-y-6 mb-8"
               >
                 {Object.keys(config[cfgName]).map((key, idx) => {
                   const cfg = config[cfgName][key];
