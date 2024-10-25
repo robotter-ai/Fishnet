@@ -109,6 +109,10 @@ const Bots: React.FC<IBotsProps> = ({
     );
   }
 
+  const navigateToTraining = () => {
+    setSearchParams({ tab: 'training' });
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Trading bots list</h2>
@@ -132,7 +136,7 @@ const Bots: React.FC<IBotsProps> = ({
       </div>
       <button
         className="flex items-center text-blue-500 hover:text-blue-700 mb-4"
-        onClick={() => deposit(100000)} // @todo: make Deposit dialogue
+        onClick={navigateToTraining}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +150,7 @@ const Bots: React.FC<IBotsProps> = ({
             clipRule="evenodd"
           />
         </svg>
-        Create New Bot
+        Create New Model
       </button>
       <table className="w-full">
         <thead>
