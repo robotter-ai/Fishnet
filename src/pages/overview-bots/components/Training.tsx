@@ -289,11 +289,19 @@ const Training: React.FC<ITrainingProps> = ({
                       {cfg.display_type === 'input' ? (
                         typeof cfg.default === 'number' ? (
                           <div className="flex justify-between gap-x-4">
-                            <p className="flex justify-start items-center text-sm px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                              {`${cfg.is_percentage ? '+' : ''}${value[key]}${
-                                cfg.is_percentage ? '%' : ''
-                              }`}
-                            </p>
+                            <div className="flex items-center text-sm px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 outline-2 outline outline-transparent border border-transparent text-blue-400 focus-within:outline-blue-300 focus-within:hover:border-transparent hover:border-blue-300/50 ">
+                              <span>{cfg.is_percentage ? '+' : ''}</span>
+                              <input
+                                name={key}
+                                className={`w-full ${
+                                  cfg.is_percentage ? 'text-center' : ''
+                                } bg-transparent disabled:cursor-not-allowed outline-none`}
+                                value={`${value[key]}`}
+                                onChange={handleOnInputChange}
+                              />
+                              <span>{cfg.is_percentage ? '%' : ''}</span>
+                            </div>
+
                             <div className="w-60 flex-1 mt-[-5px]">
                               <RangeSlider
                                 name={key}
@@ -318,7 +326,6 @@ const Training: React.FC<ITrainingProps> = ({
                             name={key}
                             value={`${value[key]}`}
                             disabled={key === 'trading_pair'}
-                            onChange={handleOnInputChange}
                           />
                         ) : null
                       ) : null}

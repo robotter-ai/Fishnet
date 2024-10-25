@@ -47,7 +47,10 @@ const Performance: React.FC<IPerformanceProps> = ({
 
       {!isEmpty && (
         <span className="flex items-center gap-x-4">
-          {[<ArrowDown2Icon />, <ArrowUp2Icon />].map((icon, idx) => (
+          {[
+            <ArrowDown2Icon width="1.5rem" height="1.5rem" />,
+            <ArrowUp2Icon width="1.5rem" height="1.5rem" />,
+          ].map((icon, idx) => (
             <span
               key={idx}
               className="flex justify-center items-center w-[2.25rem] h-[2.25rem] bg-blue-100 text-blue-400 rounded-full cursor-pointer transition-colors duration-300 hover:text-white hover:bg-navy/80"

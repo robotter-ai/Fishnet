@@ -130,7 +130,7 @@ const TradeTable: React.FC = () => {
               >
                 <span className="flex items-center gap-x-2">
                   {title}
-                  <FaSort className="cursor-pointer" />
+                  <FaSort className="cursor-pointer" size={10} />
                 </span>
               </th>
             ))}
