@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import CustomButton from '@components/ui/Button';
 import { SetURLSearchParams } from 'react-router-dom';
 import useTransaction from '@shared/hooks/useTransaction';
+import { useAppSelector } from '@shared/hooks/useStore';
 import MiniLineChart from './MiniLineChart';
 import {
   IBotData,
@@ -39,6 +40,7 @@ interface IBotsProps {
   searchParams: URLSearchParams;
   setSearchParams: SetURLSearchParams;
   cardBotData: ICardBotData[];
+  handleOpenWalletModal: () => void;
 }
 
 const Bots: React.FC<IBotsProps> = ({
@@ -61,6 +63,7 @@ const Bots: React.FC<IBotsProps> = ({
   cardBotData,
   searchParams,
   setSearchParams,
+  handleOpenWalletModal,
 }) => {
   const { deposit, withdraw } = useTransaction();
   const headers = [
@@ -113,6 +116,17 @@ const Bots: React.FC<IBotsProps> = ({
     setSearchParams({ tab: 'training' });
   };
 
+  const { address } = useAppSelector((state) => state.auth);
+  
+  const handleCreateNewBot = () => {
+    if (!address) {
+      setSearchParams({ redirectToTraining: 'true' });
+      handleOpenWalletModal();
+    } else {
+      navigateToTraining();
+    }
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Trading bots list</h2>
@@ -136,7 +150,7 @@ const Bots: React.FC<IBotsProps> = ({
       </div>
       <button
         className="flex items-center text-blue-500 hover:text-blue-700 mb-4"
-        onClick={navigateToTraining}
+        onClick={handleCreateNewBot}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +164,7 @@ const Bots: React.FC<IBotsProps> = ({
             clipRule="evenodd"
           />
         </svg>
-        Create New Model
+        Create New Bot
       </button>
       <table className="w-full">
         <thead>

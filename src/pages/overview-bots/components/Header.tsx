@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { SetURLSearchParams } from 'react-router-dom';
+import { SetURLSearchParams, useNavigate } from 'react-router-dom';
 import {
   RobotterLogo,
   BellIcon,
@@ -40,6 +40,7 @@ const Header: React.FC<IHeaderProps> = ({
   const { address } = useAppSelector((state) => state.auth);
   const { isOpen, handleOpen, handleClose } = useModal();
   const { wallet } = useWallet();
+  const navigate = useNavigate();
 
   const getWalletIcon = () => {
     if (!wallet) return null;
@@ -61,6 +62,13 @@ const Header: React.FC<IHeaderProps> = ({
       handleClose();
     }
   }, [address, handleClose]);
+
+  const handleSuccessfulLogin = () => {
+    handleClose();
+    if (searchParams.get('redirectToTraining') === 'true') {
+      navigate('/training');
+    }
+  };
 
   return (
     <header className="flex items-center justify-between gap-x-4 w-full relative">
@@ -112,7 +120,7 @@ const Header: React.FC<IHeaderProps> = ({
         isOpen={isOpen}
         handleClose={handleClose}
       >
-        <LoginForm />
+        <LoginForm onSuccessfulLogin={handleSuccessfulLogin} />
       </AppModal>
     </header>
   );

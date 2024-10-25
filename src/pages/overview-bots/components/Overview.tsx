@@ -1,13 +1,14 @@
 import {
-  NavigateOptions,
   SetURLSearchParams,
-  URLSearchParamsInit,
+  useNavigate,
 } from 'react-router-dom';
 import CustomBtn from '@components/ui/CustomBtn';
-import classNames from 'classnames';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAppSelector } from '@shared/hooks/useStore';
 import { useCreateInstanceMutation } from '@store/instances/api';
+import useModal from '@shared/hooks/useModal';
+import AppModal from '@components/ui/AppModal';
+import LoginForm from '@shared/components/LoginForm';
 import {
   ICardBotData,
   ICryptoStats,
@@ -59,24 +60,40 @@ const Overview: React.FC<IOverviewProps> = ({
   const [isEmpty, setIsEmpty] = useState(true);
   const [createInstance, { isLoading }] = useCreateInstanceMutation();
   const { address } = useAppSelector((state) => state.auth);
+  const { isOpen, handleOpen, handleClose } = useModal();
+  const navigate = useNavigate();
 
   const handleCreateNewModel = useCallback(async () => {
+    if (!address) {
+      setSearchParams({ redirectToTraining: 'true' });
+      handleOpen();
+      return;
+    }
+
     try {
       await createInstance({
         strategy_name: 'test',
         strategy_parameters: {},
         market: 'string',
       }).unwrap();
+      setSearchParams({ tab: 'training' });
     } catch (e) {
-      console.error('Failed to solve authentication challenge', e);
+      console.error('Failed to create new model', e);
     }
-  }, []);
+  }, [address, createInstance, setSearchParams, handleOpen]);
 
   useEffect(() => {
     if (address) {
       setIsEmpty(false);
     }
   }, [address]);
+
+  const handleSuccessfulLogin = () => {
+    handleClose();
+    if (searchParams.get('redirectToTraining') === 'true') {
+      setSearchParams({ tab: 'training' });
+    }
+  };
 
   return (
     <>
@@ -181,6 +198,14 @@ const Overview: React.FC<IOverviewProps> = ({
           cardBotData={cardBotData}
         />
       </div>
+
+      <AppModal
+        title="Connect a wallet"
+        isOpen={isOpen}
+        handleClose={handleClose}
+      >
+        <LoginForm onSuccessfulLogin={handleSuccessfulLogin} />
+      </AppModal>
     </>
   );
 };
