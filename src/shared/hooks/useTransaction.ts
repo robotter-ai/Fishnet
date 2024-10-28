@@ -29,7 +29,7 @@ interface TransactionError extends Error {
 }
 
 export const useTransactions = () => {
-  const { address, botsData } = useAppSelector((state) => state.auth);
+  const { address } = useAppSelector((state) => state.auth);
   const { signTransaction } = useWallet();
   const [createInstance] = useCreateInstanceMutation();
   const [startInstance] = useStartInstanceMutation();
@@ -73,21 +73,6 @@ export const useTransactions = () => {
     [signTransaction]
   );
 
-  const handleTransactionError = useCallback(
-    (error: unknown, operation: string) => {
-      console.error(`${operation} failed:`, error);
-      const transactionError = error as TransactionError;
-      const errorMessage =
-        transactionError.error ||
-        transactionError.data?.message ||
-        transactionError.message ||
-        `${operation} failed. Please try again.`;
-      toast.error(errorMessage);
-      throw transactionError;
-    },
-    []
-  );
-
   const getRandomStrategy = useCallback(() => {
     if (!strategies) return { name: 'default_strategy', parameters: {} };
 
@@ -111,7 +96,7 @@ export const useTransactions = () => {
   }, [strategies]);
 
   const deposit = useCallback(
-    async (amount: number): Promise<DepositResult> => {
+    async (usdcAmount: string, solAmount: string): Promise<DepositResult> => {
       if (!address) throw new Error('Wallet not connected');
 
       try {
@@ -134,7 +119,8 @@ export const useTransactions = () => {
             },
             body: JSON.stringify({
               owner: address,
-              amount,
+              usdcTreasury: usdcAmount,
+              feesAmount: solAmount,
               delegate: wallet_address,
             }),
           }
@@ -170,8 +156,13 @@ export const useTransactions = () => {
           mangoAccount: result.mangoAccount,
         };
       } catch (error: any) {
-        console.error('Deposit error:', error);
-        return handleTransactionError(error, 'Deposit');
+        const transactionError = error as TransactionError;
+        const errorMessage =
+          transactionError.error ||
+          transactionError.data?.message ||
+          transactionError.message;
+        toast.error('Error depositing, make sure you have enough SOL and USDC');
+        throw Error(errorMessage);
       }
     },
     [
@@ -179,7 +170,6 @@ export const useTransactions = () => {
       createInstance,
       startInstance,
       signAndSendTransaction,
-      handleTransactionError,
     ]
   );
 
@@ -217,10 +207,16 @@ export const useTransactions = () => {
         toast.success(`Withdrawal successful`);
         return { signature };
       } catch (error) {
-        return handleTransactionError(error, 'Withdrawal');
+        const transactionError = error as TransactionError;
+        const errorMessage =
+          transactionError.error ||
+          transactionError.data?.message ||
+          transactionError.message;
+        toast.error('Error withdrawing, make sure you have enough SOL and USDC, contact us');
+        throw Error(errorMessage);
       }
     },
-    [address, signAndSendTransaction, handleTransactionError]
+    [address, signAndSendTransaction]
   );
 
   return { deposit, withdraw };

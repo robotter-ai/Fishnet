@@ -31,6 +31,7 @@ import LineTab from './LineTab';
 import { transformData } from '../../../utils/transformData';
 import { formatText } from '../../../utils/formatText.util';
 import ToggleButton from './ToggleButton';
+import DepositModal from './DepositModal';
 
 export interface ITrainingProps {
   timeQuery: ITimeTab;
@@ -59,6 +60,8 @@ const Training: React.FC<ITrainingProps> = ({
   setSearchParams,
   cardBotData,
 }) => {
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+
   const [historicalCandlesData, { isLoading, data, error }] =
     useGetHistoricalCandlesMutation();
   const [currentStep, setCurrentStep] = useState(1);
@@ -124,7 +127,10 @@ const Training: React.FC<ITrainingProps> = ({
   };
 
   const handleNextStep = () => {
-    if (currentStep === 2) return;
+    if (currentStep === 2) {
+      setIsDepositModalOpen(true);
+      return;
+    }
     setCurrentStep((prevState) => prevState + 1);
   };
 
@@ -450,6 +456,10 @@ const Training: React.FC<ITrainingProps> = ({
       <div className="md:w-[20rem] h-[1.9375rem] mx-auto">
         <Pagination />
       </div>
+      <DepositModal 
+        isOpen={isDepositModalOpen}
+        onClose={() => setIsDepositModalOpen(false)}
+      />
     </div>
   );
 };
