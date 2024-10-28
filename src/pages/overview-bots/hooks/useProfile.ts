@@ -819,14 +819,25 @@ export default () => {
     ['Stop loss', '-10%'],
   ];
 
-  const bigStatTable = [
+  const bigResultTable = [
     ['Model Name', 'SOL Big Brain'],
     ['Test P&L', '+$1100 (11%)'],
     ['Trading Accuracy', '63%'],
-    ['Max. dropdown', '53%'],
+    ['Max. drawdown', '53%'],
     ['Sharp ratio', '3.44'],
     ['APR', '154%'],
     ['Total trades', '12'],
+    ['Timespan', '2024-05-01 / 2024-05-31'],
+  ];
+
+  const bigStatTable = [
+    ['Model Name', 'SOL Big Brain'],
+    ['Exchange', 'Mango Markets'],
+    ['Trading Strategy / Normalized value', 'BarUpDown / 0.5'],
+    ['Market trend', 'Bullish / 67%'],
+    ['Leverage', 'x4'],
+    ['Take profit', '+20%'],
+    ['Stop loss', '-10%'],
     ['Timespan', '2024-05-01 / 2024-05-31'],
   ];
 
@@ -853,6 +864,7 @@ export default () => {
     cardBotDataBT,
     solData,
     infoTable,
+    bigResultTable,
     bigStatTable,
     stratTable,
     // user,

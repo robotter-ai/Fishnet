@@ -30,7 +30,7 @@ const SidebarTable: React.FC<ISidebarTableProps> = ({
               {col[1]}{' '}
               {i === 2 && showIcon && (
                 <span className="w-6 h-6 flex justify-center items-center rounded-full text-blue-400 bg-blue-100 cursor-pointer transition-colors hover:bg-blue-200/30">
-                  <BiCopy />
+                  <BiCopy size={16} />
                 </span>
               )}
             </p>

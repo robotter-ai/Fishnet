@@ -10,7 +10,7 @@ const Pagination: React.FC = () => {
   return (
     <div className="flex justify-between items-center bg-blue-100 text-blue-200 w-full h-full rounded-[76px] px-2">
       <span className="flex justify-center items-center cursor-pointer w-6 h-6 rounded-full transition-colors hover:bg-blue-200/40 hover:text-white">
-        <ArrowLeftIcon />
+        <ArrowLeftIcon width="1rem" height="1rem" />
       </span>
       {Array.from({ length: 3 }).map((_, index) => (
         <div
@@ -32,7 +32,7 @@ const Pagination: React.FC = () => {
       ))}
       <span>...</span>
       <span className="flex justify-center items-center cursor-pointer w-6 h-6 rounded-full transition-colors hover:bg-blue-200/40 hover:text-white">
-        <ArrowRightIcon />
+        <ArrowRightIcon width="1rem" height="1rem" />
       </span>
     </div>
   );

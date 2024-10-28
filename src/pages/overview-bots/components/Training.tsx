@@ -1,8 +1,15 @@
-import { SetURLSearchParams } from 'react-router-dom';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import CustomBtn from '@components/ui/CustomBtn';
+import { strategiesConfigData as config } from '../../../utils/strategyConfigData';
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useGetHistoricalCandlesMutation } from '@store/market/api';
-import { ClipLoader, FadeLoader } from 'react-spinners';
+import { SetURLSearchParams } from 'react-router-dom';
+import CustomBtn from '@components/ui/CustomBtn';
+import { FadeLoader } from 'react-spinners';
 import {
   ICardBotData,
   IResultStrat,
@@ -22,7 +29,8 @@ import ButtonList from './ButtonList';
 import GoBack from './GoBack';
 import LineTab from './LineTab';
 import { transformData } from '../../../utils/transformData';
-import { strategiesConfigData } from '../../../utils/strategyConfigData';
+import { formatText } from '../../../utils/formatText.util';
+import ToggleButton from './ToggleButton';
 
 export interface ITrainingProps {
   timeQuery: ITimeTab;
@@ -33,12 +41,18 @@ export interface ITrainingProps {
   cardBotData: ICardBotData[];
   resultStatQuery: IResultStrat;
   bigStatTable: string[][];
+  bigResultTable: string[][];
+}
+
+interface ValueType {
+  [key: string]: number | string | boolean;
 }
 
 const Training: React.FC<ITrainingProps> = ({
   timeQuery,
   resultStatQuery,
   bigStatTable,
+  bigResultTable,
   resultStatTab,
   timeTabs,
   searchParams,
@@ -48,22 +62,19 @@ const Training: React.FC<ITrainingProps> = ({
   const [historicalCandlesData, { isLoading, data, error }] =
     useGetHistoricalCandlesMutation();
   const [currentStep, setCurrentStep] = useState(1);
-  const [index, setIndex] = useState(2);
-  const pmm = 'pmmdynamiccontrollerconfig';
-
-  const strategiesOpt = Object.keys(strategiesConfigData).map((key) => ({
+  const parentRef = useRef<HTMLDivElement | null>(null);
+  const [cfgName, setCfgName] = useState('pmmdynamiccontrollerconfig');
+  const getReStatQuery = searchParams.get('resultStat') || 'result';
+  const strategiesOpt = Object.keys(config).map((key) => ({
     label: key,
     value: key,
   }));
-
-  const [value, setValue] = React.useState({
-    normalizeValue: 0.5,
-    marketTrendLevel: 34,
-    leverage: strategiesConfigData[pmm]?.leverage?.default || 0,
-    stopLoss: strategiesConfigData[pmm]?.stop_loss?.default || 0,
-    takeProfit: strategiesConfigData[pmm]?.take_profit?.default || 0,
+  const valueArr = Object.keys(config[cfgName]).map((key) => {
+    const cfgD = config[cfgName][key].default;
+    return [key, cfgD];
   });
-  const [tradePair, setTradePair] = useState('SOL-PERP');
+  const [value, setValue] = useState<ValueType>(Object.fromEntries(valueArr));
+  const [tradePair, setTradePair] = useState('SOL/BNB');
   const [timeStamp, setTimeStamp] = useState({
     startTime: 1727771877,
     endTime: 1728376677,
@@ -85,24 +96,41 @@ const Training: React.FC<ITrainingProps> = ({
   ];
 
   const handleSelect = (value: string) => {
-    const config = strategiesConfigData[value];
-    setValue((prevState) => ({
-      ...prevState,
-      leverage: config?.leverage?.default ?? 0,
-      stopLoss:
-        (config?.stop_loss?.default ? +config?.stop_loss?.default : 0) ?? 0,
-      takeProfit:
-        (config?.take_profit?.default ? +config?.take_profit?.default : 0) ?? 0,
-    }));
+    const valueArr = Object.keys(config[value]).map((key) => {
+      const cfgd = config[value][key].default;
+      return [key, cfgd];
+    });
+    setValue({ ...Object.fromEntries(valueArr), trading_pair: tradePair });
+    setCfgName(value);
   };
 
   const getTradePair = (pair: string) => {
     setTradePair(pair);
+    setValue((prevState) => ({ ...prevState, trading_pair: pair }));
   };
 
   const handleOnRangeChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = evt.target;
     setValue((prevState) => ({ ...prevState, [name]: +value }));
+  };
+
+  const handleOnInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = evt.target;
+    setValue((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleOnToggle = (isOn: boolean, key: string) => {
+    setValue((prevState) => ({ ...prevState, [key]: isOn }));
+  };
+
+  const handleNextStep = () => {
+    if (currentStep === 2) return;
+    setCurrentStep((prevState) => prevState + 1);
+  };
+
+  const handlePrevStep = () => {
+    if (currentStep === 1) return;
+    setCurrentStep((prevState) => prevState - 1);
   };
 
   const startTimeUnix = (unix: number) => {
@@ -139,19 +167,28 @@ const Training: React.FC<ITrainingProps> = ({
         className="flex flex-col md:flex-row gap-y-12 md:gap-y-3 justify-between items-center mt-8"
       >
         <div className="flex flex-col md:flex-row gap-y-4 lg:gap-y-0 md:gap-x-3 w-full">
-          <GoBack />
+          <GoBack onClick={handlePrevStep} />
           <Stepper currentStep={currentStep} />
         </div>
 
         <CustomBtn
-          text="Run Backtest"
+          text={`${
+            currentStep === 1
+              ? 'Run Backtest'
+              : currentStep === 2
+              ? 'Connect to Exchange'
+              : ''
+          }`}
           xtraStyles="!max-w-[20.3125rem] md:w-[30%]"
+          onClick={handleNextStep}
         />
       </div>
 
-      <div className="flex items-center justify-between my-8 flex-wrap gap-y-4 md:gap-y-0">
+      <div className="flex items-center justify-between mt-8 mb-6 flex-wrap gap-y-4 md:gap-y-0">
         <h2 className="font-semibold text-2xl text-dark-300">
-          Backtest strategy
+          {`Backtest ${
+            currentStep === 1 ? 'strategy' : currentStep === 2 ? 'results' : ''
+          }`}
         </h2>
         <div className="max-w-[20.25rem] w-[80%] h-[1.9375rem]">
           <Switcher
@@ -169,11 +206,6 @@ const Training: React.FC<ITrainingProps> = ({
         className="flex flex-col lg:flex-row justify-between gap-y-8 lg:gap-y-0 lg:gap-x-4"
       >
         <div id="left" className="w-full">
-          <div className="flex justify-between items-center text-sm border-y border-light-400 w-full lg:max-w-[41.875rem] h-[2.0625rem] mb-5">
-            <h3 className="text-dark-200">Model name</h3>
-            <h3 className="text-dark-300">SOL Big Brain</h3>
-          </div>
-
           <div>
             <p className="uppercase text-xs font-semibold text-dark-200 mb-5">
               Adjust settings for each trading pair separately
@@ -181,164 +213,141 @@ const Training: React.FC<ITrainingProps> = ({
             <ButtonList btnData={solData} getTradePair={getTradePair} />
           </div>
 
-          {index === 2 ? (
-            <div
-              id="sliders_n_dropdowns"
-              className="mt-5 grid grid-cols-2 gap-x-5 gap-y-6"
-            >
-              <div id="COL 1" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Select Exchange"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <CustomDropdown
-                  options={options}
-                  onSelect={() => {}}
-                  placeholder="Select an Option"
-                />
-              </div>
-              <div id="COL 2" className="hidden md:block" />
-              <div id="COL 3" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Select Trading Strategy"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <CustomDropdown
-                  options={strategiesOpt}
-                  onSelect={handleSelect}
-                />
-              </div>
-              <div id="COL 4" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Normalized value"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <div className="flex justify-between gap-x-4">
-                  <p className="relative flex text-sm justify-start items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    {value.normalizeValue}
-                    <span className="absolute hidden md:block top-1/2 translate-y-[-50%] left-[-21px] w-[1.375rem] h-[3px] bg-light-200" />
-                  </p>
-                  <div className="w-60 flex-1 mt-[-5px]">
-                    <RangeSlider
-                      name="normalizeValue"
-                      min={0}
-                      max={1}
-                      step={0.1}
-                      value={value.normalizeValue}
-                      onChange={handleOnRangeChange}
-                    />
-                  </div>
+          {currentStep === 1 ? (
+            <div id="sliders_n_dropdowns" className="mt-6">
+              <div className="grid grid-cols-2 gap-x-5 gap-y-6 mb-6">
+                <div id="COL 1" className="col-span-2 md:col-auto">
+                  <CustomText
+                    text="Select Strategy"
+                    toolTipWidth="w-[8rem]"
+                    xtraStyle="mb-4 font-semibold text-xs uppercase"
+                  />
+                  <CustomDropdown
+                    options={options}
+                    onSelect={() => {}}
+                    placeholder="Mango Market"
+                    disabled
+                  />
+                </div>
+                <div id="COL 2" className="col-span-2 md:col-auto">
+                  <CustomText
+                    text="Select Trading Strategy"
+                    toolTipWidth="w-[8rem]"
+                    xtraStyle="mb-4 font-semibold text-xs uppercase"
+                  />
+                  <CustomDropdown
+                    options={strategiesOpt}
+                    onSelect={handleSelect}
+                  />
                 </div>
               </div>
-              <div id="COL 5" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Select Market trend"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <CustomDropdown options={options} onSelect={() => {}} />
-              </div>
-              <div id="COL 6" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Adjust the Selected Market Trend Level"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <div className="flex justify-between gap-x-4">
-                  <p className="relative flex justify-start text-sm items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    {value.marketTrendLevel}%
-                    <span className="absolute hidden md:block top-1/2 translate-y-[-50%] left-[-21px] w-[1.375rem] h-[3px] bg-light-200" />
-                  </p>
-                  <div className="w-60 flex-1 mt-[-5px]">
-                    <RangeSlider
-                      name="marketTrendLevel"
-                      min={1}
-                      max={100}
-                      minLabel="1%"
-                      maxLabel="100%"
-                      value={value.marketTrendLevel}
-                      onChange={handleOnRangeChange}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div id="COL 7" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Set Leverage"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                />
-                <div className="flex justify-between gap-x-4">
-                  <p className="flex text-xs justify-start items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    x{value.leverage ?? 0}
-                  </p>
-                  <div className="w-60 flex-1 mt-[-5px]">
-                    <RangeSlider
-                      name="leverage"
-                      min={0}
-                      max={100}
-                      minLabel="0"
-                      maxLabel="x100"
-                      value={value.leverage ? +value.leverage : 0}
-                      onChange={handleOnRangeChange}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div id="COL 8" className="hidden md:block" />
-              <div id="COL 9" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Take PROFIT, +% from initial"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                  showOptText
-                />
-                <div className="flex justify-between gap-x-4">
-                  <p className="flex justify-start items-center text-xs px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    +{value.takeProfit}%
-                  </p>
-                  <div className="w-60 flex-1 mt-[-5px]">
-                    <RangeSlider
-                      name="takeProfit"
-                      min={1}
-                      max={1000}
-                      step={0.01}
-                      minLabel="1%"
-                      maxLabel="1000%"
-                      value={value.takeProfit ? +value.takeProfit : 0}
-                      onChange={handleOnRangeChange}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div id="COL 10" className="col-span-2 md:col-auto">
-                <CustomText
-                  text="Stop Loss, -% from initial"
-                  xtraStyle="mb-5 font-semibold text-xs uppercase"
-                  showOptText
-                />
-                <div className="flex justify-between gap-x-4">
-                  <p className="flex justify-start text-sm items-center px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 text-blue-400">
-                    -{value.stopLoss}%
-                  </p>
-                  <div className="w-60 flex-1">
-                    <RangeSlider
-                      name="stopLoss"
-                      min={1}
-                      max={100}
-                      step={0.1}
-                      minLabel="-1%"
-                      maxLabel="-100%"
-                      value={value.stopLoss ? +value.stopLoss : 0}
-                      onChange={handleOnRangeChange}
-                    />
-                  </div>
-                </div>
+
+              <div
+                ref={parentRef}
+                className="relative grid grid-cols-2 gap-x-5 gap-y-6 mb-8"
+              >
+                {Object.keys(config[cfgName]).map((key, idx) => {
+                  const cfg = config[cfgName][key];
+                  return (
+                    <div
+                      key={idx}
+                      id={`COL ${idx}`}
+                      className="col-span-2 md:col-auto mt-6"
+                    >
+                      <CustomText
+                        ref={parentRef}
+                        showOptText={!cfg.required}
+                        toolTipWidth="w-[8rem]"
+                        text={`${formatText(key)} ${
+                          cfg.name === 'stop_loss'
+                            ? ', -% from initial'
+                            : cfg.name === 'take_profit'
+                            ? ', +% from initial'
+                            : ''
+                        }`}
+                        xtraStyle="mb-4 font-semibold text-xs uppercase"
+                      />
+
+                      {cfg.display_type === 'dropdown' ||
+                      typeof cfg.default === 'object' ? (
+                        <CustomDropdown
+                          options={
+                            cfg.valid_values || cfg.default
+                              ? (
+                                  cfg.valid_values ||
+                                  (cfg.default as Array<number | string>)
+                                ).map((label, idx) => ({
+                                  label: `${label}`,
+                                  value: `${idx}`,
+                                }))
+                              : []
+                          }
+                          onSelect={() => {}}
+                        />
+                      ) : null}
+
+                      {cfg.display_type === 'input' ? (
+                        typeof cfg.default === 'number' ? (
+                          <div className="flex justify-between gap-x-4">
+                            <div className="flex items-center text-sm px-4 w-[6.1875rem] h-[2.25rem] rounded-[100px] bg-light-200 outline-2 outline outline-transparent border border-transparent text-blue-400 focus-within:outline-blue-300 focus-within:hover:border-transparent hover:border-blue-300/50 ">
+                              <span>{cfg.is_percentage ? '+' : ''}</span>
+                              <input
+                                name={key}
+                                className={`w-full ${
+                                  cfg.is_percentage ? 'text-center' : ''
+                                } bg-transparent disabled:cursor-not-allowed outline-none`}
+                                value={`${value[key]}`}
+                                onChange={handleOnInputChange}
+                              />
+                              <span>{cfg.is_percentage ? '%' : ''}</span>
+                            </div>
+
+                            <div className="w-60 flex-1 mt-[-5px]">
+                              <RangeSlider
+                                name={key}
+                                min={cfg.min_value || 0}
+                                max={cfg.max_value || 1000}
+                                step={cfg.type === 'int' ? 1 : 0.01}
+                                minLabel={`${cfg.min_value || '0'}${
+                                  cfg.is_percentage ? '%' : ''
+                                }`}
+                                maxLabel={`${cfg.max_value || '1000'}${
+                                  cfg.is_percentage ? '%' : ''
+                                }`}
+                                value={value[key] ? +value[key] : 0}
+                                onChange={handleOnRangeChange}
+                              />
+                            </div>
+                          </div>
+                        ) : typeof cfg.default === 'string' ||
+                          cfg.type === 'str' ? (
+                          <input
+                            className="bg-light-200 rounded-[22px] w-full h-[2.25rem] px-4 border text-sm border-transparent text-blue-400 focus:outline-blue-300 hover:border-blue-300/50 disabled:cursor-not-allowed"
+                            name={key}
+                            value={`${value[key]}`}
+                            disabled={key === 'trading_pair'}
+                          />
+                        ) : null
+                      ) : null}
+
+                      {cfg.display_type === 'toggle' && (
+                        <ToggleButton
+                          state={!!value[key] || false}
+                          toggleState={(isOn) => handleOnToggle(isOn, key)}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               <CustomBtn
                 text="Select Optimal Strategy"
                 btnStyle="outline-primary"
-                xtraStyles="!max-w-[11.625rem] !h-[1.9375rem] w-full !text-xs mt-6"
+                xtraStyles="!max-w-[11.625rem] !h-[1.9375rem] w-full !text-xs"
               />
             </div>
-          ) : (
+          ) : currentStep === 2 ? (
             <div>
               <LineTab
                 keyQuery="resultStat"
@@ -349,20 +358,32 @@ const Training: React.FC<ITrainingProps> = ({
               />
 
               <div id="table" className="mt-6">
-                {bigStatTable.map((col, i) => (
+                {(getReStatQuery === 'result'
+                  ? bigResultTable
+                  : bigStatTable
+                ).map((col, i) => (
                   <div
                     key={i}
                     className={`grid grid-cols-2 gap-4 border-b border-light-400 text-sm py-2 ${
                       i === 0 ? 'border-t' : ''
                     }`}
                   >
-                    <p className="text-left text-dark-200">{col[0]}</p>
+                    <CustomText
+                      text={col[0]}
+                      xtraStyle="text-left text-dark-200"
+                      hasQuestionMark={
+                        getReStatQuery === 'result' && i !== 0 && i !== 7
+                      }
+                      toolTipWidth="w-28"
+                    />
                     <p
                       className={`text-right text-dark-300 ${
-                        i === 1 || i === 2
-                          ? 'text-green-100'
-                          : i === 3
-                          ? 'text-red-100'
+                        getReStatQuery === 'result'
+                          ? i === 1 || i === 2
+                            ? 'text-green-100'
+                            : i === 3
+                            ? 'text-red-100'
+                            : ''
                           : ''
                       } flex gap-x-2 justify-end`}
                     >
@@ -378,7 +399,7 @@ const Training: React.FC<ITrainingProps> = ({
                 xtraStyles="!max-w-[7.75rem] !h-[1.9375rem] w-full !text-xs mt-6"
               />
             </div>
-          )}
+          ) : null}
         </div>
 
         <div id="right" className="w-full">
@@ -408,7 +429,7 @@ const Training: React.FC<ITrainingProps> = ({
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-[2.5rem]">
         <h1 className="font-semibold text-2xl text-dark-300">
           Previous backtests strategies with the model
         </h1>

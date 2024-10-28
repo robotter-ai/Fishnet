@@ -11,7 +11,7 @@ import { store } from './store';
 import { router } from './routes';
 import SolanaContextProvider from './contexts/solana-provider';
 
-LogRocket.init('jf0bw9/fishnet');
+LogRocket.init('jf0bw9/robotter');
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
