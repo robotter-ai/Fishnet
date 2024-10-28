@@ -1,7 +1,4 @@
-import {
-  SetURLSearchParams,
-  useNavigate,
-} from 'react-router-dom';
+import { SetURLSearchParams, useNavigate } from 'react-router-dom';
 import CustomBtn from '@components/ui/CustomBtn';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAppSelector } from '@shared/hooks/useStore';

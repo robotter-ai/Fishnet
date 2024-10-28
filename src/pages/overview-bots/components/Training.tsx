@@ -1,4 +1,3 @@
-import { strategiesConfigData as config } from '../../../utils/strategyConfigData';
 import React, {
   ChangeEvent,
   useCallback,
@@ -10,6 +9,7 @@ import { useGetHistoricalCandlesMutation } from '@store/market/api';
 import { SetURLSearchParams } from 'react-router-dom';
 import CustomBtn from '@components/ui/CustomBtn';
 import { FadeLoader } from 'react-spinners';
+import { strategiesConfigData as config } from '../../../utils/strategyConfigData';
 import {
   ICardBotData,
   IResultStrat,
@@ -456,7 +456,7 @@ const Training: React.FC<ITrainingProps> = ({
       <div className="md:w-[20rem] h-[1.9375rem] mx-auto">
         <Pagination />
       </div>
-      <DepositModal 
+      <DepositModal
         isOpen={isDepositModalOpen}
         onClose={() => setIsDepositModalOpen(false)}
       />

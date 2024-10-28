@@ -13,7 +13,17 @@ interface ICustomTextProps {
 type ToolTipType = { [key: string]: boolean };
 
 const CustomText = forwardRef<HTMLDivElement, ICustomTextProps>(
-  ({ text, toolTipText, showOptText, hasQuestionMark = true, xtraStyle, toolTipWidth }, ref) => {
+  (
+    {
+      text,
+      toolTipText,
+      showOptText,
+      hasQuestionMark = true,
+      xtraStyle,
+      toolTipWidth,
+    },
+    ref
+  ) => {
     const [showToolTip, setShowToolTip] = useState(false);
     const spanRef = useRef<HTMLSpanElement>(null);
 
@@ -36,9 +46,13 @@ const CustomText = forwardRef<HTMLDivElement, ICustomTextProps>(
     }, []);
 
     return (
-      <p className={`flex items-center gap-x-1 text-sm font-normal text-dark-200 leading-none w-fit ${xtraStyle}`}>
+      <p
+        className={`flex items-center gap-x-1 text-sm font-normal text-dark-200 leading-none w-fit ${xtraStyle}`}
+      >
         {text}
-        {showOptText && <span className="text-light-400 text-xs uppercase">(Optional)</span>}
+        {showOptText && (
+          <span className="text-light-400 text-xs uppercase">(Optional)</span>
+        )}
         {hasQuestionMark && (
           <div className="relative">
             <span
@@ -49,7 +63,11 @@ const CustomText = forwardRef<HTMLDivElement, ICustomTextProps>(
               ?
             </span>
             {showToolTip && (
-              <Tooltip ref={ref} text={toolTipText || text} width={toolTipWidth} />
+              <Tooltip
+                ref={ref}
+                text={toolTipText || text}
+                width={toolTipWidth}
+              />
             )}
           </div>
         )}

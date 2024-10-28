@@ -48,7 +48,9 @@ const authSlice = createSlice({
       state.botsData.unshift(action.payload);
     },
     updateBotStats: (state, action: PayloadAction<Partial<IBotData>>) => {
-      const index = state.botsData.findIndex(bot => bot.id === action.payload.id);
+      const index = state.botsData.findIndex(
+        (bot) => bot.id === action.payload.id
+      );
       if (index !== -1) {
         state.botsData[index] = { ...state.botsData[index], ...action.payload };
       } else if (action.payload.id) {
@@ -61,14 +63,14 @@ const authSlice = createSlice({
   },
 });
 
-export const { 
-  setAddress, 
-  setLoginStatus, 
-  setUsdcBalance, 
+export const {
+  setAddress,
+  setLoginStatus,
+  setUsdcBalance,
   setBotData,
   addBot,
-  updateBotStats, 
-  resetAuth 
+  updateBotStats,
+  resetAuth,
 } = authSlice.actions;
 
 export default authSlice.reducer;

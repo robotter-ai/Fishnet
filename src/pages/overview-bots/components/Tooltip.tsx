@@ -64,7 +64,7 @@ const Tooltip = forwardRef<HTMLDivElement, IToolTipProps>(
         ref={tooltipRef}
         style={isOverflow.right ? { right: -16.5 } : { left: -25 }}
         className={`absolute bottom-8 z-50 ${
-          width ? width : 'w-56'
+          width || 'w-56'
         } p-4 text-xs text-white bg-dark-400 rounded-[20px] h-fit`}
       >
         {text}

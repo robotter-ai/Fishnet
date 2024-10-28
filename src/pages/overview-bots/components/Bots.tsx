@@ -44,7 +44,7 @@ interface IBotsProps {
 }
 
 const truncateDecimals = (value: number, decimalPlaces: number = 2): number => {
-  const multiplier = Math.pow(10, decimalPlaces);
+  const multiplier = 10 ** decimalPlaces;
   return Math.trunc(value * multiplier) / multiplier;
 };
 
@@ -81,10 +81,10 @@ const Bots: React.FC<IBotsProps> = ({
   ];
   const [selectedBot, setSelectedBot] = useState<IBotData | null>(null);
 
-    const botsData = useAppSelector((state) => state.auth.botsData);
+  const botsData = useAppSelector((state) => state.auth.botsData);
 
-    const handleBotClick = (bot: IBotData | undefined) => {
-        if(!bot) return;
+  const handleBotClick = (bot: IBotData | undefined) => {
+    if (!bot) return;
 
     setSelectedBot(bot);
   };
@@ -183,9 +183,7 @@ const Bots: React.FC<IBotsProps> = ({
                   />
                 </div>
               </td>
-              <td>
-                ${bot.portfolio}
-              </td>
+              <td>${bot.portfolio}</td>
               <td>{bot.accuracy}%</td>
               <td>{bot.sharpeRatio}</td>
               <td>{bot.apr}%</td>

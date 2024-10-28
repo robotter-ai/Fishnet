@@ -8,7 +8,13 @@ interface AppModalProps {
   children: React.ReactNode;
 }
 
-const AppModal: React.FC<AppModalProps> = ({ title, isOpen, handleClose, handleSuccsessfulLogin, children }) => {
+const AppModal: React.FC<AppModalProps> = ({
+  title,
+  isOpen,
+  handleClose,
+  handleSuccsessfulLogin,
+  children,
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -23,4 +29,3 @@ const AppModal: React.FC<AppModalProps> = ({ title, isOpen, handleClose, handleS
 };
 
 export default AppModal;
-

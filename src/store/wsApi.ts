@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { setBotData, updateBotStats, setUsdcBalance, addBot } from '@store/auth/slice';
+import {
+  setBotData,
+  updateBotStats,
+  setUsdcBalance,
+  addBot,
+} from '@store/auth/slice';
 
 export const websocketApi = createApi({
   reducerPath: 'websocketApi',
@@ -25,7 +30,7 @@ export const websocketApi = createApi({
                 dispatch(setBotData(data.payload.bots));
                 break;
               case 'newBot':
-                console.log(data)
+                console.log(data);
                 dispatch(addBot(data.payload.bot));
                 break;
               case 'update':

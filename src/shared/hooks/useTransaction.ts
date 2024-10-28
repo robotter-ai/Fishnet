@@ -165,12 +165,7 @@ export const useTransactions = () => {
         throw Error(errorMessage);
       }
     },
-    [
-      address,
-      createInstance,
-      startInstance,
-      signAndSendTransaction,
-    ]
+    [address, createInstance, startInstance, signAndSendTransaction]
   );
 
   const withdraw = useCallback(
@@ -212,7 +207,9 @@ export const useTransactions = () => {
           transactionError.error ||
           transactionError.data?.message ||
           transactionError.message;
-        toast.error('Error withdrawing, make sure you have enough SOL and USDC, contact us');
+        toast.error(
+          'Error withdrawing, make sure you have enough SOL and USDC, contact us'
+        );
         throw Error(errorMessage);
       }
     },

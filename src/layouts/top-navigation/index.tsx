@@ -34,11 +34,11 @@ function TopNavigation() {
       message_text: 'Your transaction was successful',
     },
   ];
-  //useEffect(() => {
+  // useEffect(() => {
   //  if (data) {
   //    setNotifications(data);
   //  }
-  //}, [data]);
+  // }, [data]);
   const notifications = data;
 
   useEffect(() => {

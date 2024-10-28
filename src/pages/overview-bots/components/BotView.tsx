@@ -26,8 +26,8 @@ import GoBack from './GoBack';
 import CryptoStats from './CryptoStats';
 
 const truncateDecimals = (value: number, decimalPlaces: number = 2): number => {
-    const multiplier = Math.pow(10, decimalPlaces);
-    return Math.trunc(value * multiplier) / multiplier;
+  const multiplier = 10 ** decimalPlaces;
+  return Math.trunc(value * multiplier) / multiplier;
 };
 
 interface IBotViewProps {
@@ -77,38 +77,43 @@ const SingleBotView: React.FC<IBotViewProps> = ({
   setSearchParams,
   cardBotData,
 }) => {
-    const getChartTypeQuery = searchParams.get('chart') || 'trades';
+  const getChartTypeQuery = searchParams.get('chart') || 'trades';
 
-    return (
-        <>
-            <div className="flex flex-col xl:flex-row justify-between gap-x-4">
-                <div id="left" className="w-full">
-                    <div className="flex gap-x-4 overflow-x-auto mt-6 pb-4">
-                        <div className="pt-3">
-                            <button onClick={onBack} className="flex items-center text-blue-500 hover:text-blue-700">
-                                <BackIcon className="mr-2" />
-                                Go Back
-                            </button>
-                            <div className="mt-16">
-                                <CustomPieChart
-                                    isEmpty
-                                    size={210}
-                                    innerRadius={90}
-                                    outerRadius={103}
-                                    cryptoStats={cryptoStats}
-                                    label={
-                                        <>
-                                            <h1 className="font-bold text-[2rem] text-center text-dark-300">
-                                                {bot.pnl.isPositive ? '+' : '-'}${truncateDecimals(bot.pnl.value)}
-                                            </h1>
-                                            <p className="font-normal text-sm text-center text-dark-100">
-                                                {bot.pnl.isPositive ? '+' : '-'}{truncateDecimals(bot.pnl.percentage)}% P&L
-                                            </p>
-                                        </>
-                                    }
-                                />
-                            </div>
-                        </div>
+  return (
+    <>
+      <div className="flex flex-col xl:flex-row justify-between gap-x-4">
+        <div id="left" className="w-full">
+          <div className="flex gap-x-4 overflow-x-auto mt-6 pb-4">
+            <div className="pt-3">
+              <button
+                onClick={onBack}
+                className="flex items-center text-blue-500 hover:text-blue-700"
+              >
+                <BackIcon className="mr-2" />
+                Go Back
+              </button>
+              <div className="mt-16">
+                <CustomPieChart
+                  isEmpty
+                  size={210}
+                  innerRadius={90}
+                  outerRadius={103}
+                  cryptoStats={cryptoStats}
+                  label={
+                    <>
+                      <h1 className="font-bold text-[2rem] text-center text-dark-300">
+                        {bot.pnl.isPositive ? '+' : '-'}$
+                        {truncateDecimals(bot.pnl.value)}
+                      </h1>
+                      <p className="font-normal text-sm text-center text-dark-100">
+                        {bot.pnl.isPositive ? '+' : '-'}
+                        {truncateDecimals(bot.pnl.percentage)}% P&L
+                      </p>
+                    </>
+                  }
+                />
+              </div>
+            </div>
 
             <div className="flex-1">
               <CryptoStats data={cryptoStats} showValue isEmpty />

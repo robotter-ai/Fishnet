@@ -29,7 +29,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccessfulLogin }) => {
     if (onSuccessfulLogin) {
       onSuccessfulLogin();
     }
-    
+
     // Check if the user came from the Overview page
     if (location.state && location.state.from === 'overview') {
       navigate('/training'); // Adjust this path to match your route for the Training component

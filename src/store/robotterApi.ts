@@ -1,37 +1,45 @@
 import { robotterApi } from './config';
 
 const robotterEndpoints = robotterApi.injectEndpoints({
-    endpoints: (builder) => ({
-        createInstance: builder.mutation<
-        { instance_id: string; wallet_address: string; market: string },
-        { strategy_name: string; strategy_parameters: Record<string, any>; market: string }
-      >({
-        query: (data) => {
-          console.log('createInstance request body:', data);
-          return {
-            url: '/instances',
-            method: 'POST',
-            data,
-          };
-        },
-      }),
+  endpoints: (builder) => ({
+    createInstance: builder.mutation<
+      { instance_id: string; wallet_address: string; market: string },
+      {
+        strategy_name: string;
+        strategy_parameters: Record<string, any>;
+        market: string;
+      }
+    >({
+      query: (data) => {
+        console.log('createInstance request body:', data);
+        return {
+          url: '/instances',
+          method: 'POST',
+          data,
+        };
+      },
+    }),
 
     getInstanceWallet: builder.query<string, string>({
-        query: (instanceId) => ({
-          url: `/instances/${instanceId}/wallet`,
-          method: 'GET',
-        }),
+      query: (instanceId) => ({
+        url: `/instances/${instanceId}/wallet`,
+        method: 'GET',
+      }),
     }),
 
     startInstance: builder.mutation<
-        string,
-        { instanceId: string; strategy_name: string; parameters: Record<string, any> }
+      string,
+      {
+        instanceId: string;
+        strategy_name: string;
+        parameters: Record<string, any>;
+      }
     >({
-        query: ({ instanceId, ...data }) => ({
+      query: ({ instanceId, ...data }) => ({
         url: `/instances/${instanceId}/start`,
         method: 'POST',
         body: data,
-        }),
+      }),
     }),
 
     stopInstance: builder.mutation<string, string>({
@@ -42,15 +50,34 @@ const robotterEndpoints = robotterApi.injectEndpoints({
     }),
 
     getStrategies: builder.query<Record<string, Record<string, any>>, void>({
-        query: () => ({
-          url: '/strategies',
-          method: 'GET',
-        }),
+      query: () => ({
+        url: '/strategies',
+        method: 'GET',
       }),
+    }),
 
     getHistoricalCandles: builder.mutation<
-      { data: Array<{ o: number; h: number; l: number; c: number; v: number; unixTime: number; address: string; type: string }> },
-      { connector_name: string; trading_pair: string; market_address: string; interval: string; start_time: number; end_time: number; limit?: number }
+      {
+        data: Array<{
+          o: number;
+          h: number;
+          l: number;
+          c: number;
+          v: number;
+          unixTime: number;
+          address: string;
+          type: string;
+        }>;
+      },
+      {
+        connector_name: string;
+        trading_pair: string;
+        market_address: string;
+        interval: string;
+        start_time: number;
+        end_time: number;
+        limit?: number;
+      }
     >({
       query: (body) => ({
         url: '/historical-candles',
