@@ -1,6 +1,6 @@
 import ClickToCopy from '@shared/components/ClickToCopy';
 import classNames from 'classnames';
-import React from "react";
+import React from 'react';
 
 interface ITruncatedItemHash {
   hash: string;
@@ -32,7 +32,12 @@ const TruncatedItemHash: React.FC<ITruncatedItemHash> = ({
           'text-primary': color === 'primary',
         })}
       >
-        <a className="text-primary hover:underline" href={url} target="_blank" rel="noreferrer">
+        <a
+          className="text-primary hover:underline"
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+        >
           {getTruncatedItemHash()}
         </a>
       </p>

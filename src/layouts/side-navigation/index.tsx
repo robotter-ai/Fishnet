@@ -1,11 +1,12 @@
 import { FolderIcon, LockIcon, LogoutIcon, ProfileIcon } from '@assets/icons';
-import { useAuth } from '@contexts/auth-provider';
+import { useAppSelector } from '@shared/hooks/useStore';
 import { Tooltip } from '@mui/material';
 import classNames from 'classnames';
 import { Link, NavLink } from 'react-router-dom';
+import { useAuth } from '@contexts/auth-provider';
 
 function NavList() {
-  const { address } = useAuth();
+  const { address } = useAppSelector((state) => state.auth);
 
   const links = [
     {
@@ -61,7 +62,8 @@ function NavList() {
 }
 
 function SideNavigation() {
-  const { address, resetAuth } = useAuth();
+  const { address } = useAppSelector((state) => state.auth);
+  const { resetAuth } = useAuth();
 
   return (
     <div

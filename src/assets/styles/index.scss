@@ -42,6 +42,10 @@ h2 {
   // border-radius: 0px;
 }
 
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
 .app-btn {
   background: linear-gradient(259.65deg, #1dc3cf -19.75%, #0093a7 135.06%);
   &.btn-outline-primary {
@@ -57,6 +61,14 @@ h2 {
   &.btn-solid-secondary {
     background: #3e73c4;
     color: $white;
+  }
+  &.btn-solid-navy {
+    background: #3e00ff;
+    color: $white;
+    transition: all 0.5s linear;
+    &:hover {
+      opacity: 0.65;
+    }
   }
   &.btn-outline-red {
     background: $white;
@@ -82,6 +94,51 @@ h2 {
 .css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
   background-color: rgb(255, 255, 255, 0.5) !important;
   backdrop-filter: blur(10px) !important;
+}
+
+#question_mark_sign:hover + #tooltip {
+  opacity: 100;
+}
+
+#cardBotNameGrid {
+  display: grid;
+  grid-template-columns: 5.4rem auto;
+}
+
+.react-date-picker .react-date-picker__wrapper {
+  border: none;
+}
+
+#notification {
+  box-shadow: 0px 16px 32px 0px #16253533;
+}
+
+.scroll_container {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scroll_container::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  visibility: hidden;
+}
+
+.scroll_container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll_container::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.scroll_container:hover::-webkit-scrollbar-thumb {
+  background: rgba($color: #000000, $alpha: 0.3);
+}
+
+.scroll_container::-webkit-scrollbar-thumb:hover {
+  background: rgba($color: #000000, $alpha: 0.6);
 }
 
 @import './form.scss';

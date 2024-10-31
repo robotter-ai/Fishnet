@@ -1,16 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import appSlice from '@slices/appSlice';
-import transactionSlice from '@slices/transactionSlice';
-import { globalApi } from './config';
-import monitorAccessSlice from './monitor-access/slice';
-import dataSlice from './data/slice';
+import auth from './auth/slice';
+import { robotterApi, transactionsApi } from './config';
+import { websocketApi } from './wsApi';
 
 export const rootReducer = combineReducers({
   app: appSlice.reducer,
-  data: dataSlice.reducer,
-  transactions: transactionSlice.reducer,
-  monitorAccess: monitorAccessSlice.reducer,
+  auth,
 
   // RTK Query Setup
-  [globalApi.reducerPath]: globalApi.reducer,
+  [robotterApi.reducerPath]: robotterApi.reducer,
+  [transactionsApi.reducerPath]: transactionsApi.reducer,
+  [websocketApi.reducerPath]: websocketApi.reducer,
 });

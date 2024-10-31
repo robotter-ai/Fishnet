@@ -3,9 +3,18 @@ import Button from '@components/ui/Button';
 import LoginForm from '@shared/components/LoginForm';
 import useModal from '@shared/hooks/useModal';
 import LoginWaveImg from '@assets/images/login-wave.png';
+import { useAppSelector } from '@shared/hooks/useStore';
+import { useEffect } from 'react';
 
 const Login = () => {
   const { isOpen, handleOpen, handleClose } = useModal();
+  const { address } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (address) {
+      handleClose();
+    }
+  }, [address, handleClose]);
 
   return (
     <>
@@ -29,19 +38,7 @@ const Login = () => {
             alt="Fishnet Logo"
             className="w-full h-full"
           />
-          {/* <Button
-            text="Enter Fishnet"
-            icon="home"
-            onClick={() => {
-              navigate('/data', { replace: true });
-            }}
-          />
-          <div className="bg-[#F6FAFB] text-center flex flex-col justify-center py-[10px] px-[25%]">
-            <p className="text-2xl">
-              This app is only for demonstration purposes. <br />
-              Do not upload any sensitive data.
-            </p>
-          </div> */}
+          {}
         </div>
       </div>
       <AppModal

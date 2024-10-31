@@ -1,16 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 
-import { rootReducer } from '@store/reducers';
+import { rootReducer } from './reducers';
 
-import { globalApi } from './config';
+import { robotterApi, transactionsApi } from './config';
+import { websocketMiddleware } from './wsApi';
 
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(globalApi.middleware), // API middleware enables caching, invalidation, polling, and other useful features of rtk-query.,
+    })
+      .concat(robotterApi.middleware, transactionsApi.middleware)
+      .concat(websocketMiddleware),
 });
 
 // Optional, but required for refetchOnFocus/refetchOnReconnect behaviors

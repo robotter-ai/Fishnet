@@ -3,16 +3,38 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '@components/ui/Button';
 import { WalletName, WalletReadyState } from '@solana/wallet-adapter-base';
 import { useMemo, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const LoginForm = () => {
+interface LoginFormProps {
+  onSuccessfulLogin?: () => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onSuccessfulLogin }) => {
   const { wallets, select } = useWallet();
   const [selectedWallet, setSelectedWallet] = useState<WalletName | null>(null);
   const solanaWallets = useMemo(() => {
-    return wallets.filter((wallet) =>
-      wallet.readyState === WalletReadyState.Installed 
-      && wallet.adapter.name !== 'Brave Wallet'
-    ).map((x) => x.adapter)
+    return wallets
+      .filter(
+        (wallet) =>
+          wallet.readyState === WalletReadyState.Installed &&
+          wallet.adapter.name !== 'Brave Wallet'
+      )
+      .map((x) => x.adapter);
   }, [wallets]);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleConnect = () => {
+    select(selectedWallet);
+    if (onSuccessfulLogin) {
+      onSuccessfulLogin();
+    }
+
+    // Check if the user came from the Overview page
+    if (location.state && location.state.from === 'overview') {
+      navigate('/training'); // Adjust this path to match your route for the Training component
+    }
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -45,7 +67,7 @@ const LoginForm = () => {
         size="lg"
         icon="login"
         fullWidth
-        onClick={() => select(selectedWallet)}
+        onClick={handleConnect}
       />
     </div>
   );

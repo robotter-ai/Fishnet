@@ -1,14 +1,14 @@
-# Fishnet
+# Robotter.ai Frontend
 
 ## Setup
 
 Clone the repository
 
-Create .env file and paste the following ;
+Create .env file and paste the following:
 
 ```shell
-VITE_FISHNET_API_URL=http://localhost:8000
-VITE_TRANSACTIONS_API_URL=http://localhost:3001
+VITE_ROBOTTER_API_URL = http://127.0.0.1:8000
+VITE_TRANSACTIONS_API_URL = http://127.0.0.1:3000
 ```
 ## Install dependencies
 ```shell

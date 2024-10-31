@@ -3,7 +3,7 @@ import { BaseQueryFn, createApi } from '@reduxjs/toolkit/query/react';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { toast } from 'sonner';
 
-export const FISHNET_API_URL = import.meta.env.VITE_FISHNET_API_URL;
+export const ROBOTTER_API_URL = import.meta.env.VITE_ROBOTTER_API_URL;
 export const TRANSACTIONS_API_URL = import.meta.env.VITE_TRANSACTIONS_API_URL;
 
 export const cookies = new Cookies();
@@ -17,6 +17,7 @@ const axiosBaseQuery =
     {
       url: string;
       method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+      body?: AxiosRequestConfig['data'];
       data?: AxiosRequestConfig['data'];
       params?: AxiosRequestConfig['params'];
       headers?: AxiosRequestConfig['headers'];
@@ -24,26 +25,31 @@ const axiosBaseQuery =
     unknown,
     unknown
   > =>
-  async ({ url, method, data, params, headers }) => {
+  async ({ url, method, body, data, params, headers }) => {
     try {
       const token = cookies.get('bearerToken');
+
+      console.log('Request:', { url, method, body, data, params, headers });
 
       const result = await axios({
         url: baseUrl + url,
         method,
-        data,
+        data: body || data,
         params,
         headers: { Authorization: `Bearer ${token}`, ...headers },
       });
+
+      console.log('Response:', result);
 
       return { data: result?.data ? result.data : null };
     } catch (axiosError) {
       const err = axiosError as AxiosError;
 
+      console.error('Error:', err.response);
+
       if (err.response?.status === 401) {
         toast.error('Session expired. Please connect again.');
-        cookies.remove('bearerToken'); // Remove token when it has expired
-        // window.location.assign(`${window.location.origin}/`); // TODO: Redirect to the connect wallet page or open the sign challenge modal
+        cookies.remove('bearerToken');
       } else {
         toast.error(err.message);
       }
@@ -57,12 +63,23 @@ const axiosBaseQuery =
     }
   };
 
-export const globalApi = createApi({
+export const robotterApi = createApi({
   reducerPath: 'api',
   baseQuery: axiosBaseQuery({
-    baseUrl: FISHNET_API_URL,
+    baseUrl: import.meta.env.VITE_ROBOTTER_API_URL || 'http://localhost:8000',
   }),
   refetchOnReconnect: true,
-  tagTypes: ['Dataset', 'Permissions', 'Timeseries', 'Profile', 'View'],
+  tagTypes: ['Profile', 'Instance', 'StartInstance', 'StopInstance', 'Candle'],
+  endpoints: () => ({}),
+});
+
+export const transactionsApi = createApi({
+  reducerPath: 'transactionsApi',
+  baseQuery: axiosBaseQuery({
+    baseUrl:
+      import.meta.env.VITE_TRANSACTIONS_API_URL || 'http://localhost:3000',
+  }),
+  refetchOnReconnect: true,
+  tagTypes: ['Transactions'],
   endpoints: () => ({}),
 });

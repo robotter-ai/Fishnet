@@ -8,7 +8,10 @@ import { toast } from 'sonner';
 import AppModal from './AppModal';
 import CustomButton from './Button';
 
-const PriceView = ({ price, handleOpen }: {
+const PriceView = ({
+  price,
+  handleOpen,
+}: {
   price: string;
   handleOpen: () => void;
 }) => {
@@ -84,7 +87,6 @@ export default function PriceButton({
             text="Save"
             onClick={() => {
               handleClose();
-              navigate('/?tab=published');
             }}
           />
         </div>
