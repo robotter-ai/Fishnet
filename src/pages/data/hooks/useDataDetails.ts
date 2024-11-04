@@ -48,10 +48,13 @@ export default () => {
   const [updateDataset, { isLoading: isLoadingUpdateDataset }] =
     useUpdateDatasetMutation();
 
-  const { data: publishedTimeseries, isSuccess: isSuccessPublishedTimeseries } =
-    useGetDatasetTimeseriesQuery(id as string, {
-      skip: isUpload,
-    });
+  const {
+    data: publishedTimeseries,
+    isSuccess: isSuccessPublishedTimeseries,
+    isLoading: isLoadingPublishedTimeseries,
+  } = useGetDatasetTimeseriesQuery(id as string, {
+    skip: isUpload,
+  });
 
   useEffect(() => {
     if (!isUpload && isSuccessPublishedTimeseries) {
@@ -104,21 +107,23 @@ export default () => {
           data: item.data,
         })),
       })
-      .unwrap()
-      .then((res: any) => {
-        setDataset(res?.dataset);
-        handleGenerateViews(res);
-      });
+        .unwrap()
+        .then((res: any) => {
+          setDataset(res?.dataset);
+          handleGenerateViews(res);
+        });
     };
 
     if (Number(inputsToUpload.price) > 0) {
-      handleCreateTokenAccount().then(value => {
-        if (value) {
-          uploadDatasetAction();
-        }
-      }).catch(e => {
-        console.log(e);
-      });
+      handleCreateTokenAccount()
+        .then((value) => {
+          if (value) {
+            uploadDatasetAction();
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     } else {
       uploadDatasetAction();
     }
@@ -129,7 +134,6 @@ export default () => {
       // stop execution and outline the input field
       return;
     }
-
 
     updateDataset(inputsToUpload)
       .unwrap()
@@ -198,6 +202,7 @@ export default () => {
     handleUploadDataset,
     handleUpdateDataset,
     isLoadingGetDataset,
+    isLoadingPublishedTimeseries,
     isLoadingUploadDataset: isLoadingUploadDataset || isLoadingGenerateViews,
     isLoadingUpdateDataset: isLoadingUpdateDataset || isLoadingGenerateViews,
     isUpload,

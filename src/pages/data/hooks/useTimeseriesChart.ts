@@ -42,7 +42,7 @@ export default () => {
         ])
       );
     }
-  }, []);
+  }, [isUpload, timeseries]);
 
   useEffect(() => {
     if (views && views.length) {
@@ -61,7 +61,7 @@ export default () => {
         )
       );
     }
-  }, [views]);
+  }, [views, timeseries]);
 
   const handleOpenChart = (chartId: string) => {
     if (chartId === 'new') {
