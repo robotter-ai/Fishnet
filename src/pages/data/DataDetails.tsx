@@ -32,6 +32,7 @@ const DataDetails = () => {
     handleUpdateDataset,
     isLoadingUploadDataset,
     isLoadingUpdateDataset,
+    isLoadingPublishedTimeseries,
     publishedModalProps: { isOpen, handleClose },
     isLoadingGetDataset,
     isOwner,
@@ -201,7 +202,9 @@ const DataDetails = () => {
         <div>{action()}</div>
       </div>
       <div className="relative">
-        <ViewLoader isLoading={isLoadingGetDataset} />
+        <ViewLoader
+          isLoading={isLoadingGetDataset || isLoadingPublishedTimeseries}
+        />
         {isOwner ? (
           <div className="grid grid-cols-2 gap-5 mb-5">
             <div className="bg-form-bg flex flex-col gap-4 p-6 text-text-dark rounded-[32px]">

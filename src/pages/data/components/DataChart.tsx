@@ -85,7 +85,7 @@ const DataChart: React.FC<{
           date,
         };
       });
-  }, [activeDuration]);
+  }, [activeDuration, data]);
 
   const domainSize = [
     Math.min(...chartData.map((item) => {
